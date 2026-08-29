@@ -74,6 +74,7 @@ type
     procedure FichiersArticles(Sender: TObject);
     procedure TravauxRecalculStockClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
+    procedure FacturationClick(Sender: TObject);
   private
     function ChercherEtActiverOnglet(const ACaption: string): Boolean;
     function OuvrirOnglet<T: TControl>(const ACaption: string; const AImageName: string = ''; AOnCreate: TProc<T> = nil): T;
@@ -94,7 +95,7 @@ uses
   U_Learning, U_TableFournis, U_TablePaiement, U_TableParameTVA, U_TableParameDevises,
   U_TableRepres, U_TableGeo, U_TableDepots, U_TablePostesAchats, U_TableActivite,
   U_TableSousfam, U_TableDepart, U_TableChrono, U_TableTarif, U_TableInfoscompl,
-  U_FicheCtrstock, U_FicheCaisse, U_FormGestionDroits, U_TableArticles;
+  U_FicheCtrstock, U_FicheCaisse, U_FormGestionDroits, U_TableArticles, U_TableEntvtejj;
 
 procedure TFormMenuPrincipal.FormCreate(Sender: TObject);
 begin
@@ -332,6 +333,10 @@ begin
   end;
 end;
 
+procedure TFormMenuPrincipal.FacturationClick(Sender: TObject);
+begin
+  OuvrirOnglet<TFrameTableEntvtejj>('Factures du jour', 'invoice_12560218');
+end;
 
 procedure TFormMenuPrincipal.Catgoriestarifaires1Click(Sender: TObject);
 begin

@@ -47,6 +47,7 @@ type
   public
     { Déclarations publiques }
     PMPGlobalMode: Integer; // Variable globale de l'application
+    gCodCai: string;
     function GetEAN13CheckDigitFrom13(const A13Digits: string): string;
     procedure ChargerParametresStock;
     property NumeroPoste: Integer read FNumeroPoste;
@@ -119,6 +120,8 @@ var
 begin
   // Formatage du numéro sur 2 caractères (ex: 1 -> '01', 2 -> '02')
   CodCai := Format('%.2d', [ANumeroPoste]);
+  //Affectation globale
+  gCodCai := Format('%d', [ANumeroPoste]);
 
   Qry := CreerRequeteTemp;
   try
