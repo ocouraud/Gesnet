@@ -1,0 +1,30 @@
+# Fichiers de compilation Delphi
+__history/
+__recovery/
+*.dcu
+*.ddp
+*.~*
+*.log
+*.stat
+*.local
+*.identcache
+*.tvsconfig
+
+# Fichiers exécutables et résultats
+*.exe
+*.dll
+*.bpl
+*.dcp
+
+# Options utilisateur (à ne pas partager entre vos deux PC)
+*.dsk
+
+# On choisi d'ajouter nous-meme les elements au projet
+*.dprog
+*.dpr
+
+Gesnet.dpr
+*.dproj
+*.dpr
+*.dproj
+Gesnet.res

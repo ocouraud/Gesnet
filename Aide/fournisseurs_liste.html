@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aide - Table des Fournisseurs</title>
+    <style>
+        :root {
+            --primary-color: #0056b3;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --border-color: #e0e0e0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 8px;
+            margin-top: 0;
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin-top: 0;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 5px;
+        }
+
+        .nav-bar {
+            position: sticky;
+            top: 0;
+            background: var(--card-bg);
+            padding: 10px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            z-index: 100;
+        }
+
+        .nav-bar a {
+            color: var(--primary-color);
+            text-decoration: none;
+            margin-right: 8px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .nav-bar a:hover {
+            text-decoration: underline;
+        }
+
+        .section {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .field-list {
+            display: grid;
+            grid-template-columns: 180px 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .field-name {
+            font-weight: bold;
+            color: #495057;
+            background-color: #eef2f7;
+            padding: 6px 10px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+        }
+
+        .field-desc {
+            padding: 6px 10px;
+        }
+
+        .badge {
+            background-color: #17a2b8;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.8em;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="nav-bar">
+        📌 <strong>Accès rapide :</strong>
+        <a href="#recherche">Filtres et recherche</a> |
+        <a href="#tableau">Colonnes de la liste</a> |
+        <a href="#actions">Boutons d'action</a>
+    </div>
+
+    <h1>🏭 Table des Fournisseurs</h1>
+    <p>Cet écran centralise l'ensemble des comptes fournisseurs enregistrés dans l'application. Il permet de rechercher, de consulter et de gérer l'annuaire des fournisseurs.</p>
+
+    <!-- SECTION RECHERCHE ET FILTRES -->
+    <div id="recherche" class="section">
+        <h2>Filtres et Recherche</h2>
+        <div class="field-list">
+            <div class="field-name">Filtrer par c...</div>
+            <div class="field-desc">Zone de recherche rapide permettant d'effectuer un filtre sur le code du fournisseur.</div>
+
+            <div class="field-name">Filtrer par nom...</div>
+            <div class="field-desc">Zone de saisie textuelle pour filtrer instantanément la liste selon la raison sociale ou le nom du fournisseur.</div>
+        </div>
+    </div>
+
+    <!-- SECTION COLONNES -->
+    <div id="tableau" class="section">
+        <h2>Colonnes du Tableau</h2>
+        <div class="field-list">
+            <div class="field-name">Code</div>
+            <div class="field-desc">Code d'identification unique du fournisseur dans l'application (ex: <code>ACT</code>, <code>AGU</code>).</div>
+
+            <div class="field-name">Nom</div>
+            <div class="field-desc">Raison sociale ou nom complet du fournisseur.</div>
+
+            <div class="field-name">No TEL</div>
+            <div class="field-desc">Numéro de téléphone principal de contact.</div>
+
+            <div class="field-name">Adresse</div>
+            <div class="field-desc">Adresse principale ou voie de domiciliation du fournisseur.</div>
+
+            <div class="field-name">Devise</div>
+            <div class="field-desc">Devise de transaction attribuée par défaut au fournisseur (ex: <code>EUR</code>, <code>XPF</code>, <code>USD</code>, <code>NZD</code>).</div>
+
+            <div class="field-name">No compte</div>
+            <div class="field-desc">Code ou numéro du compte auxiliaire rattaché au fournisseur en comptabilité.</div>
+
+            <div class="field-name">@mail</div>
+            <div class="field-desc">Adresse e-mail principale du fournisseur pour l'envoi direct des documents et échanges.</div>
+        </div>
+    </div>
+
+    <!-- SECTION ACTIONS -->
+    <div id="actions" class="section">
+        <h2>Boutons d'Action</h2>
+        <div class="field-list">
+            <div class="field-name">Ajouter</div>
+            <div class="field-desc">Ouvre une fiche vierge pour créer et enregistrer un nouveau fournisseur.</div>
+
+            <div class="field-name">Ouvrir</div>
+            <div class="field-desc">Ouvre la fiche détaillée du fournisseur sélectionné pour consultation ou modification (équivalent à un double-clic sur la ligne).</div>
+
+            <div class="field-name">Supprimer</div>
+            <div class="field-desc">Supprime la fiche du fournisseur sélectionné (sous réserve qu'aucun document d'achat ou écriture ne lui soit rattaché).</div>
+
+            <div class="field-name">Aide</div>
+            <div class="field-desc">Affiche ce document d'aide en ligne.</div>
+
+            <div class="field-name">Fermer</div>
+            <div class="field-desc">Ferme l'onglet ou la fenêtre de la table des fournisseurs et retourne à la vue précédente.</div>
+        </div>
+    </div>
+
+</body>
+</html>

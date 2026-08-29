@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aide - Fiche Fournisseur</title>
+    <style>
+        :root {
+            --primary-color: #0056b3;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --border-color: #e0e0e0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 8px;
+            margin-top: 0;
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin-top: 0;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 5px;
+        }
+
+        .nav-bar {
+            position: sticky;
+            top: 0;
+            background: var(--card-bg);
+            padding: 10px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            z-index: 100;
+        }
+
+        .nav-bar a {
+            color: var(--primary-color);
+            text-decoration: none;
+            margin-right: 8px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .nav-bar a:hover {
+            text-decoration: underline;
+        }
+
+        .section {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .field-list {
+            display: grid;
+            grid-template-columns: 180px 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .field-name {
+            font-weight: bold;
+            color: #495057;
+            background-color: #eef2f7;
+            padding: 6px 10px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+        }
+
+        .field-desc {
+            padding: 6px 10px;
+        }
+
+        .badge {
+            background-color: #17a2b8;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.8em;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="nav-bar">
+        📌 <strong>Accès rapide :</strong>
+        <a href="#entete">En-tête</a> |
+        <a href="#general">Général</a> |
+        <a href="#ecritures">Écritures</a> | 
+        <a href="#ca">Chiffres d'affaires</a> |
+        <a href="#boutons">Boutons</a>
+    </div>
+
+    <h1>🏭 Fiche Fournisseur</h1>
+    <p>Cette fiche permet de consulter, saisir et modifier les coordonnées administratives, les conditions de règlement et le suivi financier d'un fournisseur.</p>
+
+    <!-- EN-TÊTE FIXE -->
+    <div id="entete" class="section">
+        <h2>Informations Principales (En-tête)</h2>
+        <div class="field-list">
+            <div class="field-name">Code</div>
+            <div class="field-desc">Code unique d'identification du fournisseur (ex: <code>ACT</code>, <code>AGU</code>).</div>
+
+            <div class="field-name">Nom</div>
+            <div class="field-desc">Raison sociale ou nom commercial complet du fournisseur.</div>
+
+            <div class="field-name">Telephone / No fax</div>
+            <div class="field-desc">Numéros de téléphone direct et de télécopie du fournisseur.</div>
+        </div>
+    </div>
+
+    <!-- ONGLET GÉNÉRAL -->
+    <div id="general" class="section">
+        <h2>Onglet : Général</h2>
+        <div class="field-list">
+            <div class="field-name">Adresse</div>
+            <div class="field-desc">Adresse postale complète du fournisseur structurée sur trois lignes (Rue, Code Postal / Ville, Pays).</div>
+
+            <div class="field-name">Devise</div>
+            <div class="field-desc">Devise de facturation par défaut associée aux commandes et achats (ex: <code>EUR</code>, <code>XPF</code>, <code>USD</code>).</div>
+
+            <div class="field-name">No compta.</div>
+            <div class="field-desc">Numéro du compte auxiliaire de comptabilité générale rattaché à ce fournisseur (ex: <code>4010000</code>).</div>
+
+            <div class="field-name">Jrs credit / Fin de mois</div>
+            <div class="field-desc">Condition d'échéance de paiement par défaut accordée par le fournisseur (ex: 30 jours, avec option de calcul en Fin de mois).</div>
+
+            <div class="field-name">@mail</div>
+            <div class="field-desc">Adresse e-mail principale pour l'envoi direct des demandes de prix, commandes d'achats et correspondances.</div>
+        </div>
+    </div>
+
+    <!-- ONGLET ÉCRITURES -->
+    <div id="ecritures" class="section">
+        <h2>Onglet : Écritures</h2>
+        <div class="field-list">
+            <div class="field-name">Tableau comptable</div>
+            <div class="field-desc">Affiche l'historique détaillé des mouvements comptables enregistrés sur ce compte fournisseur (Colonnes : Date, Libellé, Débit, Crédit).</div>
+
+            <div class="field-name">Filtres d'affichage</div>
+            <div class="field-desc">
+                Sélecteur de filtrage des écritures :
+                <ul>
+                    <li><strong>Toutes :</strong> Affiche l'ensemble des écritures du compte.</li>
+                    <li><strong>Non soldées :</strong> Filtre pour n'afficher que les factures d'achats en attente de paiement.</li>
+                    <li><strong>Soldées :</strong> Affiche uniquement les écritures lettrées et réglées.</li>
+                    <li><strong>Aucune :</strong> Masque temporairement la grille des écritures.</li>
+                </ul>
+            </div>
+
+            <div class="field-name">Totaux et Solde</div>
+            <div class="field-desc">Calcule automatiquement le total des Débits, des Crédits et affiche le solde net du compte (ex: <code>189 050 CR</code> pour un solde créditeur).</div>
+        </div>
+    </div>
+
+    <!-- ONGLET CHIFFRES D'AFFAIRES -->
+    <div id="ca" class="section">
+        <h2>Onglet : Chiffres d'affaires</h2>
+        <div class="field-list">
+            <div class="field-name">Historique des achats</div>
+            <div class="field-desc">Tableau de ventilation synthétique des montants d'achats réalisés auprès de ce fournisseur, année par année et mois par mois (de Janvier à Décembre).</div>
+        </div>
+    </div>
+
+    <!-- BOUTONS D'ACTION -->
+    <div id="boutons" class="section">
+        <h2>Boutons d'Action</h2>
+        <div class="field-list">
+            <div class="field-name">Valider</div>
+            <div class="field-desc">Enregistre les modifications apportées à la fiche fournisseur et ferme la fenêtre.</div>
+
+            <div class="field-name">Annuler</div>
+            <div class="field-desc">Annule les saisies ou modifications en cours et ferme la fenêtre sans enregistrer.</div>
+
+            <div class="field-name">Aide</div>
+            <div class="field-desc">Ouvre ce document d'aide en ligne.</div>
+        </div>
+    </div>
+
+</body>
+</html>

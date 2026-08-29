@@ -1,0 +1,88 @@
+unit U_TableDepots;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, System.UITypes,
+  Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
+  RzTabs, RzPanel, RzRadGrp, Data.DB, Vcl.Grids, Vcl.DBGrids, JvExDBGrids,
+  JvDBGrid, Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls;
+
+type
+  TFrameTableDepots = class(TFrame)
+    JvDBGrid1: TJvDBGrid;
+    DSDepot: TDataSource;
+    Panel2: TPanel;
+    BtnFermer: TBitBtn;
+    BtnAide: TBitBtn;
+    BtnSupprimer: TBitBtn;
+    procedure JvDBGrid1KeyPress(Sender: TObject; var Key: Char);
+    procedure BtnSupprimerClick(Sender: TObject);
+    procedure BtnAideClick(Sender: TObject);
+    procedure BtnFermerClick(Sender: TObject);
+  private
+    { Déclarations privées }
+  public
+    { Déclarations publiques }
+    constructor Create(AOwner: TComponent); override;
+  end;
+
+implementation
+
+{$R *.dfm}
+
+uses U_DM_Olivier, U_DataModule, U_FormAide;
+
+
+procedure TFrameTableDepots.BtnAideClick(Sender: TObject);
+begin
+   // 1. On s'assure que la fiche d'aide existe en mémoire
+  if not Assigned(FormAide) then
+    Application.CreateForm(TFormAide, FormAide);
+
+  // 2. On affiche la page
+  FormAide.AfficherAide('depot_liste.html');
+end;
+
+procedure TFrameTableDepots.BtnFermerClick(Sender: TObject);
+var
+  OngletParent: TRzTabSheet;
+begin
+  if Assigned(Self.Parent) and (Self.Parent is TRzTabSheet) then
+  begin
+    OngletParent := TRzTabSheet(Self.Parent);
+
+    // Repousse la destruction de l'onglet à la fin du traitement du clic
+    TThread.ForceQueue(nil, procedure
+    begin
+      OngletParent.Free;
+    end);
+  end;end;
+
+procedure TFrameTableDepots.BtnSupprimerClick(Sender: TObject);
+begin
+  // 1. Vérifie si le DataSet n'est pas vide et contient des données
+  if not DM_Olivier.FDQueryDepot.IsEmpty then
+  begin
+    // 2. Demande confirmation à l'utilisateur
+    if MessageDlg('Voulez-vous vraiment supprimer cette ligne ?',
+                  mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+    begin
+      DM_Olivier.FDQueryDepot.Delete;
+    end;
+  end;
+end;
+
+constructor TFrameTableDepots.Create(AOwner: TComponent);
+begin
+  inherited Create(AOwner);
+  DM_Olivier.FDQueryDepot.Open;
+end;
+
+procedure TFrameTableDepots.JvDBGrid1KeyPress(Sender: TObject; var Key: Char);
+begin
+  // Force toutes les touches alphabétiques en majuscule dans toute la grille
+  Key := UpCase(Key);
+end;
+
+end.

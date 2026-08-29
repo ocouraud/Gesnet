@@ -1,0 +1,575 @@
+object FormFicheRepres: TFormFicheRepres
+  Left = 0
+  Top = 0
+  Caption = 'Fiche repr'#233'sentant'
+  ClientHeight = 441
+  ClientWidth = 624
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -12
+  Font.Name = 'Segoe UI'
+  Font.Style = []
+  Icon.Data = {
+    0000010001002020000001002000A81000001600000028000000200000004000
+    000001002000000000000010000000000000000000000000000000000000FFFF
+    FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+    FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+    FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+    FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+    FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+    FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+    FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+    FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF000000
+    0000000000000000000000000000000000000000000000000000000000000000
+    0000000000000000000000000000000000000000000000000000000000000000
+    0000000000000000000000000000000000000000000000000000000000000000
+    0000000000000000000000000000000000000000000000000000000000000000
+    00040000000D0000001500000016000000160000001600000016000000160000
+    0016000000160000001600000016000000160000001600000016000000160000
+    0016000000160000001600000016000000160000001600000016000000160000
+    001600000016000000160000001600000016000000150000000D000000040000
+    000D0000002B0000004000000043000000430000004300000043000000430000
+    0043000000430000004300000043000000430000004300000043000000430000
+    0043000000430000004300000043000000430000004300000043000000430000
+    004300000043000000430000004300000043000000400000002B0000000D0000
+    000F3A7AAEC23B81BCFF387FBAFF377EBAFF377EBAFF377FBAFF377FBAFF377F
+    BAFF377FBAFF377FBAFF377FBAFF377FBAFF377FBAFF377FBAFF377FBAFF377F
+    BAFF377FBAFF377FBAFF377FBAFF377FBAFF377FBAFF377FBAFF377FBAFF377F
+    BAFF377FBAFF377EBAFF377EBAFF387FBAFF3B81BCFF3A7AAEC20000000F0000
+    00063B83BFFFC7F0FEFFBFEAF9FFBEE8F7FFBFE8F7FFBFE8F7FFBFE8F7FFBFE8
+    F7FFBFE8F7FFBFE8F7FFBFE8F7FFBFE8F7FFBFE8F7FFBFE8F7FFBFE8F7FFBFE8
+    F7FFBFE8F7FFBFE8F7FFBFE8F7FFBFE8F7FFBFE8F7FFBFE8F7FFBFE8F7FFBFE8
+    F7FFBFE8F7FFBFE8F7FFBEE8F7FFC0EAF9FFC8F0FDFF3D83BCFF000000060000
+    00020000000F327FC0FFBBE6F8FF72C2E7FF73C1E6FF75C1E6FF75C1E6FF75C1
+    E6FF75C1E6FF75C1E6FF75C1E6FF75C1E6FF75C1E6FF75C1E6FF75C1E6FF75C1
+    E6FF75C1E6FF75C1E6FF75C1E6FF75C1E6FF75C1E6FF75C1E6FF75C1E6FF75C1
+    E6FF75C1E6FF73C1E6FF72C2E7FFBDE6F6FF387EB9FF0000000E000000020000
+    000A00000023000000402A7CC2FFACDEF5FF6DBCE2FF6FBCE2FF71BDE2FF71BD
+    E2FF71BDE2FF71BDE2FF71BDE2FF71BDE2FF71BDE2FF71BDE2FF71BDE2FF71BD
+    E2FF71BDE2FF71BDE2FF71BDE2FF71BDE2FF71BDE2FF71BDE2FF71BDE2FF71BD
+    E2FF70BCE2FF6EBCE2FFB1DDF1FF367BB7FF0000003F00000022000000090000
+    00137C3B0483B25100F5EFBB90FF2479C1FFB1DEF4FF69B7DFFF6BB7DFFF6DB8
+    DFFF6DB8DFFF6DB8DFFF6DB8DFFF6DB8DFFF6DB8DFFF6DB8DFFF6DB8DFFF6DB8
+    DFFF6DB8DFFF6DB8DFFF6DB8DFFF6DB8DFFF6DB8DFFF6DB8DFFF6DB8DFFF6BB7
+    DFFF6AB7DFFFB6DEF0FF3579B6FF97CBEFFF0072CDF6004B8573000000120000
+    0016AD5810FFE1A366FFE39B56FFFFDBB6FF2277BFFFA4D6F0FF64B3DCFF67B4
+    DCFF68B5DCFF68B5DCFF68B5DCFF68B5DCFF68B5DCFF68B5DCFF68B5DCFF68B5
+    DCFF68B5DCFF68B5DCFF68B5DCFF68B5DCFF68B5DCFF68B5DCFF67B4DCFF65B4
+    DCFFAAD7EDFF3579B6FF9CD3EEFF0088CEFF0F8FD2FF0076D1FF000000160000
+    0016B4641DFFE7B585FFE09C58FFE39951FFFFDAB4FF2377BDFF99CEEAFF61B0
+    DBFF63B1DBFF63B1DBFF63B1DBFF63B1DBFF64B2DCFF65B2DCFF66B2DBFF66B2
+    DBFF66B2DBFF65B2DBFF65B2DBFF65B1DBFF65B1DBFF64B1DBFF61B0DAFF9DCE
+    E9FF3478B6FF94D3EFFF0087D1FF008AD1FF2DA1D9FF0075D0FF000000160000
+    0016C47E3DFFE9BF95FFE5A868FFE5A666FFEAA35BFFFFE6C3FF2274B9FF2A77
+    B9FF2C79BBFF2C7ABDFF2C7ABDFF2D7BBDFF327EBFFF3981BEFF3D82BDFF3E82
+    BCFF3D81BBFF3A7EB9FF387CB7FF397CB7FF387BB7FF347AB7FF2D77B6FF2975
+    B5FFA4DCF3FF008DD7FF0092D8FF0093D8FF3EABDFFF0073D0FF000000160000
+    0014CB8749FFEFCAA6FFECB373FFEBB171FFEDB271FFF7F6F3FFFFFFFEFFFFFF
+    F6FFFFE3BBFFFFE3BCFFFFE5BEFFFFF1D8FFFAC697FF00000014000000000000
+    000000000014A0D1F2FFB5E6F8FF8DD9F6FF89D7F5FF86D5F5FFFFFFFDFFFFFF
+    FBFFEFEBE4FF0099E0FF009AE0FF009BE0FF46B6E5FF0073CFFF000000140000
+    000BC7782FFFF2DAC6FFF3C48CFFF3BF81FFF9F2EAFFF5F7F8FFF0F0ECFFEAEA
+    E7FFE7DDCFFFF5BC7AFFF6C287FFF1D1B4FFCB7525FF0000000B000000000000
+    00000000000B006FCFFF67C3EBFF00A5E7FF009FE6FFD4ECF5FFFDF7F3FFF3F0
+    ECFFF4ECE4FFCADBE0FF00A3E8FF0AAAE9FF69C1EAFF0073CFFF0000000B0000
+    0003C17C388DD49356FFF6E5D2FFFFF2E1FFFFFFFFFFFEFAF7FFFBF5EFFFF4F0
+    EAFFE9EAE8FFE9DBC9FFF8E6D4FFD49355FFC27B368D00000003000000000000
+    000000000003006DC38D0F82D5FF75CDF1FFB3E9FAFFFFFFFBFFFFFAF5FFFCF6
+    F0FFF8F0E9FFFBEDE1FFA0D3E1FF79CFF4FF1184D6FF006EC38D000000030000
+    000000000003CC87409BD68E46FFFBE5D0FFBDDFF1FF63A5C7FF5496B8FF3E82
+    A9FF89ABBDFFE6D0B8FFD89048FFCD87419B0000000300000000000000000000
+    00000000000000000003006FC79B0075D0FFBEDDF5FFCDE1E9FF66A5C5FF5596
+    B8FF4283A7FF99ADB5FFA9C8DCFF0077D2FF006FC89B00000003000000000000
+    00000000000000000001B2773B39E9933EF098B3B7FF68A2BFFF4F819BFF386A
+    85FF566867FFEF9A45F1B77B3D39000000010000000000000000000000000000
+    0000000000000000000000000001005DA639006ED2F05FABD8FF6DA2BCFF5081
+    9AFF3C6B82FF1C5F89FF0075D7F10060AC390000000100000000000000000000
+    000000000000000000010000001000204E7171A3BEFF76B4D4FF6CA8C7FF5E99
+    B8FF3C6682FF0025547100000010000000010000000000000000000000000000
+    0000000000000000000000000001000000100A23437169A1C3FF79B4D2FF6DA8
+    C7FF6099B6FF346586FF11284871000000100000000100000000000000000000
+    00000000000000000006000000201B4371BA8BCFF0FF84C5E5FF79B9D9FF71B1
+    D2FF68A6C8FF1D426CAB0000001F000000060000000000000000000000000000
+    00000000000000000000000000060000002023446CBA8ECFEFFF84C5E5FF79B9
+    D9FF73B1D2FF6AA6C7FF234269AB0000001F0000000600000000000000000000
+    0000000000000000000E06213F5B4175A2FF9ADFFCFF89CAEAFF7EBEDEFF76B6
+    D5FF73B2D2FF315F8AFF0622405B0000000E0000000000000000000000000000
+    000000000000000000000000000E07213E5B4276A2FF9ADFFCFF89CAEAFF7EBE
+    DEFF76B6D5FF73B2D2FF325F8AFF08223F5B0000000E00000000000000000000
+    000000000000000000140C3564BD4582ABFFA2E8FFFF92D3F3FF86C6E7FF7DBC
+    DDFF7AB9D9FF2E5278FF103A67BD000000140000000000000000000000000000
+    00000000000000000000000000140C3564BD4582ABFFA2E8FFFF92D3F3FF86C6
+    E7FF7DBCDDFF7AB9D9FF2E5278FF103A67BD0000001400000000000000000000
+    00000000000000000016103F6FF84D8BB4FF88C9EAFF8DCEEEFF93D6F5FF87C9
+    EAFF83C4E4FF294C71FF143C6EFF000000160000000000000000000000000000
+    0000000000000000000000000016103F6FF84D8BB4FF88C9EAFF8DCEEEFF93D6
+    F5FF87C9EAFF83C4E4FF294C71FF143C6EFF0000001600000000000000000000
+    00000000000000000016134676FF205988FF1C4F7CFF194571FF305F86FF72AF
+    D0FF7FBFE0FF18325CFF174173FF000000160000000000000000000000000000
+    0000000000000000000000000016134676FF205988FF1C4F7CFF194571FF305F
+    86FF72AFD0FF7FBFE0FF18325CFF174173FF0000001600000000000000000000
+    00000000000000000015154678FF1A5782FF306791FF47739CFF52749CFF2D4E
+    78FF23436CFF1B3561FF184272FF000000150000000000000000000000000000
+    0000000000000000000000000015154678FF1A5782FF306791FF47739CFF5274
+    9CFF2D4E78FF23436CFF1B3561FF184272FF0000001500000000000000000000
+    0000000000000000000F144476FF175581FF2D658EFF406F99FF4B739CFF4369
+    93FF325883FF1B3764FF164174FF0000000F0000000000000000000000000000
+    000000000000000000000000000F144476FF175581FF2D658EFF406F99FF4B73
+    9CFF436993FF325883FF1B3764FF164174FF0000000F00000000000000000000
+    00000000000000000006123E6FC5154F7DFF225D88FF306791FF376892FF3360
+    8AFF24517CFF143564FF144272C5000000060000000000000000000000000000
+    0000000000000000000000000006123E6FC5154F7DFF225D88FF306791FF3768
+    92FF33608AFF24517CFF143564FF144272C50000000600000000000000000000
+    000000000000000000010F366129124275FF16527EFF1F5C86FF235D88FF2055
+    80FF174674FF133D70FF0E376129000000010000000000000000000000000000
+    00000000000000000000000000010F366129124275FF16527EFF1F5C86FF235D
+    88FF205580FF174674FF133D70FF0E3761290000000100000000000000000000
+    000000000000000000000000000110386526123F71D5134477FF144678FF1344
+    76FF124174D51039652600000001000000000000000000000000000000000000
+    00000000000000000000000000000000000110386526123F71D5134477FF1446
+    78FF134476FF124174D51039652600000001000000000000000000000000FFFF
+    FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+    FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+    FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+    FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+    FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+    FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+    FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+    FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+    FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+    FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+    FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+    FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
+    FFFFFFFFFFFFFFFFFFFF00000000000000000000000000000000000000000000
+    0000000000000000000000000000000000000001800000018000000180008003
+    C001C007E003C007E003C007E003C007E003C007E003C007E003C007E003C007
+    E003C007E003C007E003C007E003E00FF007FFFFFFFFFFFFFFFFFFFFFFFF}
+  Position = poMainFormCenter
+  OnShow = FormShow
+  DesignSize = (
+    624
+    441)
+  TextHeight = 15
+  object Label1: TLabel
+    Left = 8
+    Top = 10
+    Width = 44
+    Height = 15
+    Caption = 'Num'#233'ro'
+    FocusControl = DBCodrep
+  end
+  object Label2: TLabel
+    Left = 71
+    Top = 10
+    Width = 27
+    Height = 15
+    Caption = 'Nom'
+    FocusControl = DBNom
+  end
+  object DBCodrep: TDBEdit
+    Left = 8
+    Top = 26
+    Width = 45
+    Height = 23
+    DataField = 'CODREP'
+    DataSource = DSRepres
+    TabOrder = 0
+  end
+  object DBNom: TDBEdit
+    Left = 71
+    Top = 26
+    Width = 405
+    Height = 23
+    DataField = 'NOM'
+    DataSource = DSRepres
+    TabOrder = 1
+  end
+  object PageControlRepres: TPageControl
+    Left = 8
+    Top = 80
+    Width = 608
+    Height = 353
+    ActivePage = TabSheet2
+    TabOrder = 2
+    object TabSheet1: TTabSheet
+      Caption = 'Financier'
+      object Label3: TLabel
+        Left = 16
+        Top = 24
+        Width = 125
+        Height = 15
+        Caption = '% Commission / ventes'
+        FocusControl = DBComvte
+      end
+      object Label4: TLabel
+        Left = 16
+        Top = 69
+        Width = 168
+        Height = 15
+        Caption = '% Commission / encaissements'
+        FocusControl = DBComenc
+      end
+      object Label5: TLabel
+        Left = 16
+        Top = 114
+        Width = 130
+        Height = 15
+        Caption = '% Commission / marges'
+        FocusControl = DBCommrg
+      end
+      object Label6: TLabel
+        Left = 16
+        Top = 158
+        Width = 154
+        Height = 15
+        Caption = 'Compte centralisateur clients'
+        FocusControl = DBCptcli
+      end
+      object DBComvte: TDBEdit
+        Left = 16
+        Top = 40
+        Width = 54
+        Height = 23
+        DataField = 'COMVTE'
+        DataSource = DSRepres
+        TabOrder = 0
+      end
+      object DBComenc: TDBEdit
+        Left = 16
+        Top = 85
+        Width = 54
+        Height = 23
+        DataField = 'COMENC'
+        DataSource = DSRepres
+        TabOrder = 1
+      end
+      object DBCommrg: TDBEdit
+        Left = 16
+        Top = 130
+        Width = 54
+        Height = 23
+        DataField = 'COMMRG'
+        DataSource = DSRepres
+        TabOrder = 2
+      end
+      object DBCptcli: TDBEdit
+        Left = 16
+        Top = 174
+        Width = 104
+        Height = 23
+        DataField = 'CPTCLI'
+        DataSource = DSRepres
+        TabOrder = 3
+      end
+    end
+    object TabSheet2: TTabSheet
+      Caption = 'Factures'
+      ImageIndex = 1
+      object JvDBGridEVA: TJvDBGrid
+        Left = 0
+        Top = 0
+        Width = 600
+        Height = 323
+        Align = alClient
+        DataSource = DSEntvteaa
+        Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
+        TabOrder = 0
+        TitleFont.Charset = DEFAULT_CHARSET
+        TitleFont.Color = clWindowText
+        TitleFont.Height = -12
+        TitleFont.Name = 'Segoe UI'
+        TitleFont.Style = []
+        OnDblClick = JvDBGridEVADblClick
+        AutoAppend = False
+        TitleButtons = True
+        OnTitleBtnClick = JvDBGridEVATitleBtnClick
+        AlternateRowColor = clAzure
+        TitleArrow = True
+        SelectColumnsDialogStrings.Caption = 'Select columns'
+        SelectColumnsDialogStrings.OK = '&OK'
+        SelectColumnsDialogStrings.NoSelectionWarning = 'At least one column must be visible!'
+        EditControls = <>
+        RowsHeight = 19
+        TitleRowHeight = 19
+        Columns = <
+          item
+            Expanded = False
+            FieldName = 'CODFAC'
+            Title.Caption = 'No Facture'
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'CODCLI'
+            Title.Caption = 'No client'
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'NOM'
+            Title.Caption = 'Nom du client'
+            Width = 191
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'TYPE_'
+            Title.Caption = 'Type'
+            Width = 32
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'DATE_'
+            Title.Caption = 'Date'
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'TOTHT'
+            Title.Caption = 'Total HT.'
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'MT_TTC'
+            Title.Caption = 'Total TTC'
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'MARGE'
+            Title.Caption = 'Marge'
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'REFERENCE_'
+            Title.Caption = 'Reference'
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'CODREP'
+            Visible = False
+          end>
+      end
+    end
+    object TabSheet3: TTabSheet
+      Caption = 'Chiffres d'#39'affaires'
+      ImageIndex = 2
+      object JvDBGridStatis: TJvDBGrid
+        Left = 0
+        Top = 0
+        Width = 600
+        Height = 323
+        Align = alClient
+        DataSource = DSStatis
+        Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
+        TabOrder = 0
+        TitleFont.Charset = DEFAULT_CHARSET
+        TitleFont.Color = clWindowText
+        TitleFont.Height = -12
+        TitleFont.Name = 'Segoe UI'
+        TitleFont.Style = []
+        AutoAppend = False
+        TitleButtons = True
+        OnTitleBtnClick = JvDBGridStatisTitleBtnClick
+        AlternateRowColor = clAliceblue
+        TitleArrow = True
+        SelectColumnsDialogStrings.Caption = 'Select columns'
+        SelectColumnsDialogStrings.OK = '&OK'
+        SelectColumnsDialogStrings.NoSelectionWarning = 'At least one column must be visible!'
+        EditControls = <>
+        RowsHeight = 19
+        TitleRowHeight = 19
+        Columns = <
+          item
+            Expanded = False
+            FieldName = 'TYPE_'
+            Visible = False
+          end
+          item
+            Expanded = False
+            FieldName = 'ANNEE'
+            Width = 47
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'CA1'
+            Title.Caption = 'JANVIER'
+            Width = 80
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'CA2'
+            Title.Caption = 'FEVRIER'
+            Width = 80
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'CA3'
+            Title.Caption = 'MARS'
+            Width = 80
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'CA4'
+            Title.Caption = 'AVRIL'
+            Width = 80
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'CA5'
+            Title.Caption = 'MAI'
+            Width = 80
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'CA6'
+            Title.Caption = 'JUIN'
+            Width = 80
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'CA7'
+            Title.Caption = 'JUILLET'
+            Width = 80
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'CA8'
+            Title.Caption = 'AOUT'
+            Width = 80
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'CA9'
+            Title.Caption = 'SEPTEMBRE'
+            Width = 80
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'CA10'
+            Title.Caption = 'OCTOBRE'
+            Width = 80
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'CA11'
+            Title.Caption = 'NOVEMBRE'
+            Width = 80
+            Visible = True
+          end
+          item
+            Expanded = False
+            FieldName = 'CA12'
+            Title.Caption = 'DECEMBRE'
+            Width = 80
+            Visible = True
+          end>
+      end
+    end
+  end
+  object Panel1: TPanel
+    Left = 512
+    Top = 8
+    Width = 107
+    Height = 81
+    Anchors = [akTop, akRight]
+    BevelOuter = bvNone
+    TabOrder = 3
+    object BtnValider: TBitBtn
+      Left = 0
+      Top = 0
+      Width = 107
+      Height = 27
+      Align = alTop
+      Anchors = [akTop]
+      Caption = '&Valider'
+      Default = True
+      TabOrder = 0
+      OnClick = BtnValiderClick
+    end
+    object BtnAnnuler: TBitBtn
+      Left = 0
+      Top = 27
+      Width = 107
+      Height = 27
+      Align = alClient
+      Cancel = True
+      Caption = '&Annuler'
+      ModalResult = 2
+      TabOrder = 1
+    end
+    object BtnAide: TBitBtn
+      Left = 0
+      Top = 54
+      Width = 107
+      Height = 27
+      Align = alBottom
+      Anchors = [akBottom]
+      Caption = 'Aide'
+      TabOrder = 2
+      OnClick = BtnAideClick
+    end
+  end
+  object DSRepres: TDataSource
+    DataSet = DM_Olivier.FDQueryRepres
+    Left = 96
+    Top = 288
+  end
+  object FDQueryStatis: TFDQuery
+    MasterSource = DSRepres
+    MasterFields = 'CODREP'
+    Connection = DMGesCloud.ConnexionGesCloud
+    SQL.Strings = (
+      'select * from statis '
+      'where type_='#39'R'#39' and code = :CODREP '
+      'order by annee')
+    Left = 412
+    Top = 298
+    ParamData = <
+      item
+        Name = 'CODREP'
+        ParamType = ptInput
+      end>
+  end
+  object DSStatis: TDataSource
+    DataSet = FDQueryStatis
+    Left = 236
+    Top = 338
+  end
+  object FDQueryEntvteaa: TFDQuery
+    MasterSource = DSRepres
+    MasterFields = 'CODREP'
+    Connection = DMGesCloud.ConnexionGesCloud
+    SQL.Strings = (
+      'select * from entvteaa e'
+      'WHERE e.CODREP = :CODREP order by codfac')
+    Left = 296
+    Top = 261
+    ParamData = <
+      item
+        Name = 'CODREP'
+        ParamType = ptInput
+      end>
+  end
+  object DSEntvteaa: TDataSource
+    DataSet = FDQueryEntvteaa
+    Left = 308
+    Top = 325
+  end
+end

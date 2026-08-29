@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aide - Fiche Client</title>
+    <style>
+        :root {
+            --primary-color: #0056b3;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --border-color: #e0e0e0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 8px;
+            margin-top: 0;
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin-top: 0;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 5px;
+        }
+
+        .nav-bar {
+            position: sticky;
+            top: 0;
+            background: var(--card-bg);
+            padding: 10px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            z-index: 100;
+        }
+
+        .nav-bar a {
+            color: var(--primary-color);
+            text-decoration: none;
+            margin-right: 8px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .nav-bar a:hover {
+            text-decoration: underline;
+        }
+
+        .section {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .field-list {
+            display: grid;
+            grid-template-columns: 180px 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .field-name {
+            font-weight: bold;
+            color: #495057;
+            background-color: #eef2f7;
+            padding: 6px 10px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+        }
+
+        .field-desc {
+            padding: 6px 10px;
+        }
+
+        .badge {
+            background-color: #17a2b8;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.8em;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="nav-bar">
+        📌 <strong>Accès rapide :</strong>
+        <a href="#entete">En-tête</a> |
+        <a href="#general">Général</a> |
+        <a href="#financier">Financier</a> |
+        <a href="#tarifs">Tarifs</a> |
+        <a href="#factures">Factures</a> | 
+        <a href="#ecritures">Écritures</a> | 
+        <a href="#ca">Chiffres d'affaires</a>
+    </div>
+
+    <h1>👤 Fiche Client</h1>
+    <p>Cette fiche permet de gérer l'ensemble des informations administratives, financières et tarifaires d'un client.</p>
+
+    <!-- EN-TÊTE FIXE -->
+    <div id="entete" class="section">
+        <h2>Informations Principales (En-tête)</h2>
+        <div class="field-list">
+            <div class="field-name">Numéro</div>
+            <div class="field-desc">Code unique d'identification du client (généré automatiquement ou saisi selon paramétrage).</div>
+
+            <div class="field-name">No comptable</div>
+            <div class="field-desc">Compte auxiliaire de comptabilité rattaché au client (ex: <code>4110001</code>).</div>
+
+            <div class="field-name">Représentant</div>
+            <div class="field-desc">Commercial ou représentant affecté au suivi du client.</div>
+
+            <div class="field-name">Fermé</div>
+            <div class="field-desc">Cochez cette case pour bloquer l'utilisation du client (interdit la création de devis/factures).</div>
+
+            <div class="field-name">Nom</div>
+            <div class="field-desc">Raison sociale ou nom complet du client.</div>
+        </div>
+    </div>
+
+    <!-- ONGLET GÉNÉRAL -->
+    <div id="general" class="section">
+        <h2>Onglet : Général</h2>
+        <div class="field-list">
+            <div class="field-name">Téléphone / GSM / Fax</div>
+            <div class="field-desc">Numéros de contact direct du client.</div>
+
+            <div class="field-name">No TAHITI</div>
+            <div class="field-desc">Numéro d'identification fiscale d'entreprise.</div>
+
+            <div class="field-name">Adresse / @email</div>
+            <div class="field-desc">Coordonnées postales et adresse électronique principale pour l'envoi des documents.</div>
+
+            <div class="field-name">Zone géographique</div>
+            <div class="field-desc">Secteur ou zone de livraison pour le regroupement logistique et statistiques.</div>
+
+            <div class="field-name">Observations</div>
+            <div class="field-desc">Notes internes concernant les spécificités du client (non visibles sur les factures).</div>
+        </div>
+    </div>
+
+    <!-- ONGLET FINANCIER -->
+    <div id="financier" class="section">
+        <h2>Onglet : Financier</h2>
+        <div class="field-list">
+            <div class="field-name">Remise %</div>
+            <div class="field-desc">Taux de remise systématique appliqué par défaut sur l'ensemble des pièces de vente.</div>
+
+            <div class="field-name">Coef. majoration</div>
+            <div class="field-desc">Coefficient de majoration des prix de vente appliqué à ce client.</div>
+
+            <div class="field-name">Paiement</div>
+            <div class="field-desc">Mode de règlement par défaut (ex: Virement, Chèque, Traite...).</div>
+
+            <div class="field-name">Jours crédit / Fin de mois</div>
+            <div class="field-desc">Condition d'échéance de paiement (ex: 30 jours Fin de mois).</div>
+
+            <div class="field-name">Plafond / Crédit en cours</div>
+            <div class="field-desc">Montant maximal d'encours autorisé et encours actuel (calculé automatiquement).</div>
+
+            <div class="field-name">Coordonnées Bancaires</div>
+            <div class="field-desc">Code banque, Guichet, N° de compte, Clé et Intitulé pour la gestion des prélèvements/RIB.</div>
+        </div>
+    </div>
+
+    <!-- ONGLET TARIFS -->
+    <div id="tarifs" class="section">
+        <h2>Onglet : Tarifs</h2>
+        <div class="field-list">
+            <div class="field-name">Tarif spécifique</div>
+            <div class="field-desc">Grille tarifaire par défaut attribuée à ce client.</div>
+
+            <div class="field-name">Limiter le client...</div>
+            <div class="field-desc">Si coché, l'utilisateur ne pourra vendre au client <strong>que</strong> les articles présents dans la grille ci-dessous.</div>
+
+            <div class="field-name">Tableau des prix</div>
+            <div class="field-desc">Permet de définir des prix de vente et remises d'exception article par article pour ce client.</div>
+        </div>
+    </div>
+
+    <!-- ONGLET FACTURES -->
+    <div id="factures" class="section">
+        <h2>Onglet : Factures</h2>
+        <div class="field-list">
+            <div class="field-name">Tableau des factures</div>
+            <div class="field-desc">Affiche l'historique complet des pièces emises (N° facture, Date, Référence devis, Nom, % Remise, Montant HT, Total TTC et Vendeur).</div>
+
+            <div class="field-name">Bouton Consulter</div>
+            <div class="field-desc">Ouvre la fiche de consultation détaillée de la facture sélectionnée.</div>
+
+            <div class="field-name">Bouton Imprimer</div>
+            <div class="field-desc">Génère l'impression ou la réédition au format PDF de la facture sélectionnée.</div>
+        </div>
+    </div>
+
+    <!-- ONGLET ÉCRITURES -->
+    <div id="ecritures" class="section">
+        <h2>Onglet : Écritures</h2>
+        <div class="field-list">
+            <div class="field-name">Tableau comptable</div>
+            <div class="field-desc">Liste les mouvements de la comptabilité auxiliaire (Date, Libellé, Débit, Crédit, Date d'échéance et Référence).</div>
+
+            <div class="field-name">Filtres de statut</div>
+            <div class="field-desc">
+                Permet de filtrer l'affichage des écritures à droite :
+                <ul>
+                    <li><strong>Toutes :</strong> Affiche l'intégralité du compte client.</li>
+                    <li><strong>Non soldées :</strong> Affiche uniquement les pièces en attente de règlement.</li>
+                    <li><strong>Soldées :</strong> Affiche les écritures lettrées et réglées.</li>
+                    <li><strong>Aucune :</strong> Masque la grille.</li>
+                </ul>
+            </div>
+
+            <div class="field-name">Totaux et Solde</div>
+            <div class="field-desc">Affiche la somme cumulée des Débits/Crédits et indique le solde global du compte client (ex: <code>DB</code> pour solde débiteur).</div>
+        </div>
+    </div>
+
+    <!-- ONGLET CHIFFRES D'AFFAIRES -->
+    <div id="ca" class="section">
+        <h2>Onglet : Chiffres d'affaires</h2>
+        <div class="field-list">
+            <div class="field-name">Grille mensuelle</div>
+            <div class="field-desc">Ventilation synthétique du chiffre d'affaires réalisé avec ce client, mois par mois (de Janvier à Décembre).</div>
+
+            <div class="field-name">Historique annuel</div>
+            <div class="field-desc">Permet de comparer l'évolution et la récurrence du volume d'affaires sur plusieurs années d'exercice.</div>
+        </div>
+    </div>
+
+</body>
+</html>

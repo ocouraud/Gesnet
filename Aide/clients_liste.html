@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aide - Gestion des Clients</title>
+    <style>
+        :root {
+            --primary-color: #0056b3;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --border-color: #e0e0e0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 8px;
+            margin-top: 0;
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin-top: 0;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 5px;
+        }
+
+        .nav-bar {
+            position: sticky;
+            top: 0;
+            background: var(--card-bg);
+            padding: 10px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            z-index: 100;
+        }
+
+        .nav-bar a {
+            color: var(--primary-color);
+            text-decoration: none;
+            margin-right: 8px;
+            font-weight: bold;
+            font-size: 0.9em;
+        }
+
+        .nav-bar a:hover {
+            text-decoration: underline;
+        }
+
+        .section {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .field-list {
+            display: grid;
+            grid-template-columns: 180px 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .field-name {
+            font-weight: bold;
+            color: #495057;
+            background-color: #eef2f7;
+            padding: 6px 10px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+        }
+
+        .field-desc {
+            padding: 6px 10px;
+        }
+
+        .badge {
+            background-color: #17a2b8;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.8em;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="nav-bar">
+        📌 <strong>Accès rapide :</strong>
+        <a href="#recherche">Filtres et recherche</a> |
+        <a href="#tableau">Colonnes de la liste</a> |
+        <a href="#actions">Boutons d'action</a>
+    </div>
+
+    <h1>👥 Liste de Gestion des Clients</h1>
+    <p>Cet écran centralise l'ensemble des comptes clients enregistrés dans l'application. Il permet de rechercher, de consulter et de gérer l'annuaire client.</p>
+
+    <!-- SECTION RECHERCHE ET FILTRES -->
+    <div id="recherche" class="section">
+        <h2>Filtres et Recherche</h2>
+        <div class="field-list">
+            <div class="field-name">Filtrer par c...</div>
+            <div class="field-desc">Permet une recherche rapide par le code ou le numéro de compte du client.</div>
+
+            <div class="field-name">Filtrer par nom...</div>
+            <div class="field-desc">Zone de recherche textuelle pour filtrer instantanément la liste selon la raison sociale ou le nom du client.</div>
+
+            <div class="field-name">Clients fermés</div>
+            <div class="field-desc">Cochez cette case pour inclure ou afficher les comptes clients archivés/désactivés (masqués par défaut).</div>
+        </div>
+    </div>
+
+    <!-- SECTION COLONNES -->
+    <div id="tableau" class="section">
+        <h2>Colonnes du Tableau</h2>
+        <div class="field-list">
+            <div class="field-name">Numero</div>
+            <div class="field-desc">Identifiant unique interne du client.</div>
+
+            <div class="field-name">No Comptable</div>
+            <div class="field-desc">Numéro de compte auxiliaire rattaché en comptabilité (ex: <code>41100001</code>).</div>
+
+            <div class="field-name">Nom</div>
+            <div class="field-desc">Raison sociale ou nom complet du client.</div>
+
+            <div class="field-name">Repres</div>
+            <div class="field-desc">Code du représentant / commercial attribué à ce compte.</div>
+
+            <div class="field-name">PRC_REMISE</div>
+            <div class="field-desc">Pourcentage de remise par défaut accordé au client sur ses ventes.</div>
+
+            <div class="field-name">NOTEL / NOTAHITI / NOFAX</div>
+            <div class="field-desc">Coordonnées téléphoniques, numéro TAHITI (fiscal) et numéro de fax enregistrés.</div>
+        </div>
+    </div>
+
+    <!-- SECTION ACTIONS -->
+    <div id="actions" class="section">
+        <h2>Boutons d'Action</h2>
+        <div class="field-list">
+            <div class="field-name">Ajouter</div>
+            <div class="field-desc">Ouvre une fiche vierge pour créer un nouveau client.</div>
+
+            <div class="field-name">Ouvrir</div>
+            <div class="field-desc">Ouvre la fiche détaillée du client sélectionné pour modification ou consultation (équivalent à un double-clic sur la ligne).</div>
+
+            <div class="field-name">Supprimer</div>
+            <div class="field-desc">Supprime la fiche du client sélectionné (sous réserve qu'aucune pièce comptable ou facture ne lui soit liée).</div>
+
+            <div class="field-name">Fermer</div>
+            <div class="field-desc">Ferme la fenêtre de gestion des clients et retourne au menu principal.</div>
+        </div>
+    </div>
+
+</body>
+</html>
