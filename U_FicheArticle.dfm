@@ -1835,7 +1835,6 @@ object FormFicheArticle: TFormFicheArticle
         Default = True
         TabOrder = 0
         OnClick = BtnValiderClick
-        ExplicitWidth = 112
       end
       object BtnAnnuler: TBitBtn
         Left = 0
@@ -1847,7 +1846,6 @@ object FormFicheArticle: TFormFicheArticle
         Caption = '&Annuler'
         ModalResult = 2
         TabOrder = 1
-        ExplicitWidth = 112
       end
       object BtnAide: TBitBtn
         Left = 0
@@ -1859,7 +1857,6 @@ object FormFicheArticle: TFormFicheArticle
         Caption = 'Aide'
         TabOrder = 2
         OnClick = BtnAideClick
-        ExplicitWidth = 112
       end
     end
     object DBGridStodep: TDBGrid

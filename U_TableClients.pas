@@ -40,16 +40,9 @@ type
     procedure JvDBGridClientsTitleBtnClick(Sender: TObject; ACol: LongInt;
       Field: TField);
     procedure BtnAideClick(Sender: TObject);
-
-    //procedure DBGrid1DrawColumnCell(Sender: TObject; const Rect: TRect;
-    //  DataCol: Integer; Column: TColumn; State: TGridDrawState);
-
   private
     { Déclarations privées }
     procedure AppliquerFiltreMaitre;
-    //et pour exemple...
-    //procedure FiltrerChampDynamique(EditDeRecherche: TEdit; const NomDuChampMySQL: string);
-
   public
     { Déclarations publiques }
   end;

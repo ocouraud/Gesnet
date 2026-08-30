@@ -1,18 +1,17 @@
 object FrameTableEntvtejj: TFrameTableEntvtejj
   Left = 0
   Top = 0
-  Width = 794
+  Width = 821
   Height = 480
   TabOrder = 0
   object Panel2: TPanel
     Left = 0
     Top = 451
-    Width = 794
+    Width = 821
     Height = 29
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 0
-    ExplicitLeft = -154
     object BtnAjouter: TBitBtn
       Left = 0
       Top = 0
@@ -35,6 +34,7 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
       Caption = '&Ouvrir'
       Default = True
       TabOrder = 1
+      OnClick = BtnOuvrirClick
     end
     object BtnSupprimer: TBitBtn
       Left = 174
@@ -48,7 +48,7 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
       TabOrder = 2
     end
     object BtnFermer: TBitBtn
-      Left = 707
+      Left = 734
       Top = 0
       Width = 87
       Height = 29
@@ -58,21 +58,23 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
       Caption = '&Fermer'
       ModalResult = 8
       TabOrder = 3
+      OnClick = BtnFermerClick
     end
     object BtnAide: TBitBtn
-      Left = 620
+      Left = 647
       Top = 0
       Width = 87
       Height = 29
       Align = alRight
       Caption = 'Aide'
       TabOrder = 4
+      OnClick = BtnAideClick
     end
   end
-  object JvDBGrid1: TJvDBGrid
+  object JvDBGridEntvtejj: TJvDBGrid
     Left = 0
     Top = 57
-    Width = 794
+    Width = 821
     Height = 394
     Align = alClient
     DataSource = DSEntvtejj
@@ -83,7 +85,11 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
     TitleFont.Height = -12
     TitleFont.Name = 'Segoe UI'
     TitleFont.Style = []
+    OnDblClick = BtnOuvrirClick
+    TitleButtons = True
+    OnTitleBtnClick = JvDBGridEntvtejjTitleBtnClick
     AlternateRowColor = clAliceblue
+    TitleArrow = True
     SelectColumnsDialogStrings.Caption = 'Select columns'
     SelectColumnsDialogStrings.OK = '&OK'
     SelectColumnsDialogStrings.NoSelectionWarning = 'At least one column must be visible!'
@@ -91,6 +97,13 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
     RowsHeight = 19
     TitleRowHeight = 19
     Columns = <
+      item
+        Expanded = False
+        FieldName = 'SEL'
+        Title.Caption = 'Lot'
+        Width = 31
+        Visible = True
+      end
       item
         Expanded = False
         FieldName = 'TYPE_'
@@ -143,12 +156,14 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
         Expanded = False
         FieldName = 'CODDEV'
         Title.Caption = 'No Devis'
+        Width = 80
         Visible = True
       end
       item
         Expanded = False
         FieldName = 'CODDEP'
         Title.Caption = 'Depot'
+        Width = 41
         Visible = True
       end
       item
@@ -318,11 +333,6 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
       end
       item
         Expanded = False
-        FieldName = 'SEL'
-        Visible = False
-      end
-      item
-        Expanded = False
         FieldName = 'DER_MODIF'
         Visible = False
       end
@@ -370,40 +380,74 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
   object Panel1: TPanel
     Left = 0
     Top = 0
-    Width = 794
+    Width = 821
     Height = 57
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 2
-    ExplicitWidth = 640
     object EdtCherche_CODFAC: TEdit
-      Left = 56
+      Left = 85
       Top = 28
       Width = 89
       Height = 23
       TabOrder = 0
       TextHint = 'Filtrer par numero'
+      OnChange = EdtCherche_CODFACChange
     end
     object EdtCherche_NOM: TEdit
-      Left = 360
+      Left = 392
       Top = 28
       Width = 193
       Height = 23
       TabOrder = 1
       TextHint = 'Filtrer par nom...'
+      OnChange = EdtCherche_NOMChange
     end
     object CheckBoxToutesFactures: TCheckBox
-      Left = 659
+      Left = 747
       Top = 0
-      Width = 135
+      Width = 74
       Height = 57
       Align = alRight
-      Caption = 'Toutes les factures'
+      Caption = 'Toutes les'#13#10'factures'
       TabOrder = 2
       OnClick = CheckBoxToutesFacturesClick
-      ExplicitLeft = 648
-      ExplicitTop = 13
-      ExplicitHeight = 17
+    end
+    object EditCherche_SEL: TEdit
+      Left = 16
+      Top = 28
+      Width = 34
+      Height = 23
+      TabOrder = 3
+      TextHint = 'Filtrer par lot'
+      OnChange = EditCherche_SELChange
+    end
+    object EditCherche_DATE_: TEdit
+      Left = 172
+      Top = 28
+      Width = 69
+      Height = 23
+      TabOrder = 4
+      TextHint = 'Filtrer par date'
+      OnChange = EdtCherche_CODFACChange
+    end
+    object EditCherche_CODCLI: TEdit
+      Left = 328
+      Top = 28
+      Width = 65
+      Height = 23
+      TabOrder = 5
+      TextHint = 'Filtrer par no client'
+      OnChange = EdtCherche_CODFACChange
+    end
+    object EditCherche_CODCAI: TEdit
+      Left = 695
+      Top = 28
+      Width = 34
+      Height = 23
+      TabOrder = 6
+      TextHint = 'Filtrer par no poste'
+      OnChange = EdtCherche_CODFACChange
     end
   end
   object FDQueryEntvtejj: TFDQuery

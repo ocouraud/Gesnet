@@ -19,10 +19,11 @@ type
     BtnSupprimer: TBitBtn;
     BtnFermer: TBitBtn;
     BtnAide: TBitBtn;
-    JvDBGrid1: TJvDBGrid;
+    JvDBGridEntvtejj: TJvDBGrid;
     Panel1: TPanel;
     EdtCherche_CODFAC: TEdit;
     EdtCherche_NOM: TEdit;
+    EditCherche_SEL: TEdit;
     CheckBoxToutesFactures: TCheckBox;
     FDQueryEntvtejj: TFDQuery;
     DSEntvtejj: TDataSource;
@@ -79,7 +80,18 @@ type
     FDQueryEntvtejjMT_TVAI: TBCDField;
     FDQueryEntvtejjMT_HTI: TBCDField;
     FDQueryEntvtejjTVA_ILES: TBooleanField;
+    EditCherche_DATE_: TEdit;
+    EditCherche_CODCLI: TEdit;
+    EditCherche_CODCAI: TEdit;
     procedure CheckBoxToutesFacturesClick(Sender: TObject);
+    procedure JvDBGridEntvtejjTitleBtnClick(Sender: TObject; ACol: LongInt;
+      Field: TField);
+    procedure EdtCherche_NOMChange(Sender: TObject);
+    procedure EdtCherche_CODFACChange(Sender: TObject);
+    procedure EditCherche_SELChange(Sender: TObject);
+    procedure BtnFermerClick(Sender: TObject);
+    procedure BtnAideClick(Sender: TObject);
+    procedure BtnOuvrirClick(Sender: TObject);
   private
     procedure AppliquerFiltreMaitre;
     { Déclarations privées }
@@ -91,7 +103,63 @@ type
 implementation
 
 {$R *.dfm}
-uses U_DataModule, U_DM_Olivier, U_OutilsGrille, U_FormAide;
+uses U_DataModule, U_DM_Olivier, U_OutilsGrille, U_FormAide, U_FicheEntvtejj;
+
+procedure TFrameTableEntvtejj.BtnAideClick(Sender: TObject);
+begin
+  // 1. On s'assure que la fiche d'aide existe en mémoire
+  if not Assigned(FormAide) then
+    Application.CreateForm(TFormAide, FormAide);
+
+  // 2. On affiche la page
+  FormAide.AfficherAide('entvtejj_liste.html');
+end;
+
+procedure TFrameTableEntvtejj.BtnFermerClick(Sender: TObject);
+var
+  OngletParent: TRzTabSheet;
+begin
+  if Assigned(Self.Parent) and (Self.Parent is TRzTabSheet) then
+  begin
+    OngletParent := TRzTabSheet(Self.Parent);
+
+    // Repousse la destruction de l'onglet à la fin du traitement du clic
+    TThread.ForceQueue(nil, procedure
+    begin
+      OngletParent.Free;
+    end);
+  end;
+end;
+
+procedure TFrameTableEntvtejj.BtnOuvrirClick(Sender: TObject);
+var
+  //Fiche: TFormEntvtejj;
+  NumFacture: Integer;
+begin
+  if FDQueryEntvtejj.IsEmpty then Exit;
+
+  // Récupérez le CODFAC depuis la grille de la liste des factures
+  NumFacture := FDQueryEntvtejj.FieldByName('CODFAC').AsInteger;
+  FormEntvtejj := TFormEntvtejj.Create(Self, msModification,NumFacture);
+
+  try
+    //FormEntvtejj.ModeSaisie := msModification;
+    FormEntvtejj.Caption := 'Modifier la facture';
+
+    // On copie l'enregistrement sélectionné dans la mémoire de la fiche fraîchement créée
+    FormEntvtejj.FDMemTableEntvtejj.CopyDataSet(FDQueryEntvtejj, [coAppend]);
+    FormEntvtejj.FDMemTableEntvtejj.Edit;
+
+    if FormEntvtejj.ShowModal = mrOk then
+    begin
+      // TODO: Sauvegarde en base MySQL
+      FDQueryEntvtejj.Refresh;
+    end;
+  finally
+    FormEntvtejj.Free;
+  end;
+end;
+
 
 procedure TFrameTableEntvtejj.CheckBoxToutesFacturesClick(Sender: TObject);
 begin
@@ -146,5 +214,42 @@ begin
 
 end;
 
+
+procedure TFrameTableEntvtejj.EditCherche_SELChange(Sender: TObject);
+begin
+  // Si la Frame est en train d'être détruite, on quitte immédiatement !
+  if (csDestroying in ComponentState) then Exit;
+
+  AppliquerFiltresCumules(Panel1, FDQueryEntvtejj);
+end;
+
+procedure TFrameTableEntvtejj.EdtCherche_CODFACChange(Sender: TObject);
+begin
+  // Si la Frame est en train d'être détruite, on quitte immédiatement !
+  if (csDestroying in ComponentState) then Exit;
+
+  AppliquerFiltresCumules(Panel1, FDQueryEntvtejj);
+end;
+
+procedure TFrameTableEntvtejj.EdtCherche_NOMChange(Sender: TObject);
+begin
+  // Si la Frame est en train d'être détruite, on quitte immédiatement !
+  if (csDestroying in ComponentState) then Exit;
+
+  AppliquerFiltresCumules(Panel1, FDQueryEntvtejj);
+end;
+
+procedure TFrameTableEntvtejj.JvDBGridEntvtejjTitleBtnClick(Sender: TObject;
+  ACol: LongInt; Field: TField);
+begin
+  if Assigned(Field) then
+  begin
+    // Si la colonne est déjà triée en A-Z, on la passe en Z-A (:D = Descending dans FireDAC)
+    if FDQueryEntvtejj.IndexFieldNames = Field.FieldName then
+      FDQueryEntvtejj.IndexFieldNames := Field.FieldName + ':D'
+    else
+      FDQueryEntvtejj.IndexFieldNames := Field.FieldName; // Tri A-Z
+  end;
+end;
 
 end.
