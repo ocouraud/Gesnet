@@ -22,6 +22,7 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
       Align = alLeft
       Caption = '&Ajouter'
       TabOrder = 0
+      OnClick = BtnAjouterClick
     end
     object BtnOuvrir: TBitBtn
       Left = 87
@@ -114,7 +115,7 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
         Expanded = False
         FieldName = 'CODFAC'
         Title.Caption = 'No Facture'
-        Width = 87
+        Width = 73
         Visible = True
       end
       item
@@ -125,8 +126,9 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
       end
       item
         Expanded = False
-        FieldName = 'HEURE'
+        FieldName = 'HeureLisible'
         Title.Caption = 'Heure'
+        Width = 52
         Visible = True
       end
       item
@@ -144,6 +146,7 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
       item
         Expanded = False
         FieldName = 'NOM'
+        Title.Caption = 'Non du client'
         Visible = True
       end
       item
@@ -451,6 +454,7 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
     end
   end
   object FDQueryEntvtejj: TFDQuery
+    OnCalcFields = FDQueryEntvtejjCalcFields
     Connection = DMGesCloud.ConnexionGesCloud
     SQL.Strings = (
       'select * from entvtejj')
@@ -762,6 +766,12 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
       AutoGenerateValue = arDefault
       FieldName = 'TVA_ILES'
       Origin = 'TVA_ILES'
+    end
+    object FDQueryEntvtejjHeureLisible: TStringField
+      FieldKind = fkCalculated
+      FieldName = 'HeureLisible'
+      Size = 12
+      Calculated = True
     end
   end
   object DSEntvtejj: TDataSource

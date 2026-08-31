@@ -103,7 +103,7 @@ object FormFicheArticle: TFormFicheArticle
     Top = 104
     Width = 768
     Height = 488
-    ActivePage = TabSheetCodbar
+    ActivePage = TabSheetStock
     TabOrder = 5
     object TabSheetGral: TTabSheet
       Caption = 'G'#233'n'#233'ral'
@@ -2588,8 +2588,8 @@ object FormFicheArticle: TFormFicheArticle
       
         'AND (codinfocompl.codinfo=artinfocompl.codinfo and codinfocompl.' +
         'type_='#39'A'#39') ')
-    Left = 100
-    Top = 538
+    Left = 108
+    Top = 530
     ParamData = <
       item
         Name = 'CODART'

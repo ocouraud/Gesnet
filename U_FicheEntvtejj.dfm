@@ -111,7 +111,7 @@ object FormEntvtejj: TFormEntvtejj
     DataSource = DSMemTableEntvtejj
     Enabled = False
     ReadOnly = True
-    TabOrder = 1
+    TabOrder = 10
   end
   object DBCODDEV: TDBEdit
     Left = 265
@@ -120,7 +120,7 @@ object FormEntvtejj: TFormEntvtejj
     Height = 23
     DataField = 'CODDEV'
     DataSource = DSMemTableEntvtejj
-    TabOrder = 2
+    TabOrder = 3
   end
   object DBCODDEP: TDBEdit
     Left = 84
@@ -129,7 +129,8 @@ object FormEntvtejj: TFormEntvtejj
     Height = 23
     DataField = 'CODDEP'
     DataSource = DSMemTableEntvtejj
-    TabOrder = 3
+    Enabled = False
+    TabOrder = 4
   end
   object DBCODVEN: TDBEdit
     Left = 265
@@ -138,7 +139,7 @@ object FormEntvtejj: TFormEntvtejj
     Height = 23
     DataField = 'CODVEN'
     DataSource = DSMemTableEntvtejj
-    TabOrder = 4
+    TabOrder = 5
   end
   object DBNOM: TDBEdit
     Left = 156
@@ -147,7 +148,7 @@ object FormEntvtejj: TFormEntvtejj
     Height = 23
     DataField = 'NOM'
     DataSource = DSMemTableEntvtejj
-    TabOrder = 5
+    TabOrder = 7
   end
   object DBNOTAHITI: TDBEdit
     Left = 84
@@ -156,7 +157,7 @@ object FormEntvtejj: TFormEntvtejj
     Height = 23
     DataField = 'NOTAHITI'
     DataSource = DSMemTableEntvtejj
-    TabOrder = 6
+    TabOrder = 8
   end
   object DBDATE_: TDBEdit
     Left = 265
@@ -165,7 +166,7 @@ object FormEntvtejj: TFormEntvtejj
     Height = 23
     DataField = 'DATE_'
     DataSource = DSMemTableEntvtejj
-    TabOrder = 7
+    TabOrder = 1
   end
   object DBHEURE: TDBEdit
     Left = 355
@@ -176,7 +177,7 @@ object FormEntvtejj: TFormEntvtejj
     DataSource = DSMemTableEntvtejj
     Enabled = False
     ReadOnly = True
-    TabOrder = 8
+    TabOrder = 11
   end
   object DBREFERENCE_: TDBEdit
     Left = 84
@@ -185,7 +186,7 @@ object FormEntvtejj: TFormEntvtejj
     Height = 23
     DataField = 'REFERENCE_'
     DataSource = DSMemTableEntvtejj
-    TabOrder = 9
+    TabOrder = 2
   end
   object DBCODREP: TDBEdit
     Left = 84
@@ -194,7 +195,7 @@ object FormEntvtejj: TFormEntvtejj
     Height = 23
     DataField = 'CODREP'
     DataSource = DSMemTableEntvtejj
-    TabOrder = 10
+    TabOrder = 9
   end
   object DBCODCLI: TDBEdit
     Left = 84
@@ -203,7 +204,7 @@ object FormEntvtejj: TFormEntvtejj
     Height = 23
     DataField = 'CODCLI'
     DataSource = DSMemTableEntvtejj
-    TabOrder = 11
+    TabOrder = 6
   end
   object DNOMVEN: TDBEdit
     Left = 311
@@ -224,7 +225,7 @@ object FormEntvtejj: TFormEntvtejj
     Anchors = [akLeft, akTop, akRight, akBottom]
     DataSource = DSMemTableLigvtejj
     Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
-    TabOrder = 13
+    TabOrder = 16
     TitleFont.Charset = DEFAULT_CHARSET
     TitleFont.Color = clWindowText
     TitleFont.Height = -12
@@ -350,7 +351,7 @@ object FormEntvtejj: TFormEntvtejj
     Width = 984
     Height = 106
     Align = alBottom
-    TabOrder = 14
+    TabOrder = 18
     DesignSize = (
       984
       106)
@@ -604,7 +605,7 @@ object FormEntvtejj: TFormEntvtejj
     Height = 23
     DataField = 'NOM'
     Enabled = False
-    TabOrder = 15
+    TabOrder = 13
   end
   object RzDBRadioGroupType: TRzDBRadioGroup
     Left = 735
@@ -624,7 +625,7 @@ object FormEntvtejj: TFormEntvtejj
     Anchors = [akTop, akRight]
     Caption = 'Nature'
     Color = 15658734
-    TabOrder = 16
+    TabOrder = 14
   end
   object RzDBCheckBoxEXO_TVA: TRzDBCheckBox
     Left = 735
@@ -637,7 +638,7 @@ object FormEntvtejj: TFormEntvtejj
     ValueUnchecked = '0'
     Anchors = [akTop, akRight]
     Caption = 'Exonere TVA'
-    TabOrder = 17
+    TabOrder = 15
   end
   object RzDBCheckBoxTVA_ILES: TRzDBCheckBox
     Left = 735
@@ -650,7 +651,7 @@ object FormEntvtejj: TFormEntvtejj
     ValueUnchecked = '0'
     Anchors = [akTop, akRight]
     Caption = 'TVA Iles'
-    TabOrder = 19
+    TabOrder = 17
   end
   object Panel2: TPanel
     Left = 880
@@ -658,7 +659,7 @@ object FormEntvtejj: TFormEntvtejj
     Width = 104
     Height = 555
     Align = alRight
-    TabOrder = 18
+    TabOrder = 19
     object BtnValider: TBitBtn
       Left = 1
       Top = 1

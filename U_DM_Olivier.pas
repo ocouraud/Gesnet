@@ -33,47 +33,6 @@ type
     FDQueryEnt_prof: TFDQuery;
     FDQueryEntvtejj: TFDQuery;
     FDQueryLigvtejj: TFDQuery;
-    FDQueryLigvtejjLIBELLE: TMemoField;
-    FDQueryLigvtejjCODFAC: TLargeintField;
-    FDQueryLigvtejjCODCLI: TIntegerField;
-    FDQueryLigvtejjCODCAI: TStringField;
-    FDQueryLigvtejjCODDEV: TLargeintField;
-    FDQueryLigvtejjCODDEP: TShortintField;
-    FDQueryLigvtejjNOENR: TIntegerField;
-    FDQueryLigvtejjANNEE: TIntegerField;
-    FDQueryLigvtejjMOIS: TSmallintField;
-    FDQueryLigvtejjCODREP: TSmallintField;
-    FDQueryLigvtejjCODFOU: TStringField;
-    FDQueryLigvtejjCODSSF: TStringField;
-    FDQueryLigvtejjCODFAM: TStringField;
-    FDQueryLigvtejjCODDPT: TStringField;
-    FDQueryLigvtejjTYPE_: TStringField;
-    FDQueryLigvtejjCODART: TStringField;
-    FDQueryLigvtejjCODBAR: TStringField;
-    FDQueryLigvtejjQTE: TBCDField;
-    FDQueryLigvtejjPOIDS: TBCDField;
-    FDQueryLigvtejjCODTAR: TStringField;
-    FDQueryLigvtejjPRIXHT: TBCDField;
-    FDQueryLigvtejjPRIXTTC: TLargeintField;
-    FDQueryLigvtejjPRIXNET: TBCDField;
-    FDQueryLigvtejjTOTHT: TBCDField;
-    FDQueryLigvtejjMT_TTC: TLargeintField;
-    FDQueryLigvtejjPRC_REMISE: TBCDField;
-    FDQueryLigvtejjMT_REMISE: TIntegerField;
-    FDQueryLigvtejjTX_TVA: TBCDField;
-    FDQueryLigvtejjMT_TVA: TBCDField;
-    FDQueryLigvtejjNO_TVA: TSmallintField;
-    FDQueryLigvtejjPRIXREV: TBCDField;
-    FDQueryLigvtejjMARGE: TLargeintField;
-    FDQueryLigvtejjNO_SEM: TSmallintField;
-    FDQueryLigvtejjNO_JOUR: TSmallintField;
-    FDQueryLigvtejjDET_PPT: TLargeintField;
-    FDQueryLigvtejjDET_ILE: TLargeintField;
-    FDQueryLigvtejjNOENRF: TFDAutoIncField;
-    FDQueryLigvtejjPXLVTTC: TLargeintField;
-    FDQueryLigvtejjDER_MODIF: TSQLTimeStampField;
-    FDQueryLigvtejjTX_TSOC: TBCDField;
-    FDQueryLigvtejjMT_TSOC: TBCDField;
     FDQueryReglJJ: TFDQuery;
     procedure FDQueryParameDeviseNewRecord(DataSet: TDataSet);
     procedure UpperCaseSetText(Sender: TField; const Text: string);
@@ -105,6 +64,7 @@ type
     procedure RecalculerStockStodep(const CodeArt: string; const CodeDep: Integer);
     procedure RecalculerStockArticle(const CodeArt: string);
     procedure RecalculerToutLeStock;
+    function CentièmesVersHeureLisible(ACentièmes: Int64): string;
    end;
 
 var
@@ -126,6 +86,31 @@ begin
   ChargerOuCreerNumeroPoste; // Exécute la logique du poste.ini
   ChargerParametresStock;
 end;
+
+
+function TDM_Olivier.CentièmesVersHeureLisible(ACentièmes: Int64): string;
+var
+  TotalSecondes: Int64;
+  Centièmes: Integer;
+  Secondes: Integer;
+  Minutes: Integer;
+  Heures: Integer;
+begin
+  // 1 seconde = 100 centièmes
+  TotalSecondes := ACentièmes div 100;
+  Centièmes     := ACentièmes mod 100;
+
+  Secondes      := TotalSecondes mod 60;
+  TotalSecondes := TotalSecondes div 60;
+
+  Minutes       := TotalSecondes mod 60;
+  Heures        := TotalSecondes div 60;
+
+  // Formatage du résultat (ex: 01:25:45,50)
+  //Result := Format('%.2d:%.2d:%.2d,%.2d', [Heures, Minutes, Secondes, Centièmes]);
+  Result := Format('%.2d:%.2d:%.2d', [Heures, Minutes, Secondes]);
+end;
+
 
 procedure TDM_Olivier.ChargerOuCreerNumeroPoste;
 var

@@ -83,6 +83,7 @@ type
     EditCherche_DATE_: TEdit;
     EditCherche_CODCLI: TEdit;
     EditCherche_CODCAI: TEdit;
+    FDQueryEntvtejjHeureLisible: TStringField;
     procedure CheckBoxToutesFacturesClick(Sender: TObject);
     procedure JvDBGridEntvtejjTitleBtnClick(Sender: TObject; ACol: LongInt;
       Field: TField);
@@ -92,6 +93,8 @@ type
     procedure BtnFermerClick(Sender: TObject);
     procedure BtnAideClick(Sender: TObject);
     procedure BtnOuvrirClick(Sender: TObject);
+    procedure BtnAjouterClick(Sender: TObject);
+    procedure FDQueryEntvtejjCalcFields(DataSet: TDataSet);
   private
     procedure AppliquerFiltreMaitre;
     { Déclarations privées }
@@ -114,6 +117,40 @@ begin
   // 2. On affiche la page
   FormAide.AfficherAide('entvtejj_liste.html');
 end;
+
+procedure TFrameTableEntvtejj.BtnAjouterClick(Sender: TObject);
+var
+  NouveauNumFacture: Integer;
+begin
+  // 1. Générer ou obtenir un nouveau numéro de facture (via une requête SQL MAX + 1 ou un générateur)
+  NouveauNumFacture := 0; // Fonction à adapter selon votre logique
+
+  // On crée la fiche en passant le mode Création et le nouveau numéro
+  FormEntvtejj := TFormEntvtejj.Create(Self, msAjout, NouveauNumFacture);
+
+  try
+    FormEntvtejj.Caption := 'Créer une nouvelle facture';
+
+    // 2. Pas de CopyDataSet puisque c'est vide : on ajoute une ligne vide prête à être saisie
+    //FormEntvtejj.FDMemTableEntvtejj.Append;
+    //FormEntvtejj.FDMemTableEntvtejj.Post;
+
+    // On se positionne en mode édition sur ce nouvel enregistrement
+    //FormEntvtejj.FDMemTableEntvtejj.Edit;
+
+    if FormEntvtejj.ShowModal = mrOk then
+    begin
+      // La validation a réussi (INSERT en base effectué), on rafraîchit la liste
+      FDQueryEntvtejj.Refresh;
+
+      // Optionnel : se positionner sur la nouvelle facture créée dans la grille
+      //FDQueryEntvtejj.Locate('CODFAC', NouveauNumFacture, []);
+    end;
+  finally
+    FormEntvtejj.Free;
+  end;
+end;
+
 
 procedure TFrameTableEntvtejj.BtnFermerClick(Sender: TObject);
 var
@@ -143,12 +180,11 @@ begin
   FormEntvtejj := TFormEntvtejj.Create(Self, msModification,NumFacture);
 
   try
-    //FormEntvtejj.ModeSaisie := msModification;
     FormEntvtejj.Caption := 'Modifier la facture';
 
     // On copie l'enregistrement sélectionné dans la mémoire de la fiche fraîchement créée
-    FormEntvtejj.FDMemTableEntvtejj.CopyDataSet(FDQueryEntvtejj, [coAppend]);
-    FormEntvtejj.FDMemTableEntvtejj.Edit;
+    //FormEntvtejj.FDMemTableEntvtejj.CopyDataSet(FDQueryEntvtejj, [coAppend]);
+    //FormEntvtejj.FDMemTableEntvtejj.Edit;
 
     if FormEntvtejj.ShowModal = mrOk then
     begin
@@ -238,6 +274,19 @@ begin
 
   AppliquerFiltresCumules(Panel1, FDQueryEntvtejj);
 end;
+
+procedure TFrameTableEntvtejj.FDQueryEntvtejjCalcFields(DataSet: TDataSet);
+begin
+  if not FDQueryEntvtejj.FieldByName('HEURE').IsNull then
+  begin
+    // On appelle votre fonction placée dans le DataModule
+    FDQueryEntvtejj.FieldByName('HeureLisible').AsString :=
+      DM_Olivier.CentièmesVersHeureLisible(FDQueryEntvtejj.FieldByName('HEURE').AsLargeInt);
+  end
+  else
+    FDQueryEntvtejj.FieldByName('HeureLisible').AsString := '';
+end;
+
 
 procedure TFrameTableEntvtejj.JvDBGridEntvtejjTitleBtnClick(Sender: TObject;
   ACol: LongInt; Field: TField);
