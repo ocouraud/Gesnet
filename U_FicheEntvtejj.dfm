@@ -85,6 +85,21 @@ object FormEntvtejj: TFormEntvtejj
     Height = 15
     Caption = 'No client'
   end
+  object LabelHeureLisible: TLabel
+    Left = 355
+    Top = 11
+    Width = 93
+    Height = 15
+    Caption = 'LabelHeureLisible'
+  end
+  object LabelNomRepres: TLabel
+    Left = 125
+    Top = 148
+    Width = 204
+    Height = 15
+    Hint = 'Nom repr'#233'sentant'
+    Caption = '...'
+  end
   object DBCODFAC: TDBEdit
     Left = 84
     Top = 6
@@ -135,16 +150,17 @@ object FormEntvtejj: TFormEntvtejj
   object DBCODVEN: TDBEdit
     Left = 265
     Top = 66
-    Width = 42
+    Width = 32
     Height = 23
     DataField = 'CODVEN'
     DataSource = DSMemTableEntvtejj
+    Enabled = False
     TabOrder = 5
   end
   object DBNOM: TDBEdit
-    Left = 156
+    Left = 335
     Top = 95
-    Width = 414
+    Width = 523
     Height = 23
     DataField = 'NOM'
     DataSource = DSMemTableEntvtejj
@@ -169,7 +185,7 @@ object FormEntvtejj: TFormEntvtejj
     TabOrder = 1
   end
   object DBHEURE: TDBEdit
-    Left = 355
+    Left = 426
     Top = 8
     Width = 64
     Height = 23
@@ -178,6 +194,7 @@ object FormEntvtejj: TFormEntvtejj
     Enabled = False
     ReadOnly = True
     TabOrder = 11
+    Visible = False
   end
   object DBREFERENCE_: TDBEdit
     Left = 84
@@ -196,20 +213,24 @@ object FormEntvtejj: TFormEntvtejj
     DataField = 'CODREP'
     DataSource = DSMemTableEntvtejj
     TabOrder = 9
+    OnChange = DBCODREPChange
+    OnExit = DBCODREPExit
   end
   object DBCODCLI: TDBEdit
     Left = 84
     Top = 95
-    Width = 66
+    Width = 53
     Height = 23
     DataField = 'CODCLI'
     DataSource = DSMemTableEntvtejj
     TabOrder = 6
+    OnChange = DBCODCLIChange
+    OnExit = DBCODCLIExit
   end
   object DNOMVEN: TDBEdit
-    Left = 311
+    Left = 303
     Top = 66
-    Width = 258
+    Width = 266
     Height = 23
     DataField = 'NOMVEN'
     DataSource = DSMemTableEntvtejj
@@ -225,7 +246,7 @@ object FormEntvtejj: TFormEntvtejj
     Anchors = [akLeft, akTop, akRight, akBottom]
     DataSource = DSMemTableLigvtejj
     Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
-    TabOrder = 16
+    TabOrder = 15
     TitleFont.Charset = DEFAULT_CHARSET
     TitleFont.Color = clWindowText
     TitleFont.Height = -12
@@ -351,7 +372,7 @@ object FormEntvtejj: TFormEntvtejj
     Width = 984
     Height = 106
     Align = alBottom
-    TabOrder = 18
+    TabOrder = 17
     DesignSize = (
       984
       106)
@@ -598,15 +619,6 @@ object FormEntvtejj: TFormEntvtejj
         end>
     end
   end
-  object DBNOM_REP: TDBEdit
-    Left = 125
-    Top = 145
-    Width = 300
-    Height = 23
-    DataField = 'NOM'
-    Enabled = False
-    TabOrder = 13
-  end
   object RzDBRadioGroupType: TRzDBRadioGroup
     Left = 735
     Top = 8
@@ -622,10 +634,11 @@ object FormEntvtejj: TFormEntvtejj
       'F'
       'A'
       'P')
+    OnChange = RzDBRadioGroupTypeChange
     Anchors = [akTop, akRight]
     Caption = 'Nature'
     Color = 15658734
-    TabOrder = 14
+    TabOrder = 13
   end
   object RzDBCheckBoxEXO_TVA: TRzDBCheckBox
     Left = 735
@@ -638,7 +651,7 @@ object FormEntvtejj: TFormEntvtejj
     ValueUnchecked = '0'
     Anchors = [akTop, akRight]
     Caption = 'Exonere TVA'
-    TabOrder = 15
+    TabOrder = 14
   end
   object RzDBCheckBoxTVA_ILES: TRzDBCheckBox
     Left = 735
@@ -651,7 +664,7 @@ object FormEntvtejj: TFormEntvtejj
     ValueUnchecked = '0'
     Anchors = [akTop, akRight]
     Caption = 'TVA Iles'
-    TabOrder = 17
+    TabOrder = 16
   end
   object Panel2: TPanel
     Left = 880
@@ -659,7 +672,7 @@ object FormEntvtejj: TFormEntvtejj
     Width = 104
     Height = 555
     Align = alRight
-    TabOrder = 19
+    TabOrder = 18
     object BtnValider: TBitBtn
       Left = 1
       Top = 1
@@ -692,6 +705,19 @@ object FormEntvtejj: TFormEntvtejj
       ModalResult = 2
       TabOrder = 2
     end
+  end
+  object DBLookupComboBoxClient: TDBLookupComboBox
+    Left = 143
+    Top = 95
+    Width = 186
+    Height = 23
+    DataField = 'CODCLI'
+    DataSource = DSMemTableEntvtejj
+    KeyField = 'CODCLI'
+    ListField = 'CODCLI;NOM'
+    ListFieldIndex = 1
+    ListSource = DSClient
+    TabOrder = 19
   end
   object FDMemTableEntvtejj: TFDMemTable
     FieldDefs = <>
@@ -743,5 +769,274 @@ object FormEntvtejj: TFormEntvtejj
     DataSet = FDMemTableRegljj
     Left = 856
     Top = 416
+  end
+  object DSClient: TDataSource
+    DataSet = FDQueryClientsOuverts
+    Left = 96
+    Top = 392
+  end
+  object FDQueryClientsOuverts: TFDQuery
+    Connection = DMGesCloud.ConnexionGesCloud
+    SQL.Strings = (
+      'select * from client where ferme<>1')
+    Left = 192
+    Top = 440
+    object FDQueryClientsOuvertsOBSERV: TMemoField
+      AutoGenerateValue = arDefault
+      FieldName = 'OBSERV'
+      Origin = 'OBSERV'
+      BlobType = ftMemo
+    end
+    object FDQueryClientsOuvertsCODCLI: TIntegerField
+      FieldName = 'CODCLI'
+      Origin = 'CODCLI'
+      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
+      Required = True
+    end
+    object FDQueryClientsOuvertsCPTAUX: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CPTAUX'
+      Origin = 'CPTAUX'
+      Size = 13
+    end
+    object FDQueryClientsOuvertsNOM: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'NOM'
+      Origin = 'NOM'
+      Size = 50
+    end
+    object FDQueryClientsOuvertsCODREP: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODREP'
+      Origin = 'CODREP'
+    end
+    object FDQueryClientsOuvertsPRC_REMISE: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'PRC_REMISE'
+      Origin = 'PRC_REMISE'
+      Precision = 5
+      Size = 2
+    end
+    object FDQueryClientsOuvertsNOTEL: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'NOTEL'
+      Origin = 'NOTEL'
+      Size = 15
+    end
+    object FDQueryClientsOuvertsNOTAHITI: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'NOTAHITI'
+      Origin = 'NOTAHITI'
+      Size = 10
+    end
+    object FDQueryClientsOuvertsNOFAX: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'NOFAX'
+      Origin = 'NOFAX'
+      Size = 15
+    end
+    object FDQueryClientsOuvertsJRSCRD: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'JRSCRD'
+      Origin = 'JRSCRD'
+    end
+    object FDQueryClientsOuvertsCREDIT: TLargeintField
+      AutoGenerateValue = arDefault
+      FieldName = 'CREDIT'
+      Origin = 'CREDIT'
+    end
+    object FDQueryClientsOuvertsplaf_crd: TIntegerField
+      AutoGenerateValue = arDefault
+      FieldName = 'plaf_crd'
+      Origin = 'plaf_crd'
+    end
+    object FDQueryClientsOuvertsCODPAI: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODPAI'
+      Origin = 'CODPAI'
+      Size = 5
+    end
+    object FDQueryClientsOuvertsFIN_MOIS: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'FIN_MOIS'
+      Origin = 'FIN_MOIS'
+    end
+    object FDQueryClientsOuvertsNB_EX: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'NB_EX'
+      Origin = 'NB_EX'
+    end
+    object FDQueryClientsOuvertsCAAN: TLargeintField
+      AutoGenerateValue = arDefault
+      FieldName = 'CAAN'
+      Origin = 'CAAN'
+    end
+    object FDQueryClientsOuvertsAD1: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'AD1'
+      Origin = 'AD1'
+      Size = 30
+    end
+    object FDQueryClientsOuvertsAD2: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'AD2'
+      Origin = 'AD2'
+      Size = 30
+    end
+    object FDQueryClientsOuvertsAD3: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'AD3'
+      Origin = 'AD3'
+      Size = 30
+    end
+    object FDQueryClientsOuvertsCUM_MVT: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'CUM_MVT'
+      Origin = 'CUM_MVT'
+    end
+    object FDQueryClientsOuvertsMT_CPTA: TLargeintField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_CPTA'
+      Origin = 'MT_CPTA'
+    end
+    object FDQueryClientsOuvertsEXO_TVA: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'EXO_TVA'
+      Origin = 'EXO_TVA'
+    end
+    object FDQueryClientsOuvertsBLOQUE: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'BLOQUE'
+      Origin = 'BLOQUE'
+    end
+    object FDQueryClientsOuvertsCODGEO: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODGEO'
+      Origin = 'CODGEO'
+    end
+    object FDQueryClientsOuvertsEMAIL: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'EMAIL'
+      Origin = 'EMAIL'
+      Size = 50
+    end
+    object FDQueryClientsOuvertsCODTAR: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODTAR'
+      Origin = 'CODTAR'
+      Size = 1
+    end
+    object FDQueryClientsOuvertsADM: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'ADM'
+      Origin = 'ADM'
+    end
+    object FDQueryClientsOuvertsFLAG_TAX: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'FLAG_TAX'
+      Origin = 'FLAG_TAX'
+    end
+    object FDQueryClientsOuvertsCODFAC_ADM: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODFAC_ADM'
+      Origin = 'CODFAC_ADM'
+    end
+    object FDQueryClientsOuvertsFERME: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'FERME'
+      Origin = 'FERME'
+    end
+    object FDQueryClientsOuvertsDER_MODIF: TSQLTimeStampField
+      AutoGenerateValue = arDefault
+      FieldName = 'DER_MODIF'
+      Origin = 'DER_MODIF'
+    end
+    object FDQueryClientsOuvertsSPEC_GOUV: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'SPEC_GOUV'
+      Origin = 'SPEC_GOUV'
+    end
+    object FDQueryClientsOuvertsNOGSM: TLargeintField
+      AutoGenerateValue = arDefault
+      FieldName = 'NOGSM'
+      Origin = 'NOGSM'
+    end
+    object FDQueryClientsOuvertsPLV: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'PLV'
+      Origin = 'PLV'
+    end
+    object FDQueryClientsOuvertsINTIT_BQ: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'INTIT_BQ'
+      Origin = 'INTIT_BQ'
+      Size = 30
+    end
+    object FDQueryClientsOuvertsCODE_BQ: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODE_BQ'
+      Origin = 'CODE_BQ'
+      Size = 5
+    end
+    object FDQueryClientsOuvertsCODE_GUI: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODE_GUI'
+      Origin = 'CODE_GUI'
+      Size = 5
+    end
+    object FDQueryClientsOuvertsNOCPT: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'NOCPT'
+      Origin = 'NOCPT'
+      Size = 11
+    end
+    object FDQueryClientsOuvertsCLE: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CLE'
+      Origin = 'CLE'
+      Size = 2
+    end
+    object FDQueryClientsOuvertsCOEF_MAJ_PR: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'COEF_MAJ_PR'
+      Origin = 'COEF_MAJ_PR'
+      Precision = 5
+      Size = 2
+    end
+    object FDQueryClientsOuvertsEXO_CPS: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'EXO_CPS'
+      Origin = 'EXO_CPS'
+    end
+    object FDQueryClientsOuvertsPAS_REM: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'PAS_REM'
+      Origin = 'PAS_REM'
+    end
+    object FDQueryClientsOuvertsREM_FAM: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'REM_FAM'
+      Origin = 'REM_FAM'
+    end
+    object FDQueryClientsOuvertsRELEVE_EMAIL: TBooleanField
+      AutoGenerateValue = arDefault
+      FieldName = 'RELEVE_EMAIL'
+      Origin = 'RELEVE_EMAIL'
+    end
+    object FDQueryClientsOuvertsSELECT_: TBooleanField
+      AutoGenerateValue = arDefault
+      FieldName = 'SELECT_'
+      Origin = 'SELECT_'
+    end
+    object FDQueryClientsOuvertsAPP_TARIFCLI: TBooleanField
+      AutoGenerateValue = arDefault
+      FieldName = 'APP_TARIFCLI'
+      Origin = 'APP_TARIFCLI'
+    end
+    object FDQueryClientsOuvertsTVA_ILES: TBooleanField
+      AutoGenerateValue = arDefault
+      FieldName = 'TVA_ILES'
+      Origin = 'TVA_ILES'
+    end
   end
 end

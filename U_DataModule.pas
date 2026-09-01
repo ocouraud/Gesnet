@@ -65,6 +65,7 @@ type
   public
     FUserRights: TStringList;
     LoggedUser: string;
+    gCodven_defaut: Integer;
     { Déclarations publiques }
     function ExisteEnregistrement(const NomTable: string; const Champs: array of string; const Valeurs: array of string; QueryOutil: TFDQuery): Boolean;
     function CreerRequeteTemp: TFDQuery;
@@ -101,35 +102,6 @@ begin
   );
 end;
 
-//procedure TDMGesCloud.RegisterPermission(const APermissionName, ADescription: string);
-//var
-//  QryCheck: TFDQuery;
-//begin
-//  QryCheck := TFDQuery.Create(nil);
-//  try
-//    QryCheck.Connection := ConnexionGesCloud;
-//
-//    // 1. Vérification si la permission existe déjà dans sec_permissions
-//    QryCheck.SQL.Text := 'SELECT 1 FROM sec_permissions WHERE PERMISSION_NAME = :PERM LIMIT 1';
-//    QryCheck.ParamByName('PERM').AsString := APermissionName;
-//    QryCheck.Open;
-//
-//    // 2. Si elle n'existe pas, on l'ajoute en BDD
-//    if QryCheck.IsEmpty then
-//    begin
-//      ConnexionGesCloud.ExecSQL(
-//        'INSERT INTO sec_permissions (PERMISSION_NAME) VALUES (:PERM)',
-//        [APermissionName]
-//      );
-//
-//      // Rafraîchissement du dataset si ouvert
-//      if QrySecPermissions.Active then
-//        QrySecPermissions.Refresh;
-//    end;
-//  finally
-//    QryCheck.Free;
-//  end;
-//end;
 
 function TDMGesCloud.OnGlobalHelp(Command: Word; Data: NativeInt; var CallHelp: Boolean): Boolean;
 var
@@ -620,7 +592,7 @@ begin
     QryUserRights.Close;
     // Jointure pour retrouver les permissions via le USERNAME de sec_users
     QryUserRights.SQL.Text :=
-      'SELECT p.PERMISSION_NAME ' +
+      'SELECT p.PERMISSION_NAME, p.USER_ID ' +
       'FROM sec_permissions p ' +
       'JOIN sec_users u ON u.ID = p.USER_ID ' +
       'WHERE u.USERNAME = :uname';
@@ -632,6 +604,8 @@ begin
     begin
       FUserRights.Add(UpperCase(QryUserRights.FieldByName('PERMISSION_NAME').AsString));
       QryUserRights.Next;
+      //Recuperation du code vendeur au passage
+      gCodven_defaut := QryUserRights.FieldByName('USER_ID').AsInteger
     end;
     QryUserRights.Close;
   except

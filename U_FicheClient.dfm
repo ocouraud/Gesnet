@@ -194,7 +194,7 @@ object FormFicheClient: TFormFicheClient
     Top = 112
     Width = 799
     Height = 406
-    ActivePage = TabSheet7
+    ActivePage = TabSheet1
     Align = alCustom
     Anchors = [akLeft, akTop, akRight, akBottom]
     TabOrder = 5
@@ -1465,8 +1465,8 @@ object FormFicheClient: TFormFicheClient
   end
   object DSTresor: TDataSource
     DataSet = FDQueryTresor
-    Left = 292
-    Top = 378
+    Left = 612
+    Top = 226
   end
   object FDQueryStatis: TFDQuery
     MasterSource = DSClients
@@ -1518,8 +1518,8 @@ object FormFicheClient: TFormFicheClient
     Connection = DMGesCloud.ConnexionGesCloud
     SQL.Strings = (
       'select * from ent_prof where codcli=:codcli')
-    Left = 364
-    Top = 362
+    Left = 580
+    Top = 266
     ParamData = <
       item
         Name = 'CODCLI'

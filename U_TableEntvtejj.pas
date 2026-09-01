@@ -119,32 +119,22 @@ begin
 end;
 
 procedure TFrameTableEntvtejj.BtnAjouterClick(Sender: TObject);
-var
-  NouveauNumFacture: Integer;
 begin
-  // 1. Générer ou obtenir un nouveau numéro de facture (via une requête SQL MAX + 1 ou un générateur)
-  NouveauNumFacture := 0; // Fonction à adapter selon votre logique
 
-  // On crée la fiche en passant le mode Création et le nouveau numéro
-  FormEntvtejj := TFormEntvtejj.Create(Self, msAjout, NouveauNumFacture);
+  // On crée la fiche en passant le mode Création et le numéro 0 pour nouveau
+  FormEntvtejj := TFormEntvtejj.Create(Self, msAjout, 0);
 
   try
     FormEntvtejj.Caption := 'Créer une nouvelle facture';
-
-    // 2. Pas de CopyDataSet puisque c'est vide : on ajoute une ligne vide prête à être saisie
-    //FormEntvtejj.FDMemTableEntvtejj.Append;
-    //FormEntvtejj.FDMemTableEntvtejj.Post;
-
-    // On se positionne en mode édition sur ce nouvel enregistrement
-    //FormEntvtejj.FDMemTableEntvtejj.Edit;
 
     if FormEntvtejj.ShowModal = mrOk then
     begin
       // La validation a réussi (INSERT en base effectué), on rafraîchit la liste
       FDQueryEntvtejj.Refresh;
 
-      // Optionnel : se positionner sur la nouvelle facture créée dans la grille
-      //FDQueryEntvtejj.Locate('CODFAC', NouveauNumFacture, []);
+      // Se positionner sur la nouvelle facture créée dans la grille
+      if not FDQueryEntvtejj.IsEmpty then
+        FDQueryEntvtejj.Locate('CODFAC', FormEntvtejj.CodFacCree, []);
     end;
   finally
     FormEntvtejj.Free;
@@ -182,13 +172,8 @@ begin
   try
     FormEntvtejj.Caption := 'Modifier la facture';
 
-    // On copie l'enregistrement sélectionné dans la mémoire de la fiche fraîchement créée
-    //FormEntvtejj.FDMemTableEntvtejj.CopyDataSet(FDQueryEntvtejj, [coAppend]);
-    //FormEntvtejj.FDMemTableEntvtejj.Edit;
-
     if FormEntvtejj.ShowModal = mrOk then
     begin
-      // TODO: Sauvegarde en base MySQL
       FDQueryEntvtejj.Refresh;
     end;
   finally

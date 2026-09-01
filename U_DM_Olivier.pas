@@ -51,6 +51,8 @@ type
     { Déclarations publiques }
     PMPGlobalMode: Integer; // Variable globale de l'application
     gCodCai: string;
+    gCoddep_defaut: Integer;
+    gCodcli_defaut: Integer;
     function GetEAN13CheckDigitFrom13(const A13Digits: string): string;
     procedure ChargerParametresStock;
     property NumeroPoste: Integer read FNumeroPoste;
@@ -65,6 +67,7 @@ type
     procedure RecalculerStockArticle(const CodeArt: string);
     procedure RecalculerToutLeStock;
     function CentièmesVersHeureLisible(ACentièmes: Int64): string;
+    function fgTxTaxe(const DateCtrl: TDateTime; const CodeTVA: String): Double;
    end;
 
 var
@@ -155,7 +158,7 @@ begin
   Qry := CreerRequeteTemp;
   try
     // 1. Vérifier si le code caisse existe déjà
-    Qry.SQL.Text := 'SELECT CODCAI FROM caisse WHERE CODCAI = :CodCai';
+    Qry.SQL.Text := 'SELECT * FROM caisse WHERE CODCAI = :CodCai';
     Qry.ParamByName('CodCai').AsString := CodCai;
     Qry.Open;
 
@@ -167,6 +170,8 @@ begin
       Qry.ParamByName('CodCai').AsString := CodCai;
       Qry.ExecSQL;
     end;
+    gCodcli_defaut:=Qry.FieldByName('CODCLI').AsInteger;
+    gCoddep_defaut:=Qry.FieldByName('CODDEP').AsInteger;
   finally
     LibererRequeteTemp(Qry);
   end;
@@ -276,6 +281,29 @@ begin
   finally
     LibererRequeteTemp(Qry);
   end;
+end;
+
+function TDM_Olivier.fgTxTaxe(const DateCtrl: TDateTime; const CodeTVA: String): Double;
+var
+  wtx: Double;
+  QryExec: TFDQuery;
+begin
+  QryExec := TFDQuery.Create(nil);
+  QryExec.Connection := DMGesCloud.ConnexionGesCloud;
+  QryExec.SQL.Text := 'SELECT * FROM par_effet WHERE CODE=:CODE ORDER BY DAT_DEB';
+  QryExec.ParamByName('CODE').AsString := CodeTVA;
+  QryExec.Open;
+  QryExec.First;
+  while not QryExec.Eof do
+  begin
+    IF (DateCtrl>=QryExec.FieldByName('DAT_DEB').AsDateTime) and (DateCtrl<=QryExec.FieldByName('DAT_FIN').AsDateTime) then
+    begin
+       wtx := QryExec.FieldByName('TAUX').AsFloat;
+       break;
+    end;
+    QryExec.Next;
+  end;
+  Result := wtx;
 end;
 
 function TDM_Olivier.CalculerTTC(const MontantHT: Double; const TauxTVA: Double): Double;
