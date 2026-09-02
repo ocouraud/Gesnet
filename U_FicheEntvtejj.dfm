@@ -95,7 +95,7 @@ object FormEntvtejj: TFormEntvtejj
   object LabelNomRepres: TLabel
     Left = 125
     Top = 148
-    Width = 204
+    Width = 9
     Height = 15
     Hint = 'Nom repr'#233'sentant'
     Caption = '...'
@@ -652,6 +652,7 @@ object FormEntvtejj: TFormEntvtejj
     Anchors = [akTop, akRight]
     Caption = 'Exonere TVA'
     TabOrder = 14
+    OnClick = RzDBCheckBoxEXO_TVAClick
   end
   object RzDBCheckBoxTVA_ILES: TRzDBCheckBox
     Left = 735
@@ -665,6 +666,7 @@ object FormEntvtejj: TFormEntvtejj
     Anchors = [akTop, akRight]
     Caption = 'TVA Iles'
     TabOrder = 16
+    OnClick = RzDBCheckBoxTVA_ILESClick
   end
   object Panel2: TPanel
     Left = 880

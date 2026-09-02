@@ -34,6 +34,7 @@ type
     FDQueryEntvtejj: TFDQuery;
     FDQueryLigvtejj: TFDQuery;
     FDQueryReglJJ: TFDQuery;
+    FDQueryPrixgeo: TFDQuery;
     procedure FDQueryParameDeviseNewRecord(DataSet: TDataSet);
     procedure UpperCaseSetText(Sender: TField; const Text: string);
     procedure FDQueryDepotNewRecord(DataSet: TDataSet);
@@ -46,13 +47,21 @@ type
     { Déclarations privées }
     FNumeroPoste: Integer;
     procedure ChargerOuCreerNumeroPoste;
+    procedure ChargerParametresTVA;
     procedure VerifierOuCreerCaisse(ANumeroPoste: Integer);
+
   public
     { Déclarations publiques }
     PMPGlobalMode: Integer; // Variable globale de l'application
     gCodCai: string;
     gCoddep_defaut: Integer;
     gCodcli_defaut: Integer;
+    gTx_TVA0: Double;
+    gTx_TVA1: Double;
+    gTx_TVA2: Double;
+    gTx_TVA3: Double;
+    gTx_TVAI: Double;
+
     function GetEAN13CheckDigitFrom13(const A13Digits: string): string;
     procedure ChargerParametresStock;
     property NumeroPoste: Integer read FNumeroPoste;
@@ -88,8 +97,112 @@ begin
   inherited Create(AOwner); // Exécute le Create standard du DataModule
   ChargerOuCreerNumeroPoste; // Exécute la logique du poste.ini
   ChargerParametresStock;
+  ChargerParametresTVA;
 end;
 
+
+procedure TDM_Olivier.ChargerParametresTVA;
+var
+  Qry: TFDQuery;
+begin
+  Qry := CreerRequeteTemp;
+  try
+    // 1. Vérifier si le code TVA0 existe déjà
+    Qry.Close;
+    Qry.SQL.Text := 'SELECT * FROM parame WHERE CODE = ''TVA0''';
+    Qry.Open;
+      // 2. Si la TVA n'existe pas, on l'insère
+    if Qry.IsEmpty then
+    begin
+      Qry.Close;
+      Qry.SQL.Text := 'INSERT INTO parame (CODE,TYPE_,TAUX,LIBELLE) VALUES (''TVA0'',''V'',0,''Exonéré'')';
+      Qry.ExecSQL;
+    end;
+    gTx_TVA0:=Qry.FieldByName('TAUX').AsInteger;
+
+    // 1. Vérifier si le code TVA1 existe déjà
+    Qry.Close;
+    Qry.SQL.Text := 'SELECT * FROM parame WHERE CODE = ''TVA1''';
+    Qry.Open;
+      // 2. Si la TVA n'existe pas, on l'insère
+    if Qry.IsEmpty then
+    begin
+      Qry.Close;
+      Qry.SQL.Text := 'INSERT INTO parame (CODE,TYPE_,TAUX,LIBELLE) VALUES (''TVA1'',''V'',5,''TVA à taux réduit'')';
+      Qry.ExecSQL;
+    end;
+    gTx_TVA1:=Qry.FieldByName('TAUX').AsInteger;
+
+    // 1. Vérifier si le code TVA2 existe déjà
+    Qry.Close;
+    Qry.SQL.Text := 'SELECT * FROM parame WHERE CODE = ''TVA2''';
+    Qry.Open;
+    // 2. Si la TVA n'existe pas, on l'insère
+    if Qry.IsEmpty then
+    begin
+      Qry.Close;
+      Qry.SQL.Text := 'INSERT INTO parame (CODE,TYPE_,TAUX,LIBELLE) VALUES (''TVA2'',''V'',16,''TVA à taux normal'')';
+      Qry.ExecSQL;
+    end;
+    gTx_TVA2:=Qry.FieldByName('TAUX').AsInteger;
+
+    // 1. Vérifier si le code TVA3 existe déjà
+    Qry.Close;
+    Qry.SQL.Text := 'SELECT * FROM parame WHERE CODE = ''TVA3''';
+    Qry.Open;
+    // 2. Si la TVA n'existe pas, on l'insère
+    if Qry.IsEmpty then
+    begin
+      Qry.Close;
+      Qry.SQL.Text := 'INSERT INTO parame (CODE,TYPE_,TAUX,LIBELLE) VALUES (''TVA3'',''V'',13,''TVA à taux intermédiaire'')';
+      Qry.ExecSQL;
+    end;
+    gTx_TVA3:=Qry.FieldByName('TAUX').AsInteger;
+
+    // 1. Vérifier si le code TVAI Iles existe déjà
+    Qry.Close;
+    Qry.SQL.Text := 'SELECT * FROM parame WHERE CODE = ''TVAI''';
+    Qry.Open;
+    // 2. Si la TVA n'existe pas, on l'insère
+    if Qry.IsEmpty then
+    begin
+      Qry.Close;
+      Qry.SQL.Text := 'INSERT INTO parame (CODE,TYPE_,TAUX,LIBELLE,DATE_EFF) VALUES (''TVAI'',''V'',1,''TVA Iles'',''2026-07-01'')';
+      Qry.ExecSQL;
+      //Date d'effet TVA iles
+      Qry.Close;
+      Qry.SQL.Text := 'INSERT IGNORE INTO par_effet (CODE,TAUX,DATE_DEB,DATE_FIN) VALUES (''TVAI'',1,''2026-07-01'',''2050-12-31'')';
+      Qry.ExecSQL;
+    end;
+    //TVA ILES par date d'effet
+    gTx_TVAI:=DM_Olivier.fgTxTaxe(Now,'TVAI')
+
+    ////!TAXE SOCIALE A LA CONSOMMATION de base 1%
+    //SI HLitRecherchePremier(parame,code,"TS")=Faux
+    //	HRAZ(parame)
+    //	parame.code		= "TS"
+    //	parame.type_	= "X"
+    //	parame.taux		= 1
+    //	parame.libelle	= "TAXE SOCIALE A LA CONSOMMATION"
+    //	parame.date_eff	= ChaîneVersDate("20220401")
+    //	HAjoute(parame)
+    //ELSE
+    //	parame.taux		= 1
+    //	parame.date_eff	= ChaîneVersDate("20220401")
+    //	HModifie(parame)
+    //END
+    //IF Today()>=parame.date_eff ALORS
+    //	gTx_SOC=parame.taux
+    //END
+    ////CPS par date d'effet  Revatel 06/05/2026
+    //gTx_SOC=fgTxTaxe(Today(),"TS")
+
+    //TVA ILES de base 1%
+
+  finally
+    LibererRequeteTemp(Qry);
+  end;
+end;
 
 function TDM_Olivier.CentièmesVersHeureLisible(ACentièmes: Int64): string;
 var

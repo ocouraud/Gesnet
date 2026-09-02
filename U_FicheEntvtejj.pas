@@ -104,6 +104,8 @@ type
     procedure DBCODCLIChange(Sender: TObject);
     procedure DBCODREPChange(Sender: TObject);
     procedure DBCODREPExit(Sender: TObject);
+    procedure RzDBCheckBoxEXO_TVAClick(Sender: TObject);
+    procedure RzDBCheckBoxTVA_ILESClick(Sender: TObject);
 
   private
     { Déclarations privées }
@@ -138,6 +140,9 @@ var
   ResultHeure: Integer;
   VNoEnrStock: Integer;
 begin
+  //Calcul complet avant validation
+  CalculCompletFacture;
+
   // Conversion en nombre total de secondes depuis minuit
   LHeure := Now; // ou un champ heure
   DecodeTime(Now, H, M, S, MS);
@@ -183,35 +188,193 @@ begin
 
         // Exemple d'INSERT pour l'en-tête (adaptez les noms de champs selon votre table)
         QryExec.close;
-        QryExec.SQL.Text := 'INSERT INTO entvtejj (CODDEV, CODFAC, TYPE_, TOP_, DATE_, HEURE, CODDEP, CODCAI, CODCLI, NOM, TOTHT, MT_TTC) ' +
-                            'VALUES (:CODDEV, :CODFAC, :TYPE_, :TOP_, :DATE_, :HEURE, :CODDEP, :CODCAI, :CODCLI, :NOM, :TOTHT, :MT_TTC)';
+        QryExec.SQL.Text := 'INSERT INTO `entvtejj` (' +
+          '`OBSERV`, `CODFAC`, `TOP_`, `CODCLI`, `CODCAI`, `CODDEV`, `CODDEP`, `CODVEN`, `NOM`, `NOTAHITI`, ' +
+          '`TYPE_`, `EXO_TVA`, `ANNEE`, `MOIS`, `DATE_`, `HEURE`, `PRC_REMISE`, `MT_REMISE`, `TOTHT`, `MT_TTC`, ' +
+          '`MT_HT0`, `MT_HT1`, `MT_HT2`, `MT_HT3`, `MT_TVA1`, `MT_TVA2`, `MT_TVA3`, `MT_TVA`, `MARGE`, `REFERENCE_`, ' +
+          '`CODREP`, `NO_SEM`, `NO_JOUR`, `REGL`, `CODPAI`, `JRSCRD`, `FIN_MOIS`, `LIBREG`, `CRD_FORCE`, `date_ech`, ' +
+          '`ACOMPTE`, `CODGEO`, `FLAG_TAX`, `SEL`, `DER_MODIF`, `NOMVEN`, `MT_TSOC`, `MT_HTSOC`, `TX_TSOC`, `EXO_CPS`, ' +
+          '`MT_TVAI`, `MT_HTI`, `TVA_ILES`) VALUES (' +
+          ':OBSERV, :CODFAC, :TOP_, :CODCLI, :CODCAI, :CODDEV, :CODDEP, :CODVEN, :NOM, :NOTAHITI, ' +
+          ':TYPE_, :EXO_TVA, :ANNEE, :MOIS, :DATE_, :HEURE, :PRC_REMISE, :MT_REMISE, :TOTHT, :MT_TTC, ' +
+          ':MT_HT0, :MT_HT1, :MT_HT2, :MT_HT3, :MT_TVA1, :MT_TVA2, :MT_TVA3, :MT_TVA, :MARGE, :REFERENCE_, ' +
+          ':CODREP, :NO_SEM, :NO_JOUR, :REGL, :CODPAI, :JRSCRD, :FIN_MOIS, :LIBREG, :CRD_FORCE, :date_ech, ' +
+          ':ACOMPTE, :CODGEO, :FLAG_TAX, :SEL, CURRENT_TIMESTAMP, :NOMVEN, :MT_TSOC, :MT_HTSOC, :TX_TSOC, :EXO_CPS, ' +
+          ':MT_TVAI, :MT_HTI, :TVA_ILES)';
+
+        // Assignation directe des valeurs depuis la table mémoire
+        QryExec.ParamByName('OBSERV').AsString     := FDMemTableEntvtejj.FieldByName('OBSERV').AsString;
+        QryExec.ParamByName('CODFAC').AsInteger    := NumFacture;
+        QryExec.ParamByName('TOP_').AsString       := FDMemTableEntvtejj.FieldByName('TOP_').AsString;
+        QryExec.ParamByName('CODCLI').AsInteger    := FDMemTableEntvtejj.FieldByName('CODCLI').AsInteger;
+        QryExec.ParamByName('CODCAI').AsString     := FDMemTableEntvtejj.FieldByName('CODCAI').AsString;
+        QryExec.ParamByName('CODDEV').AsInteger    := FDMemTableEntvtejj.FieldByName('CODDEV').AsInteger;
+        QryExec.ParamByName('CODDEP').AsInteger    := FDMemTableEntvtejj.FieldByName('CODDEP').AsInteger;
+        QryExec.ParamByName('CODVEN').AsInteger    := FDMemTableEntvtejj.FieldByName('CODVEN').AsInteger;
+        QryExec.ParamByName('NOM').AsString        := FDMemTableEntvtejj.FieldByName('NOM').AsString;
+        QryExec.ParamByName('NOTAHITI').AsString   := FDMemTableEntvtejj.FieldByName('NOTAHITI').AsString;
+        QryExec.ParamByName('TYPE_').AsString      := FDMemTableEntvtejj.FieldByName('TYPE_').AsString;
+        QryExec.ParamByName('EXO_TVA').AsInteger   := FDMemTableEntvtejj.FieldByName('EXO_TVA').AsInteger;
+        QryExec.ParamByName('ANNEE').AsInteger     := FDMemTableEntvtejj.FieldByName('ANNEE').AsInteger;
+        QryExec.ParamByName('MOIS').AsInteger      := FDMemTableEntvtejj.FieldByName('MOIS').AsInteger;
+        QryExec.ParamByName('DATE_').AsDateTime    := FDMemTableEntvtejj.FieldByName('DATE_').AsDateTime;
+        QryExec.ParamByName('HEURE').AsString      := FDMemTableEntvtejj.FieldByName('HEURE').AsString;
+        QryExec.ParamByName('PRC_REMISE').AsFloat  := FDMemTableEntvtejj.FieldByName('PRC_REMISE').AsFloat;
+        QryExec.ParamByName('MT_REMISE').AsFloat   := FDMemTableEntvtejj.FieldByName('MT_REMISE').AsFloat;
+        QryExec.ParamByName('TOTHT').AsFloat       := FDMemTableEntvtejj.FieldByName('TOTHT').AsFloat;
+        QryExec.ParamByName('MT_TTC').AsInteger    := FDMemTableEntvtejj.FieldByName('MT_TTC').AsInteger;
+        QryExec.ParamByName('MT_HT0').AsFloat      := FDMemTableEntvtejj.FieldByName('MT_HT0').AsFloat;
+        QryExec.ParamByName('MT_HT1').AsFloat      := FDMemTableEntvtejj.FieldByName('MT_HT1').AsFloat;
+        QryExec.ParamByName('MT_HT2').AsFloat      := FDMemTableEntvtejj.FieldByName('MT_HT2').AsFloat;
+        QryExec.ParamByName('MT_HT3').AsFloat      := FDMemTableEntvtejj.FieldByName('MT_HT3').AsFloat;
+        QryExec.ParamByName('MT_TVA1').AsFloat     := FDMemTableEntvtejj.FieldByName('MT_TVA1').AsFloat;
+        QryExec.ParamByName('MT_TVA2').AsFloat     := FDMemTableEntvtejj.FieldByName('MT_TVA2').AsFloat;
+        QryExec.ParamByName('MT_TVA3').AsFloat     := FDMemTableEntvtejj.FieldByName('MT_TVA3').AsFloat;
+        QryExec.ParamByName('MT_TVA').AsFloat      := FDMemTableEntvtejj.FieldByName('MT_TVA').AsFloat;
+        QryExec.ParamByName('MARGE').AsFloat       := FDMemTableEntvtejj.FieldByName('MARGE').AsFloat;
+        QryExec.ParamByName('REFERENCE_').AsString := FDMemTableEntvtejj.FieldByName('REFERENCE_').AsString;
+        QryExec.ParamByName('CODREP').AsInteger    := FDMemTableEntvtejj.FieldByName('CODREP').AsInteger;
+        QryExec.ParamByName('NO_SEM').AsInteger    := FDMemTableEntvtejj.FieldByName('NO_SEM').AsInteger;
+        QryExec.ParamByName('NO_JOUR').AsInteger   := FDMemTableEntvtejj.FieldByName('NO_JOUR').AsInteger;
+        QryExec.ParamByName('REGL').AsInteger      := FDMemTableEntvtejj.FieldByName('REGL').AsInteger;
+        QryExec.ParamByName('CODPAI').AsString     := FDMemTableEntvtejj.FieldByName('CODPAI').AsString;
+        QryExec.ParamByName('JRSCRD').AsInteger    := FDMemTableEntvtejj.FieldByName('JRSCRD').AsInteger;
+        QryExec.ParamByName('FIN_MOIS').AsInteger  := FDMemTableEntvtejj.FieldByName('FIN_MOIS').AsInteger;
+        QryExec.ParamByName('LIBREG').AsString     := FDMemTableEntvtejj.FieldByName('LIBREG').AsString;
+        QryExec.ParamByName('CRD_FORCE').AsInteger := FDMemTableEntvtejj.FieldByName('CRD_FORCE').AsInteger;
+        QryExec.ParamByName('date_ech').AsDateTime := FDMemTableEntvtejj.FieldByName('date_ech').AsDateTime;
+        QryExec.ParamByName('ACOMPTE').AsInteger   := FDMemTableEntvtejj.FieldByName('ACOMPTE').AsInteger;
+        QryExec.ParamByName('CODGEO').AsString     := FDMemTableEntvtejj.FieldByName('CODGEO').AsString;
+        QryExec.ParamByName('FLAG_TAX').AsInteger  := FDMemTableEntvtejj.FieldByName('FLAG_TAX').AsInteger;
+        QryExec.ParamByName('SEL').AsInteger       := FDMemTableEntvtejj.FieldByName('SEL').AsInteger;
+        QryExec.ParamByName('NOMVEN').AsString     := FDMemTableEntvtejj.FieldByName('NOMVEN').AsString;
+        QryExec.ParamByName('MT_TSOC').AsFloat     := FDMemTableEntvtejj.FieldByName('MT_TSOC').AsFloat;
+        QryExec.ParamByName('MT_HTSOC').AsFloat    := FDMemTableEntvtejj.FieldByName('MT_HTSOC').AsFloat;
+        QryExec.ParamByName('TX_TSOC').AsFloat     := FDMemTableEntvtejj.FieldByName('TX_TSOC').AsFloat;
+        QryExec.ParamByName('EXO_CPS').AsInteger   := FDMemTableEntvtejj.FieldByName('EXO_CPS').AsInteger;
+        QryExec.ParamByName('MT_TVAI').AsFloat     := FDMemTableEntvtejj.FieldByName('MT_TVAI').AsFloat;
+        QryExec.ParamByName('MT_HTI').AsFloat      := FDMemTableEntvtejj.FieldByName('MT_HTI').AsFloat;
+        QryExec.ParamByName('TVA_ILES').AsBoolean  := FDMemTableEntvtejj.FieldByName('TVA_ILES').AsBoolean;
+        QryExec.ExecSQL;
       end
       else
       begin
-        // Exemple d'UPDATE pour l'en-tête en modification
-        QryExec.SQL.Text := 'UPDATE entvtejj SET TOP_=:TOP_, CODDEV=:CODDEV, DATE_ = :DATE_, HEURE = :HEURE, CODCLI = :CODCLI, CODCAI = :CODCAI, ' +
-                            'TOTHT = :TOTHT, MT_TTC = :MT_TTC, NOM = :NOM, CODDEP = :CODDEP, TYPE_=:TYPE_ ' +
-                            'WHERE CODFAC = :CODFAC';
+        // UPDATE pour l'en-tête en modification
+        QryExec.SQL.Text := 'UPDATE `entvtejj` SET ' +
+          '`OBSERV` = :OBSERV, ' +
+          '`CODFAC` = :CODFAC, ' +
+          '`TOP_` = :TOP_, ' +
+          '`CODCLI` = :CODCLI, ' +
+          '`CODCAI` = :CODCAI, ' +
+          '`CODDEV` = :CODDEV, ' +
+          '`CODDEP` = :CODDEP, ' +
+          '`CODVEN` = :CODVEN, ' +
+          '`NOM` = :NOM, ' +
+          '`NOTAHITI` = :NOTAHITI, ' +
+          '`TYPE_` = :TYPE_, ' +
+          '`EXO_TVA` = :EXO_TVA, ' +
+          '`ANNEE` = :ANNEE, ' +
+          '`MOIS` = :MOIS, ' +
+          '`DATE_` = :DATE_, ' +
+          '`HEURE` = :HEURE, ' +
+          '`PRC_REMISE` = :PRC_REMISE, ' +
+          '`MT_REMISE` = :MT_REMISE, ' +
+          '`TOTHT` = :TOTHT, ' +
+          '`MT_TTC` = :MT_TTC, ' +
+          '`MT_HT0` = :MT_HT0, ' +
+          '`MT_HT1` = :MT_HT1, ' +
+          '`MT_HT2` = :MT_HT2, ' +
+          '`MT_HT3` = :MT_HT3, ' +
+          '`MT_TVA1` = :MT_TVA1, ' +
+          '`MT_TVA2` = :MT_TVA2, ' +
+          '`MT_TVA3` = :MT_TVA3, ' +
+          '`MT_TVA` = :MT_TVA, ' +
+          '`MARGE` = :MARGE, ' +
+          '`REFERENCE_` = :REFERENCE_, ' +
+          '`CODREP` = :CODREP, ' +
+          '`NO_SEM` = :NO_SEM, ' +
+          '`NO_JOUR` = :NO_JOUR, ' +
+          '`REGL` = :REGL, ' +
+          '`CODPAI` = :CODPAI, ' +
+          '`JRSCRD` = :JRSCRD, ' +
+          '`FIN_MOIS` = :FIN_MOIS, ' +
+          '`LIBREG` = :LIBREG, ' +
+          '`CRD_FORCE` = :CRD_FORCE, ' +
+          '`date_ech` = :date_ech, ' +
+          '`ACOMPTE` = :ACOMPTE, ' +
+          '`CODGEO` = :CODGEO, ' +
+          '`FLAG_TAX` = :FLAG_TAX, ' +
+          '`SEL` = :SEL, ' +
+          '`DER_MODIF` = CURRENT_TIMESTAMP, ' +
+          '`NOMVEN` = :NOMVEN, ' +
+          '`MT_TSOC` = :MT_TSOC, ' +
+          '`MT_HTSOC` = :MT_HTSOC, ' +
+          '`TX_TSOC` = :TX_TSOC, ' +
+          '`EXO_CPS` = :EXO_CPS, ' +
+          '`MT_TVAI` = :MT_TVAI, ' +
+          '`MT_HTI` = :MT_HTI, ' +
+          '`TVA_ILES` = :TVA_ILES ' +
+          'WHERE `CODFAC` = :CODFAC';
+
+        // Assignation directe des valeurs depuis la table mémoire
+        QryExec.ParamByName('OBSERV').AsString     := FDMemTableEntvtejj.FieldByName('OBSERV').AsString;
+        QryExec.ParamByName('CODFAC').AsInteger     := FDMemTableEntvtejj.FieldByName('CODFAC').AsInteger;
+        QryExec.ParamByName('TOP_').AsString      := FDMemTableEntvtejj.FieldByName('TOP_').AsString;
+        QryExec.ParamByName('CODCLI').AsInteger     := FDMemTableEntvtejj.FieldByName('CODCLI').AsInteger;
+        QryExec.ParamByName('CODCAI').AsString     := FDMemTableEntvtejj.FieldByName('CODCAI').AsString;
+        QryExec.ParamByName('CODDEV').AsInteger     := FDMemTableEntvtejj.FieldByName('CODDEV').AsInteger;
+        QryExec.ParamByName('CODDEP').AsInteger     := FDMemTableEntvtejj.FieldByName('CODDEP').AsInteger;
+        QryExec.ParamByName('CODVEN').AsInteger     := FDMemTableEntvtejj.FieldByName('CODVEN').AsInteger;
+        QryExec.ParamByName('NOM').AsString        := FDMemTableEntvtejj.FieldByName('NOM').AsString;
+        QryExec.ParamByName('NOTAHITI').AsString   := FDMemTableEntvtejj.FieldByName('NOTAHITI').AsString;
+        QryExec.ParamByName('TYPE_').AsString      := FDMemTableEntvtejj.FieldByName('TYPE_').AsString;
+        QryExec.ParamByName('EXO_TVA').AsInteger   := FDMemTableEntvtejj.FieldByName('EXO_TVA').AsInteger;
+        QryExec.ParamByName('ANNEE').AsInteger     := FDMemTableEntvtejj.FieldByName('ANNEE').AsInteger;
+        QryExec.ParamByName('MOIS').AsInteger      := FDMemTableEntvtejj.FieldByName('MOIS').AsInteger;
+        QryExec.ParamByName('DATE_').AsDateTime    := FDMemTableEntvtejj.FieldByName('DATE_').AsDateTime;
+        QryExec.ParamByName('HEURE').AsString      := FDMemTableEntvtejj.FieldByName('HEURE').AsString;
+        QryExec.ParamByName('PRC_REMISE').AsFloat  := FDMemTableEntvtejj.FieldByName('PRC_REMISE').AsFloat;
+        QryExec.ParamByName('MT_REMISE').AsFloat   := FDMemTableEntvtejj.FieldByName('MT_REMISE').AsFloat;
+        QryExec.ParamByName('TOTHT').AsFloat       := FDMemTableEntvtejj.FieldByName('TOTHT').AsFloat;
+        QryExec.ParamByName('MT_TTC').AsInteger    := FDMemTableEntvtejj.FieldByName('MT_TTC').AsInteger;
+        QryExec.ParamByName('MT_HT0').AsFloat      := FDMemTableEntvtejj.FieldByName('MT_HT0').AsFloat;
+        QryExec.ParamByName('MT_HT1').AsFloat      := FDMemTableEntvtejj.FieldByName('MT_HT1').AsFloat;
+        QryExec.ParamByName('MT_HT2').AsFloat      := FDMemTableEntvtejj.FieldByName('MT_HT2').AsFloat;
+        QryExec.ParamByName('MT_HT3').AsFloat      := FDMemTableEntvtejj.FieldByName('MT_HT3').AsFloat;
+        QryExec.ParamByName('MT_TVA1').AsFloat     := FDMemTableEntvtejj.FieldByName('MT_TVA1').AsFloat;
+        QryExec.ParamByName('MT_TVA2').AsFloat     := FDMemTableEntvtejj.FieldByName('MT_TVA2').AsFloat;
+        QryExec.ParamByName('MT_TVA3').AsFloat     := FDMemTableEntvtejj.FieldByName('MT_TVA3').AsFloat;
+        QryExec.ParamByName('MT_TVA').AsFloat      := FDMemTableEntvtejj.FieldByName('MT_TVA').AsFloat;
+        QryExec.ParamByName('MARGE').AsFloat       := FDMemTableEntvtejj.FieldByName('MARGE').AsFloat;
+        QryExec.ParamByName('REFERENCE_').AsString := FDMemTableEntvtejj.FieldByName('REFERENCE_').AsString;
+        QryExec.ParamByName('CODREP').AsInteger     := FDMemTableEntvtejj.FieldByName('CODREP').AsInteger;
+        QryExec.ParamByName('NO_SEM').AsInteger    := FDMemTableEntvtejj.FieldByName('NO_SEM').AsInteger;
+        QryExec.ParamByName('NO_JOUR').AsInteger   := FDMemTableEntvtejj.FieldByName('NO_JOUR').AsInteger;
+        QryExec.ParamByName('REGL').AsInteger      := FDMemTableEntvtejj.FieldByName('REGL').AsInteger;
+        QryExec.ParamByName('CODPAI').AsString     := FDMemTableEntvtejj.FieldByName('CODPAI').AsString;
+        QryExec.ParamByName('JRSCRD').AsInteger    := FDMemTableEntvtejj.FieldByName('JRSCRD').AsInteger;
+        QryExec.ParamByName('FIN_MOIS').AsInteger  := FDMemTableEntvtejj.FieldByName('FIN_MOIS').AsInteger;
+        QryExec.ParamByName('LIBREG').AsString     := FDMemTableEntvtejj.FieldByName('LIBREG').AsString;
+        QryExec.ParamByName('CRD_FORCE').AsInteger := FDMemTableEntvtejj.FieldByName('CRD_FORCE').AsInteger;
+        QryExec.ParamByName('date_ech').AsDateTime := FDMemTableEntvtejj.FieldByName('date_ech').AsDateTime;
+        QryExec.ParamByName('ACOMPTE').AsInteger   := FDMemTableEntvtejj.FieldByName('ACOMPTE').AsInteger;
+        QryExec.ParamByName('CODGEO').AsString     := FDMemTableEntvtejj.FieldByName('CODGEO').AsString;
+        QryExec.ParamByName('FLAG_TAX').AsInteger  := FDMemTableEntvtejj.FieldByName('FLAG_TAX').AsInteger;
+        QryExec.ParamByName('SEL').AsInteger       := FDMemTableEntvtejj.FieldByName('SEL').AsInteger;
+        QryExec.ParamByName('NOMVEN').AsString     := FDMemTableEntvtejj.FieldByName('NOMVEN').AsString;
+        QryExec.ParamByName('MT_TSOC').AsFloat     := FDMemTableEntvtejj.FieldByName('MT_TSOC').AsFloat;
+        QryExec.ParamByName('MT_HTSOC').AsFloat    := FDMemTableEntvtejj.FieldByName('MT_HTSOC').AsFloat;
+        QryExec.ParamByName('TX_TSOC').AsFloat     := FDMemTableEntvtejj.FieldByName('TX_TSOC').AsFloat;
+        QryExec.ParamByName('EXO_CPS').AsInteger   := FDMemTableEntvtejj.FieldByName('EXO_CPS').AsInteger;
+        QryExec.ParamByName('MT_TVAI').AsFloat     := FDMemTableEntvtejj.FieldByName('MT_TVAI').AsFloat;
+        QryExec.ParamByName('MT_HTI').AsFloat      := FDMemTableEntvtejj.FieldByName('MT_HTI').AsFloat;
+        QryExec.ParamByName('TVA_ILES').AsBoolean  := FDMemTableEntvtejj.FieldByName('TVA_ILES').AsBoolean;
+
+        QryExec.ExecSQL;
         // Récupération du numéro de facture (généré ou existant)
         NumFacture := FDMemTableEntvtejj.FieldByName('CODFAC').AsInteger;
       end;
 
-      //ShowMessage(inttostr(NumFacture));
-
-      // Passage des paramètres de l'en-tête
-      QryExec.ParamByName('CODFAC').AsInteger := NumFacture;
-      QryExec.ParamByName('DATE_').AsDateTime := FDMemTableEntvtejj.FieldByName('DATE_').AsDateTime;
-      QryExec.ParamByName('HEURE').AsInteger  := ResultHeure;
-      QryExec.ParamByName('TYPE_').AsString   := FDMemTableEntvtejj.FieldByName('TYPE_').AsString;
-      QryExec.ParamByName('CODCLI').AsInteger := FDMemTableEntvtejj.FieldByName('CODCLI').AsInteger;
-      QryExec.ParamByName('TOTHT').AsFloat    := FDMemTableEntvtejj.FieldByName('TOTHT').AsFloat;
-      QryExec.ParamByName('CODDEV').AsInteger := FDMemTableEntvtejj.FieldByName('CODDEV').AsInteger;
-      QryExec.ParamByName('MT_TTC').AsFloat   := FDMemTableEntvtejj.FieldByName('MT_TTC').AsFloat;
-      QryExec.ParamByName('NOM').AsString     := FDMemTableEntvtejj.FieldByName('NOM').AsString;
-      QryExec.ParamByName('CODDEP').AsInteger := FDMemTableEntvtejj.FieldByName('CODDEP').AsInteger;
-      QryExec.ParamByName('CODCAI').AsString  := FDMemTableEntvtejj.FieldByName('CODCAI').AsString;
-      QryExec.ParamByName('TOP_').AsString    := FDMemTableEntvtejj.FieldByName('TOP_').AsString;
-      QryExec.ExecSQL;
       QryExec.Close;
 
       // ===========================================================
@@ -310,16 +473,58 @@ begin
 
         //Insertion ligvtejj
         QryExec.Close;
-        QryExec.SQL.Text := 'INSERT INTO ligvtejj (CODFAC, CODART, QTE, PRIXNET, TOTHT, LIBELLE, CODFOU, NOENR) ' +
-                            'VALUES (:CODFAC, :CODART, :QTE, :PRIXNET, :TOTHT, :LIBELLE, :CODFOU, :NOENR)';
-        QryExec.ParamByName('CODFAC').AsInteger := NumFacture;
-        QryExec.ParamByName('CODART').AsString := FDMemTableLigvtejj.FieldByName('CODART').AsString;
-        QryExec.ParamByName('QTE').AsFloat := FDMemTableLigvtejj.FieldByName('QTE').AsFloat;
-        QryExec.ParamByName('PRIXNET').AsFloat := FDMemTableLigvtejj.FieldByName('PRIXNET').AsFloat;
-        QryExec.ParamByName('TOTHT').AsFloat := FDMemTableLigvtejj.FieldByName('TOTHT').AsFloat;
-        QryExec.ParamByName('LIBELLE').AsString := FDMemTableLigvtejj.FieldByName('LIBELLE').AsString;
-        QryExec.ParamByName('CODFOU').AsString := FDMemTableLigvtejj.FieldByName('CODFOU').AsString;
-        QryExec.ParamByName('NOENR').AsInteger := VNoEnrStock;
+        QryExec.SQL.Text := 'INSERT INTO `ligvtejj` (' +
+          '`LIBELLE`, `CODFAC`, `CODCLI`, `CODCAI`, `CODDEV`, `CODDEP`, `NOENR`, `ANNEE`, `MOIS`, `CODREP`, ' +
+          '`CODFOU`, `CODSSF`, `CODFAM`, `CODDPT`, `TYPE_`, `CODART`, `CODBAR`, `QTE`, `POIDS`, `CODTAR`, ' +
+          '`PRIXHT`, `PRIXTTC`, `PRIXNET`, `TOTHT`, `MT_TTC`, `PRC_REMISE`, `MT_REMISE`, `TX_TVA`, `MT_TVA`, `NO_TVA`, ' +
+          '`PRIXREV`, `MARGE`, `NO_SEM`, `NO_JOUR`, `DET_PPT`, `DET_ILE`, `PXLVTTC`, `DER_MODIF`, `TX_TSOC`, `MT_TSOC`) VALUES (' +
+          ':LIBELLE, :CODFAC, :CODCLI, :CODCAI, :CODDEV, :CODDEP, :NOENR, :ANNEE, :MOIS, :CODREP, ' +
+          ':CODFOU, :CODSSF, :CODFAM, :CODDPT, :TYPE_, :CODART, :CODBAR, :QTE, :POIDS, :CODTAR, ' +
+          ':PRIXHT, :PRIXTTC, :PRIXNET, :TOTHT, :MT_TTC, :PRC_REMISE, :MT_REMISE, :TX_TVA, :MT_TVA, :NO_TVA, ' +
+          ':PRIXREV, :MARGE, :NO_SEM, :NO_JOUR, :DET_PPT, :DET_ILE, :PXLVTTC, CURRENT_TIMESTAMP, :TX_TSOC, :MT_TSOC)';
+
+        // Assignation directe des valeurs depuis la table mémoire des lignes
+        QryExec.ParamByName('LIBELLE').AsString    := FDMemTableLigvtejj.FieldByName('LIBELLE').AsString;
+        QryExec.ParamByName('CODFAC').AsInteger    := NumFacture;
+        QryExec.ParamByName('CODCLI').AsInteger    := FDMemTableLigvtejj.FieldByName('CODCLI').AsInteger;
+        QryExec.ParamByName('CODCAI').AsString     := FDMemTableLigvtejj.FieldByName('CODCAI').AsString;
+        QryExec.ParamByName('CODDEV').AsInteger    := FDMemTableLigvtejj.FieldByName('CODDEV').AsInteger;
+        QryExec.ParamByName('CODDEP').AsInteger    := FDMemTableLigvtejj.FieldByName('CODDEP').AsInteger;
+        QryExec.ParamByName('NOENR').AsInteger     := VNoEnrStock;
+        QryExec.ParamByName('ANNEE').AsInteger     := FDMemTableLigvtejj.FieldByName('ANNEE').AsInteger;
+        QryExec.ParamByName('MOIS').AsInteger      := FDMemTableLigvtejj.FieldByName('MOIS').AsInteger;
+        QryExec.ParamByName('CODREP').AsInteger    := FDMemTableLigvtejj.FieldByName('CODREP').AsInteger;
+        QryExec.ParamByName('CODFOU').AsString    := FDMemTableLigvtejj.FieldByName('CODFOU').AsString;
+        QryExec.ParamByName('CODSSF').AsString    := FDMemTableLigvtejj.FieldByName('CODSSF').AsString;
+        QryExec.ParamByName('CODFAM').AsString    := FDMemTableLigvtejj.FieldByName('CODFAM').AsString;
+        QryExec.ParamByName('CODDPT').AsString    := FDMemTableLigvtejj.FieldByName('CODDPT').AsString;
+        QryExec.ParamByName('TYPE_').AsString      := FDMemTableLigvtejj.FieldByName('TYPE_').AsString;
+        QryExec.ParamByName('CODART').AsString     := FDMemTableLigvtejj.FieldByName('CODART').AsString;
+        QryExec.ParamByName('CODBAR').AsString     := FDMemTableLigvtejj.FieldByName('CODBAR').AsString;
+        QryExec.ParamByName('QTE').AsFloat         := FDMemTableLigvtejj.FieldByName('QTE').AsFloat;
+        QryExec.ParamByName('POIDS').AsFloat       := FDMemTableLigvtejj.FieldByName('POIDS').AsFloat;
+        QryExec.ParamByName('CODTAR').AsString    := FDMemTableLigvtejj.FieldByName('CODTAR').AsString;
+        QryExec.ParamByName('PRIXHT').AsFloat      := FDMemTableLigvtejj.FieldByName('PRIXHT').AsFloat;
+        QryExec.ParamByName('PRIXTTC').AsInteger   := FDMemTableLigvtejj.FieldByName('PRIXTTC').AsInteger;
+        QryExec.ParamByName('PRIXNET').AsFloat     := FDMemTableLigvtejj.FieldByName('PRIXNET').AsFloat;
+        QryExec.ParamByName('TOTHT').AsFloat       := FDMemTableLigvtejj.FieldByName('TOTHT').AsFloat;
+        QryExec.ParamByName('MT_TTC').AsInteger    := FDMemTableLigvtejj.FieldByName('MT_TTC').AsInteger;
+        QryExec.ParamByName('PRC_REMISE').AsFloat  := FDMemTableLigvtejj.FieldByName('PRC_REMISE').AsFloat;
+        QryExec.ParamByName('MT_REMISE').AsFloat   := FDMemTableLigvtejj.FieldByName('MT_REMISE').AsFloat;
+        QryExec.ParamByName('TX_TVA').AsFloat      := FDMemTableLigvtejj.FieldByName('TX_TVA').AsFloat;
+        QryExec.ParamByName('MT_TVA').AsFloat      := FDMemTableLigvtejj.FieldByName('MT_TVA').AsFloat;
+        QryExec.ParamByName('NO_TVA').AsInteger    := FDMemTableLigvtejj.FieldByName('NO_TVA').AsInteger;
+        QryExec.ParamByName('PRIXREV').AsFloat     := FDMemTableLigvtejj.FieldByName('PRIXREV').AsFloat;
+        QryExec.ParamByName('MARGE').AsFloat       := FDMemTableLigvtejj.FieldByName('MARGE').AsFloat;
+        QryExec.ParamByName('NO_SEM').AsInteger    := FDMemTableLigvtejj.FieldByName('NO_SEM').AsInteger;
+        QryExec.ParamByName('NO_JOUR').AsInteger   := FDMemTableLigvtejj.FieldByName('NO_JOUR').AsInteger;
+        QryExec.ParamByName('DET_PPT').AsFloat   := FDMemTableLigvtejj.FieldByName('DET_PPT').AsFloat;
+        QryExec.ParamByName('DET_ILE').AsFloat   := FDMemTableLigvtejj.FieldByName('DET_ILE').AsFloat;
+        //QryExec.ParamByName('NOENRF').AsInteger    := FDMemTableLigvtejj.FieldByName('NOENRF').AsInteger;
+        QryExec.ParamByName('PXLVTTC').AsInteger   := FDMemTableLigvtejj.FieldByName('PXLVTTC').AsInteger;
+        QryExec.ParamByName('TX_TSOC').AsFloat     := FDMemTableLigvtejj.FieldByName('TX_TSOC').AsFloat;
+        QryExec.ParamByName('MT_TSOC').AsFloat     := FDMemTableLigvtejj.FieldByName('MT_TSOC').AsFloat;
+
         QryExec.ExecSQL;
 
         //Lecture ligne memoire suivante
@@ -343,16 +548,31 @@ begin
       while not FDMemTableRegljj.Eof do
       begin
         QryExec.Close;
-        QryExec.SQL.Text := 'INSERT INTO regljj (CODFAC, CODPAI, MONTANT, DATE_, DATE_ECH) ' +
-                            'VALUES (:CODFAC, :CODPAI, :MONTANT, :DATE_, :DATE_ECH)';
 
-        QryExec.ParamByName('CODFAC').AsInteger := NumFacture;
-        QryExec.ParamByName('CODPAI').AsString := FDMemTableRegljj.FieldByName('CODPAI').AsString;
-        QryExec.ParamByName('MONTANT').AsFloat := FDMemTableRegljj.FieldByName('MONTANT').AsFloat;
-        QryExec.ParamByName('DATE_').AsDateTime := FDMemTableRegljj.FieldByName('DATE_').AsDateTime;
-        QryExec.ParamByName('DATE_ECH').AsDateTime := FDMemTableRegljj.FieldByName('DATE_ECH').AsDateTime;
+        QryExec.SQL.Text := 'INSERT INTO `regljj` (' +
+          '`CODFAC`, `CODCAI`, `CODVEN`, `DATE_`, `TOP_`, `LIBELLE`, `MONTANT`, `DATE_ECH`, `CODPAI`, `TYPE_`, ' +
+          '`SELECT_`, `DATE_OPER`, `DATE_COMPTA`, `DER_MODIF`, `MONT_ARR`) VALUES (' +
+          ':CODFAC, :CODCAI, :CODVEN, :DATE_, :TOP_, :LIBELLE, :MONTANT, :DATE_ECH, :CODPAI, :TYPE_, ' +
+          ':SELECT_, :DATE_OPER, :DATE_COMPTA, CURRENT_TIMESTAMP, :MONT_ARR)';
+
+        // Assignation directe des valeurs depuis la table mémoire des règlements
+        QryExec.ParamByName('CODFAC').AsInteger     := NumFacture;
+        QryExec.ParamByName('CODCAI').AsString      := FDMemTableRegljj.FieldByName('CODCAI').AsString;
+        QryExec.ParamByName('CODVEN').AsInteger     := FDMemTableRegljj.FieldByName('CODVEN').AsInteger;
+        QryExec.ParamByName('DATE_').AsDateTime     := FDMemTableRegljj.FieldByName('DATE_').AsDateTime;
+        QryExec.ParamByName('TOP_').AsString       := FDMemTableRegljj.FieldByName('TOP_').AsString;
+        QryExec.ParamByName('LIBELLE').AsString     := FDMemTableRegljj.FieldByName('LIBELLE').AsString;
+        QryExec.ParamByName('MONTANT').AsInteger    := FDMemTableRegljj.FieldByName('MONTANT').AsInteger;
+        QryExec.ParamByName('DATE_ECH').AsDateTime  := FDMemTableRegljj.FieldByName('DATE_ECH').AsDateTime;
+        QryExec.ParamByName('CODPAI').AsString      := FDMemTableRegljj.FieldByName('CODPAI').AsString;
+        QryExec.ParamByName('TYPE_').AsString       := FDMemTableRegljj.FieldByName('TYPE_').AsString;
+        QryExec.ParamByName('SELECT_').AsInteger    := FDMemTableRegljj.FieldByName('SELECT_').AsInteger;
+        QryExec.ParamByName('DATE_OPER').AsDateTime := FDMemTableRegljj.FieldByName('DATE_OPER').AsDateTime;
+        QryExec.ParamByName('DATE_COMPTA').AsDateTime := FDMemTableRegljj.FieldByName('DATE_COMPTA').AsDateTime;
+        //QryExec.ParamByName('NOENR').AsInteger      := FDMemTableRegljj.FieldByName('NOENR').AsInteger;
+        QryExec.ParamByName('MONT_ARR').AsInteger   := FDMemTableRegljj.FieldByName('MONT_ARR').AsInteger;
+
         QryExec.ExecSQL;
-
         FDMemTableRegljj.Next;
       end;
 
@@ -523,6 +743,16 @@ begin
  DBCODREPChange(SELF);
 end;
 
+procedure TFormEntvtejj.RzDBCheckBoxEXO_TVAClick(Sender: TObject);
+begin
+  CalculCompletFacture;
+end;
+
+procedure TFormEntvtejj.RzDBCheckBoxTVA_ILESClick(Sender: TObject);
+begin
+  CalculCompletFacture;
+end;
+
 procedure TFormEntvtejj.RzDBRadioGroupTypeChange(Sender: TObject);
 begin
   if RzDBRadioGroupType.Value = 'F' then
@@ -533,6 +763,8 @@ begin
   begin
     JvDBGridLigvtejj.AlternateRowColor := RGB(255, 182, 193); // Alice blue
   end;
+  //Relance calcul complet facture
+  CalculCompletFacture;
 end;
 
 
@@ -540,15 +772,38 @@ end;
 procedure TFormEntvtejj.CalculCompletFacture;
 var
   QryExec: TFDQuery;
+  QryArticle: TFDQuery;
   pTVA: String;
+
+  wHT0: Double;
+  wHT0r: Double;
+  wHT1: Double;
+  wHT1r: Double;
+  wHT2: Double;
+  wHT2r: Double;
+  wHT3: Double;
+  wHT3r: Double;
+  wHT4: Double;
+  wHT4r: Double;
+  wTVA1: Double;
+  wTVA2: Double;
+  wTVA3: Double;
+  wTVA4: Double;
+
+  MONT: Double;
+  WTOT_REGLE: dOUBLE;
+
 begin
-  // On ne fait rien si la table est simplement en train d'être lue/initialisée (sinon plantage)
+  // On ne fait rien si la fiche est simplement en train d'être lue/initialisée (sinon plantage)
   if not (FDMemTableEntvtejj.State in [dsEdit, dsInsert]) then
     Exit;
 
-   // Création d'une requête temporaire dédiée aux exécutables SQL
+   // Création requêtes temporaires dédiées aux exécutables SQL
   QryExec := TFDQuery.Create(nil);
   QryExec.Connection := DMGesCloud.ConnexionGesCloud;
+
+  QryArticle := TFDQuery.Create(nil);
+  QryArticle.Connection := DMGesCloud.ConnexionGesCloud;
 
   // Sauvegarde la position actuelle du curseur pour ne pas perturber l'utilisateur
   FDMemTableLigvtejj.DisableControls;
@@ -578,12 +833,12 @@ begin
         FDMemTableLigvtejj.Edit;
 
         //Lecture article
-        QryExec.Close;
-        QryExec.SQL.Text := 'SELECT * FROM article WHERE CODART=:CODART';
-        QryExec.ParamByName('CODART').AsString := FDMemTableLigvtejj.FieldByName('CODART').AsString;
-        QryExec.Open;
-				FDMemTableLigvtejj.FieldByName('NO_TVA').AsInteger := StrToIntDef(StringReplace(QryExec.FieldByName('TVA').AsString, 'TVA', '', [rfReplaceAll, rfIgnoreCase]),0);
-        pTVA := QryExec.FieldByName('TVA').AsString;
+        QryArticle.Close;
+        QryArticle.SQL.Text := 'SELECT * FROM article WHERE CODART=:CODART';
+        QryArticle.ParamByName('CODART').AsString := FDMemTableLigvtejj.FieldByName('CODART').AsString;
+        QryArticle.Open;
+				FDMemTableLigvtejj.FieldByName('NO_TVA').AsInteger := StrToIntDef(StringReplace(QryArticle.FieldByName('TVA').AsString, 'TVA', '', [rfReplaceAll, rfIgnoreCase]),0);
+        pTVA := QryArticle.FieldByName('TVA').AsString;
 
         //Lecture Paramre
         QryExec.Close;
@@ -620,18 +875,18 @@ begin
         FDMemTableLigvtejj.Edit;
 
         //Lecture article
-        QryExec.Close;
-        QryExec.SQL.Text := 'SELECT * FROM article WHERE CODART=:CODART';
-        QryExec.ParamByName('CODART').AsString := FDMemTableLigvtejj.FieldByName('CODART').AsString;
-        QryExec.Open;
+        QryArticle.Close;
+        QryArticle.SQL.Text := 'SELECT * FROM article WHERE CODART=:CODART';
+        QryArticle.ParamByName('CODART').AsString := FDMemTableLigvtejj.FieldByName('CODART').AsString;
+        QryArticle.Open;
 
-        if QryExec.FieldByName('TVA').AsString = 'TVA0' then   //ppn
+        if QryArticle.FieldByName('TVA').AsString = 'TVA0' then   //ppn
         begin
           FDMemTableLigvtejj.Next;
           CONTINUE;
         end;
 
-        if QryExec.FieldByName('EXCLU_TVA1').AsBoolean then	  //Exclu iles
+        if QryArticle.FieldByName('EXCLU_TVA1').AsBoolean then	  //Exclu iles
         begin
           FDMemTableLigvtejj.Next;
           CONTINUE;
@@ -688,186 +943,198 @@ begin
     FDMemTableLigvtejj.First;
     while not FDMemTableLigvtejj.Eof do
     begin
-        BtnAnnuler.Enabled:=false;
+        //BtnAnnuler.Enabled:=false;
+        FDMemTableLigvtejj.Edit;
 
-        article.codart=ligvtepc.codart
-        HLitRecherchePremier(article,codart,ligvtepc.codart)
-        IF ctrstock.nature="G" ALORS
+        //Lecture article
+        QryArticle.Close;
+        QryArticle.SQL.Text := 'SELECT * FROM article WHERE CODART=:CODART';
+        QryArticle.ParamByName('CODART').AsString := FDMemTableLigvtejj.FieldByName('CODART').AsString;
+        QryArticle.Open;
+
+        DM_Olivier.FDQueryCtrstock.Open;
+        IF DM_Olivier.FDQueryCtrstock.FieldByName('NATURE').AsString = 'G' then
+        begin
           //!MàJ Prix détail (au cas ou client change)
-          HLitRecherchePremier(prixgeo,primary,[entvtepc.codgeo,article.codprix])
-          ligvtepc.det_ppt = article.det_ppt
-          ligvtepc.det_ile = ligvtepc.det_ppt*prixgeo.coef
-          HModifie(ligvtepc)
-        END
+          DM_Olivier.FDQueryPrixgeo.Close;
+          DM_Olivier.FDQueryPrixgeo.ParamByName('CODART').AsString:=FDMemTableLigvtejj.FieldByName('CODART').AsString;
+          DM_Olivier.FDQueryPrixgeo.ParamByName('CODGEO').AsString:=FDMemTableEntvtejj.FieldByName('CODGEO').AsString;
+          DM_Olivier.FDQueryPrixgeo.Open;
 
-        //!total co–t revient
-        entvtepc.marge   += ligvtepc.qte * ligvtepc.prixrev
+          FDMemTableLigvtejj.FieldByName('DET_PPT').AsFloat := QryArticle.FieldByName('DET_PPT').AsFloat;
+          FDMemTableLigvtejj.FieldByName('DET_ILE').AsFloat := QryArticle.FieldByName('DET_PPT').AsFloat * DM_Olivier.FDQueryPrixgeo.FieldByName('COEF').AsFloat;
+        end;
+
+        //!total cout revient prealable avant la marge globale
+        FDMemTableEntvtejj.FieldByName('MARGE').AsFloat := FDMemTableEntvtejj.FieldByName('MARGE').AsFloat + (FDMemTableLigvtejj.FieldByName('PRIXREV').AsFloat * FDMemTableLigvtejj.FieldByName('QTE').AsFloat);
 
         //!Différents Cumuls
-        SAI_MT_TTC_EVC  += ligvtepc.mt_ttc
+        FDMemTableEntvtejj.FieldByName('MT_TTC').AsInteger := FDMemTableEntvtejj.FieldByName('MT_TTC').AsInteger + FDMemTableLigvtejj.FieldByName('MT_TTC').AsInteger;
 
-        //!Calcul assiette Taxe sociale remisable globalement
-        wHTSOCr est un numérique
-        wHTSOC est un numérique
-        wMTSOC est un numérique
-        IF ligvtepc.mt_tsoc ALORS
-          IF article.prest =0 ALORS	//!Remisable global
-            wHTSOCr += ligvtepc.totht
-          END
-          wHTSOC += ligvtepc.totht
-          wMTSOC += ligvtepc.mt_tsoc
-        END
+//        //!Calcul assiette Taxe sociale remisable globalement
+//        wHTSOCr est un numérique
+//        wHTSOC est un numérique
+//        wMTSOC est un numérique
+//        IF ligvtepc.mt_tsoc ALORS
+//          IF article.prest =0 ALORS	//!Remisable global
+//            wHTSOCr += ligvtepc.totht
+//          END
+//          wHTSOC += ligvtepc.totht
+//          wMTSOC += ligvtepc.mt_tsoc
+//        END
 
         //!Calcul assiettes TVA remisables globalement
-        wHT0	est un numérique
-        wHT0r	est un numérique
-        wHT1	est un numérique
-        wHT1r	est un numérique
-        wHT2	est un numérique
-        wHT2r	est un numérique
-        wHT3	est un numérique
-        wHT3r	est un numérique
-        wHT4	est un numérique
-        wHT4r	est un numérique
-        wTVA1	est un numérique
-        wTVA2	est un numérique
-        wTVA3	est un numérique
-        wTVA4	est un numérique
 
-        IF INT_EXO_TVA=1 ALORS
-          IF article.prest=0 ALORS	//!Remisable global
-            wHT0r  += ligvtepc.totht
-          END
-          wHT0  += ligvtepc.totht
-        ELSE
+        //Si exonere de TVA
+    	  if RzDBCheckBoxEXO_TVA.Checked then
+        begin
+          if QryArticle.FieldByName('PREST').AsInteger=0 then	//!Remisable global
+            wHT0r  := wHT0r + FDMemTableLigvtejj.FieldByName('TOTHT').AsFloat;
+          wHT0  := wHT0 + FDMemTableLigvtejj.FieldByName('TOTHT').AsFloat;
+        end
+        else
+        begin
+          case FDMemTableLigvtejj.FieldByName('NO_TVA').AsInteger of
+             0:
+              begin
+                if QryArticle.FieldByName('PREST').AsInteger=0 then	//!Remisable global
+                  wHT0r  := wHT0r + FDMemTableLigvtejj.FieldByName('TOTHT').AsFloat;
+                wHT0  := wHT0 + FDMemTableLigvtejj.FieldByName('TOTHT').AsFloat;
+               end;
 
-          SELON ligvtepc.no_tva
-            CAS 0 :
-              IF article.prest=0 ALORS
-                wHT0r  += ligvtepc.totht
-              END
-              wHT0  += ligvtepc.totht
+             1:
+              begin
+                if QryArticle.FieldByName('PREST').AsInteger=0 then	//!Remisable global
+                  wHT1r  := wHT1r + FDMemTableLigvtejj.FieldByName('TOTHT').AsFloat;
+                wHT1  := wHT1 + FDMemTableLigvtejj.FieldByName('TOTHT').AsFloat;
+                wTVA1 := wTVA1 + FDMemTableLigvtejj.FieldByName('MT_TVA').AsFloat;
+              end;
 
-            CAS 1 :
-              IF article.prest=0 ALORS
-                wHT1r  += ligvtepc.totht
-              END
-              wHT1  += ligvtepc.totht
-              wTVA1 += ligvtepc.mt_tva
+             2:
+              begin
+                if QryArticle.FieldByName('PREST').AsInteger=0 then	//!Remisable global
+                  wHT2r  := wHT2r + FDMemTableLigvtejj.FieldByName('TOTHT').AsFloat;
+                wHT2  := wHT2 + FDMemTableLigvtejj.FieldByName('TOTHT').AsFloat;
+                wTVA2 := wTVA2 + FDMemTableLigvtejj.FieldByName('MT_TVA').AsFloat;
+              end;
 
-            CAS 2 :
-              IF article.prest=0 ALORS
-                wHT2r  += ligvtepc.totht
-              END
-              wHT2  += ligvtepc.totht
-              wTVA2 += ligvtepc.mt_tva
+             3:
+              begin
+                if QryArticle.FieldByName('PREST').AsInteger=0 then	//!Remisable global
+                  wHT3r  := wHT3r + FDMemTableLigvtejj.FieldByName('TOTHT').AsFloat;
+                wHT3  := wHT3 + FDMemTableLigvtejj.FieldByName('TOTHT').AsFloat;
+                wTVA3 := wTVA3 + FDMemTableLigvtejj.FieldByName('MT_TVA').AsFloat;
+              end;
 
-            CAS 3
-              IF article.prest=0 ALORS
-                wHT3r  += ligvtepc.totht
-              END
-              wHT3  += ligvtepc.totht
-              wTVA3 += ligvtepc.mt_tva
+             4:
+              begin
+                if QryArticle.FieldByName('PREST').AsInteger=0 then	//!Remisable global
+                  wHT4r  := wHT4r + FDMemTableLigvtejj.FieldByName('TOTHT').AsFloat;
+                wHT4  := wHT4 + FDMemTableLigvtejj.FieldByName('TOTHT').AsFloat;
+                wTVA4 := wTVA4 + FDMemTableLigvtejj.FieldByName('MT_TVA').AsFloat;
+              end;
+          end;
+        end;
 
-            CAS 4
-              IF article.prest=0 ALORS
-                wHT4r  += ligvtepc.totht
-              END
-              wHT4  += ligvtepc.totht
-              wTVA4 += ligvtepc.mt_tva
-          END
-        END
-          HLitSuivant(ligvtepc)
+        FDMemTableLigvtejj.post;
+        FDMemTableLigvtejj.Next;
 
-      END
+      end;
 
-//!Assiettes et mont TVA
-entvtepc.mt_ht0	= wHT0
-entvtepc.mt_ht1	= wHT1
-entvtepc.mt_ht2	= wHT2
-entvtepc.mt_ht3	= wHT3
-entvtepc.mt_hti	= wHT4
-entvtepc.mt_tva1	= wTVA1
-entvtepc.mt_tva2	= wTVA2
-entvtepc.mt_tva3	= wTVA3
-entvtepc.mt_tvai	= wTVA4
-
-//!Assiette ET MONT CPS
-MONT est un numérique
-
-entvtepc.mt_htsoc	= wHTSOC
-SAI_MT_TSOC_EVC	= wMTSOC
-
-IF SAI_PRC_REMISE_EVC <> 0 ALORS
-	MONT= Round(((wHT0r * SAI_PRC_REMISE_EVC) / 100))
-	SAI_MT_REMISE_EVC	= MONT
-	entvtepc.mt_ht0   -= MONT
-
-	MONT = Round(((wHT1r * SAI_PRC_REMISE_EVC) / 100))
-	SAI_MT_REMISE_EVC+= MONT
-	entvtepc.mt_ht1   -= MONT
-	entvtepc.mt_tva1   = ((entvtepc.mt_ht1/100) * gTx_TVA1)
-
-	MONT = Round(((wHT2r * SAI_PRC_REMISE_EVC) / 100))
-	SAI_MT_REMISE_EVC+= MONT
-	entvtepc.mt_ht2   -= MONT
-	entvtepc.mt_tva2   = ((entvtepc.mt_ht2/100) * gTx_TVA2)
-
-	MONT = Round(((wHT3r * SAI_PRC_REMISE_EVC) / 100),1)
-	SAI_MT_REMISE_EVC+= MONT
-	entvtepc.mt_ht3   -= MONT
-	entvtepc.mt_tva3   = ((entvtepc.mt_ht3/100) * gTx_TVA3)
-
-	MONT = Round(((wHT4r * SAI_PRC_REMISE_EVC) / 100),1)
-	SAI_MT_REMISE_EVC+= MONT
-	entvtepc.mt_hti   -= MONT
-	entvtepc.mt_tvai   = ((entvtepc.mt_hti/100) * gTx_TVAI)
-
-	MONT = Round(((wHTSOCr * SAI_PRC_REMISE_EVC) / 100),1)
-	entvtepc.mt_htsoc -= MONT
-	SAI_MT_TSOC_EVC   = ((entvtepc.mt_htsoc/100) * entvtepc.tx_tsoc)
-END
-
-SAI_TOTHT_EVC		= entvtepc.mt_ht0 + entvtepc.mt_ht1 + entvtepc.mt_ht2 + entvtepc.mt_ht3 + entvtepc.mt_hti
-SAI_MT_TVA_EVC		= entvtepc.mt_tva1 + entvtepc.mt_tva2 + entvtepc.mt_tva3 + entvtepc.mt_tvai
-entvtepc.marge		= SAI_TOTHT_EVC - entvtepc.marge
-
-//! Cause arrondi
-SAI_MT_TTC_EVC    = Round(SAI_MT_TVA_EVC + SAI_TOTHT_EVC + SAI_MT_TSOC_EVC)
-
-//Test si facture réglée
-WTOT_REGLE =0
-HLitRecherchePremier(reglpc,codfac,entvtepc.codfac)
-TANTQUE HTrouve()=Vrai
-	WTOT_REGLE += reglpc.montant
-	HLitSuivant(reglpc)
-FIN
-
-SI WTOT_REGLE=SAI_MT_TTC_EVC ALORS
-	entvtepc.regl=1
-	entvtepc.top_= "F"
-SINON
-	entvtepc.regl=0
-	entvtepc.top_= "S"
-FIN
-
-COULEUR_TABLE_REGLPC()
-
-Sablier(Faux)
+    //!Assiettes et mont TVA
+    FDMemTableEntvtejj.FieldByName('MT_HT0').AsFloat := wHT0;
+    FDMemTableEntvtejj.FieldByName('MT_HT1').AsFloat := wHT1;
+    FDMemTableEntvtejj.FieldByName('MT_HT2').AsFloat := wHT2;
+    FDMemTableEntvtejj.FieldByName('MT_HT3').AsFloat := wHT3;
+    FDMemTableEntvtejj.FieldByName('MT_HTI').AsFloat := wHT4;
+    FDMemTableEntvtejj.FieldByName('MT_TVA1').AsFloat:= wTVA1;
+    FDMemTableEntvtejj.FieldByName('MT_TVA2').AsFloat:= wTVA2;
+    FDMemTableEntvtejj.FieldByName('MT_TVA3').AsFloat:= wTVA3;
+    FDMemTableEntvtejj.FieldByName('MT_TVAI').AsFloat:= wTVA4;
 
 
+//FDMemTableEntvtejj.FieldByName('.mt_htsoc	= wHTSOC
+//SAI_MT_TSOC_EVC	= wMTSOC
 
+    if FDMemTableEntvtejj.FieldByName('PRC_REMISE').AsFloat <> 0 then
+    begin
+      MONT := Round(((wHT0r * FDMemTableEntvtejj.FieldByName('PRC_REMISE').AsFloat) / 100));
+      FDMemTableEntvtejj.FieldByName('MT_REMISE').AsFloat	:= MONT;
+      FDMemTableEntvtejj.FieldByName('MT_HT0').AsFloat    := FDMemTableEntvtejj.FieldByName('MT_HT0').AsFloat - MONT;
+
+      MONT := Round(((wHT1r * FDMemTableEntvtejj.FieldByName('PRC_REMISE').AsFloat) / 100));
+      FDMemTableEntvtejj.FieldByName('MT_REMISE').AsFloat := MONT + FDMemTableEntvtejj.FieldByName('MT_REMISE').AsFloat;
+      FDMemTableEntvtejj.FieldByName('MT_HT1').AsFloat    := FDMemTableEntvtejj.FieldByName('MT_HT1').AsFloat - MONT;
+      FDMemTableEntvtejj.FieldByName('MT_TVA1').AsFloat   := ((FDMemTableEntvtejj.FieldByName('MT_HT1').AsFloat/100) * DM_Olivier.gTx_TVA1);
+
+      MONT := Round(((wHT2r * FDMemTableEntvtejj.FieldByName('PRC_REMISE').AsFloat) / 100));
+      FDMemTableEntvtejj.FieldByName('MT_REMISE').AsFloat := MONT + FDMemTableEntvtejj.FieldByName('MT_REMISE').AsFloat;
+      FDMemTableEntvtejj.FieldByName('MT_HT2').AsFloat    := FDMemTableEntvtejj.FieldByName('MT_HT2').AsFloat - MONT;
+      FDMemTableEntvtejj.FieldByName('MT_TVA2').AsFloat   := ((FDMemTableEntvtejj.FieldByName('MT_HT2').AsFloat/100) * DM_Olivier.gTx_TVA2);
+
+      MONT := Round(((wHT3r * FDMemTableEntvtejj.FieldByName('PRC_REMISE').AsFloat) / 100));
+      FDMemTableEntvtejj.FieldByName('MT_REMISE').AsFloat := MONT + FDMemTableEntvtejj.FieldByName('MT_REMISE').AsFloat;
+      FDMemTableEntvtejj.FieldByName('MT_HT3').AsFloat    := FDMemTableEntvtejj.FieldByName('MT_HT3').AsFloat - MONT;
+      FDMemTableEntvtejj.FieldByName('MT_TVA3').AsFloat   := ((FDMemTableEntvtejj.FieldByName('MT_HT3').AsFloat/100) * DM_Olivier.gTx_TVA3);
+
+      MONT := Round(((wHT4r * FDMemTableEntvtejj.FieldByName('PRC_REMISE').AsFloat) / 100));
+      FDMemTableEntvtejj.FieldByName('MT_REMISE').AsFloat := MONT + FDMemTableEntvtejj.FieldByName('MT_REMISE').AsFloat;
+      FDMemTableEntvtejj.FieldByName('MT_HTI').AsFloat    := FDMemTableEntvtejj.FieldByName('MT_HTI').AsFloat - MONT;
+      FDMemTableEntvtejj.FieldByName('MT_TVAI').AsFloat   := ((FDMemTableEntvtejj.FieldByName('MT_HTI').AsFloat/100) * DM_Olivier.gTx_TVAI);
+
+//    MONT := Round(((wHTSOCr * FDMemTableEntvtejj.FieldByName('PRC_REMISE').AsFloat) / 100));
+//    FDMemTableEntvtejj.FieldByName('.mt_htsoc -= MONT
+//    SAI_MT_TSOC_EVC   = ((FDMemTableEntvtejj.FieldByName('.mt_htsoc/100) * FDMemTableEntvtejj.FieldByName('.tx_tsoc)
+    end;
+
+    FDMemTableEntvtejj.FieldByName('TOTHT').AsFloat	:= FDMemTableEntvtejj.FieldByName('MT_HT0').AsFloat
+    + FDMemTableEntvtejj.FieldByName('MT_HT1').AsFloat
+    + FDMemTableEntvtejj.FieldByName('MT_HT2').AsFloat
+    + FDMemTableEntvtejj.FieldByName('MT_HT3').AsFloat
+    + FDMemTableEntvtejj.FieldByName('MT_HTI').AsFloat;
+
+    FDMemTableEntvtejj.FieldByName('MT_TVA').AsFloat := FDMemTableEntvtejj.FieldByName('MT_TVA1').AsFloat
+    + FDMemTableEntvtejj.FieldByName('MT_TVA2').AsFloat
+    + FDMemTableEntvtejj.FieldByName('MT_TVA3').AsFloat
+    + FDMemTableEntvtejj.FieldByName('MT_TVAI').AsFloat;
+
+    //Calcul final de la marge globale
+    FDMemTableEntvtejj.FieldByName('MARGE').AsFloat	:= FDMemTableEntvtejj.FieldByName('TOTHT').AsFloat - FDMemTableEntvtejj.FieldByName('MARGE').AsFloat;
+
+    //! Cause arrondi
+    FDMemTableEntvtejj.FieldByName('MT_TTC').AsInteger := Round(FDMemTableEntvtejj.FieldByName('MT_TVA').AsFloat
+     + FDMemTableEntvtejj.FieldByName('TOTHT').AsFloat);
+     //+ SAI_MT_TSOC_EVC)
+
+    //Test si facture réglée
+    WTOT_REGLE :=0;
+    //Lecture des reglements
+    FDMemTableRegljj.First;
+    while not FDMemTableRegljj.Eof do
+    begin
+      WTOT_REGLE := WTOT_REGLE + FDMemTableRegljj.FieldByName('MONTANT').AsFloat;
+      FDMemTableRegljj.Next;
+    end;
+
+    if WTOT_REGLE=FDMemTableEntvtejj.FieldByName('MT_TTC').AsInteger then
+    begin
+      FDMemTableEntvtejj.FieldByName('REGL').AsInteger:=1;
+      FDMemTableEntvtejj.FieldByName('TOP_').AsString:= 'F';
+    end
+    else
+    begin
+      FDMemTableEntvtejj.FieldByName('REGL').AsInteger:=0;
+      FDMemTableEntvtejj.FieldByName('TOP_').AsString:= 'S';
+    end;
 
 
   finally
-      // Réactive l'affichage de la grille
-      FDMemTableLigvtejj.EnableControls;
-	    brut_ht	= SAI_TOTHT + SAI_MT_REMISE
-
-	    // Rafraichissement de la table ligvtepc
-	    TableAffiche(TABLE_Ligvtepc,taCourantBandeau)
+    // Réactive l'affichage de la grille
+    FDMemTableLigvtejj.EnableControls;
+    QryExec.Free;
+    QryArticle.Free;
   end;
-END;
+end;
 
 
 

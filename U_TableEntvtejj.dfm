@@ -209,12 +209,14 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
         Expanded = False
         FieldName = 'TOTHT'
         Title.Caption = 'Total HT'
+        Width = 69
         Visible = True
       end
       item
         Expanded = False
         FieldName = 'MT_TTC'
         Title.Caption = 'Total TTC'
+        Width = 84
         Visible = True
       end
       item
