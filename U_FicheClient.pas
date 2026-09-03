@@ -76,8 +76,6 @@ type
     DBEdit18: TDBEdit;
     Label22: TLabel;
     DBEdit19: TDBEdit;
-    Label23: TLabel;
-    DBEdit20: TDBEdit;
     Label24: TLabel;
     DBEdit21: TDBEdit;
     ComboTarif: TDBLookupComboBox;
@@ -119,6 +117,15 @@ type
     JvDBGridEnt_prof: TJvDBGrid;
     BtnConsulter_devis: TSpeedButton;
     BtnImpDevis: TSpeedButton;
+    DBCheckBoxPas_rem: TDBCheckBox;
+    DBCheckBoxExo_tva: TDBCheckBox;
+    DBCheckBoxFlag_tax: TDBCheckBox;
+    DBCheckBoxBloque: TDBCheckBox;
+    DBCheckBoxAdm: TDBCheckBox;
+    DBCheckBoxPlv: TDBCheckBox;
+    DBCheckBoxCUM_MVT: TDBCheckBox;
+    DBCheckBoxREM_FAM: TDBCheckBox;
+    DBCheckBoxRELEVE_EMAIL: TDBCheckBox;
     procedure BtnValiderClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure ComboTarifKeyDown(Sender: TObject; var Key: Word;
@@ -644,6 +651,10 @@ begin
   // 1. Désactivation du champ code en mode modification
   DBcodcli.ReadOnly := (ModeSaisie = msModification);
 
+  //Lecture Ctrstock
+  DMGesCloud.FDQueryCtrstock.Close;
+  DMGesCloud.FDQueryCtrstock.Open;
+
   // --- AFFECTATION AUTOMATIQUE DU PROCHAIN NUMÉRO EN MODE CRÉATION ---
   if ModeSaisie = msAjout then
   begin
@@ -659,6 +670,15 @@ begin
       DBCheckBoxFerme.Checked := false;
       DBCheckBoxFinMois.Checked := false;
       DBCheckBoxAppTarifcli.Checked := false;
+      DBCheckBoxExo_tva.Checked := false;
+      DBCheckBoxPas_rem.Checked := false;
+      DBCheckBoxAdm.Checked := false;
+      DBCheckBoxBloque.Checked := false;
+      DBCheckBoxPlv.Checked := false;
+      DBCheckBoxCUM_MVT.Checked := false;
+      DBCheckBoxREM_FAM.Checked := false;
+      DBCheckBoxRELEVE_EMAIL.Checked := false;
+      DMGesCloud.ReqClients.FieldByName('FLAG_TAX').AsInteger:= DMGesCloud.FDQueryCtrstock.FieldByName('FLAG_TAX').AsInteger;
      end;
   end;
 

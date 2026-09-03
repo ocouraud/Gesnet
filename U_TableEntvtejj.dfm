@@ -393,14 +393,14 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
     object EdtCherche_CODFAC: TEdit
       Left = 85
       Top = 28
-      Width = 89
+      Width = 76
       Height = 23
       TabOrder = 0
       TextHint = 'Filtrer par numero'
       OnChange = EdtCherche_CODFACChange
     end
     object EdtCherche_NOM: TEdit
-      Left = 392
+      Left = 368
       Top = 28
       Width = 193
       Height = 23
@@ -409,12 +409,12 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
       OnChange = EdtCherche_NOMChange
     end
     object CheckBoxToutesFactures: TCheckBox
-      Left = 747
+      Left = 680
       Top = 0
-      Width = 74
+      Width = 141
       Height = 57
       Align = alRight
-      Caption = 'Toutes les'#13#10'factures'
+      Caption = 'Toutes les factures'
       TabOrder = 2
       OnClick = CheckBoxToutesFacturesClick
     end
@@ -428,16 +428,16 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
       OnChange = EditCherche_SELChange
     end
     object EditCherche_DATE_: TEdit
-      Left = 172
+      Left = 164
       Top = 28
-      Width = 69
+      Width = 61
       Height = 23
       TabOrder = 4
       TextHint = 'Filtrer par date'
       OnChange = EdtCherche_CODFACChange
     end
     object EditCherche_CODCLI: TEdit
-      Left = 328
+      Left = 304
       Top = 28
       Width = 65
       Height = 23
@@ -446,7 +446,7 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
       OnChange = EdtCherche_CODFACChange
     end
     object EditCherche_CODCAI: TEdit
-      Left = 695
+      Left = 680
       Top = 28
       Width = 34
       Height = 23

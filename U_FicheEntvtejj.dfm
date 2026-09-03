@@ -51,8 +51,8 @@ object FormEntvtejj: TFormEntvtejj
     Caption = 'Vendeur'
   end
   object Label7: TLabel
-    Left = 8
-    Top = 122
+    Left = 593
+    Top = 98
     Width = 53
     Height = 15
     Caption = 'No TAHITI'
@@ -86,19 +86,11 @@ object FormEntvtejj: TFormEntvtejj
     Caption = 'No client'
   end
   object LabelHeureLisible: TLabel
-    Left = 355
+    Left = 375
     Top = 11
-    Width = 93
+    Width = 114
     Height = 15
     Caption = 'LabelHeureLisible'
-  end
-  object LabelNomRepres: TLabel
-    Left = 125
-    Top = 148
-    Width = 9
-    Height = 15
-    Hint = 'Nom repr'#233'sentant'
-    Caption = '...'
   end
   object DBCODFAC: TDBEdit
     Left = 84
@@ -126,7 +118,7 @@ object FormEntvtejj: TFormEntvtejj
     DataSource = DSMemTableEntvtejj
     Enabled = False
     ReadOnly = True
-    TabOrder = 10
+    TabOrder = 12
   end
   object DBCODDEV: TDBEdit
     Left = 265
@@ -158,34 +150,25 @@ object FormEntvtejj: TFormEntvtejj
     TabOrder = 5
   end
   object DBNOM: TDBEdit
-    Left = 335
-    Top = 95
-    Width = 523
+    Left = 143
+    Top = 119
+    Width = 426
     Height = 23
     DataField = 'NOM'
     DataSource = DSMemTableEntvtejj
-    TabOrder = 7
+    TabOrder = 8
   end
   object DBNOTAHITI: TDBEdit
-    Left = 84
-    Top = 119
+    Left = 652
+    Top = 95
     Width = 110
     Height = 23
     DataField = 'NOTAHITI'
     DataSource = DSMemTableEntvtejj
-    TabOrder = 8
-  end
-  object DBDATE_: TDBEdit
-    Left = 265
-    Top = 8
-    Width = 84
-    Height = 23
-    DataField = 'DATE_'
-    DataSource = DSMemTableEntvtejj
-    TabOrder = 1
+    TabOrder = 9
   end
   object DBHEURE: TDBEdit
-    Left = 426
+    Left = 505
     Top = 8
     Width = 64
     Height = 23
@@ -193,7 +176,7 @@ object FormEntvtejj: TFormEntvtejj
     DataSource = DSMemTableEntvtejj
     Enabled = False
     ReadOnly = True
-    TabOrder = 11
+    TabOrder = 13
     Visible = False
   end
   object DBREFERENCE_: TDBEdit
@@ -212,7 +195,7 @@ object FormEntvtejj: TFormEntvtejj
     Height = 23
     DataField = 'CODREP'
     DataSource = DSMemTableEntvtejj
-    TabOrder = 9
+    TabOrder = 10
     OnChange = DBCODREPChange
     OnExit = DBCODREPExit
   end
@@ -224,7 +207,6 @@ object FormEntvtejj: TFormEntvtejj
     DataField = 'CODCLI'
     DataSource = DSMemTableEntvtejj
     TabOrder = 6
-    OnChange = DBCODCLIChange
     OnExit = DBCODCLIExit
   end
   object DNOMVEN: TDBEdit
@@ -236,7 +218,7 @@ object FormEntvtejj: TFormEntvtejj
     DataSource = DSMemTableEntvtejj
     Enabled = False
     ReadOnly = True
-    TabOrder = 12
+    TabOrder = 14
   end
   object JvDBGridLigvtejj: TJvDBGrid
     Left = 8
@@ -246,7 +228,7 @@ object FormEntvtejj: TFormEntvtejj
     Anchors = [akLeft, akTop, akRight, akBottom]
     DataSource = DSMemTableLigvtejj
     Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
-    TabOrder = 15
+    TabOrder = 19
     TitleFont.Charset = DEFAULT_CHARSET
     TitleFont.Color = clWindowText
     TitleFont.Height = -12
@@ -372,7 +354,7 @@ object FormEntvtejj: TFormEntvtejj
     Width = 984
     Height = 106
     Align = alBottom
-    TabOrder = 17
+    TabOrder = 20
     DesignSize = (
       984
       106)
@@ -463,6 +445,7 @@ object FormEntvtejj: TFormEntvtejj
       ParentBiDiMode = False
       ParentFont = False
       TabOrder = 0
+      OnExit = DBPRC_REMISEExit
     end
     object DBMT_REMISE: TDBEdit
       Left = 659
@@ -638,7 +621,7 @@ object FormEntvtejj: TFormEntvtejj
     Anchors = [akTop, akRight]
     Caption = 'Nature'
     Color = 15658734
-    TabOrder = 13
+    TabOrder = 15
   end
   object RzDBCheckBoxEXO_TVA: TRzDBCheckBox
     Left = 735
@@ -651,7 +634,7 @@ object FormEntvtejj: TFormEntvtejj
     ValueUnchecked = '0'
     Anchors = [akTop, akRight]
     Caption = 'Exonere TVA'
-    TabOrder = 14
+    TabOrder = 17
     OnClick = RzDBCheckBoxEXO_TVAClick
   end
   object RzDBCheckBoxTVA_ILES: TRzDBCheckBox
@@ -665,7 +648,7 @@ object FormEntvtejj: TFormEntvtejj
     ValueUnchecked = '0'
     Anchors = [akTop, akRight]
     Caption = 'TVA Iles'
-    TabOrder = 16
+    TabOrder = 18
     OnClick = RzDBCheckBoxTVA_ILESClick
   end
   object Panel2: TPanel
@@ -674,7 +657,7 @@ object FormEntvtejj: TFormEntvtejj
     Width = 104
     Height = 555
     Align = alRight
-    TabOrder = 18
+    TabOrder = 21
     object BtnValider: TBitBtn
       Left = 1
       Top = 1
@@ -711,7 +694,7 @@ object FormEntvtejj: TFormEntvtejj
   object DBLookupComboBoxClient: TDBLookupComboBox
     Left = 143
     Top = 95
-    Width = 186
+    Width = 426
     Height = 23
     DataField = 'CODCLI'
     DataSource = DSMemTableEntvtejj
@@ -719,7 +702,46 @@ object FormEntvtejj: TFormEntvtejj
     ListField = 'CODCLI;NOM'
     ListFieldIndex = 1
     ListSource = DSClient
-    TabOrder = 19
+    TabOrder = 7
+    OnClick = DBLookupComboBoxClientClick
+  end
+  object RzDBCheckBoxFlag_Tax: TRzDBCheckBox
+    Left = 598
+    Top = 132
+    Width = 106
+    Height = 32
+    DataField = 'FLAG_TAX'
+    DataSource = DSMemTableEntvtejj
+    ValueChecked = '1'
+    ValueUnchecked = '0'
+    Anchors = [akTop, akRight]
+    Caption = 'Calcul de la TVA'#13' sur le HT.'
+    TabOrder = 16
+    OnClick = RzDBCheckBoxFlag_TaxClick
+  end
+  object JvDBDate_: TJvDBDateEdit
+    Left = 265
+    Top = 8
+    Width = 104
+    Height = 23
+    DataField = 'DATE_'
+    DataSource = DSMemTableEntvtejj
+    ShowNullDate = False
+    TabOrder = 1
+    OnExit = JvDBDate_Exit
+  end
+  object DBLookupComboBoxRepres: TDBLookupComboBox
+    Left = 125
+    Top = 145
+    Width = 204
+    Height = 23
+    DataField = 'CODREP'
+    DataSource = DSMemTableEntvtejj
+    KeyField = 'CODREP'
+    ListField = 'CODREP;NOM'
+    ListFieldIndex = 1
+    ListSource = DSRepres
+    TabOrder = 11
   end
   object FDMemTableEntvtejj: TFDMemTable
     FieldDefs = <>
@@ -732,13 +754,13 @@ object FormEntvtejj: TFormEntvtejj
     UpdateOptions.CheckRequired = False
     UpdateOptions.AutoCommitUpdates = True
     StoreDefs = True
-    Left = 488
-    Top = 32
+    Left = 480
+    Top = 440
   end
   object DSMemTableEntvtejj: TDataSource
     DataSet = FDMemTableEntvtejj
-    Left = 480
-    Top = 88
+    Left = 608
+    Top = 424
   end
   object FDMemTableLigvtejj: TFDMemTable
     FetchOptions.AssignedValues = [evMode]
@@ -1040,5 +1062,10 @@ object FormEntvtejj: TFormEntvtejj
       FieldName = 'TVA_ILES'
       Origin = 'TVA_ILES'
     end
+  end
+  object DSRepres: TDataSource
+    DataSet = DM_Olivier.FDQueryRepres
+    Left = 312
+    Top = 408
   end
 end

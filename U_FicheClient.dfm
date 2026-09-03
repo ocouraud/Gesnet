@@ -442,14 +442,6 @@ object FormFicheClient: TFormFicheClient
         Caption = 'No compte'
         FocusControl = DBEdit19
       end
-      object Label23: TLabel
-        Left = 28
-        Top = 328
-        Width = 20
-        Height = 15
-        Caption = 'CLE'
-        FocusControl = DBEdit20
-      end
       object Label24: TLabel
         Left = 364
         Top = 185
@@ -567,23 +559,122 @@ object FormFicheClient: TFormFicheClient
         DataSource = DSClients
         TabOrder = 10
       end
-      object DBEdit20: TDBEdit
-        Left = 28
-        Top = 344
-        Width = 49
-        Height = 23
-        DataField = 'CLE'
-        DataSource = DSClients
-        TabOrder = 11
-      end
       object DBEdit21: TDBEdit
-        Left = 388
+        Left = 387
         Top = 182
         Width = 37
         Height = 23
         DataField = 'CLE'
         DataSource = DSClients
+        TabOrder = 11
+      end
+      object DBCheckBoxPas_rem: TDBCheckBox
+        Left = 586
+        Top = 8
+        Width = 127
+        Height = 17
+        Caption = 'Remises interdites'
+        DataField = 'PAS_REM'
+        DataSource = DSClients
         TabOrder = 12
+        ValueChecked = '1'
+        ValueUnchecked = '0'
+      end
+      object DBCheckBoxExo_tva: TDBCheckBox
+        Left = 586
+        Top = 31
+        Width = 127
+        Height = 17
+        Caption = 'Exon'#233'r'#233' de TVA'
+        DataField = 'EXO_TVA'
+        DataSource = DSClients
+        TabOrder = 13
+        ValueChecked = '1'
+        ValueUnchecked = '0'
+      end
+      object DBCheckBoxFlag_tax: TDBCheckBox
+        Left = 586
+        Top = 54
+        Width = 127
+        Height = 17
+        Caption = 'Calcul TVA sur HT.'
+        DataField = 'FLAG_TAX'
+        DataSource = DSClients
+        TabOrder = 14
+        ValueChecked = '1'
+        ValueUnchecked = '0'
+      end
+      object DBCheckBoxBloque: TDBCheckBox
+        Left = 586
+        Top = 77
+        Width = 151
+        Height = 17
+        Caption = 'Bloqu'#233' en facturation'
+        DataField = 'BLOQUE'
+        DataSource = DSClients
+        TabOrder = 15
+        ValueChecked = '1'
+        ValueUnchecked = '0'
+      end
+      object DBCheckBoxAdm: TDBCheckBox
+        Left = 586
+        Top = 100
+        Width = 127
+        Height = 17
+        Caption = 'Administratif'
+        DataField = 'ADM'
+        DataSource = DSClients
+        TabOrder = 16
+        ValueChecked = '1'
+        ValueUnchecked = '0'
+      end
+      object DBCheckBoxPlv: TDBCheckBox
+        Left = 586
+        Top = 123
+        Width = 127
+        Height = 17
+        Caption = 'Prix limite de vente'
+        DataField = 'PLV'
+        DataSource = DSClients
+        TabOrder = 17
+        ValueChecked = '1'
+        ValueUnchecked = '0'
+      end
+      object DBCheckBoxCUM_MVT: TDBCheckBox
+        Left = 586
+        Top = 146
+        Width = 202
+        Height = 17
+        Caption = 'Ecritures comptables globalis'#233'es'
+        DataField = 'CUM_MVT'
+        DataSource = DSClients
+        TabOrder = 18
+        ValueChecked = '1'
+        ValueUnchecked = '0'
+      end
+      object DBCheckBoxREM_FAM: TDBCheckBox
+        Left = 586
+        Top = 169
+        Width = 202
+        Height = 17
+        Caption = 'Remises par familles autoris'#233'es'
+        DataField = 'REM_FAM'
+        DataSource = DSClients
+        TabOrder = 19
+        ValueChecked = '1'
+        ValueUnchecked = '0'
+      end
+      object DBCheckBoxRELEVE_EMAIL: TDBCheckBox
+        Left = 586
+        Top = 192
+        Width = 127
+        Height = 17
+        Caption = 'Relev'#233's par email'
+        DataField = 'RELEVE_EMAIL'
+        DataSource = DSClients
+        TabOrder = 20
+        ValueChecked = '1'
+        ValueUnchecked = '0'
       end
     end
     object TabSheet3: TTabSheet
@@ -1465,8 +1556,8 @@ object FormFicheClient: TFormFicheClient
   end
   object DSTresor: TDataSource
     DataSet = FDQueryTresor
-    Left = 612
-    Top = 226
+    Left = 644
+    Top = 266
   end
   object FDQueryStatis: TFDQuery
     MasterSource = DSClients

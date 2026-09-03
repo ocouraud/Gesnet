@@ -48,6 +48,7 @@ type
     FNumeroPoste: Integer;
     procedure ChargerOuCreerNumeroPoste;
     procedure ChargerParametresTVA;
+    procedure ChargerParametresCtrstock;
     procedure VerifierOuCreerCaisse(ANumeroPoste: Integer);
 
   public
@@ -56,6 +57,8 @@ type
     gCodCai: string;
     gCoddep_defaut: Integer;
     gCodcli_defaut: Integer;
+    gPass_modif_fac: String;
+
     gTx_TVA0: Double;
     gTx_TVA1: Double;
     gTx_TVA2: Double;
@@ -98,6 +101,14 @@ begin
   ChargerOuCreerNumeroPoste; // Exécute la logique du poste.ini
   ChargerParametresStock;
   ChargerParametresTVA;
+  ChargerParametresCtrstock;
+end;
+
+
+procedure TDM_Olivier.ChargerParametresCtrstock;
+begin
+  DM_Olivier.FDQueryCtrstock.Open;
+  gPass_modif_fac:=FDQueryCtrstock.FieldByName('pass_modif_fac').AsString;
 end;
 
 
@@ -407,6 +418,7 @@ begin
   QryExec.ParamByName('CODE').AsString := CodeTVA;
   QryExec.Open;
   QryExec.First;
+  wtx:=0;
   while not QryExec.Eof do
   begin
     IF (DateCtrl>=QryExec.FieldByName('DAT_DEB').AsDateTime) and (DateCtrl<=QryExec.FieldByName('DAT_FIN').AsDateTime) then

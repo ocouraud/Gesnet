@@ -154,9 +154,6 @@ Coordinates=3617,1772,77,36
 [TabSheet4]
 Coordinates=3530,1772,77,36
 
-[DBEdit20]
-Coordinates=3451,1772,69,36
-
 [DMGesCloud.ReqRepres]
 Coordinates=1659,10,160,278
 
@@ -180,9 +177,6 @@ Coordinates=3064,1772,132,36
 
 [DBcodcli]
 Coordinates=2989,1772,65,36
-
-[Label23]
-Coordinates=10,1772,60,58
 
 [DBEdit5]
 Coordinates=2917,1772,62,36
@@ -300,7 +294,7 @@ Coordinates=908,4890,185,36
 Coordinates=499,3952,183,36
 
 []
-Coordinates=1093,1101,153,36
+Coordinates=10,1772,60,58
 
 [DBLookupComboBoxRepres]
 Coordinates=1310,1840,144,36

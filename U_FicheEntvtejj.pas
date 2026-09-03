@@ -9,7 +9,8 @@ uses
   FireDAC.DApt.Intf, Data.DB, FireDAC.Comp.DataSet, FireDAC.Comp.Client,
   Vcl.StdCtrls, Vcl.DBCtrls, Vcl.Mask, Vcl.ExtCtrls, Vcl.Grids, Vcl.DBGrids,
   JvExDBGrids, JvDBGrid, Vcl.Buttons, RzButton, RzRadChk, RzDBChk, RzPanel,
-  RzRadGrp, RzDBRGrp, FireDAC.Stan.Async, FireDAC.DApt, Math, System.DateUtils;
+  RzRadGrp, RzDBRGrp, FireDAC.Stan.Async, FireDAC.DApt, Math, System.DateUtils,
+  JvExMask, JvToolEdit, JvDBControls;
 
 type
   TModeSaisie = (msAjout, msModification);
@@ -40,6 +41,8 @@ type
     JvDBGridLigvtejj: TJvDBGrid;
     Panel2: TPanel;
     DBCODFAC: TDBEdit;
+    DBPRC_REMISE: TDBEdit;
+    DBCODCLI: TDBEdit;
     FDMemTableRegljj: TFDMemTable;
     DSMemTableRegljj: TDataSource;
     JvDBGridRegljj: TJvDBGrid;
@@ -50,6 +53,7 @@ type
     DBLookupComboBoxClient: TDBLookupComboBox;
     DSClient: TDataSource;
     FDQueryClientsOuverts: TFDQuery;
+    RzDBCheckBoxFlag_Tax: TRzDBCheckBox;
     FDQueryClientsOuvertsOBSERV: TMemoField;
     FDQueryClientsOuvertsCODCLI: TIntegerField;
     FDQueryClientsOuvertsCPTAUX: TStringField;
@@ -97,20 +101,28 @@ type
     FDQueryClientsOuvertsSELECT_: TBooleanField;
     FDQueryClientsOuvertsAPP_TARIFCLI: TBooleanField;
     FDQueryClientsOuvertsTVA_ILES: TBooleanField;
-    LabelNomRepres: TLabel;
+    JvDBDate_: TJvDBDateEdit;
+    DBLookupComboBoxRepres: TDBLookupComboBox;
+    DSRepres: TDataSource;
     procedure BtnValiderClick(Sender: TObject);
     procedure RzDBRadioGroupTypeChange(Sender: TObject);
     procedure DBCODCLIExit(Sender: TObject);
-    procedure DBCODCLIChange(Sender: TObject);
     procedure DBCODREPChange(Sender: TObject);
     procedure DBCODREPExit(Sender: TObject);
     procedure RzDBCheckBoxEXO_TVAClick(Sender: TObject);
     procedure RzDBCheckBoxTVA_ILESClick(Sender: TObject);
+    procedure RzDBCheckBoxFlag_TaxClick(Sender: TObject);
+    procedure DBPRC_REMISEChange(Sender: TObject);
+    procedure DBPRC_REMISEExit(Sender: TObject);
+    procedure DBLookupComboBoxClientClick(Sender: TObject);
+    procedure JvDBDate_Exit(Sender: TObject);
 
   private
     { Déclarations privées }
     FCodFacCree: Integer;
     procedure CalculCompletFacture;
+    function SiRemisesSaisie(): Boolean;
+
   public
     { Déclarations publiques }
     ModeSaisie: TModeSaisie;
@@ -127,6 +139,44 @@ implementation
 {$R *.dfm}
 
 uses U_DM_Olivier, U_TableEntvtejj, U_DataModule;
+
+
+function TFormEntvtejj.SiRemisesSaisie(): Boolean;
+begin
+  // On ne fait rien si la table est simplement en train d'être lue/initialisée (sinon plantage)
+  if not (FDMemTableEntvtejj.State in [dsEdit, dsInsert]) then
+      begin
+      Result := False;
+      Exit;
+  end;
+
+  if not FDMemTableLigvtejj.Active then
+     begin
+      Result := False;
+      Exit;
+  end;
+
+  //Remise globale
+  if (FDMemTableEntvtejj.FieldByName('PRC_REMISE').AsFloat<>0) then
+     begin
+      Result := True;
+      Exit;
+  end;
+
+  //Remise ligne
+  FDMemTableLigvtejj.First;
+  while not FDMemTableLigvtejj.Eof do
+  begin
+		if FDMemTableLigvtejj.FieldByName('MT_REMISE').AsInteger <> 0 then
+    begin
+      Result := True;
+      Exit;
+    end;
+    FDMemTableLigvtejj.Next;
+  end;
+
+  Result := False;
+end;
 
 
 procedure TFormEntvtejj.BtnValiderClick(Sender: TObject);
@@ -595,12 +645,17 @@ begin
   end;
 end;
 
+
 constructor TFormEntvtejj.Create(AOwner: TComponent; AMode: TModeSaisie; ACodFac: Integer);
 var
   QryExec: TFDQuery;
 begin
   inherited Create(AOwner);
   ModeSaisie := AMode;
+
+  //Creation requete temporaire
+  QryExec := TFDQuery.Create(nil);
+  QryExec.Connection := DMGesCloud.ConnexionGesCloud;
 
 // 1. Gestion de l'En-tête
   DM_Olivier.FDQueryEntvtejj.Close;
@@ -629,6 +684,22 @@ begin
     FDMemTableEntvtejj.FieldByName('TOP_').AsString := 'S';
     FDMemTableEntvtejj.FieldByName('CODVEN').AsInteger := DMGesCloud.gCodven_defaut;
     FDMemTableEntvtejj.FieldByName('NOMVEN').AsString := DMGesCloud.LoggedUser;
+
+    // Lecture Ctrstock
+    QryExec.Close;
+    QryExec.SQL.Text := 'SELECT * FROM ctrstock where CODSOC=''A''';
+    QryExec.Open;
+    FDMemTableEntvtejj.FieldByName('FLAG_TAX').AsInteger := QryExec.FieldByName('FLAG_TAX').AsInteger;
+
+     // Lecture Client
+    QryExec.Close;
+    QryExec.SQL.Text := 'SELECT * FROM client where CODCLI=:CODCLI';
+    QryExec.ParamByName('CODCLI').AsInteger:=DM_Olivier.gCodcli_defaut;
+    QryExec.Open;
+    FDMemTableEntvtejj.FieldByName('NOM').AsString := QryExec.FieldByName('NOM').AsString;
+    FDMemTableEntvtejj.FieldByName('CODREP').AsString := QryExec.FieldByName('CODREP').AsString;
+    FDMemTableEntvtejj.FieldByName('FLAG_TAX').AsInteger := QryExec.FieldByName('FLAG_TAX').AsInteger;
+
     FDMemTableEntvtejj.Post;
 
     // On se remet en édition pour que l'interface graphique puisse accepter la saisie de l'utilisateur
@@ -663,63 +734,239 @@ begin
   FDMemTableRegljj.FieldDefs.Assign(DM_Olivier.FDQueryRegljj.FieldDefs);
   FDMemTableRegljj.CreateDataSet;
 
-  if ModeSaisie = msModification then
+if ModeSaisie = msModification then
   begin
     FDMemTableLigvtejj.CopyDataSet(DM_Olivier.FDQueryLigvtejj, [coAppend]);
     FDMemTableLigvtejj.First;
     FDMemTableRegljj.CopyDataSet(DM_Olivier.FDQueryRegljj, [coAppend]);
     FDMemTableRegljj.First;
+  end
+  else
+  begin
+    // En mode Ajout, on active/prépare les tables vides pour la saisie
+    if not FDMemTableLigvtejj.Active then
+      FDMemTableLigvtejj.Open;
+    FDMemTableLigvtejj.EmptyDataSet; // Vide les données en gardant la structure
+
+    if not FDMemTableRegljj.Active then
+      FDMemTableRegljj.Open;
+    FDMemTableRegljj.EmptyDataSet;
   end;
 
   //Ouverture des Query
   FDQueryClientsOuverts.Open;
+  DM_Olivier.FDQueryRepres.Open;
 
-  // Création d'une requête temporaire dédiée aux exécutables SQL
-  QryExec := TFDQuery.Create(nil);
-  QryExec.Connection := DMGesCloud.ConnexionGesCloud;
-  QryExec.Close;
-  QryExec.SQL.Text := 'SELECT * FROM repres WHERE CODREP=:CODREP';
-  QryExec.ParamByName('CODREP').AsString :=   FDMemTableEntvtejj.FieldByName('CODREP').AsString;
-  QryExec.Open;
-  LabelNomRepres.Caption := QryExec.FieldByName('NOM').AsString;
+//  // Lecture Representant
+//  QryExec.Close;
+//  QryExec.SQL.Text := 'SELECT * FROM repres WHERE CODREP=:CODREP';
+//  QryExec.ParamByName('CODREP').AsString :=   FDMemTableEntvtejj.FieldByName('CODREP').AsString;
+//  QryExec.Open;
+//  LabelNomRepres.Caption := QryExec.FieldByName('NOM').AsString;
+
+  // On se met en édition pour le code qui suit
+  FDMemTableEntvtejj.Edit;
+
+  //Forcer le controle client en ajout
+  if ModeSaisie = msAjout then
+    DBCODCLIExit(self);
+
+  //TVA Iles oui ou non
+  if DM_Olivier.fgTxTaxe(FDMemTableEntvtejj.FieldByName('DATE_').AsDateTime,'TVAI')=0 then
+  begin
+  	RzDBCheckBoxTVA_ILES.Visible:=False;
+    FDMemTableEntvtejj.FieldByName('TVA_ILES').AsBoolean:=False;
+  end
+  else
+  begin
+  	RzDBCheckBoxTVA_ILES.Visible:=True;
+  end;
 
   //Traitement selon type_ facture ou avoir
-  RzDBRadioGroupTypeChange(self);
+  //RzDBRadioGroupTypeChange(self);    //Sinon il recalcule la facture inutilement
+  if RzDBRadioGroupType.Value = 'F' then
+  begin
+    JvDBGridLigvtejj.AlternateRowColor := RGB(240, 248, 255); // Rose clair
+  end
+  else
+  begin
+    JvDBGridLigvtejj.AlternateRowColor := RGB(255, 182, 193); // Alice blue
+  end;
 end;
 
-procedure TFormEntvtejj.DBCODCLIChange(Sender: TObject);
+
+procedure TFormEntvtejj.DBCODCLIExit(Sender: TObject);
 var
   QryExec: TFDQuery;
+  Values: array of string;
+  MotDePasse: string;
 begin
   // On ne fait rien si la table est simplement en train d'être lue/initialisée (sinon plantage)
   if not (FDMemTableEntvtejj.State in [dsEdit, dsInsert]) then
     Exit;
+  if not FDMemTableLigvtejj.Active then
+    Exit;
+
+  // Création d'une requête temporaire dédiée aux exécutables SQL
+  QryExec := TFDQuery.Create(nil);
+  QryExec.Connection := DMGesCloud.ConnexionGesCloud;
+  try
+    QryExec.Close;
+    QryExec.SQL.Text := 'SELECT * FROM client WHERE CODCLI=:CODCLI and FERME=0';
+    QryExec.ParamByName('CODCLI').AsInteger := FDMemTableEntvtejj.FieldByName('CODCLI').AsInteger;
+    QryExec.Open;
+    IF QryExec.Eof then
+    begin
+      ShowMessage('Client inconnu !');
+      FDMemTableEntvtejj.FieldByName('CODCLI').AsInteger:=FDMemTableEntvtejj.FieldByName('CODCLI').OldValue;
+      DBCODCLI.SetFocus;     //Focus sur le champ sur lequel on est positionné
+      Exit;
+    end;
+  finally
+    //QryExec.Free;
+  end;
+
+
+  //Si client avec remise interdite => Controle si remise autorisee par mot de passe
+  DBPRC_REMISE.Enabled:=False;
+  if (FDQueryClientsOuverts.FieldByName('PAS_REM').AsInteger=1) and
+     (FDMemTableEntvtejj.FieldByName('PRC_REMISE').AsFloat<>0) then
+  begin
+    if SiRemisesSaisie() = True then
+    begin
+      SetLength(Values, 1);
+      Values[0] := '';
+      // Le '#1' au début du libellé active le masquage de type mot de passe
+      if InputQuery('Contrôle Crédit client', [#1'Mot de passe :'], Values) then
+        begin
+          MotDePasse := Values[0];
+          // Traitement...
+          if MotDePasse<>DM_Olivier.gPass_modif_fac then
+          begin
+            ShowMessage('Erreur mot de passe, remises interdites.');
+            FDMemTableEntvtejj.FieldByName('CODCLI').AsString := FDMemTableEntvtejj.FieldByName('CODCLI').OldValue;
+            if Screen.ActiveControl <> nil then
+            begin
+              Screen.ActiveControl.SetFocus;     //Focus sur le champ sur lequel on est positionné
+            end;
+            exit
+          end
+          else
+          begin
+            //Mot de passe correct on accepte la remise
+            DBPRC_REMISE.Enabled:=True;
+          end;
+      end
+      else
+      begin
+        // L'utilisateur a cliqué sur ANNULER
+        FDMemTableEntvtejj.FieldByName('CODCLI').AsString := FDMemTableEntvtejj.FieldByName('CODCLI').OldValue;
+        if Screen.ActiveControl <> nil then
+        begin
+          Screen.ActiveControl.SetFocus;
+        end;
+        exit;
+      end;
+    end;
+  end
+  else
+  begin
+    //Sinon on accepte
+    if FDQueryClientsOuverts.FieldByName('PAS_REM').AsInteger<>1 then
+      DBPRC_REMISE.Enabled:=True;
+  end;
 
   FDMemTableEntvtejj.FieldByName('NOM').AsString := FDQueryClientsOuverts.FieldByName('NOM').AsString;
   FDMemTableEntvtejj.FieldByName('NOTAHITI').AsString := FDQueryClientsOuverts.FieldByName('NOTAHITI').AsString;
   FDMemTableEntvtejj.FieldByName('CODREP').AsInteger := FDQueryClientsOuverts.FieldByName('CODREP').AsInteger;
   FDMemTableEntvtejj.FieldByName('EXO_TVA').AsInteger := FDQueryClientsOuverts.FieldByName('EXO_TVA').AsInteger;
   FDMemTableEntvtejj.FieldByName('CODGEO').AsString := FDQueryClientsOuverts.FieldByName('CODGEO').AsString;
+  if (DBPRC_REMISE.Enabled  = True) and (FDMemTableEntvtejj.FieldByName('PRC_REMISE').AsFloat=0) then
+    FDMemTableEntvtejj.FieldByName('PRC_REMISE').AsFloat := FDQueryClientsOuverts.FieldByName('PRC_REMISE').AsFloat;
+	FDMemTableEntvtejj.FieldByName('CODPAI').AsString	:= FDQueryClientsOuverts.FieldByName('CODPAI').AsString;
 
-    // Création d'une requête temporaire dédiée aux exécutables SQL
-  QryExec := TFDQuery.Create(nil);
-  QryExec.Connection := DMGesCloud.ConnexionGesCloud;
+  //Lecture geo pour TVA iles
   QryExec.SQL.Text := 'SELECT * FROM geo WHERE CODGEO=:CODGEO';
   QryExec.ParamByName('CODGEO').AsString :=   FDMemTableEntvtejj.FieldByName('CODGEO').AsString;
   QryExec.Open;
   FDMemTableEntvtejj.FieldByName('TVA_ILES').AsBytes := QryExec.FieldByName('TVA_ILES').AsBytes;
 
+//  QryExec.Close;
+//  QryExec.SQL.Text := 'SELECT * FROM repres WHERE CODREP=:CODREP';
+//  QryExec.ParamByName('CODREP').AsInteger :=   FDMemTableEntvtejj.FieldByName('CODREP').AsInteger;
+//  QryExec.Open;
+//  LabelNomRepres.Caption := QryExec.FieldByName('NOM').AsString;
+
   QryExec.Close;
-  QryExec.SQL.Text := 'SELECT * FROM repres WHERE CODREP=:CODREP';
-  QryExec.ParamByName('CODREP').AsInteger :=   FDMemTableEntvtejj.FieldByName('CODREP').AsInteger;
+  QryExec.SQL.Text := 'SELECT * FROM paiement WHERE CODPAI=:CODPAI';
+  QryExec.ParamByName('CODPAI').AsString :=   FDMemTableEntvtejj.FieldByName('CODPAI').AsString;
   QryExec.Open;
-  LabelNomRepres.Caption := QryExec.FieldByName('NOM').AsString;
+  FDMemTableEntvtejj.FieldByName('LIBREG').AsBytes := QryExec.FieldByName('LIBELLE').AsBytes;
+
+		//INT_EXO_CPS		= client.exo_cps
+//	IF INT_EXO_CPS ALORS
+//		entvtepc.tx_tsoc=0
+//	ELSE
+//		pdate				= SAI_DATE_
+//		entvtepc.tx_tsoc	= fgTxTaxe(pdate,"TS")
+//	END
+//	IF client.credit>=client.plaf_crd AND client.plaf_crd>0 ALORS
+//		Info("Maximum crédit client atteint")
+//		IF ctrstock.pass_modif_fac<>"" ALORS
+//			SI Ouvre(FEN_Mot_de_Passe,"Crédit client") <> ctrstock.pass_modif_fac
+//				Info("Mot de passe incorrect - Maximum crédit client atteint")
+//				ctrstock.bloq_cli_fac=1	//temporaire
+//				SAI_CODCLI=0
+//				RepriseSaisie(SAI_CODCLI)
+//				RETOUR
+//			END
+//			ctrstock.bloq_cli_fac=0		//temporaire
+//		END
+//	END
+	//!Si facture réglée mais non admin on interdit
+
+
+//	IF SAI_PRC_REMISE_EVC<>0 AND client.pas_rem=1 ALORS
+//		//!if Gadmin=0
+//		Info("Remise interdite pour ce client")
+//		IF ctrstock.pass_modif_fac<>"" ALORS
+//			SI Ouvre(FEN_Mot_de_Passe,"Remise client") <> ctrstock.pass_modif_fac
+//				Info("Mot de passe incorrect - Remise interdite")
+//				SAI_PRC_REMISE_EVC=0
+//			END
+//		ELSE
+//			SAI_PRC_REMISE_EVC=0
+//		END
+//	END
+
+	//Contrôle si remise a la ligne
+//	IF entvtepc.NouvelEnregistrement=Faux AND SAI_PRC_REMISE_EVC=0 AND client.pas_rem=1 ALORS
+//		HLitRecherchePremier(ligvtepc,codfac,entvtepc.codfac)
+//		TANTQUE HTrouve=Vrai
+//			IF ligvtepc.prc_remise <> 0 ALORS
+//				IF ctrstock.pass_modif_fac<>"" ALORS
+//					SI Ouvre(FEN_Mot_de_Passe,"Remise client") <> ctrstock.pass_modif_fac
+//						Info("Mot de passe incorrect - Remise ligne interdite")
+//						SAI_CODCLI=Lcodcli
+//						//ExécuteTraitement(SAI_CODCLI,trtModification)
+//						DonneFocus(SAI_CODCLI)
+//						RETOUR
+//					END
+//				ELSE
+//					Info("Remise interdite pour ce client")
+//					SAI_CODCLI=Lcodcli
+//					DonneFocus(SAI_CODCLI)
+//					RETOUR
+//				END
+//			END
+//			HLitSuivant(ligvtepc)
+//		END
+//	END
+
+  CalculCompletFacture;
+  QryExec.Free;
 end;
 
-procedure TFormEntvtejj.DBCODCLIExit(Sender: TObject);
-begin
-  DBCODCLIChange(SELF);
-end;
 
 procedure TFormEntvtejj.DBCODREPChange(Sender: TObject);
 var
@@ -728,19 +975,58 @@ begin
   // On ne fait rien si la table est simplement en train d'être lue/initialisée (sinon plantage)
   if not (FDMemTableEntvtejj.State in [dsEdit, dsInsert]) then
     Exit;
+  if not FDMemTableLigvtejj.Active then
+    Exit;
 
-   // Création d'une requête temporaire dédiée aux exécutables SQL
-  QryExec := TFDQuery.Create(nil);
-  QryExec.Connection := DMGesCloud.ConnexionGesCloud;
-  QryExec.SQL.Text := 'SELECT * FROM repres WHERE CODREP=:CODREP';
-  QryExec.ParamByName('CODREP').AsInteger := FDMemTableEntvtejj.FieldByName('CODREP').AsInteger;
-  QryExec.Open;
-  LabelNomRepres.Caption := QryExec.FieldByName('NOM').AsString;
+//   // Création d'une requête temporaire dédiée aux exécutables SQL
+//  QryExec := TFDQuery.Create(nil);
+//  QryExec.Connection := DMGesCloud.ConnexionGesCloud;
+//  QryExec.SQL.Text := 'SELECT * FROM repres WHERE CODREP=:CODREP';
+//  QryExec.ParamByName('CODREP').AsInteger := FDMemTableEntvtejj.FieldByName('CODREP').AsInteger;
+//  QryExec.Open;
+//  LabelNomRepres.Caption := QryExec.FieldByName('NOM').AsString;
 end;
+
 
 procedure TFormEntvtejj.DBCODREPExit(Sender: TObject);
 begin
  DBCODREPChange(SELF);
+end;
+
+
+procedure TFormEntvtejj.DBLookupComboBoxClientClick(Sender: TObject);
+begin
+  DBCODCLIExit(self);
+end;
+
+procedure TFormEntvtejj.DBPRC_REMISEChange(Sender: TObject);
+begin
+  CalculCompletFacture;
+end;
+
+procedure TFormEntvtejj.DBPRC_REMISEExit(Sender: TObject);
+begin
+  CalculCompletFacture;
+end;
+
+procedure TFormEntvtejj.JvDBDate_Exit(Sender: TObject);
+begin
+  // On ne fait rien si la table est simplement en train d'être lue/initialisée (sinon plantage)
+  if not (FDMemTableEntvtejj.State in [dsEdit, dsInsert]) then
+    Exit;
+  if not FDMemTableLigvtejj.Active then
+    Exit;
+
+  if DM_Olivier.fgTxTaxe(JvDBDate_.Date,'TVAI')=0 then
+  begin
+  	RzDBCheckBoxTVA_ILES.Visible:=False;
+    FDMemTableEntvtejj.FieldByName('TVA_ILES').AsBoolean:=False;
+  end
+  else
+  begin
+  	RzDBCheckBoxTVA_ILES.Visible:=True;
+  end;
+  CalculCompletFacture;
 end;
 
 procedure TFormEntvtejj.RzDBCheckBoxEXO_TVAClick(Sender: TObject);
@@ -748,10 +1034,18 @@ begin
   CalculCompletFacture;
 end;
 
+
+procedure TFormEntvtejj.RzDBCheckBoxFlag_TaxClick(Sender: TObject);
+begin
+  CalculCompletFacture;
+end;
+
+
 procedure TFormEntvtejj.RzDBCheckBoxTVA_ILESClick(Sender: TObject);
 begin
   CalculCompletFacture;
 end;
+
 
 procedure TFormEntvtejj.RzDBRadioGroupTypeChange(Sender: TObject);
 begin
@@ -796,6 +1090,8 @@ var
 begin
   // On ne fait rien si la fiche est simplement en train d'être lue/initialisée (sinon plantage)
   if not (FDMemTableEntvtejj.State in [dsEdit, dsInsert]) then
+    Exit;
+  if not FDMemTableLigvtejj.Active then
     Exit;
 
    // Création requêtes temporaires dédiées aux exécutables SQL
@@ -848,17 +1144,26 @@ begin
 				FDMemTableLigvtejj.FieldByName('TX_TVA').AsFloat :=  QryExec.FieldByName('TAUX').AsFloat;
         FDMemTableLigvtejj.FieldByName('PRIXNET').AsFloat := FDMemTableLigvtejj.FieldByName('PRIXHT').AsFloat - ((FDMemTableLigvtejj.FieldByName('PRIXHT').AsFloat/100)*FDMemTableLigvtejj.FieldByName('PRC_REMISE').AsFloat);
         FDMemTableLigvtejj.FieldByName('PRIXTTC').AsInteger := Round(DM_Olivier.CalculerTTC(FDMemTableLigvtejj.FieldByName('PRIXNET').AsFloat,FDMemTableLigvtejj.FieldByName('TX_TVA').AsFloat));
-//				IF INT_FLAG_TAX = 0 ALORS
+				if FDMemTableEntvtejj.FieldByName('FLAG_TAX').AsInteger = 0 then
+        begin
+					FDMemTableLigvtejj.FieldByName('MT_TTC').AsInteger := Round(FDMemTableLigvtejj.FieldByName('PRIXTTC').AsFloat * FDMemTableLigvtejj.FieldByName('QTE').AsFloat);  //+ligvtepc.mt_tsoc)
 //					ligvtepc.mt_ttc	= ligvtepc.prixttc*ligvtepc.qte
+					FDMemTableLigvtejj.FieldByName('TOTHT').AsFloat := DM_Olivier.CalculerHT(FDMemTableLigvtejj.FieldByName('MT_TTC').AsInteger,FDMemTableLigvtejj.FieldByName('TX_TVA').AsFloat);
 //					ligvtepc.totht	= PRIX_HT(ligvtepc.mt_ttc,ligvtepc.tx_tva,ligvtepc.tx_tsoc,article.tax_soc)
+					FDMemTableLigvtejj.FieldByName('MT_TVA').AsFloat := (FDMemTableLigvtejj.FieldByName('TOTHT').AsFloat/100)
+                                                             * FDMemTableLigvtejj.FieldByName('TX_TVA').AsFloat;
 //					ligvtepc.mt_tva	= ligvtepc.totht/100*ligvtepc.tx_tva
 //					ligvtepc.mt_tsoc= ligvtepc.totht/100*ligvtepc.tx_tsoc
-//				ELSE
+          //ShowMessage(inttostr(FDMemTableLigvtejj.FieldByName('MT_TTC').AsInteger));
+        end
+        else
+        begin
 					FDMemTableLigvtejj.FieldByName('TOTHT').AsFloat := FDMemTableLigvtejj.FieldByName('PRIXNET').AsFloat * FDMemTableLigvtejj.FieldByName('QTE').AsFloat;
 					FDMemTableLigvtejj.FieldByName('MT_TVA').AsFloat := (FDMemTableLigvtejj.FieldByName('TOTHT').AsFloat/100)*FDMemTableLigvtejj.FieldByName('TX_TVA').AsFloat;
 					//ligvtepc.mt_tsoc	= ligvtepc.totht/100*ligvtepc.tx_tsoc
 					FDMemTableLigvtejj.FieldByName('MT_TTC').AsInteger := Round(FDMemTableLigvtejj.FieldByName('TOTHT').AsFloat+FDMemTableLigvtejj.FieldByName('MT_TVA').AsFloat);  //+ligvtepc.mt_tsoc)
-//				END
+          //ShowMessage(inttostr(FDMemTableLigvtejj.FieldByName('MT_TTC').AsInteger));
+        end;
         FDMemTableLigvtejj.FieldByName('MARGE').AsFloat := FDMemTableLigvtejj.FieldByName('TOTHT').AsFloat - (FDMemTableLigvtejj.FieldByName('PRIXREV').AsFloat * FDMemTableLigvtejj.FieldByName('QTE').AsFloat);
 
 				FDMemTableLigvtejj.Post;
@@ -903,17 +1208,25 @@ begin
         FDMemTableLigvtejj.FieldByName('TX_TVA').AsFloat	:= DM_Olivier.fgTxTaxe(FDMemTableEntvtejj.FieldByName('DATE_').AsDateTime,'TVAI');
         FDMemTableLigvtejj.FieldByName('PRIXNET').AsFloat := FDMemTableLigvtejj.FieldByName('PRIXHT').AsFloat - ((FDMemTableLigvtejj.FieldByName('PRIXHT').AsFloat/100)*FDMemTableLigvtejj.FieldByName('PRC_REMISE').AsFloat);
         FDMemTableLigvtejj.FieldByName('PRIXTTC').AsInteger := Round(DM_Olivier.CalculerTTC(FDMemTableLigvtejj.FieldByName('PRIXNET').AsFloat,FDMemTableLigvtejj.FieldByName('TX_TVA').AsFloat));
-//        IF INT_FLAG_TAX = 0 ALORS
-//          ligvtepc.mt_ttc	= ligvtepc.prixttc*ligvtepc.qte
-//          ligvtepc.totht	= PRIX_HT(ligvtepc.mt_ttc,ligvtepc.tx_tva,ligvtepc.tx_tsoc,article.tax_soc)
-//          ligvtepc.mt_tva	= ligvtepc.totht/100*ligvtepc.tx_tva
-//          ligvtepc.mt_tsoc	= ligvtepc.totht/100*ligvtepc.tx_tsoc
-//        ELSE
+				if FDMemTableEntvtejj.FieldByName('FLAG_TAX').AsInteger = 0 then
+        begin
+					FDMemTableLigvtejj.FieldByName('MT_TTC').AsInteger := Round(FDMemTableLigvtejj.FieldByName('PRIXTTC').AsFloat
+                                                               * FDMemTableLigvtejj.FieldByName('QTE').AsFloat);  //+ligvtepc.mt_tsoc)
+//					ligvtepc.mt_ttc	= ligvtepc.prixttc*ligvtepc.qte
+					FDMemTableLigvtejj.FieldByName('TOTHT').AsFloat := DM_Olivier.CalculerHT(FDMemTableLigvtejj.FieldByName('MT_TTC').AsInteger,FDMemTableLigvtejj.FieldByName('TX_TVA').AsFloat);
+//					ligvtepc.totht	= PRIX_HT(ligvtepc.mt_ttc,ligvtepc.tx_tva,ligvtepc.tx_tsoc,article.tax_soc)
+					FDMemTableLigvtejj.FieldByName('MT_TVA').AsFloat := (FDMemTableLigvtejj.FieldByName('TOTHT').AsFloat/100)
+                                                             * FDMemTableLigvtejj.FieldByName('TX_TVA').AsFloat;
+//					ligvtepc.mt_tva	= ligvtepc.totht/100*ligvtepc.tx_tva
+//					ligvtepc.mt_tsoc= ligvtepc.totht/100*ligvtepc.tx_tsoc
+        end
+        else
+        begin
 					FDMemTableLigvtejj.FieldByName('TOTHT').AsFloat := FDMemTableLigvtejj.FieldByName('PRIXNET').AsFloat * FDMemTableLigvtejj.FieldByName('QTE').AsFloat;
 					FDMemTableLigvtejj.FieldByName('MT_TVA').AsFloat := (FDMemTableLigvtejj.FieldByName('TOTHT').AsFloat/100)*FDMemTableLigvtejj.FieldByName('TX_TVA').AsFloat;
 					//ligvtepc.mt_tsoc	= ligvtepc.totht/100*ligvtepc.tx_tsoc
 					FDMemTableLigvtejj.FieldByName('MT_TTC').AsInteger := Round(FDMemTableLigvtejj.FieldByName('TOTHT').AsFloat+FDMemTableLigvtejj.FieldByName('MT_TVA').AsFloat);  //+ligvtepc.mt_tsoc)
-//        END
+        end;
         FDMemTableLigvtejj.FieldByName('MARGE').AsFloat := FDMemTableLigvtejj.FieldByName('TOTHT').AsFloat - (FDMemTableLigvtejj.FieldByName('PRIXREV').AsFloat * FDMemTableLigvtejj.FieldByName('QTE').AsFloat);
 
         FDMemTableLigvtejj.post;
