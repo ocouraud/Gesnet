@@ -2588,8 +2588,8 @@ object FormFicheArticle: TFormFicheArticle
       
         'AND (codinfocompl.codinfo=artinfocompl.codinfo and codinfocompl.' +
         'type_='#39'A'#39') ')
-    Left = 108
-    Top = 530
+    Left = 316
+    Top = 514
     ParamData = <
       item
         Name = 'CODART'
@@ -2598,8 +2598,8 @@ object FormFicheArticle: TFormFicheArticle
   end
   object DSArtinfocompl: TDataSource
     DataSet = FDQueryArtinfocompl
-    Left = 204
-    Top = 538
+    Left = 364
+    Top = 530
   end
   object OpenDialog1: TOpenDialog
     Left = 660

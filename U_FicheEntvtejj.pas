@@ -1,4 +1,4 @@
-unit U_FicheEntvtejj;
+Ôªøunit U_FicheEntvtejj;
 
 interface
 
@@ -32,14 +32,14 @@ type
     Label17: TLabel;
     Label18: TLabel;
     Label21: TLabel;
-    Panel1: TPanel;
+    Panel3: TPanel;
     RzDBRadioGroupType: TRzDBRadioGroup;
     RzDBCheckBoxEXO_TVA: TRzDBCheckBox;
     RzDBCheckBoxTVA_ILES: TRzDBCheckBox;
     FDMemTableLigvtejj: TFDMemTable;
     DSMemTableLigvtejj: TDataSource;
     JvDBGridLigvtejj: TJvDBGrid;
-    Panel2: TPanel;
+    Panel12: TPanel;
     DBCODFAC: TDBEdit;
     DBPRC_REMISE: TDBEdit;
     DBCODCLI: TDBEdit;
@@ -104,6 +104,17 @@ type
     JvDBDate_: TJvDBDateEdit;
     DBLookupComboBoxRepres: TDBLookupComboBox;
     DSRepres: TDataSource;
+    DBMemoObserv: TDBMemo;
+    Panel1: TPanel;
+    Panel2: TPanel;
+    BtnAjouterLigne: TButton;
+    BtnSupprimerLigne: TButton;
+    Panel5: TPanel;
+    BtnModifierLigne: TButton;
+    BtnAjouterRegl: TButton;
+    BtnModifierRegl: TButton;
+    BtnSupprimerRegl: TButton;
+    Label6: TLabel;
     procedure BtnValiderClick(Sender: TObject);
     procedure RzDBRadioGroupTypeChange(Sender: TObject);
     procedure DBCODCLIExit(Sender: TObject);
@@ -116,16 +127,25 @@ type
     procedure DBPRC_REMISEExit(Sender: TObject);
     procedure DBLookupComboBoxClientClick(Sender: TObject);
     procedure JvDBDate_Exit(Sender: TObject);
+    procedure JvDBGridLigvtejjEnter(Sender: TObject);
+    procedure BtnAjouterLigneClick(Sender: TObject);
+    procedure BtnSupprimerLigneClick(Sender: TObject);
+    procedure BtnModifierLigneClick(Sender: TObject);
+    procedure JvDBGridLigvtejjKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
 
   private
-    { DÈclarations privÈes }
+    { D√©clarations priv√©es }
     FCodFacCree: Integer;
+    FIsLoading: Boolean;   //Juste pour louverture
     procedure CalculCompletFacture;
     function SiRemisesSaisie(): Boolean;
+    procedure CMDialogKey(var Msg: TCMDialogKey); message CM_DIALOGKEY;
 
   public
-    { DÈclarations publiques }
+    { D√©clarations publiques }
     ModeSaisie: TModeSaisie;
+    ModeSaisieLigne: TModeSaisie;
     constructor Create(AOwner: TComponent; AMode: TModeSaisie; ACodFac: Integer); reintroduce;
     property CodFacCree: Integer read FCodFacCree;
 
@@ -138,12 +158,26 @@ implementation
 
 {$R *.dfm}
 
-uses U_DM_Olivier, U_TableEntvtejj, U_DataModule;
+uses U_DM_Olivier, U_TableEntvtejj, U_DataModule, U_FicheLigvtejj;
+
+
+procedure TFormEntvtejj.CMDialogKey(var Msg: TCMDialogKey);
+begin
+  // Si le focus est sur la grille et qu'on appuie sur Entr√©e
+  if (ActiveControl = JvDBGridLigvtejj) and (Msg.CharCode = VK_RETURN) then
+  begin
+    BtnModifierLigne.Click;
+    Msg.Result := 1; // Indique que le message a √©t√© trait√©
+    Exit;
+  end;
+
+  inherited; // Laisse le comportement par d√©faut pour le reste
+end;
 
 
 function TFormEntvtejj.SiRemisesSaisie(): Boolean;
 begin
-  // On ne fait rien si la table est simplement en train d'Ítre lue/initialisÈe (sinon plantage)
+  // On ne fait rien si la table est simplement en train d'√™tre lue/initialis√©e (sinon plantage)
   if not (FDMemTableEntvtejj.State in [dsEdit, dsInsert]) then
       begin
       Result := False;
@@ -179,6 +213,120 @@ begin
 end;
 
 
+procedure TFormEntvtejj.BtnAjouterLigneClick(Sender: TObject);
+begin
+  // 2. Cr√©ation et affichage de la fiche de saisie
+  FormLigvtejj := TFormLigvtejj.Create(Self);
+  try
+    FormLigvtejj.DSLigvtejj.DataSet := FDMemTableLigvtejj;
+
+    // Configuration de la fiche
+    FormLigvtejj.ModeSaisieLigne := U_FicheLigvtejj.msAjout;
+    FormLigvtejj.Caption := 'Nouvelle ligne de facture';
+
+    // Passage en mode insertion
+    FDMemTableLigvtejj.Insert;
+
+    // Pr√©-remplir les champs correctement
+    FDMemTableLigvtejj.FieldByName('CODFAC').AsInteger := FDMemTableEntvtejj.FieldByName('CODFAC').AsInteger;
+    FDMemTableLigvtejj.FieldByName('CODDEV').AsInteger := FDMemTableEntvtejj.FieldByName('CODDEV').AsInteger;
+    FDMemTableLigvtejj.FieldByName('CODDEP').AsInteger := FDMemTableEntvtejj.FieldByName('CODDEP').AsInteger;
+    FDMemTableLigvtejj.FieldByName('CODCLI').AsInteger := FDMemTableEntvtejj.FieldByName('CODCLI').AsInteger;
+    FDMemTableLigvtejj.FieldByName('CODCAI').AsString := FDMemTableEntvtejj.FieldByName('CODCAI').AsString;
+    FDMemTableLigvtejj.FieldByName('TYPE_').AsString := FDMemTableEntvtejj.FieldByName('TYPE_').AsString;
+
+    // Si l'utilisateur clique sur Valider (et que le .Post interne a r√©ussi) :
+    if FormLigvtejj.ShowModal = mrOk then
+    begin
+      // Le .Post a DEJA √©t√© fait √† l'int√©rieur de FormFicheStock !
+      CalculCompletFacture;
+    end
+    else
+    begin
+      // Si l'utilisateur a annul√©, on annule l'insertion
+      FDMemTableLigvtejj.Cancel;
+    end;
+  finally
+    // 1. On lance syst√©matiquement le recalcul du stock
+    FormLigvtejj.Free;
+  end;
+end;
+
+
+procedure TFormEntvtejj.BtnModifierLigneClick(Sender: TObject);
+begin
+  // V√©rifie qu'une ligne est bien s√©lectionn√©e
+  if FDMemTableLigvtejj.IsEmpty then Exit;
+
+  FormLigvtejj := TFormLigvtejj.Create(Self);
+  try
+    FormLigvtejj.DSLigvtejj.DataSet := FDMemTableLigvtejj;
+    FormLigvtejj.ModeSaisieLigne := U_FicheLigvtejj.msModification;
+    FormLigvtejj.Caption := 'Modifier la ligne de facture';
+
+    if FormLigvtejj.ShowModal = mrOk then
+    begin
+      // Si valid√©, on rafra√Æchit
+      //DM_Olivier.RefreshDataSetWithBookmark(FDMemTableLigvtejj);
+      //CalculCompletFacture;
+
+      // 1. On s'assure que le post est bien effectif et ferm√©
+      if FDMemTableLigvtejj.State in [dsEdit, dsInsert] then
+        FDMemTableLigvtejj.Post;
+
+            CalculCompletFacture;
+      // 2. On repositionne et rafra√Æchit proprement le dataset
+      DM_Olivier.RefreshDataSetWithBookmark(FDMemTableLigvtejj);
+
+      // 3. On laisse un tout petit temps de r√©pit au syst√®me pour stabiliser
+      // le buffer avant de lancer le calcul lourd
+      //Application.ProcessMessages;
+
+      // 4. Enfin, on lance le calcul global
+
+    end
+    else
+    begin
+      // Si annul√©, on s'assure juste proprement de remettre le dataset en √©tat stable
+      // S'il √©tait en √©dit/insert, on l'annule, mais on prot√®ge avec un try/except pour √©viter tout plantage visuel
+      try
+        if FDMemTableLigvtejj.State in [dsEdit, dsInsert] then
+          FDMemTableLigvtejj.Cancel;
+      except
+        // On ignore silencieusement si le dataset √©tait d√©j√† ferm√©/sorti du mode √©dit
+      end;
+    end;
+  finally
+    FormLigvtejj.Free;
+  end;
+end;
+
+procedure TFormEntvtejj.BtnSupprimerLigneClick(Sender: TObject);
+begin
+  if FDMemTableLigvtejj.IsEmpty then
+  begin
+    ShowMessage('Aucune ligne s√©lectionn√©e √† supprimer.');
+    Exit;
+  end;
+
+  // Demande de confirmation et suppression
+  if MessageDlg('Voulez-vous vraiment supprimer cette ligne ?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+  begin
+    try
+      FDMemTableLigvtejj.Delete;
+
+      // Recalcul de la facture
+      CalculCompletFacture;
+
+      //ShowMessage('La ligne a √©t√© supprim√©e avec succ√®s.');
+    except
+      on E: Exception do
+        MessageDlg('Erreur lors de la suppression de la ligne: ' + E.Message, mtError, [mbOK], 0);
+    end;
+  end;
+end;
+
+
 procedure TFormEntvtejj.BtnValiderClick(Sender: TObject);
 var
   QryExec: TFDQuery;
@@ -196,11 +344,11 @@ begin
   // Conversion en nombre total de secondes depuis minuit
   LHeure := Now; // ou un champ heure
   DecodeTime(Now, H, M, S, MS);
-  Centiemes := MS div 10; // Conversion des millisecondes en centiËmes
+  Centiemes := MS div 10; // Conversion des millisecondes en centi√®mes
   // Construction de l'entier : HH * 1000000 + MM * 10000 + SS * 100 + CC
   ResultHeure := (H * 360000) + (M * 6000) + (S * 100) + Centiemes;
 
-  // 1. S'assurer que les saisies en cours dans les grilles/champs sont validÈes (Post)
+  // 1. S'assurer que les saisies en cours dans les grilles/champs sont valid√©es (Post)
   if FDMemTableEntvtejj.State in [dsEdit, dsInsert] then
     FDMemTableEntvtejj.Post;
   if FDMemTableLigvtejj.State in [dsEdit, dsInsert] then
@@ -208,7 +356,7 @@ begin
   if FDMemTableRegljj.State in [dsEdit, dsInsert] then
     FDMemTableRegljj.Post;
 
-  // CrÈation d'une requÍte temporaire dÈdiÈe aux exÈcutables SQL
+  // Cr√©ation d'une requ√™te temporaire d√©di√©e aux ex√©cutables SQL
   QryExec := TFDQuery.Create(nil);
   QryExec2 := TFDQuery.Create(nil);
 
@@ -216,11 +364,11 @@ begin
     QryExec.Connection := DMGesCloud.ConnexionGesCloud;
     QryExec2.Connection := DMGesCloud.ConnexionGesCloud;
 
-    // DÈmarrage de la transaction MySQL
+    // D√©marrage de la transaction MySQL
    DMGesCloud.ConnexionGesCloud.StartTransaction;
     try
       // ==========================================
-      // 2. ENREGISTREMENT DE L'EN-T TE
+      // 2. ENREGISTREMENT DE L'EN-T√äTE
       // ==========================================
       if ModeSaisie = msAjout then
       begin
@@ -233,10 +381,10 @@ begin
         QryExec.SQL.Text := 'SELECT * FROM chrono WHERE PREFIX=:PREFIX';
         QryExec.ParamByName('PREFIX').AsString := 'FAC01';
         QryExec.Open;
-        NumFacture := QryExec.FieldByName('CHRONO').AsInteger; // Pensez ‡ dÈclarer VNoEnrStock en Integer dans vos variables
+        NumFacture := QryExec.FieldByName('CHRONO').AsInteger; // Pensez √† d√©clarer VNoEnrStock en Integer dans vos variables
         FCodFacCree := NumFacture;
 
-        // Exemple d'INSERT pour l'en-tÍte (adaptez les noms de champs selon votre table)
+        // Exemple d'INSERT pour l'en-t√™te (adaptez les noms de champs selon votre table)
         QryExec.close;
         QryExec.SQL.Text := 'INSERT INTO `entvtejj` (' +
           '`OBSERV`, `CODFAC`, `TOP_`, `CODCLI`, `CODCAI`, `CODDEV`, `CODDEP`, `CODVEN`, `NOM`, `NOTAHITI`, ' +
@@ -252,7 +400,7 @@ begin
           ':ACOMPTE, :CODGEO, :FLAG_TAX, :SEL, CURRENT_TIMESTAMP, :NOMVEN, :MT_TSOC, :MT_HTSOC, :TX_TSOC, :EXO_CPS, ' +
           ':MT_TVAI, :MT_HTI, :TVA_ILES)';
 
-        // Assignation directe des valeurs depuis la table mÈmoire
+        // Assignation directe des valeurs depuis la table m√©moire
         QryExec.ParamByName('OBSERV').AsString     := FDMemTableEntvtejj.FieldByName('OBSERV').AsString;
         QryExec.ParamByName('CODFAC').AsInteger    := NumFacture;
         QryExec.ParamByName('TOP_').AsString       := FDMemTableEntvtejj.FieldByName('TOP_').AsString;
@@ -309,7 +457,7 @@ begin
       end
       else
       begin
-        // UPDATE pour l'en-tÍte en modification
+        // UPDATE pour l'en-t√™te en modification
         QryExec.SQL.Text := 'UPDATE `entvtejj` SET ' +
           '`OBSERV` = :OBSERV, ' +
           '`CODFAC` = :CODFAC, ' +
@@ -366,7 +514,7 @@ begin
           '`TVA_ILES` = :TVA_ILES ' +
           'WHERE `CODFAC` = :CODFAC';
 
-        // Assignation directe des valeurs depuis la table mÈmoire
+        // Assignation directe des valeurs depuis la table m√©moire
         QryExec.ParamByName('OBSERV').AsString     := FDMemTableEntvtejj.FieldByName('OBSERV').AsString;
         QryExec.ParamByName('CODFAC').AsInteger     := FDMemTableEntvtejj.FieldByName('CODFAC').AsInteger;
         QryExec.ParamByName('TOP_').AsString      := FDMemTableEntvtejj.FieldByName('TOP_').AsString;
@@ -421,7 +569,7 @@ begin
         QryExec.ParamByName('TVA_ILES').AsBoolean  := FDMemTableEntvtejj.FieldByName('TVA_ILES').AsBoolean;
 
         QryExec.ExecSQL;
-        // RÈcupÈration du numÈro de facture (gÈnÈrÈ ou existant)
+        // R√©cup√©ration du num√©ro de facture (g√©n√©r√© ou existant)
         NumFacture := FDMemTableEntvtejj.FieldByName('CODFAC').AsInteger;
       end;
 
@@ -438,7 +586,7 @@ begin
 
         while not QryExec.Eof do
         begin
-          //Recherche et suppression du mouvement de stock associÈ
+          //Recherche et suppression du mouvement de stock associ√©
           QryExec2.SQL.Text := 'DELETE from stock WHERE NOENR = :NOENR';
           QryExec2.ParamByName('NOENR').AsInteger := QryExec.FieldByName('NOENR').AsInteger;
           QryExec2.ExecSQL;
@@ -457,7 +605,7 @@ begin
       // 4. ENREGISTREMENT DES LIGNES (ligvtejj)
       // ==========================================
       // Pour faire simple et propre lors d'une modification :
-      // on supprime les anciennes lignes de cette facture et on rÈinsËre l'Ètat actuel de la table mÈmoire.
+      // on supprime les anciennes lignes de cette facture et on r√©ins√®re l'√©tat actuel de la table m√©moire.
       if ModeSaisie = msModification then
       begin
         QryExec.Close;
@@ -466,13 +614,13 @@ begin
         QryExec.ExecSQL;
       end;
 
-      // Parcours de la table mÈmoire des lignes
+      // Parcours de la table m√©moire des lignes
       FDMemTableLigvtejj.First;
       while not FDMemTableLigvtejj.Eof do
       begin
-        //GÈnÈration du mouvement de stock associÈ a la ligne
+        //G√©n√©ration du mouvement de stock associ√© a la ligne
         VNoEnrStock :=0;
-        //Controle si article gÈrÈ en stock
+        //Controle si article g√©r√© en stock
         QryExec.Close;
         QryExec.SQL.Text := 'SELECT * FROM article WHERE CODART=:CODART';
         QryExec.ParamByName('CODART').AsString :=FDMemTableLigvtejj.FieldByName('CODART').AsString;
@@ -505,16 +653,16 @@ begin
            QryExec2.ParamByName('MOIS').AsInteger := FDMemTableLigvtejj.FieldByName('MOIS').AsInteger;
            QryExec2.ParamByName('CODDEP').AsInteger := FDMemTableEntvtejj.FieldByName('CODDEP').AsInteger;
            QryExec2.ParamByName('CENTRA').AsString := 'C';
-           QryExec2.ParamByName('LIBELLE').AsString := 'Facture DELPHI n∞' + IntToStr(NumFacture);
+           QryExec2.ParamByName('LIBELLE').AsString := 'Facture DELPHI n¬∞' + IntToStr(NumFacture);
            QryExec2.ParamByName('TYPE_').AsString := 'V';
            QryExec2.ParamByName('TIME').AsInteger := ResultHeure;
            QryExec2.ExecSQL;
 
-           // 2. RÈcupÈration du NOENR tout juste gÈnÈrÈ par MySQL pour la table stock
+           // 2. R√©cup√©ration du NOENR tout juste g√©n√©r√© par MySQL pour la table stock
            QryExec2.Close;
            QryExec2.SQL.Text := 'SELECT LAST_INSERT_ID()';
            QryExec2.Open;
-           VNoEnrStock := QryExec2.Fields[0].AsInteger; // Pensez ‡ dÈclarer VNoEnrStock en Integer dans vos variables
+           VNoEnrStock := QryExec2.Fields[0].AsInteger; // Pensez √† d√©clarer VNoEnrStock en Integer dans vos variables
 
            //On recalcul le stock du depot et de l'article
            DM_Olivier.RecalculerStockStodep(FDMemTableLigvtejj.FieldByName('CODART').AsString, FDMemTableEntvtejj.FieldByName('CODDEP').AsInteger);
@@ -533,7 +681,7 @@ begin
           ':PRIXHT, :PRIXTTC, :PRIXNET, :TOTHT, :MT_TTC, :PRC_REMISE, :MT_REMISE, :TX_TVA, :MT_TVA, :NO_TVA, ' +
           ':PRIXREV, :MARGE, :NO_SEM, :NO_JOUR, :DET_PPT, :DET_ILE, :PXLVTTC, CURRENT_TIMESTAMP, :TX_TSOC, :MT_TSOC)';
 
-        // Assignation directe des valeurs depuis la table mÈmoire des lignes
+        // Assignation directe des valeurs depuis la table m√©moire des lignes
         QryExec.ParamByName('LIBELLE').AsString    := FDMemTableLigvtejj.FieldByName('LIBELLE').AsString;
         QryExec.ParamByName('CODFAC').AsInteger    := NumFacture;
         QryExec.ParamByName('CODCLI').AsInteger    := FDMemTableLigvtejj.FieldByName('CODCLI').AsInteger;
@@ -583,7 +731,7 @@ begin
 
 
       // ==========================================
-      // 4. ENREGISTREMENT DES R»GLEMENTS (regljj)
+      // 4. ENREGISTREMENT DES R√àGLEMENTS (regljj)
       // ==========================================
       if ModeSaisie = msModification then
       begin
@@ -593,7 +741,7 @@ begin
         QryExec.ExecSQL;
       end;
 
-      // Parcours de la table mÈmoire des rËglements
+      // Parcours de la table m√©moire des r√®glements
       FDMemTableRegljj.First;
       while not FDMemTableRegljj.Eof do
       begin
@@ -605,7 +753,7 @@ begin
           ':CODFAC, :CODCAI, :CODVEN, :DATE_, :TOP_, :LIBELLE, :MONTANT, :DATE_ECH, :CODPAI, :TYPE_, ' +
           ':SELECT_, :DATE_OPER, :DATE_COMPTA, CURRENT_TIMESTAMP, :MONT_ARR)';
 
-        // Assignation directe des valeurs depuis la table mÈmoire des rËglements
+        // Assignation directe des valeurs depuis la table m√©moire des r√®glements
         QryExec.ParamByName('CODFAC').AsInteger     := NumFacture;
         QryExec.ParamByName('CODCAI').AsString      := FDMemTableRegljj.FieldByName('CODCAI').AsString;
         QryExec.ParamByName('CODVEN').AsInteger     := FDMemTableRegljj.FieldByName('CODVEN').AsInteger;
@@ -626,14 +774,14 @@ begin
         FDMemTableRegljj.Next;
       end;
 
-      // Si tout s'est dÈroulÈ sans erreur, on valide dÈfinitivement dans MySQL
+      // Si tout s'est d√©roul√© sans erreur, on valide d√©finitivement dans MySQL
       DMGesCloud.ConnexionGesCloud.Commit;
       ModalResult := mrOk;
 
     except
       on E: Exception do
       begin
-        // En cas d'erreur, on annule tout (ni l'en-tÍte ni les lignes ne sont modifiÈs)
+        // En cas d'erreur, on annule tout (ni l'en-t√™te ni les lignes ne sont modifi√©s)
         DMGesCloud.ConnexionGesCloud.Rollback;
         ShowMessage('Erreur lors de l''enregistrement : ' + E.Message);
         ModalResult := mrNone;
@@ -650,6 +798,9 @@ constructor TFormEntvtejj.Create(AOwner: TComponent; AMode: TModeSaisie; ACodFac
 var
   QryExec: TFDQuery;
 begin
+FIsLoading := True;
+  try
+
   inherited Create(AOwner);
   ModeSaisie := AMode;
 
@@ -657,7 +808,7 @@ begin
   QryExec := TFDQuery.Create(nil);
   QryExec.Connection := DMGesCloud.ConnexionGesCloud;
 
-// 1. Gestion de l'En-tÍte
+// 1. Gestion de l'En-t√™te
   DM_Olivier.FDQueryEntvtejj.Close;
   if ModeSaisie = msModification then
   begin
@@ -675,7 +826,7 @@ begin
     FDMemTableEntvtejj.Append;
     FDMemTableEntvtejj.FieldByName('CODFAC').AsInteger := ACodFac;
     FDMemTableEntvtejj.FieldByName('DATE_').AsDateTime := Date;
-    //1. Stocker la valeur brute en centiËmes dans le champ technique de la table
+    //1. Stocker la valeur brute en centi√®mes dans le champ technique de la table
     FDMemTableEntvtejj.FieldByName('HEURE').AsLargeInt := Round(Frac(Now) * 86400 * 100);
     FDMemTableEntvtejj.FieldByName('CODCAI').AsString := Format('%d', [DM_Olivier.NumeroPoste]);
     FDMemTableEntvtejj.FieldByName('CODDEP').AsInteger := DM_Olivier.gCoddep_defaut;
@@ -702,19 +853,19 @@ begin
 
     FDMemTableEntvtejj.Post;
 
-    // On se remet en Èdition pour que l'interface graphique puisse accepter la saisie de l'utilisateur
+    // On se remet en √©dition pour que l'interface graphique puisse accepter la saisie de l'utilisateur
     FDMemTableEntvtejj.Edit;
   end
   else
   begin
-    // En modification, on copie l'en-tÍte unique correspondant
+    // En modification, on copie l'en-t√™te unique correspondant
     FDMemTableEntvtejj.CopyDataSet(DM_Olivier.FDQueryEntvtejj, [coAppend]);
     FDMemTableEntvtejj.First;
   end;
-  // 2. Afficher l'heure immÈdiatement sous sa forme lisible :
-  LabelHeureLisible.Caption := DM_Olivier.CentiËmesVersHeureLisible(FDMemTableEntvtejj.FieldByName('HEURE').AsLargeInt);
+  // 2. Afficher l'heure imm√©diatement sous sa forme lisible :
+  LabelHeureLisible.Caption := DM_Olivier.Centi√®mesVersHeureLisible(FDMemTableEntvtejj.FieldByName('HEURE').AsLargeInt);
 
-  // 2. Gestion des Lignes de dÈtails
+  // 2. Gestion des Lignes de d√©tails
   DM_Olivier.FDQueryLigvtejj.Close;
   DM_Olivier.FDQueryLigvtejj.ParamByName('CODFAC').AsInteger := ACodFac;
   DM_Olivier.FDQueryLigvtejj.Open();
@@ -743,10 +894,10 @@ if ModeSaisie = msModification then
   end
   else
   begin
-    // En mode Ajout, on active/prÈpare les tables vides pour la saisie
+    // En mode Ajout, on active/pr√©pare les tables vides pour la saisie
     if not FDMemTableLigvtejj.Active then
       FDMemTableLigvtejj.Open;
-    FDMemTableLigvtejj.EmptyDataSet; // Vide les donnÈes en gardant la structure
+    FDMemTableLigvtejj.EmptyDataSet; // Vide les donn√©es en gardant la structure
 
     if not FDMemTableRegljj.Active then
       FDMemTableRegljj.Open;
@@ -764,7 +915,7 @@ if ModeSaisie = msModification then
 //  QryExec.Open;
 //  LabelNomRepres.Caption := QryExec.FieldByName('NOM').AsString;
 
-  // On se met en Èdition pour le code qui suit
+  // On se met en √©dition pour le code qui suit
   FDMemTableEntvtejj.Edit;
 
   //Forcer le controle client en ajout
@@ -792,6 +943,9 @@ if ModeSaisie = msModification then
   begin
     JvDBGridLigvtejj.AlternateRowColor := RGB(255, 182, 193); // Alice blue
   end;
+  finally
+    //FIsLoading := False;
+  end;
 end;
 
 
@@ -801,13 +955,13 @@ var
   Values: array of string;
   MotDePasse: string;
 begin
-  // On ne fait rien si la table est simplement en train d'Ítre lue/initialisÈe (sinon plantage)
+  // On ne fait rien si la table est simplement en train d'√™tre lue/initialis√©e (sinon plantage)
   if not (FDMemTableEntvtejj.State in [dsEdit, dsInsert]) then
     Exit;
   if not FDMemTableLigvtejj.Active then
     Exit;
 
-  // CrÈation d'une requÍte temporaire dÈdiÈe aux exÈcutables SQL
+  // Cr√©ation d'une requ√™te temporaire d√©di√©e aux ex√©cutables SQL
   QryExec := TFDQuery.Create(nil);
   QryExec.Connection := DMGesCloud.ConnexionGesCloud;
   try
@@ -819,7 +973,7 @@ begin
     begin
       ShowMessage('Client inconnu !');
       FDMemTableEntvtejj.FieldByName('CODCLI').AsInteger:=FDMemTableEntvtejj.FieldByName('CODCLI').OldValue;
-      DBCODCLI.SetFocus;     //Focus sur le champ sur lequel on est positionnÈ
+      DBCODCLI.SetFocus;     //Focus sur le champ sur lequel on est positionn√©
       Exit;
     end;
   finally
@@ -836,8 +990,8 @@ begin
     begin
       SetLength(Values, 1);
       Values[0] := '';
-      // Le '#1' au dÈbut du libellÈ active le masquage de type mot de passe
-      if InputQuery('ContrÙle CrÈdit client', [#1'Mot de passe :'], Values) then
+      // Le '#1' au d√©but du libell√© active le masquage de type mot de passe
+      if InputQuery('Contr√¥le Cr√©dit client', [#1'Mot de passe :'], Values) then
         begin
           MotDePasse := Values[0];
           // Traitement...
@@ -847,7 +1001,7 @@ begin
             FDMemTableEntvtejj.FieldByName('CODCLI').AsString := FDMemTableEntvtejj.FieldByName('CODCLI').OldValue;
             if Screen.ActiveControl <> nil then
             begin
-              Screen.ActiveControl.SetFocus;     //Focus sur le champ sur lequel on est positionnÈ
+              Screen.ActiveControl.SetFocus;     //Focus sur le champ sur lequel on est positionn√©
             end;
             exit
           end
@@ -859,7 +1013,7 @@ begin
       end
       else
       begin
-        // L'utilisateur a cliquÈ sur ANNULER
+        // L'utilisateur a cliqu√© sur ANNULER
         FDMemTableEntvtejj.FieldByName('CODCLI').AsString := FDMemTableEntvtejj.FieldByName('CODCLI').OldValue;
         if Screen.ActiveControl <> nil then
         begin
@@ -911,10 +1065,10 @@ begin
 //		entvtepc.tx_tsoc	= fgTxTaxe(pdate,"TS")
 //	END
 //	IF client.credit>=client.plaf_crd AND client.plaf_crd>0 ALORS
-//		Info("Maximum crÈdit client atteint")
+//		Info("Maximum cr√©dit client atteint")
 //		IF ctrstock.pass_modif_fac<>"" ALORS
-//			SI Ouvre(FEN_Mot_de_Passe,"CrÈdit client") <> ctrstock.pass_modif_fac
-//				Info("Mot de passe incorrect - Maximum crÈdit client atteint")
+//			SI Ouvre(FEN_Mot_de_Passe,"Cr√©dit client") <> ctrstock.pass_modif_fac
+//				Info("Mot de passe incorrect - Maximum cr√©dit client atteint")
 //				ctrstock.bloq_cli_fac=1	//temporaire
 //				SAI_CODCLI=0
 //				RepriseSaisie(SAI_CODCLI)
@@ -923,7 +1077,7 @@ begin
 //			ctrstock.bloq_cli_fac=0		//temporaire
 //		END
 //	END
-	//!Si facture rÈglÈe mais non admin on interdit
+	//!Si facture r√©gl√©e mais non admin on interdit
 
 
 //	IF SAI_PRC_REMISE_EVC<>0 AND client.pas_rem=1 ALORS
@@ -939,7 +1093,7 @@ begin
 //		END
 //	END
 
-	//ContrÙle si remise a la ligne
+	//Contr√¥le si remise a la ligne
 //	IF entvtepc.NouvelEnregistrement=Faux AND SAI_PRC_REMISE_EVC=0 AND client.pas_rem=1 ALORS
 //		HLitRecherchePremier(ligvtepc,codfac,entvtepc.codfac)
 //		TANTQUE HTrouve=Vrai
@@ -948,7 +1102,7 @@ begin
 //					SI Ouvre(FEN_Mot_de_Passe,"Remise client") <> ctrstock.pass_modif_fac
 //						Info("Mot de passe incorrect - Remise ligne interdite")
 //						SAI_CODCLI=Lcodcli
-//						//ExÈcuteTraitement(SAI_CODCLI,trtModification)
+//						//Ex√©cuteTraitement(SAI_CODCLI,trtModification)
 //						DonneFocus(SAI_CODCLI)
 //						RETOUR
 //					END
@@ -972,13 +1126,13 @@ procedure TFormEntvtejj.DBCODREPChange(Sender: TObject);
 var
   QryExec: TFDQuery;
 begin
-  // On ne fait rien si la table est simplement en train d'Ítre lue/initialisÈe (sinon plantage)
+  // On ne fait rien si la table est simplement en train d'√™tre lue/initialis√©e (sinon plantage)
   if not (FDMemTableEntvtejj.State in [dsEdit, dsInsert]) then
     Exit;
   if not FDMemTableLigvtejj.Active then
     Exit;
 
-//   // CrÈation d'une requÍte temporaire dÈdiÈe aux exÈcutables SQL
+//   // Cr√©ation d'une requ√™te temporaire d√©di√©e aux ex√©cutables SQL
 //  QryExec := TFDQuery.Create(nil);
 //  QryExec.Connection := DMGesCloud.ConnexionGesCloud;
 //  QryExec.SQL.Text := 'SELECT * FROM repres WHERE CODREP=:CODREP';
@@ -1009,9 +1163,10 @@ begin
   CalculCompletFacture;
 end;
 
+
 procedure TFormEntvtejj.JvDBDate_Exit(Sender: TObject);
 begin
-  // On ne fait rien si la table est simplement en train d'Ítre lue/initialisÈe (sinon plantage)
+  // On ne fait rien si la table est simplement en train d'√™tre lue/initialis√©e (sinon plantage)
   if not (FDMemTableEntvtejj.State in [dsEdit, dsInsert]) then
     Exit;
   if not FDMemTableLigvtejj.Active then
@@ -1028,6 +1183,42 @@ begin
   end;
   CalculCompletFacture;
 end;
+
+procedure TFormEntvtejj.JvDBGridLigvtejjEnter(Sender: TObject);
+begin
+  //Pour rendre le focus que tu as vole a la date
+  if FIsLoading = True then
+  begin
+     FIsLoading := False;
+     JvDBDate_.SetFocus;
+  end;
+end;
+
+
+procedure TFormEntvtejj.JvDBGridLigvtejjKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+  case Key of
+//    VK_RETURN:
+//      begin
+//        Key := 0; // Emp√™che le comportement natif de la touche Entr√©e sur la grille
+//        BtnModifierLigne.Click;
+//      end;
+
+    VK_INSERT:
+      begin
+        Key := 0;
+        BtnAjouterLigne.Click;
+      end;
+
+    VK_DELETE:
+      begin
+        Key := 0;
+        BtnSupprimerLigne.Click;
+      end;
+  end;
+end;
+
 
 procedure TFormEntvtejj.RzDBCheckBoxEXO_TVAClick(Sender: TObject);
 begin
@@ -1049,14 +1240,15 @@ end;
 
 procedure TFormEntvtejj.RzDBRadioGroupTypeChange(Sender: TObject);
 begin
+  if FIsLoading then Exit;
   if RzDBRadioGroupType.Value = 'F' then
-  begin
-    JvDBGridLigvtejj.AlternateRowColor := RGB(240, 248, 255); // Rose clair
-  end
-  else
-  begin
-    JvDBGridLigvtejj.AlternateRowColor := RGB(255, 182, 193); // Alice blue
-  end;
+    begin
+      JvDBGridLigvtejj.AlternateRowColor := RGB(240, 248, 255); // Rose clair
+    end
+    else
+    begin
+      JvDBGridLigvtejj.AlternateRowColor := RGB(255, 182, 193); // Alice blue
+    end;
   //Relance calcul complet facture
   CalculCompletFacture;
 end;
@@ -1087,14 +1279,18 @@ var
   MONT: Double;
   WTOT_REGLE: dOUBLE;
 
+  SavedBookmark: TBookmark; // <-- 1. D√©claration du bookmark
+
 begin
-  // On ne fait rien si la fiche est simplement en train d'Ítre lue/initialisÈe (sinon plantage)
+  if FIsLoading then Exit;
+
+  // On ne fait rien si la fiche est simplement en train d'√™tre lue/initialis√©e (sinon plantage)
   if not (FDMemTableEntvtejj.State in [dsEdit, dsInsert]) then
     Exit;
   if not FDMemTableLigvtejj.Active then
     Exit;
 
-   // CrÈation requÍtes temporaires dÈdiÈes aux exÈcutables SQL
+   // Cr√©ation requ√™tes temporaires d√©di√©es aux ex√©cutables SQL
   QryExec := TFDQuery.Create(nil);
   QryExec.Connection := DMGesCloud.ConnexionGesCloud;
 
@@ -1102,8 +1298,12 @@ begin
   QryArticle.Connection := DMGesCloud.ConnexionGesCloud;
 
   // Sauvegarde la position actuelle du curseur pour ne pas perturber l'utilisateur
+  SavedBookmark := nil;
   FDMemTableLigvtejj.DisableControls;
   try
+    // 2. On m√©morise la position exacte de la ligne en cours avant de tout balayer
+    if not FDMemTableLigvtejj.IsEmpty then
+      SavedBookmark := FDMemTableLigvtejj.GetBookmark;
     //Si exonere de TVA
 	  if RzDBCheckBoxEXO_TVA.Checked then
     begin
@@ -1187,12 +1387,14 @@ begin
 
         if QryArticle.FieldByName('TVA').AsString = 'TVA0' then   //ppn
         begin
+          FDMemTableLigvtejj.Cancel; // ‚úÖ On annule le Edit pour remettre le dataset en Browse
           FDMemTableLigvtejj.Next;
           CONTINUE;
         end;
 
         if QryArticle.FieldByName('EXCLU_TVA1').AsBoolean then	  //Exclu iles
         begin
+          FDMemTableLigvtejj.Cancel; // ‚úÖ On annule le Edit pour remettre le dataset en Browse
           FDMemTableLigvtejj.Next;
           CONTINUE;
         end;
@@ -1200,6 +1402,7 @@ begin
         //Recherche Taux TVA en cours
         if DM_Olivier.fgTxTaxe(FDMemTableEntvtejj.FieldByName('DATE_').AsDateTime,'TVAI')=0 then
         begin
+          FDMemTableLigvtejj.Cancel; // ‚úÖ On annule le Edit pour remettre le dataset en Browse
           FDMemTableLigvtejj.Next;
           CONTINUE;
         end;
@@ -1268,7 +1471,7 @@ begin
         DM_Olivier.FDQueryCtrstock.Open;
         IF DM_Olivier.FDQueryCtrstock.FieldByName('NATURE').AsString = 'G' then
         begin
-          //!M‡J Prix dÈtail (au cas ou client change)
+          //!M√†J Prix d√©tail (au cas ou client change)
           DM_Olivier.FDQueryPrixgeo.Close;
           DM_Olivier.FDQueryPrixgeo.ParamByName('CODART').AsString:=FDMemTableLigvtejj.FieldByName('CODART').AsString;
           DM_Olivier.FDQueryPrixgeo.ParamByName('CODGEO').AsString:=FDMemTableEntvtejj.FieldByName('CODGEO').AsString;
@@ -1281,13 +1484,13 @@ begin
         //!total cout revient prealable avant la marge globale
         FDMemTableEntvtejj.FieldByName('MARGE').AsFloat := FDMemTableEntvtejj.FieldByName('MARGE').AsFloat + (FDMemTableLigvtejj.FieldByName('PRIXREV').AsFloat * FDMemTableLigvtejj.FieldByName('QTE').AsFloat);
 
-        //!DiffÈrents Cumuls
+        //!Diff√©rents Cumuls
         FDMemTableEntvtejj.FieldByName('MT_TTC').AsInteger := FDMemTableEntvtejj.FieldByName('MT_TTC').AsInteger + FDMemTableLigvtejj.FieldByName('MT_TTC').AsInteger;
 
 //        //!Calcul assiette Taxe sociale remisable globalement
-//        wHTSOCr est un numÈrique
-//        wHTSOC est un numÈrique
-//        wMTSOC est un numÈrique
+//        wHTSOCr est un num√©rique
+//        wHTSOC est un num√©rique
+//        wMTSOC est un num√©rique
 //        IF ligvtepc.mt_tsoc ALORS
 //          IF article.prest =0 ALORS	//!Remisable global
 //            wHTSOCr += ligvtepc.totht
@@ -1419,7 +1622,7 @@ begin
      + FDMemTableEntvtejj.FieldByName('TOTHT').AsFloat);
      //+ SAI_MT_TSOC_EVC)
 
-    //Test si facture rÈglÈe
+    //Test si facture r√©gl√©e
     WTOT_REGLE :=0;
     //Lecture des reglements
     FDMemTableRegljj.First;
@@ -1442,7 +1645,19 @@ begin
 
 
   finally
-    // RÈactive l'affichage de la grille
+    // 3. On se repositionne sur la ligne m√©moris√©e si elle existe toujours
+    try
+      if Assigned(SavedBookmark) then
+      begin
+        if FDMemTableLigvtejj.BookmarkValid(SavedBookmark) then
+          FDMemTableLigvtejj.GotoBookmark(SavedBookmark);
+        FDMemTableLigvtejj.FreeBookmark(SavedBookmark);
+      end;
+    except
+      // S√©curit√© au cas o√π la ligne aurait √©t√© supprim√©e entre-temps
+    end;
+
+    // R√©active l'affichage de la grille
     FDMemTableLigvtejj.EnableControls;
     QryExec.Free;
     QryArticle.Free;
