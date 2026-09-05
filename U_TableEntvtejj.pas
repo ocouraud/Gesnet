@@ -95,6 +95,8 @@ type
     procedure BtnOuvrirClick(Sender: TObject);
     procedure BtnAjouterClick(Sender: TObject);
     procedure FDQueryEntvtejjCalcFields(DataSet: TDataSet);
+    procedure JvDBGridEntvtejjKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
   private
     procedure AppliquerFiltreMaitre;
     { Déclarations privées }
@@ -232,7 +234,6 @@ begin
 
   //Factures du poste par defaut
   AppliquerFiltreMaitre();
-
 end;
 
 
@@ -270,6 +271,31 @@ begin
   end
   else
     FDQueryEntvtejj.FieldByName('HeureLisible').AsString := '';
+end;
+
+
+procedure TFrameTableEntvtejj.JvDBGridEntvtejjKeyDown(Sender: TObject;
+  var Key: Word; Shift: TShiftState);
+begin
+  case Key of
+//    VK_RETURN:
+//      begin
+//        Key := 0; // Empêche le comportement natif de la touche Entrée sur la grille
+//        BtnModifierLigne.Click;
+//      end;
+
+    VK_INSERT:
+      begin
+        Key := 0;
+        BtnAjouter.Click;
+      end;
+
+    VK_DELETE:
+      begin
+        Key := 0;
+        BtnSupprimer.Click;
+      end;
+  end;
 end;
 
 

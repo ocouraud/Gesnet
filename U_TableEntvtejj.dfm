@@ -46,6 +46,7 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
       Margins.Right = 6
       Align = alLeft
       Caption = '&Supprimer'
+      Enabled = False
       TabOrder = 2
     end
     object BtnFermer: TBitBtn
@@ -87,6 +88,7 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
     TitleFont.Name = 'Segoe UI'
     TitleFont.Style = []
     OnDblClick = BtnOuvrirClick
+    OnKeyDown = JvDBGridEntvtejjKeyDown
     TitleButtons = True
     OnTitleBtnClick = JvDBGridEntvtejjTitleBtnClick
     AlternateRowColor = clAliceblue

@@ -133,6 +133,7 @@ type
     procedure BtnModifierLigneClick(Sender: TObject);
     procedure JvDBGridLigvtejjKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure JvDBDate_Enter(Sender: TObject);
 
   private
     { Déclarations privées }
@@ -223,6 +224,8 @@ begin
     // Configuration de la fiche
     FormLigvtejj.ModeSaisieLigne := U_FicheLigvtejj.msAjout;
     FormLigvtejj.Caption := 'Nouvelle ligne de facture';
+    if FormEntvtejj.RzDBRadioGroupType.Value <> 'F' then
+      FormLigvtejj.Caption := 'Nouvelle ligne d''avoir';
 
     // Passage en mode insertion
     FDMemTableLigvtejj.Insert;
@@ -247,8 +250,8 @@ begin
       FDMemTableLigvtejj.Cancel;
     end;
   finally
-    // 1. On lance systématiquement le recalcul du stock
     FormLigvtejj.Free;
+    JvDBGridLigvtejj.SetFocus;
   end;
 end;
 
@@ -263,26 +266,19 @@ begin
     FormLigvtejj.DSLigvtejj.DataSet := FDMemTableLigvtejj;
     FormLigvtejj.ModeSaisieLigne := U_FicheLigvtejj.msModification;
     FormLigvtejj.Caption := 'Modifier la ligne de facture';
+    if FormEntvtejj.RzDBRadioGroupType.Value <> 'F' then
+      FormLigvtejj.Caption := 'Modifier la ligne d''avoir';
 
     if FormLigvtejj.ShowModal = mrOk then
     begin
-      // Si validé, on rafraîchit
-      //DM_Olivier.RefreshDataSetWithBookmark(FDMemTableLigvtejj);
-      //CalculCompletFacture;
 
       // 1. On s'assure que le post est bien effectif et fermé
       if FDMemTableLigvtejj.State in [dsEdit, dsInsert] then
         FDMemTableLigvtejj.Post;
 
-            CalculCompletFacture;
+      CalculCompletFacture;
       // 2. On repositionne et rafraîchit proprement le dataset
       DM_Olivier.RefreshDataSetWithBookmark(FDMemTableLigvtejj);
-
-      // 3. On laisse un tout petit temps de répit au système pour stabiliser
-      // le buffer avant de lancer le calcul lourd
-      //Application.ProcessMessages;
-
-      // 4. Enfin, on lance le calcul global
 
     end
     else
@@ -298,6 +294,7 @@ begin
     end;
   finally
     FormLigvtejj.Free;
+    JvDBGridLigvtejj.SetFocus;
   end;
 end;
 
@@ -306,6 +303,7 @@ begin
   if FDMemTableLigvtejj.IsEmpty then
   begin
     ShowMessage('Aucune ligne sélectionnée à supprimer.');
+    JvDBGridLigvtejj.SetFocus;
     Exit;
   end;
 
@@ -324,6 +322,7 @@ begin
         MessageDlg('Erreur lors de la suppression de la ligne: ' + E.Message, mtError, [mbOK], 0);
     end;
   end;
+  JvDBGridLigvtejj.SetFocus;
 end;
 
 
@@ -1164,6 +1163,12 @@ begin
 end;
 
 
+procedure TFormEntvtejj.JvDBDate_Enter(Sender: TObject);
+begin
+     if (ModeSaisie=msAjout) and (FIsLoading=True) then
+        JvDBGridLigvtejj.SetFocus;
+end;
+
 procedure TFormEntvtejj.JvDBDate_Exit(Sender: TObject);
 begin
   // On ne fait rien si la table est simplement en train d'être lue/initialisée (sinon plantage)
@@ -1190,7 +1195,8 @@ begin
   if FIsLoading = True then
   begin
      FIsLoading := False;
-     JvDBDate_.SetFocus;
+     if ModeSaisie=msModification then
+        JvDBDate_.SetFocus;
   end;
 end;
 
@@ -1282,6 +1288,7 @@ var
   SavedBookmark: TBookmark; // <-- 1. Déclaration du bookmark
 
 begin
+  //Ici on ne passe pas la premiere fois
   if FIsLoading then Exit;
 
   // On ne fait rien si la fiche est simplement en train d'être lue/initialisée (sinon plantage)

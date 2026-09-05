@@ -658,6 +658,7 @@ object FormEntvtejj: TFormEntvtejj
       DataSource = DSMemTableEntvtejj
       ShowNullDate = False
       TabOrder = 1
+      OnEnter = JvDBDate_Enter
       OnExit = JvDBDate_Exit
     end
   end

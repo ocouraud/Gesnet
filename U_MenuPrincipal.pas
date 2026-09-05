@@ -334,9 +334,24 @@ begin
 end;
 
 procedure TFormMenuPrincipal.FacturationClick(Sender: TObject);
+var
+  MonFrame: TFrameTableEntvtejj;
 begin
-  OuvrirOnglet<TFrameTableEntvtejj>('Factures du jour', 'invoice_12560218');
+  // Votre méthode qui crée ou ouvre l'onglet/frame
+  MonFrame := OuvrirOnglet<TFrameTableEntvtejj>('Factures du jour', 'invoice_12560218');
+
+  // Rediriger le focus sur le frame ou un composant précis à l'intérieur
+  if Assigned(MonFrame) then
+  begin
+    // Si vous souhaitez cibler un composant en particulier (ex: une grille ou un champ de recherche) :
+    MonFrame.JvDBGridEntvtejj.SetFocus;
+
+    // Ou donner le focus global au frame s'il peut l'accepter :
+    //if MonFrame.CanFocus then
+    //  MonFrame.SetFocus;
+  end;
 end;
+
 
 procedure TFormMenuPrincipal.Catgoriestarifaires1Click(Sender: TObject);
 begin
