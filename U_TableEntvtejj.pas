@@ -97,6 +97,8 @@ type
     procedure FDQueryEntvtejjCalcFields(DataSet: TDataSet);
     procedure JvDBGridEntvtejjKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
+    procedure JvDBGridEntvtejjDrawColumnCell(Sender: TObject; const Rect: TRect;
+      DataCol: Integer; Column: TColumn; State: TGridDrawState);
   private
     procedure AppliquerFiltreMaitre;
     { Déclarations privées }
@@ -273,6 +275,36 @@ begin
     FDQueryEntvtejj.FieldByName('HeureLisible').AsString := '';
 end;
 
+
+procedure TFrameTableEntvtejj.JvDBGridEntvtejjDrawColumnCell(Sender: TObject;
+  const Rect: TRect; DataCol: Integer; Column: TColumn; State: TGridDrawState);
+begin
+  // Si avoir
+  if Assigned(JvDBGridEntvtejj.DataSource) and Assigned(JvDBGridEntvtejj.DataSource.DataSet) then
+  begin
+    if JvDBGridEntvtejj.DataSource.DataSet.FieldByName('TYPE_').AsString = 'A' then
+    begin
+      // Change la couleur du fond de la cellule
+      JvDBGridEntvtejj.Canvas.Brush.Color := clRed;
+      // Change la couleur du texte
+      JvDBGridEntvtejj.Canvas.Font.Color := clWhite;
+    end;
+  end;
+  // Si facture suspendue
+  if Assigned(JvDBGridEntvtejj.DataSource) and Assigned(JvDBGridEntvtejj.DataSource.DataSet) then
+  begin
+    if JvDBGridEntvtejj.DataSource.DataSet.FieldByName('TOP_').AsString = 'S' then
+    begin
+      // Change la couleur du fond de la cellule
+      //JvDBGridEntvtejj.Canvas.Brush.Color := clRed;
+      // Change la couleur du texte
+      JvDBGridEntvtejj.Canvas.Font.Color := clRed;
+    end;
+  end;
+
+  // L'instruction indispensable pour appliquer le dessin par défaut avec nos modifications de couleurs
+  JvDBGridEntvtejj.DefaultDrawColumnCell(Rect, DataCol, Column, State);
+end;
 
 procedure TFrameTableEntvtejj.JvDBGridEntvtejjKeyDown(Sender: TObject;
   var Key: Word; Shift: TShiftState);

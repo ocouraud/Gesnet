@@ -336,6 +336,7 @@ var
   Centiemes: Integer;
   ResultHeure: Integer;
   VNoEnrStock: Integer;
+  wTotregl: Integer;
 begin
   //Calcul complet avant validation
   CalculCompletFacture;
@@ -354,6 +355,33 @@ begin
     FDMemTableLigvtejj.Post;
   if FDMemTableRegljj.State in [dsEdit, dsInsert] then
     FDMemTableRegljj.Post;
+
+  FDMemTableEntvtejj.Edit;
+
+  // Parcours de la table mémoire des règlements
+  FDMemTableRegljj.First;
+  while not FDMemTableRegljj.Eof do
+  begin
+    wTotregl:=wTotregl+FDMemTableRegljj.FieldByName('MONTANT').AsInteger;
+    FDMemTableRegljj.Next;
+  end;
+
+  if wTotregl<>DSMemTableEntvtejj.DataSet.FieldByName('MT_TTC').AsInteger then
+  begin
+    //ShowMessage('⚠ Règlement incomplet');
+    if MessageDlg('⚠ Règlement incomplet, voulez-vous suspendre la facture ?',
+     mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+      DSMemTableEntvtejj.DataSet.FieldByName('TOP_').AsString:='S'
+    else
+      Exit;
+  end
+  else
+  begin
+     DSMemTableEntvtejj.DataSet.FieldByName('TOP_').AsString:='F';
+  end;
+
+  //Mise à jour top facture à F (non suspendue)
+  FDMemTableEntvtejj.Post;
 
   // Création d'une requête temporaire dédiée aux exécutables SQL
   QryExec := TFDQuery.Create(nil);
@@ -907,19 +935,15 @@ if ModeSaisie = msModification then
   FDQueryClientsOuverts.Open;
   DM_Olivier.FDQueryRepres.Open;
 
-//  // Lecture Representant
-//  QryExec.Close;
-//  QryExec.SQL.Text := 'SELECT * FROM repres WHERE CODREP=:CODREP';
-//  QryExec.ParamByName('CODREP').AsString :=   FDMemTableEntvtejj.FieldByName('CODREP').AsString;
-//  QryExec.Open;
-//  LabelNomRepres.Caption := QryExec.FieldByName('NOM').AsString;
-
   // On se met en édition pour le code qui suit
   FDMemTableEntvtejj.Edit;
 
   //Forcer le controle client en ajout
   if ModeSaisie = msAjout then
-    DBCODCLIExit(self);
+    DBCODCLIExit(self)
+  else
+    //Si modif on interdit le changement Facture-Avoir
+    RzDBRadioGroupType.Enabled:=false;
 
   //TVA Iles oui ou non
   if DM_Olivier.fgTxTaxe(FDMemTableEntvtejj.FieldByName('DATE_').AsDateTime,'TVAI')=0 then

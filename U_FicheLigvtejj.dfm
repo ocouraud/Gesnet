@@ -23,8 +23,6 @@ object FormLigvtejj: TFormLigvtejj
     BevelOuter = bvNone
     TabOrder = 1
     StyleElements = [seFont, seBorder]
-    ExplicitLeft = 829
-    ExplicitHeight = 475
     object BtnValider: TBitBtn
       Left = 0
       Top = 0
@@ -55,8 +53,6 @@ object FormLigvtejj: TFormLigvtejj
     Height = 334
     Align = alClient
     TabOrder = 0
-    ExplicitTop = -8
-    ExplicitHeight = 475
     object Shape1: TShape
       Left = 2
       Top = 148
@@ -133,7 +129,7 @@ object FormLigvtejj: TFormLigvtejj
       Width = 29
       Height = 15
       Caption = 'TARIF'
-      FocusControl = DBEdit15
+      FocusControl = DBCodtar
     end
     object Label2: TLabel
       Left = 359
@@ -212,10 +208,10 @@ object FormLigvtejj: TFormLigvtejj
       OnEnter = DBCodbarEnter
       OnExit = DBCodbarExit
     end
-    object DBPrc_remise: TJvDBSpinEdit
+    object JvDBSpinPrc_remise: TJvDBSpinEdit
       Left = 249
       Top = 180
-      Width = 54
+      Width = 64
       Height = 25
       ValueType = vtFloat
       Font.Charset = DEFAULT_CHARSET
@@ -225,9 +221,9 @@ object FormLigvtejj: TFormLigvtejj
       Font.Style = [fsBold]
       ParentFont = False
       TabOrder = 2
-      OnChange = DBPrc_remiseChange
-      OnEnter = DBPrc_remiseEnter
-      OnExit = DBPrc_remiseExit
+      OnChange = JvDBSpinPrc_remiseChange
+      OnEnter = JvDBSpinPrc_remiseEnter
+      OnExit = JvDBSpinPrc_remiseExit
       DataField = 'PRC_REMISE'
       DataSource = DSLigvtejj
     end
@@ -247,6 +243,7 @@ object FormLigvtejj: TFormLigvtejj
       OnExit = DBPrixhtExit
       DataField = 'PRIXHT'
       DataSource = DSLigvtejj
+      EmptyIsNull = False
     end
     object DBPrixnet: TDBEdit
       Left = 319
@@ -392,7 +389,7 @@ object FormLigvtejj: TFormLigvtejj
       Enabled = False
       TabOrder = 13
     end
-    object DBEdit15: TDBEdit
+    object DBCodtar: TDBEdit
       Left = 12
       Top = 180
       Width = 19
@@ -431,15 +428,15 @@ object FormLigvtejj: TFormLigvtejj
   end
   object DSLigvtejj: TDataSource
     DataSet = FormEntvtejj.FDMemTableLigvtejj
-    Left = 24
-    Top = 208
+    Left = 8
+    Top = 80
   end
   object FDQuery1: TFDQuery
     Connection = DMGesCloud.ConnexionGesCloud
     SQL.Strings = (
       'select * from ligvtejj')
-    Left = 32
-    Top = 264
+    Left = 576
+    Top = 248
     object FDQuery1LIBELLE: TMemoField
       AutoGenerateValue = arDefault
       FieldName = 'LIBELLE'
@@ -681,8 +678,8 @@ object FormLigvtejj: TFormLigvtejj
   end
   object DataSource1: TDataSource
     DataSet = FDQuery1
-    Left = 88
-    Top = 208
+    Left = 600
+    Top = 256
   end
   object FDQueryCodbar: TFDQuery
     Connection = DMGesCloud.ConnexionGesCloud
@@ -692,8 +689,8 @@ object FormLigvtejj: TFormLigvtejj
       'JOIN codbar ON codbar.codart = article.codart '
       'WHERE article.ferme <> 1 OR article.ferme IS NULL '
       'ORDER BY article.libelle;')
-    Left = 104
-    Top = 280
+    Left = 88
+    Top = 256
     object FDQueryCodbarOBSERV: TMemoField
       AutoGenerateValue = arDefault
       FieldName = 'OBSERV'
@@ -949,7 +946,7 @@ object FormLigvtejj: TFormLigvtejj
   end
   object BalloonHint1: TBalloonHint
     HideAfter = 2000
-    Left = 632
-    Top = 176
+    Left = 664
+    Top = 240
   end
 end

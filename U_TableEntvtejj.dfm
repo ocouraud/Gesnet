@@ -87,6 +87,7 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
     TitleFont.Height = -12
     TitleFont.Name = 'Segoe UI'
     TitleFont.Style = []
+    OnDrawColumnCell = JvDBGridEntvtejjDrawColumnCell
     OnDblClick = BtnOuvrirClick
     OnKeyDown = JvDBGridEntvtejjKeyDown
     TitleButtons = True
