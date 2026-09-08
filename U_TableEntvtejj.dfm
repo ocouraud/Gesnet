@@ -37,7 +37,7 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
       TabOrder = 1
       OnClick = BtnOuvrirClick
     end
-    object BtnSupprimer: TBitBtn
+    object BtnSuspendre: TBitBtn
       Left = 174
       Top = 0
       Width = 87
@@ -45,9 +45,10 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
       Margins.Left = 6
       Margins.Right = 6
       Align = alLeft
-      Caption = '&Supprimer'
-      Enabled = False
+      Caption = '&Suspendre'
       TabOrder = 2
+      StyleElements = [seClient, seBorder]
+      OnClick = BtnSuspendreClick
     end
     object BtnFermer: TBitBtn
       Left = 734
@@ -459,6 +460,7 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
     end
   end
   object FDQueryEntvtejj: TFDQuery
+    AfterScroll = FDQueryEntvtejjAfterScroll
     OnCalcFields = FDQueryEntvtejjCalcFields
     Connection = DMGesCloud.ConnexionGesCloud
     SQL.Strings = (

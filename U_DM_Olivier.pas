@@ -9,7 +9,7 @@ uses
   FireDAC.Phys.MySQLDef, FireDAC.VCLUI.Wait, FireDAC.Stan.Param, FireDAC.DatS,
   FireDAC.DApt.Intf, FireDAC.DApt, Data.DB, FireDAC.Comp.DataSet,
   FireDAC.Comp.Client, System.Variants, Vcl.Dialogs, System.IniFiles, System.Math,
-  Vcl.Forms;
+  System.DateUtils, Vcl.Forms;
 
 type
   TDM_Olivier = class(TDataModule)
@@ -80,6 +80,8 @@ type
     procedure RecalculerToutLeStock;
     function CentièmesVersHeureLisible(ACentièmes: Int64): string;
     function fgTxTaxe(const DateCtrl: TDateTime; const CodeTVA: String): Double;
+    function CalculDateEcheance(const ADate: TDateTime; AJrsCrd,
+      AFinMois: Integer): TDateTime;
    end;
 
 var
@@ -102,6 +104,23 @@ begin
   ChargerParametresStock;
   ChargerParametresTVA;
   ChargerParametresCtrstock;
+end;
+
+
+function TDM_Olivier.CalculDateEcheance(const ADate: TDateTime; AJrsCrd: Integer; AFinMois: Integer): TDateTime;
+var
+  Annee, Mois, Jour: Word;
+begin
+  // 1. On ajoute les jours de crédit à la date de base
+  Result := IncDay(ADate, AJrsCrd);
+
+  // 2. Si l'option Fin de Mois est active (1), on décale au dernier jour du mois
+  if AFinMois = 1 then
+  begin
+    DecodeDate(Result, Annee, Mois, Jour);
+    // On reconstruit une date propre au dernier jour du mois calculé
+    Result := EncodeDate(Annee, Mois, DaysInMonth(Result));
+  end;
 end;
 
 

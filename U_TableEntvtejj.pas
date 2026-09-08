@@ -16,7 +16,7 @@ type
     Panel2: TPanel;
     BtnAjouter: TBitBtn;
     BtnOuvrir: TBitBtn;
-    BtnSupprimer: TBitBtn;
+    BtnSuspendre: TBitBtn;
     BtnFermer: TBitBtn;
     BtnAide: TBitBtn;
     JvDBGridEntvtejj: TJvDBGrid;
@@ -99,6 +99,8 @@ type
       Shift: TShiftState);
     procedure JvDBGridEntvtejjDrawColumnCell(Sender: TObject; const Rect: TRect;
       DataCol: Integer; Column: TColumn; State: TGridDrawState);
+    procedure FDQueryEntvtejjAfterScroll(DataSet: TDataSet);
+    procedure BtnSuspendreClick(Sender: TObject);
   private
     procedure AppliquerFiltreMaitre;
     { Déclarations privées }
@@ -124,10 +126,8 @@ end;
 
 procedure TFrameTableEntvtejj.BtnAjouterClick(Sender: TObject);
 begin
-
   // On crée la fiche en passant le mode Création et le numéro 0 pour nouveau
   FormEntvtejj := TFormEntvtejj.Create(Self, msAjout, 0);
-
   try
     FormEntvtejj.Caption := 'Créer une nouvelle facture';
 
@@ -186,10 +186,49 @@ begin
 end;
 
 
+procedure TFrameTableEntvtejj.BtnSuspendreClick(Sender: TObject); // ou Sender d'origine
+var
+  QryExec: TFDQuery;
+begin
+  if FDQueryEntvtejj.IsEmpty then Exit;
+
+  QryExec := nil; // Initialisation indispensable
+  try
+    FDQueryEntvtejj.Edit;
+    if FDQueryEntvtejj.FieldByName('TOP_').AsString = 'F' then
+    begin
+      FDQueryEntvtejj.FieldByName('TOP_').AsString := 'S';
+    end
+    else
+    begin
+      QryExec := TFDQuery.Create(nil);
+      QryExec.Connection := DMGesCloud.ConnexionGesCloud;
+      QryExec.SQL.Text := 'select sum(montant) as totreg from regljj where codfac=:codfac';
+      QryExec.ParamByName('CODFAC').AsInteger := FDQueryEntvtejj.FieldByName('CODFAC').AsInteger;
+      QryExec.Open;
+
+      if not QryExec.Eof then
+      begin
+        // Utilise de préférence .AsCurrency ou .AsFloat pour comparer des montants
+        if QryExec.FieldByName('totreg').AsCurrency = FDQueryEntvtejj.FieldByName('mt_ttc').AsCurrency then
+          FDQueryEntvtejj.FieldByName('TOP_').AsString := 'F'
+        else
+          ShowMessage('Opération impossible, règlement incomplet.');
+      end;
+    end;
+    FDQueryEntvtejj.Post;
+    JvDBGridEntvtejj.SetFocus;
+  finally
+    QryExec.Free; // S'exécutera proprement dans tous les cas
+  end;
+end;
+
+
 procedure TFrameTableEntvtejj.CheckBoxToutesFacturesClick(Sender: TObject);
 begin
      AppliquerFiltreMaitre();
 end;
+
 
 procedure TFrameTableEntvtejj.AppliquerFiltreMaitre;
 var
@@ -227,12 +266,13 @@ begin
   end;
 end;
 
+
 constructor TFrameTableEntvtejj.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner); // <--- TRÈS IMPORTANT : appelle l'initialisation de Delphi
 
   FDQueryEntvtejj.Close;
-  FDQueryEntvtejj.open;
+  FDQueryEntvtejj.Open;
 
   //Factures du poste par defaut
   AppliquerFiltreMaitre();
@@ -261,6 +301,20 @@ begin
   if (csDestroying in ComponentState) then Exit;
 
   AppliquerFiltresCumules(Panel1, FDQueryEntvtejj);
+end;
+
+procedure TFrameTableEntvtejj.FDQueryEntvtejjAfterScroll(DataSet: TDataSet);
+begin
+  if JvDBGridEntvtejj.DataSource.DataSet.FieldByName('TOP_').AsString = 'F' then
+  begin
+    BtnSuspendre.Caption:='Suspendre';
+    BtnSuspendre.Font.Color := clRed;
+  end
+  else
+  begin
+     BtnSuspendre.Caption:='Libérer';
+     BtnSuspendre.Font.Color := clGreen;
+  end;
 end;
 
 procedure TFrameTableEntvtejj.FDQueryEntvtejjCalcFields(DataSet: TDataSet);
@@ -325,7 +379,7 @@ begin
     VK_DELETE:
       begin
         Key := 0;
-        BtnSupprimer.Click;
+        BtnSuspendre.Click;
       end;
   end;
 end;

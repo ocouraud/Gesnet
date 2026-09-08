@@ -134,6 +134,7 @@ type
     procedure JvDBGridLigvtejjKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure JvDBDate_Enter(Sender: TObject);
+    procedure BtnAjouterReglClick(Sender: TObject);
 
   private
     { Déclarations privées }
@@ -159,7 +160,7 @@ implementation
 
 {$R *.dfm}
 
-uses U_DM_Olivier, U_TableEntvtejj, U_DataModule, U_FicheLigvtejj;
+uses U_DM_Olivier, U_TableEntvtejj, U_DataModule, U_FicheLigvtejj, U_FicheRegljj;
 
 
 procedure TFormEntvtejj.CMDialogKey(var Msg: TCMDialogKey);
@@ -216,7 +217,7 @@ end;
 
 procedure TFormEntvtejj.BtnAjouterLigneClick(Sender: TObject);
 begin
-  // 2. Création et affichage de la fiche de saisie
+  // Création et affichage de la fiche de saisie
   FormLigvtejj := TFormLigvtejj.Create(Self);
   try
     FormLigvtejj.DSLigvtejj.DataSet := FDMemTableLigvtejj;
@@ -255,6 +256,86 @@ begin
   end;
 end;
 
+
+procedure TFormEntvtejj.BtnAjouterReglClick(Sender: TObject);
+var
+  QryExec: TFDQuery;
+  wCODPAI: String;
+  wTYPE: String;
+  wTOTREG: Integer;
+  wLIBELLE: String;
+begin
+  // lECTURE CLIENT
+  QryExec := TFDQuery.Create(nil);
+  QryExec.Connection := DMGesCloud.ConnexionGesCloud;
+  QryExec.Close;
+  QryExec.SQL.Text := 'SELECT * FROM client WHERE CODCLI=:CODCLI';
+  QryExec.ParamByName('CODCLI').AsInteger := FDMemTableEntvtejj.FieldByName('CODCLI').AsInteger;
+  QryExec.Open;
+  wCODPAI:=QryExec.FieldByName('CODPAI').AsString;
+
+  //lECTURE MODE PAIEMENT CLIENT
+  QryExec.Close;
+  QryExec.SQL.Text := 'SELECT * FROM paiement WHERE CODPAI=:CODPAI';
+  QryExec.ParamByName('CODPAI').AsString := wCODPAI;
+  QryExec.Open;
+  if not QryExec.Eof then
+    wTYPE := QryExec.FieldByName('TYPE_').AsString;
+    wLIBELLE := QryExec.FieldByName('LIBELLE').AsString;
+
+  //CALCUL TOTAL REGLE
+  // Parcours de la table mémoire des règlements
+  wTOTREG:=0;
+  FDMemTableRegljj.First;
+  while not FDMemTableRegljj.Eof do
+  begin
+    wTOTREG:=wTOTREG+FDMemTableRegljj.FieldByName('MONTANT').AsInteger;
+    FDMemTableRegljj.Next;
+  end;
+
+  // Création et affichage de la fiche de saisie
+  FormRegljj := TFormRegljj.Create(Self,wCODPAI,wTYPE);
+  try
+    FormRegljj.DSRegljj.DataSet := FDMemTableRegljj;
+
+    // Configuration de la fiche
+    FormRegljj.ModeSaisieRegl := U_FicheRegljj.msAjout;
+    FormRegljj.Caption := 'Nouveau ligne de reglèment';
+
+    // Passage en mode insertion
+    FDMemTableRegljj.Insert;
+
+    // Pré-remplir les champs correctement
+    FDMemTableRegljj.FieldByName('CODFAC').AsInteger := FDMemTableEntvtejj.FieldByName('CODFAC').AsInteger;
+    FDMemTableRegljj.FieldByName('CODVEN').AsInteger := FDMemTableEntvtejj.FieldByName('CODVEN').AsInteger;
+    FDMemTableRegljj.FieldByName('DATE_').AsDateTime := Now;  //FDMemTableEntvtejj.FieldByName('DATE_').AsDateTime;
+    FDMemTableRegljj.FieldByName('DATE_ECH').AsDateTime := Now;
+    FDMemTableRegljj.FieldByName('TOP_').AsString := 'J';
+    FDMemTableRegljj.FieldByName('CODCAI').AsString := FDMemTableEntvtejj.FieldByName('CODCAI').AsString;
+    FDMemTableRegljj.FieldByName('CODPAI').AsString := wCODPAI;
+    FDMemTableRegljj.FieldByName('LIBELLE').AsString := wLIBELLE;
+    FDMemTableRegljj.FieldByName('TYPE_').AsString := wTYPE;
+    FDMemTableRegljj.FieldByName('MONTANT').AsInteger := FDMemTableEntvtejj.FieldByName('MT_TTC').AsInteger
+      - wTOTREG;
+
+    // Si l'utilisateur clique sur Valider (et que le .Post interne a réussi) :
+    if FormRegljj.ShowModal = mrOk then
+    begin
+      // Le .Post a DEJA été fait à l'intérieur de FormFicheStock !
+      CalculCompletFacture;
+    end
+    else
+    begin
+      // Si l'utilisateur a annulé, on annule l'insertion
+      FDMemTableRegljj.Cancel;
+    end;
+  finally
+    QryExec.Free;
+    FormRegljj.Free;
+    JvDBGridRegljj.SetFocus;
+  end;
+
+end;
 
 procedure TFormEntvtejj.BtnModifierLigneClick(Sender: TObject);
 begin
@@ -359,6 +440,7 @@ begin
   FDMemTableEntvtejj.Edit;
 
   // Parcours de la table mémoire des règlements
+  wTotregl:=0;
   FDMemTableRegljj.First;
   while not FDMemTableRegljj.Eof do
   begin
@@ -912,7 +994,7 @@ FIsLoading := True;
   FDMemTableRegljj.FieldDefs.Assign(DM_Olivier.FDQueryRegljj.FieldDefs);
   FDMemTableRegljj.CreateDataSet;
 
-if ModeSaisie = msModification then
+  if ModeSaisie = msModification then
   begin
     FDMemTableLigvtejj.CopyDataSet(DM_Olivier.FDQueryLigvtejj, [coAppend]);
     FDMemTableLigvtejj.First;
@@ -996,6 +1078,12 @@ begin
     begin
       ShowMessage('Client inconnu !');
       FDMemTableEntvtejj.FieldByName('CODCLI').AsInteger:=FDMemTableEntvtejj.FieldByName('CODCLI').OldValue;
+      DBCODCLI.SetFocus;     //Focus sur le champ sur lequel on est positionné
+      Exit;
+    end;
+    if QryExec.FieldByName('BLOQUE').AsInteger=1 then
+      begin
+      ShowMessage('Client bloqué - Facturation impossible');
       DBCODCLI.SetFocus;     //Focus sur le champ sur lequel on est positionné
       Exit;
     end;
@@ -1154,14 +1242,6 @@ begin
     Exit;
   if not FDMemTableLigvtejj.Active then
     Exit;
-
-//   // Création d'une requête temporaire dédiée aux exécutables SQL
-//  QryExec := TFDQuery.Create(nil);
-//  QryExec.Connection := DMGesCloud.ConnexionGesCloud;
-//  QryExec.SQL.Text := 'SELECT * FROM repres WHERE CODREP=:CODREP';
-//  QryExec.ParamByName('CODREP').AsInteger := FDMemTableEntvtejj.FieldByName('CODREP').AsInteger;
-//  QryExec.Open;
-//  LabelNomRepres.Caption := QryExec.FieldByName('NOM').AsString;
 end;
 
 
@@ -1378,14 +1458,10 @@ begin
 				if FDMemTableEntvtejj.FieldByName('FLAG_TAX').AsInteger = 0 then
         begin
 					FDMemTableLigvtejj.FieldByName('MT_TTC').AsInteger := Round(FDMemTableLigvtejj.FieldByName('PRIXTTC').AsFloat * FDMemTableLigvtejj.FieldByName('QTE').AsFloat);  //+ligvtepc.mt_tsoc)
-//					ligvtepc.mt_ttc	= ligvtepc.prixttc*ligvtepc.qte
 					FDMemTableLigvtejj.FieldByName('TOTHT').AsFloat := DM_Olivier.CalculerHT(FDMemTableLigvtejj.FieldByName('MT_TTC').AsInteger,FDMemTableLigvtejj.FieldByName('TX_TVA').AsFloat);
-//					ligvtepc.totht	= PRIX_HT(ligvtepc.mt_ttc,ligvtepc.tx_tva,ligvtepc.tx_tsoc,article.tax_soc)
 					FDMemTableLigvtejj.FieldByName('MT_TVA').AsFloat := (FDMemTableLigvtejj.FieldByName('TOTHT').AsFloat/100)
                                                              * FDMemTableLigvtejj.FieldByName('TX_TVA').AsFloat;
-//					ligvtepc.mt_tva	= ligvtepc.totht/100*ligvtepc.tx_tva
 //					ligvtepc.mt_tsoc= ligvtepc.totht/100*ligvtepc.tx_tsoc
-          //ShowMessage(inttostr(FDMemTableLigvtejj.FieldByName('MT_TTC').AsInteger));
         end
         else
         begin
@@ -1393,7 +1469,6 @@ begin
 					FDMemTableLigvtejj.FieldByName('MT_TVA').AsFloat := (FDMemTableLigvtejj.FieldByName('TOTHT').AsFloat/100)*FDMemTableLigvtejj.FieldByName('TX_TVA').AsFloat;
 					//ligvtepc.mt_tsoc	= ligvtepc.totht/100*ligvtepc.tx_tsoc
 					FDMemTableLigvtejj.FieldByName('MT_TTC').AsInteger := Round(FDMemTableLigvtejj.FieldByName('TOTHT').AsFloat+FDMemTableLigvtejj.FieldByName('MT_TVA').AsFloat);  //+ligvtepc.mt_tsoc)
-          //ShowMessage(inttostr(FDMemTableLigvtejj.FieldByName('MT_TTC').AsInteger));
         end;
         FDMemTableLigvtejj.FieldByName('MARGE').AsFloat := FDMemTableLigvtejj.FieldByName('TOTHT').AsFloat - (FDMemTableLigvtejj.FieldByName('PRIXREV').AsFloat * FDMemTableLigvtejj.FieldByName('QTE').AsFloat);
 
@@ -1446,12 +1521,10 @@ begin
         begin
 					FDMemTableLigvtejj.FieldByName('MT_TTC').AsInteger := Round(FDMemTableLigvtejj.FieldByName('PRIXTTC').AsFloat
                                                                * FDMemTableLigvtejj.FieldByName('QTE').AsFloat);  //+ligvtepc.mt_tsoc)
-//					ligvtepc.mt_ttc	= ligvtepc.prixttc*ligvtepc.qte
 					FDMemTableLigvtejj.FieldByName('TOTHT').AsFloat := DM_Olivier.CalculerHT(FDMemTableLigvtejj.FieldByName('MT_TTC').AsInteger,FDMemTableLigvtejj.FieldByName('TX_TVA').AsFloat);
 //					ligvtepc.totht	= PRIX_HT(ligvtepc.mt_ttc,ligvtepc.tx_tva,ligvtepc.tx_tsoc,article.tax_soc)
 					FDMemTableLigvtejj.FieldByName('MT_TVA').AsFloat := (FDMemTableLigvtejj.FieldByName('TOTHT').AsFloat/100)
                                                              * FDMemTableLigvtejj.FieldByName('TX_TVA').AsFloat;
-//					ligvtepc.mt_tva	= ligvtepc.totht/100*ligvtepc.tx_tva
 //					ligvtepc.mt_tsoc= ligvtepc.totht/100*ligvtepc.tx_tsoc
         end
         else
@@ -1531,6 +1604,20 @@ begin
 //        END
 
         //!Calcul assiettes TVA remisables globalement
+        wHT0:= 0;
+        wHT0r:= 0;
+        wHT1:= 0;
+        wHT1r:= 0;
+        wHT2:= 0;
+        wHT2r:= 0;
+        wHT3:= 0;
+        wHT3r:= 0;
+        wHT4:= 0;
+        wHT4r:= 0;
+        wTVA1:= 0;
+        wTVA2:= 0;
+        wTVA3:= 0;
+        wTVA4:= 0;
 
         //Si exonere de TVA
     	  if RzDBCheckBoxEXO_TVA.Checked then
@@ -1694,7 +1781,5 @@ begin
     QryArticle.Free;
   end;
 end;
-
-
 
 end.

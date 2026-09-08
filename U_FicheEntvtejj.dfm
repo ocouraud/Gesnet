@@ -202,7 +202,7 @@ object FormEntvtejj: TFormEntvtejj
       Left = 1
       Top = 6
       Width = 456
-      Height = 91
+      Height = 123
       Anchors = [akLeft, akBottom]
       DataSource = DSMemTableRegljj
       Font.Charset = DEFAULT_CHARSET
@@ -273,27 +273,28 @@ object FormEntvtejj: TFormEntvtejj
         end>
     end
     object BtnAjouterRegl: TButton
-      Left = 1
-      Top = 100
-      Width = 102
-      Height = 30
-      Caption = 'Nouveau reglt.'
+      Left = 463
+      Top = 5
+      Width = 82
+      Height = 25
+      Caption = 'Ajout reglt.'
       TabOrder = 6
+      OnClick = BtnAjouterReglClick
     end
     object BtnModifierRegl: TButton
-      Left = 109
-      Top = 100
-      Width = 102
-      Height = 30
-      Caption = 'Modifier reglt.'
+      Left = 463
+      Top = 37
+      Width = 82
+      Height = 25
+      Caption = 'Modif reglt.'
       TabOrder = 7
     end
     object BtnSupprimerRegl: TButton
-      Left = 217
-      Top = 100
-      Width = 102
-      Height = 30
-      Caption = 'Supprimer reglt.'
+      Left = 463
+      Top = 68
+      Width = 82
+      Height = 25
+      Caption = 'Suppr reglt.'
       TabOrder = 8
     end
   end

@@ -16,51 +16,8 @@ type
   TModeSaisieLigne = (msAjout, msModification); // Type nommé global à l'unité
   TFormLigvtejj = class(TForm)
     DSLigvtejj: TDataSource;
-    FDQuery1: TFDQuery;
-    FDQuery1LIBELLE: TMemoField;
-    FDQuery1CODFAC: TLargeintField;
-    FDQuery1CODCLI: TIntegerField;
-    FDQuery1CODCAI: TStringField;
-    FDQuery1CODDEV: TLargeintField;
-    FDQuery1CODDEP: TShortintField;
-    FDQuery1NOENR: TIntegerField;
-    FDQuery1ANNEE: TIntegerField;
-    FDQuery1MOIS: TSmallintField;
-    FDQuery1CODREP: TSmallintField;
-    FDQuery1CODFOU: TStringField;
-    FDQuery1CODSSF: TStringField;
-    FDQuery1CODFAM: TStringField;
-    FDQuery1CODDPT: TStringField;
-    FDQuery1TYPE_: TStringField;
-    FDQuery1CODART: TStringField;
-    FDQuery1CODBAR: TStringField;
-    FDQuery1QTE: TBCDField;
-    FDQuery1POIDS: TBCDField;
-    FDQuery1CODTAR: TStringField;
-    FDQuery1PRIXHT: TBCDField;
-    FDQuery1PRIXTTC: TLargeintField;
-    FDQuery1PRIXNET: TBCDField;
-    FDQuery1TOTHT: TBCDField;
-    FDQuery1MT_TTC: TLargeintField;
-    FDQuery1PRC_REMISE: TBCDField;
-    FDQuery1MT_REMISE: TIntegerField;
-    FDQuery1TX_TVA: TBCDField;
-    FDQuery1MT_TVA: TBCDField;
-    FDQuery1NO_TVA: TSmallintField;
-    FDQuery1PRIXREV: TBCDField;
-    FDQuery1MARGE: TLargeintField;
-    FDQuery1NO_SEM: TSmallintField;
-    FDQuery1NO_JOUR: TSmallintField;
-    FDQuery1DET_PPT: TLargeintField;
-    FDQuery1DET_ILE: TLargeintField;
-    FDQuery1NOENRF: TFDAutoIncField;
-    FDQuery1PXLVTTC: TLargeintField;
-    FDQuery1DER_MODIF: TSQLTimeStampField;
-    FDQuery1TX_TSOC: TBCDField;
-    FDQuery1MT_TSOC: TBCDField;
     Label1: TLabel;
     DBCodbar: TDBEdit;
-    DataSource1: TDataSource;
     Label2: TLabel;
     DBLibelle: TDBMemo;
     Label3: TLabel;
@@ -156,9 +113,11 @@ type
     procedure DBCodbarEnter(Sender: TObject);
     procedure DBCodbarExit(Sender: TObject);
     procedure DBQteEnter(Sender: TObject);
+    procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
   private
     { Déclarations privées }
     FIsLoading: Boolean;   //Juste pour louverture
+    procedure ExecuterAnnulation;
     procedure CalculLigne;
   public
     { Déclarations publiques }
@@ -173,6 +132,16 @@ implementation
 {$R *.dfm}
 
 uses U_DM_Olivier, U_FicheEntvtejj, U_DataModule;
+
+
+procedure TformLigvtejj.ExecuterAnnulation;
+begin
+      // Si des modifications étaient en cours, on les annule proprement
+  if FormEntvtejj.FDMemTableLigvtejj.State in [dsEdit, dsInsert] then
+    FormEntvtejj.FDMemTableLigvtejj.Cancel;
+
+  ModalResult := mrCancel; // Ferme la fiche en renvoyant "Annulation"
+end;
 
 
 //CALCUL COMPLET DE LA LIGNE
@@ -219,6 +188,10 @@ var
   QryExecClient: TFDQuery;
   pTVA: String;
 begin
+
+  // Si on est en train d'annuler ou si le champ est vide, on laisse sortir sans bloquer
+  if (FormEntvtejj.FDMemTableLigvtejj.State = dsBrowse) or (DBCodbar.Text = '') then
+    Exit;
 
    //Creation requete temporaire
   QryExec := TFDQuery.Create(nil);
@@ -537,6 +510,7 @@ procedure TFormLigvtejj.DBQteExit(Sender: TObject);
 begin
   if (FormEntvtejj.RzDBRadioGroupType.Value <> 'F') and (DbQte.Field.AsFloat>0) then   // Facture ou Avoir
     DbQte.Field.AsFloat := -DbQte.Field.AsFloat;
+
   CalculLigne;
 end;
 
@@ -550,6 +524,16 @@ begin
     DBPrixht.Enabled:=false;
 end;
 
+
+procedure TFormLigvtejj.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
+begin
+if Key = VK_ESCAPE then
+  begin
+    ExecuterAnnulation;
+    Key := 0; // Empêche le bip sonore de Windows lié à la touche Échap
+  end;
+end;
 
 procedure TFormLigvtejj.FormShow(Sender: TObject);
 begin
@@ -593,12 +577,7 @@ end;
 
 procedure TFormLigvtejj.BtnAnnulerClick(Sender: TObject);
 begin
-  // Si des modifications étaient en cours, on les annule proprement
-  if FormEntvtejj.FDMemTableLigvtejj.State in [dsEdit, dsInsert] then
-    FormEntvtejj.FDMemTableLigvtejj.Cancel;
-
-  ModalResult := mrCancel; // Ferme la fiche en renvoyant "Annulation"
-
+  ExecuterAnnulation;
 end;
 
 procedure TFormLigvtejj.BtnValiderClick(Sender: TObject);
