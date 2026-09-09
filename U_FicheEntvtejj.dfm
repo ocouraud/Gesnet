@@ -12,6 +12,7 @@ object FormEntvtejj: TFormEntvtejj
   Font.Name = 'Segoe UI'
   Font.Style = []
   Position = poMainFormCenter
+  OnCloseQuery = FormCloseQuery
   TextHeight = 15
   object Panel3: TPanel
     Left = 0
@@ -218,6 +219,7 @@ object FormEntvtejj: TFormEntvtejj
       TitleFont.Height = -12
       TitleFont.Name = 'Segoe UI'
       TitleFont.Style = []
+      OnDblClick = BtnModifierReglClick
       AlternateRowColor = clInfoBk
       SelectColumnsDialogStrings.Caption = 'Select columns'
       SelectColumnsDialogStrings.OK = '&OK'
@@ -288,6 +290,7 @@ object FormEntvtejj: TFormEntvtejj
       Height = 25
       Caption = 'Modif reglt.'
       TabOrder = 7
+      OnClick = BtnModifierReglClick
     end
     object BtnSupprimerRegl: TButton
       Left = 463
@@ -296,6 +299,7 @@ object FormEntvtejj: TFormEntvtejj
       Height = 25
       Caption = 'Suppr reglt.'
       TabOrder = 8
+      OnClick = BtnSupprimerReglClick
     end
   end
   object Panel1: TPanel

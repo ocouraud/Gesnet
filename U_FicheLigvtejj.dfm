@@ -222,7 +222,7 @@ object FormLigvtejj: TFormLigvtejj
       Font.Name = 'Segoe UI'
       Font.Style = [fsBold]
       ParentFont = False
-      TabOrder = 2
+      TabOrder = 4
       OnChange = JvDBSpinPrc_remiseChange
       OnEnter = JvDBSpinPrc_remiseEnter
       OnExit = JvDBSpinPrc_remiseExit
@@ -261,7 +261,7 @@ object FormLigvtejj: TFormLigvtejj
       Font.Name = 'Segoe UI'
       Font.Style = [fsBold]
       ParentFont = False
-      TabOrder = 4
+      TabOrder = 5
     end
     object DBPrixttc: TJvDBCalcEdit
       Left = 398
@@ -274,7 +274,7 @@ object FormLigvtejj: TFormLigvtejj
       Font.Name = 'Segoe UI'
       Font.Style = [fsBold]
       ParentFont = False
-      TabOrder = 5
+      TabOrder = 6
       DecimalPlacesAlwaysShown = False
       OnExit = DBPrixttcExit
       DataField = 'PRIXTTC'
@@ -291,7 +291,7 @@ object FormLigvtejj: TFormLigvtejj
       Font.Name = 'Segoe UI'
       Font.Style = [fsBold]
       ParentFont = False
-      TabOrder = 6
+      TabOrder = 2
       DecimalPlacesAlwaysShown = False
       OnEnter = DBQteEnter
       OnExit = DBQteExit
@@ -684,11 +684,12 @@ object FormLigvtejj: TFormLigvtejj
     end
     object FDQueryCodbarcodbar: TStringField
       AutoGenerateValue = arDefault
+      DisplayWidth = 13
       FieldName = 'codbar'
       Origin = 'CODBAR'
       ProviderFlags = []
       ReadOnly = True
-      Size = 10
+      Size = 13
     end
   end
   object DSCodbar: TDataSource

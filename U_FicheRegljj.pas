@@ -145,6 +145,11 @@ end;
 
 procedure TFormRegljj.FormShow(Sender: TObject);
 begin
+  if ModeSaisieRegl = msModification then
+  begin
+      if not (DSRegljj.DataSet.State in [dsEdit, dsInsert]) then
+        DSRegljj.DataSet.Edit;
+  end;
   DM_Olivier.FDQueryPaiement.Open;
   ControleReglement(Sender);
 end;
@@ -231,7 +236,7 @@ begin
       else
       begin
         DSRegljj.DataSet.FieldByName('DATE_ECH').AsDateTime := DM_Olivier.CalculDateEcheance(
-          DSRegljj.DataSet.FieldByName('DATE_ECH').AsDateTime,
+          DSRegljj.DataSet.FieldByName('DATE_').AsDateTime,
           QryClient.FieldByName('JRSCRD').AsInteger,
           QryClient.FieldByName('FIN_MOIS').AsInteger
         );
@@ -239,8 +244,6 @@ begin
     end;
 
     DSRegljj.DataSet.FieldByName('LIBELLE').AsString := DM_Olivier.FDQueryPaiement.FieldByName('LIBELLE').AsString;
-//    if not JvDBCalcEditMontant.Focused then
-//      JvDBCalcEditMontant.SetFocus;
 
   finally
     // Le bloc finally s'exécute TOUJOURS (même en cas d'Exit ou d'erreur)

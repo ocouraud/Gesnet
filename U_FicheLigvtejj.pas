@@ -3,7 +3,7 @@
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, System.Math,
   System.UITypes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB, FireDAC.Stan.Intf,
   FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS,
@@ -153,25 +153,41 @@ begin
 
   DSLigvtejj.DataSet.Edit;
 
-  DBPrixnet.Field.AsFloat := DBPrixht.Field.AsFloat
-   -((DBPrixht.Field.AsFloat/100)*JvDBSpinPrc_remise.Value);
-
-  DBPrixttc.Field.AsInteger := round(DM_Olivier.CalculerTTC(DBPrixnet.Field.AsFloat,DBTx_tva.Field.AsFloat));
-
-  if FormEntvtejj.RzDBCheckBoxFlag_Tax.Enabled then
+  //Calcul TVA sur PRIXHT ou PRIXTTC
+  if FormEntvtejj.RzDBCheckBoxFlag_Tax.Checked = False then
   begin
-    DBMt_ttc.Field.AsInteger :=	DBPrixttc.Field.AsInteger * DBQte.Field.AsInteger;
-    DBTotht.Field.AsFloat := DM_Olivier.CalculerHT(DBMt_ttc.Field.AsInteger,DBTx_tva.Field.AsFloat);
-    DBMt_tva.Field.AsFloat := (DBTotht.Field.AsFloat/100) * DBTx_tva.Field.AsFloat;
-    //SAI_MT_TSOC= ligvtepc.totht/100*SAI_TX_TSOC
+    //Sur TTC
+    DBMt_ttc.Field.AsInteger := Round(DBPrixttc.Field.AsInteger
+      * DBQte.Field.AsFloat);
+    DBMt_tva.Field.AsFloat := (DBMt_ttc.Field.AsInteger)
+      * (DBTx_tva.Field.AsFloat
+      / (100+(DBTx_tva.Field.AsFloat)));
+     DBTotht.Field.AsFloat := DBMt_ttc.Field.AsInteger
+      - DBMt_tva.Field.AsFloat;
+     DBPrixnet.Field.AsFloat :=  DBTotht.Field.AsFloat / DBQte.Field.AsFloat;
   end
   else
   begin
+    //Sur HT
+    DBPrixnet.Field.AsFloat := DBPrixht.Field.AsFloat - ((DBPrixht.Field.AsFloat/100)*JvDBSpinPrc_remise.Value);
+    DBPrixttc.Field.AsInteger := Round(DM_Olivier.CalculerTTC(DBPrixnet.Field.AsFloat,(DBTx_tva.Field.AsFloat)));
     DBTotht.Field.AsFloat := DBPrixnet.Field.AsFloat * DBQte.Field.AsFloat;
-    DBMt_tva.Field.AsFloat := (DBTotht.Field.AsFloat/100)*DBTx_tva.Field.AsFloat;
-    //SAI_MT_TSOC= SAI_TOTHT/100*SAI_TX_TSOC
-    DBMt_ttc.Field.AsInteger := Round(DBTotht.Field.AsFloat + DBMt_tva.Field.AsFloat);    //+SAI_MT_TSOC)
+    DBMt_tva.Field.AsFloat := (DBTotht.Field.AsFloat/100)*(DBTx_tva.Field.AsFloat);
+    DBMt_ttc.Field.AsInteger := Round(DBTotht.Field.AsFloat+DBMt_tva.Field.AsFloat);  //+ligvtepc.mt_tsoc)
   end;
+
+  DBMt_remise.Field.AsFloat := (DBPrixht.Field.AsFloat * DBQte.Field.AsFloat) - DBTotht.Field.AsFloat;
+  DSLigvtejj.DataSet.FieldByName('MARGE').AsFloat := DBTotht.Field.AsFloat - (DSLigvtejj.DataSet.FieldByName('PRIXREV').AsFloat * DBQte.Field.AsFloat);
+
+  //Arrondis
+  DBPrixnet.Field.AsFloat := RoundTo(DBPrixnet.Field.AsFloat,-2);
+  DBTotht.Field.AsFloat := RoundTo(DBTotht.Field.AsFloat,-2);
+  DBMt_tva.Field.AsFloat := RoundTo(DBMt_tva.Field.AsFloat,-2);
+  DSLigvtejj.DataSet.FieldByName('MT_REMISE').AsFloat := RoundTo(DSLigvtejj.DataSet.FieldByName('MT_REMISE').AsFloat,-2);
+  DBPrixnet.Field.AsFloat := RoundTo(DBPrixnet.Field.AsFloat,-2);
+  DSLigvtejj.DataSet.FieldByName('MARGE').AsFloat := RoundTo(DSLigvtejj.DataSet.FieldByName('MARGE').AsFloat,-2);
+
+
 end;
 
 

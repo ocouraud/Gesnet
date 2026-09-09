@@ -11,6 +11,7 @@ object FormRegljj: TFormRegljj
   Font.Name = 'Segoe UI'
   Font.Style = []
   KeyPreview = True
+  Position = poMainFormCenter
   OnKeyDown = FormKeyDown
   OnShow = FormShow
   TextHeight = 15
@@ -59,7 +60,6 @@ object FormRegljj: TFormRegljj
     BevelOuter = bvNone
     TabOrder = 2
     StyleElements = [seFont, seBorder]
-    ExplicitHeight = 441
     object BtnValider: TBitBtn
       Left = 0
       Top = 0
