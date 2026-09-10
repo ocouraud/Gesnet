@@ -146,48 +146,50 @@ end;
 
 //CALCUL COMPLET DE LA LIGNE
 procedure TFormLigvtejj.CalculLigne;
+var
+  AQte: Double;
 begin
-  // Si le formulaire est en train de se fermer ou de valider, on dégage immédiatement
+  // Si le formulaire est en train de se fermer ou de charger, on sort
   if (ModalResult <> mrNone) or (FIsLoading = False) then
     Exit;
 
-  DSLigvtejj.DataSet.Edit;
+  // S'assurer que le dataset est modifiable
+  if not (DSLigvtejj.DataSet.State in [dsEdit, dsInsert]) then
+    Exit;
 
-  //Calcul TVA sur PRIXHT ou PRIXTTC
+  // Sécurité anti-division par zéro sur la quantité
+  AQte := DBQte.Field.AsFloat;
+  if AQte = 0 then
+    AQte := 1;
+
+  // Calcul TVA sur PRIXHT ou PRIXTTC
   if FormEntvtejj.RzDBCheckBoxFlag_Tax.Checked = False then
   begin
-    //Sur TTC
-    DBMt_ttc.Field.AsInteger := Round(DBPrixttc.Field.AsInteger
-      * DBQte.Field.AsFloat);
-    DBMt_tva.Field.AsFloat := (DBMt_ttc.Field.AsInteger)
-      * (DBTx_tva.Field.AsFloat
-      / (100+(DBTx_tva.Field.AsFloat)));
-     DBTotht.Field.AsFloat := DBMt_ttc.Field.AsInteger
-      - DBMt_tva.Field.AsFloat;
-     DBPrixnet.Field.AsFloat :=  DBTotht.Field.AsFloat / DBQte.Field.AsFloat;
+    // Sur TTC
+    DBMt_ttc.Field.AsInteger := Round(DBPrixttc.Field.AsInteger * AQte);
+    DBMt_tva.Field.AsFloat := DBMt_ttc.Field.AsInteger * (DBTx_tva.Field.AsFloat / (100 + DBTx_tva.Field.AsFloat));
+    DBTotht.Field.AsFloat := DBMt_ttc.Field.AsInteger - DBMt_tva.Field.AsFloat;
+    DBPrixnet.Field.AsFloat := DBTotht.Field.AsFloat / AQte;
   end
   else
   begin
-    //Sur HT
-    DBPrixnet.Field.AsFloat := DBPrixht.Field.AsFloat - ((DBPrixht.Field.AsFloat/100)*JvDBSpinPrc_remise.Value);
-    DBPrixttc.Field.AsInteger := Round(DM_Olivier.CalculerTTC(DBPrixnet.Field.AsFloat,(DBTx_tva.Field.AsFloat)));
-    DBTotht.Field.AsFloat := DBPrixnet.Field.AsFloat * DBQte.Field.AsFloat;
-    DBMt_tva.Field.AsFloat := (DBTotht.Field.AsFloat/100)*(DBTx_tva.Field.AsFloat);
-    DBMt_ttc.Field.AsInteger := Round(DBTotht.Field.AsFloat+DBMt_tva.Field.AsFloat);  //+ligvtepc.mt_tsoc)
+    // Sur HT
+    DBPrixnet.Field.AsFloat := DBPrixht.Field.AsFloat - ((DBPrixht.Field.AsFloat / 100) * JvDBSpinPrc_remise.Value);
+    DBPrixttc.Field.AsInteger := Round(DM_Olivier.CalculerTTC(DBPrixnet.Field.AsFloat, DBTx_tva.Field.AsFloat));
+    DBTotht.Field.AsFloat := DBPrixnet.Field.AsFloat * AQte;
+    DBMt_tva.Field.AsFloat := (DBTotht.Field.AsFloat / 100) * DBTx_tva.Field.AsFloat;
+    DBMt_ttc.Field.AsInteger := Round(DBTotht.Field.AsFloat + DBMt_tva.Field.AsFloat);
   end;
 
-  DBMt_remise.Field.AsFloat := (DBPrixht.Field.AsFloat * DBQte.Field.AsFloat) - DBTotht.Field.AsFloat;
-  DSLigvtejj.DataSet.FieldByName('MARGE').AsFloat := DBTotht.Field.AsFloat - (DSLigvtejj.DataSet.FieldByName('PRIXREV').AsFloat * DBQte.Field.AsFloat);
+  DBMt_remise.Field.AsFloat := (DBPrixht.Field.AsFloat * AQte) - DBTotht.Field.AsFloat;
+  DSLigvtejj.DataSet.FieldByName('MARGE').AsFloat := DBTotht.Field.AsFloat - (DSLigvtejj.DataSet.FieldByName('PRIXREV').AsFloat * AQte);
 
-  //Arrondis
-  DBPrixnet.Field.AsFloat := RoundTo(DBPrixnet.Field.AsFloat,-2);
-  DBTotht.Field.AsFloat := RoundTo(DBTotht.Field.AsFloat,-2);
-  DBMt_tva.Field.AsFloat := RoundTo(DBMt_tva.Field.AsFloat,-2);
-  DSLigvtejj.DataSet.FieldByName('MT_REMISE').AsFloat := RoundTo(DSLigvtejj.DataSet.FieldByName('MT_REMISE').AsFloat,-2);
-  DBPrixnet.Field.AsFloat := RoundTo(DBPrixnet.Field.AsFloat,-2);
-  DSLigvtejj.DataSet.FieldByName('MARGE').AsFloat := RoundTo(DSLigvtejj.DataSet.FieldByName('MARGE').AsFloat,-2);
-
-
+  // Arrondis (nettoyage des doublons et uniformisation des accès champs)
+  DBPrixnet.Field.AsFloat := RoundTo(DBPrixnet.Field.AsFloat, -2);
+  DBTotht.Field.AsFloat := RoundTo(DBTotht.Field.AsFloat, -2);
+  DBMt_tva.Field.AsFloat := RoundTo(DBMt_tva.Field.AsFloat, -2);
+  DBMt_remise.Field.AsFloat := RoundTo(DBMt_remise.Field.AsFloat, -2);
+  DSLigvtejj.DataSet.FieldByName('MARGE').AsFloat := RoundTo(DSLigvtejj.DataSet.FieldByName('MARGE').AsFloat, -2);
 end;
 
 
@@ -204,265 +206,225 @@ var
   QryExecClient: TFDQuery;
   pTVA: String;
 begin
-
   // Si on est en train d'annuler ou si le champ est vide, on laisse sortir sans bloquer
   if (FormEntvtejj.FDMemTableLigvtejj.State = dsBrowse) or (DBCodbar.Text = '') then
     Exit;
 
-   //Creation requete temporaire
-  QryExec := TFDQuery.Create(nil);
-  QryExec.Connection := DMGesCloud.ConnexionGesCloud;
-  QryExec.Close;
-  QryExec.SQL.Text := 'SELECT * FROM codbar where CODBAR=:CODBAR';
-  QryExec.ParamByName('CODBAR').AsString:=DBCodbar.Field.AsString;
-  QryExec.Open;
-  IF QryExec.Eof then
-  begin
-    //ShowMessage('Article inconnu !');
-    //StatusBar1.SimpleText := '⚠️ Article inconnu !';
-    // Affichage d'une bulle d'aide près du composant
-    //BalloonHint1.Title := '⚠ Article inconnu !';
-    BalloonHint1.Description := '⚠ Article inconnu !';
-    BalloonHint1.ShowHint(DBCodbar);
-    JvDBLookupComboCodbar.SetFocus;
-    QryExec.Free;
-    exit;
-  end;
+  // Création des requêtes temporaires
+  QryExec := nil;
+  QryExecArticle := nil;
+  QryExecClient := nil;
+  try
+    QryExec := TFDQuery.Create(nil);
+    QryExecArticle := TFDQuery.Create(nil);
+    QryExecClient := TFDQuery.Create(nil);
 
-  DSLigvtejj.DataSet.FieldByName('CODART').AsString := QryExec.FieldByName('CODART').AsString;
+    QryExec.Connection := DMGesCloud.ConnexionGesCloud;
+    QryExecArticle.Connection := DMGesCloud.ConnexionGesCloud;
+    QryExecClient.Connection := DMGesCloud.ConnexionGesCloud;
 
-  //Si pas de changement de codbar on sort
-  if DBCodbar.Field.AsString=DBCodbar.Field.OldValue then
-  begin
-    QryExec.Free;
-    Exit;
-  end;
+    // Recherche du code barre
+    QryExec.SQL.Text := 'SELECT * FROM codbar WHERE CODBAR = :CODBAR';
+    QryExec.ParamByName('CODBAR').AsString := DBCodbar.Field.AsString;
+    QryExec.Open;
 
-   //Controle si changement
-  //DBLibelle.Text := JvDBLookupComboCodbar.LookupSource.DataSet.FieldByName('libelle').AsString;
-  DBLibelle.Text := FDQueryCodbar.FieldByName('libelle').AsString;
-  DBPrixht.Field.AsFloat := FDQueryCodbar.FieldByName('prixvte').AsFloat;
-
-  //Recherche tx TVA
-  pTVA := FDQueryCodbar.FieldByName('TVA').AsString;
-  if pTVA = 'TVA0' then
-    DBTx_tva.Field.AsFloat := 0
-  else if pTVA = 'TVA1' then
-    DBTx_tva.Field.AsFloat := DM_Olivier.gTx_TVA1
-  else if pTVA = 'TVA2' then
-    DBTx_tva.Field.AsFloat := DM_Olivier.gTx_TVA2
-  else if pTVA = 'TVA3' then
-    DBTx_tva.Field.AsFloat := DM_Olivier.gTx_TVA3;
-
-  DSLigvtejj.DataSet.FieldByName('NO_TVA').AsInteger := StrToInt(pTVA[Length(pTVA)]);
-
-  //Si TVA Iles
-  if (FormEntvtejj.RzDBCheckBoxTVA_ILES.Checked) and (FDQueryCodbar.FieldByName('EXCLU_TVA1').AsBoolean=False) then
-  begin
-     DBTx_tva.Field.AsFloat:=DM_Olivier.gTx_TVAI;
-     DSLigvtejj.DataSet.FieldByName('NO_TVA').AsInteger := 4;
-  end;
-
-  //Si exonere TVA
-  IF FormEntvtejj.RzDBCheckBoxEXO_TVA.Checked then
-   DBTx_tva.Field.AsFloat:=0;
-
-
-//		SI client.app_tarifcli ALORS //Tarif client uniquement
-//			gpTab_codbar=Ouvre(FEN_Vision_codbar,ligvtepc.coddep,client.codcli,client.codcli)
-//		SINON
-//			gpTab_codbar=Ouvre(FEN_Vision_codbar,ligvtepc.coddep,0,client.codcli)
-//		FIN
-//		SAI_CODBAR=gpTab_codbar[ind]
-//
-
-  //Lecture fichier article
-  QryExecArticle := TFDQuery.Create(nil);
-  QryExecArticle.Connection := DMGesCloud.ConnexionGesCloud;
-  QryExecArticle.Close;
-  QryExecArticle.SQL.Text := 'SELECT * FROM article where CODART=:CODART';
-  QryExecArticle.ParamByName('CODART').AsString:=DSLigvtejj.DataSet.FieldByName('CODART').AsString;
-  QryExecArticle.Open;
-
-  //Recherche artcli_bloq client-article
-  QryExec.Close;
-  QryExec.SQL.Text := 'SELECT * FROM artcli_bloq WHERE CODART=:CODART AND CODCLI=:CODCLI';
-  QryExec.ParamByName('CODART').AsString:=DSLigvtejj.DataSet.FieldByName('CODART').AsString;
-  QryExec.ParamByName('CODCLI').AsInteger:=DSLigvtejj.DataSet.FieldByName('CODCLI').AsInteger;
-  QryExec.Open;
-  IF not QryExec.Eof then
-  begin
-    if QryExec.FieldByName('BLOQUE').AsBoolean=True then
+    if QryExec.Eof then
     begin
-      BalloonHint1.Description := '⚠ Article interdit à la vente pour ce client';
+      BalloonHint1.Description := '⚠ Article inconnu !';
       BalloonHint1.ShowHint(DBCodbar);
       JvDBLookupComboCodbar.SetFocus;
-      QryExec.Free;
-      QryExecArticle.Free;
-      exit;
+      Exit; // Le bloc try...finally libérera proprement les requêtes
     end;
-  end;
 
-  if (FormEntvtejj.RzDBRadioGroupType.Value <> 'F') and (DbQte.Field.AsFloat>0) then   // Facture ou Avoir
-    DbQte.Field.AsFloat := -DbQte.Field.AsFloat;
+    DSLigvtejj.DataSet.FieldByName('CODART').AsString := QryExec.FieldByName('CODART').AsString;
 
-  if (QryExecArticle.FieldByName('OBSERV_FAC').AsString<>'') AND (QryExecArticle.FieldByName('OBSERV_FAC').AsInteger=1) then
-  	DSLigvtejj.DataSet.FieldByName('OBSERV').AsString:=DSLigvtejj.DataSet.FieldByName('OBSERV').AsString + #13#10 + QryExecArticle.FieldByName('OBSERV_FAC').AsString;
+    // Si pas de changement de code-barre, on sort
+    if DBCodbar.Field.AsString = DBCodbar.Field.OldValue then
+      Exit;
 
-  //Lecture Client
-  QryExecClient := TFDQuery.Create(nil);
-  QryExecClient.Connection := DMGesCloud.ConnexionGesCloud;
-  QryExecClient.Close;
-  QryExecClient.SQL.Text := 'SELECT * FROM client where CODCLI=:CODCLI';
-  QryExecClient.ParamByName('CODCLI').AsInteger:=DSLigvtejj.DataSet.FieldByName('CODCLI').AsInteger;
-  QryExecClient.Open;
+    // Contrôle si changement - Affectation Libellé et Prix HT de base
+    DBLibelle.Text := FDQueryCodbar.FieldByName('libelle').AsString;
+    DBPrixht.Field.AsFloat := FDQueryCodbar.FieldByName('prixvte').AsFloat;
 
-  //Remise par famille
-  if (QryExecClient.FieldByName('coef_maj_pr').AsFloat=0) and (QryExecClient.FieldByName('rem_fam').AsInteger=1) then
-  begin
-    QryExec.Close;
-    QryExec.SQL.Text := 'SELECT * FROM famrem WHERE CODFAM=:CODFAM AND :DAT_FAC BETWEEN DAT_DEB AND DAT_FIN';
-    QryExec.ParamByName('CODFAM').AsString:=QryExecArticle.FieldByName('CODFAM').AsString;
-    QryExec.ParamByName('DAT_FAC').AsDateTime:=FormEntvtejj.FDMemTableEntvtejj.FieldByName('DATE_').AsDateTime;
+    // Recherche tx TVA
+    pTVA := FDQueryCodbar.FieldByName('TVA').AsString;
+    if pTVA = 'TVA0' then
+      DBTx_tva.Field.AsFloat := 0
+    else if pTVA = 'TVA1' then
+      DBTx_tva.Field.AsFloat := DM_Olivier.gTx_TVA1
+    else if pTVA = 'TVA2' then
+      DBTx_tva.Field.AsFloat := DM_Olivier.gTx_TVA2
+    else if pTVA = 'TVA3' then
+      DBTx_tva.Field.AsFloat := DM_Olivier.gTx_TVA3;
+
+    if pTVA <> '' then
+      DSLigvtejj.DataSet.FieldByName('NO_TVA').AsInteger := StrToInt(pTVA[Length(pTVA)]);
+
+    // Si TVA Îles
+    if (FormEntvtejj.RzDBCheckBoxTVA_ILES.Checked) and (FDQueryCodbar.FieldByName('EXCLU_TVA1').AsBoolean = False) then
+    begin
+      DBTx_tva.Field.AsFloat := DM_Olivier.gTx_TVAI;
+      DSLigvtejj.DataSet.FieldByName('NO_TVA').AsInteger := 4;
+    end;
+
+    // Si exonéré TVA
+    if FormEntvtejj.RzDBCheckBoxEXO_TVA.Checked then
+      DBTx_tva.Field.AsFloat := 0;
+
+    // Lecture fichier article
+    QryExecArticle.SQL.Text := 'SELECT * FROM article WHERE CODART = :CODART';
+    QryExecArticle.ParamByName('CODART').AsString := DSLigvtejj.DataSet.FieldByName('CODART').AsString;
+    QryExecArticle.Open;
+
+    // Recherche artcli_bloq client-article
+    QryExec.SQL.Text := 'SELECT * FROM artcli_bloq WHERE CODART = :CODART AND CODCLI = :CODCLI';
+    QryExec.ParamByName('CODART').AsString := DSLigvtejj.DataSet.FieldByName('CODART').AsString;
+    QryExec.ParamByName('CODCLI').AsInteger := DSLigvtejj.DataSet.FieldByName('CODCLI').AsInteger;
     QryExec.Open;
+
     if not QryExec.Eof then
-      DSLigvtejj.DataSet.FieldByName('PRC_REMISE').asFloat:=QryExec.FieldByName('PRC_REM').AsFloat;
-  end;
+    begin
+      if QryExec.FieldByName('BLOQUE').AsBoolean = True then
+      begin
+        BalloonHint1.Description := '⚠ Article interdit à la vente pour ce client';
+        BalloonHint1.ShowHint(DBCodbar);
+        JvDBLookupComboCodbar.SetFocus;
+        Exit;
+      end;
+    end;
 
+    if (FormEntvtejj.RzDBRadioGroupType.Value <> 'F') and (DbQte.Field.AsFloat > 0) then
+      DbQte.Field.AsFloat := -DbQte.Field.AsFloat;
 
-  //PRIX DE VENTE-------------------
-  //Promo article
-  if QryExecClient.FieldByName('coef_maj_pr').AsFloat=0 then
-  begin
-    QryExec.Close;
-    QryExec.SQL.Text := 'SELECT * FROM promo WHERE CODART=:CODART AND :DAT_FAC BETWEEN DAT_DEB AND DAT_FIN';
-    QryExec.ParamByName('CODART').AsString:=QryExecArticle.FieldByName('CODART').AsString;
-    QryExec.ParamByName('DAT_FAC').AsDateTime:=FormEntvtejj.FDMemTableEntvtejj.FieldByName('DATE_').AsDateTime;
-    QryExec.Open;
-    if not QryExec.Eof then
-      if QryExec.FieldByName('PRIXHT').AsFloat>0 then
-        DSLigvtejj.DataSet.FieldByName('PRIXHT').asFloat:=QryExec.FieldByName('PRIXHT').AsFloat
-      else
-        DSLigvtejj.DataSet.FieldByName('PRC_REMISE').asFloat:=QryExec.FieldByName('PRC_REM').AsFloat;
-  end;
+    if (QryExecArticle.FieldByName('OBSERV_FAC').AsString <> '') then
+      DSLigvtejj.DataSet.FieldByName('OBSERV').AsString := DSLigvtejj.DataSet.FieldByName('OBSERV').AsString + #13#10 + QryExecArticle.FieldByName('OBSERV_FAC').AsString;
 
-  //Recherche si remisable
-  if QryExecArticle.FieldByName('PREST').AsInteger=1 then
-  begin
-    DSLigvtejj.DataSet.FieldByName('PRC_REMISE').asFloat:=0;
-    JvDBSpinPrc_remise.Enabled:=False;
-  end
-  else
-    JvDBSpinPrc_remise.Enabled:=True;
+    // Lecture Client
+    QryExecClient.SQL.Text := 'SELECT * FROM client WHERE CODCLI = :CODCLI';
+    QryExecClient.ParamByName('CODCLI').AsInteger := DSLigvtejj.DataSet.FieldByName('CODCLI').AsInteger;
+    QryExecClient.Open;
 
-  //Recherche client beneficie d'un tarif general
-  QryExec.Close;
-  QryExec.SQL.Text := 'SELECT * FROM tarifart WHERE CODART=:CODART AND CODTAR=:CODTAR';
-  QryExec.ParamByName('CODART').AsString:=QryExecArticle.FieldByName('CODART').AsString;
-  QryExec.ParamByName('CODTAR').AsString:=QryExecClient.FieldByName('CODTAR').AsString;
-  QryExec.Open;
-  if not QryExec.Eof then
-  begin
-  	DBCodtar.Enabled := True;
-    DBCodtar.Field.AsString:= QryExec.FieldByName('CODTAR').AsString;
-    DSLigvtejj.DataSet.FieldByName('PRIXHT').AsFloat := QryExec.FieldByName('PRIXHT').Asfloat;
-  end
-  else
-  begin
-   	DBCodtar.Enabled := False;
-    DBCodtar.Field.AsString:=''
-  end;
+    // Remise par famille
+    if (QryExecClient.FieldByName('coef_maj_pr').AsFloat = 0) and (QryExecClient.FieldByName('rem_fam').AsInteger = 1) then
+    begin
+      QryExec.SQL.Text := 'SELECT * FROM famrem WHERE CODFAM = :CODFAM AND :DAT_FAC BETWEEN DAT_DEB AND DAT_FIN';
+      QryExec.ParamByName('CODFAM').AsString := QryExecArticle.FieldByName('CODFAM').AsString;
+      QryExec.ParamByName('DAT_FAC').AsDateTime := FormEntvtejj.FDMemTableEntvtejj.FieldByName('DATE_').AsDateTime;
+      QryExec.Open;
+      if not QryExec.Eof then
+        DSLigvtejj.DataSet.FieldByName('PRC_REMISE').AsFloat := QryExec.FieldByName('PRC_REM').AsFloat;
+    end;
 
-  //Tarif specifique au client
-  QryExec.Close;
-  QryExec.SQL.Text := 'SELECT * FROM tarifcli WHERE CODART=:CODART AND CODCLI=:CODCLI';
-  QryExec.ParamByName('CODART').AsString:=QryExecArticle.FieldByName('CODART').AsString;
-  QryExec.ParamByName('CODCLI').AsInteger:=DSLigvtejj.DataSet.FieldByName('CODCLI').AsInteger;
-  QryExec.Open;
-  if not QryExec.Eof then
-  begin
-  	DBCodtar.Field.AsString := '';
-    if QryExec.FieldByName('PRIXVTE').Asfloat<>0 then
-      DSLigvtejj.DataSet.FieldByName('PRIXHT').AsFloat := QryExec.FieldByName('PRIXVTE').Asfloat
+    // PRIX DE VENTE - Promo article
+    if QryExecClient.FieldByName('coef_maj_pr').AsFloat = 0 then
+    begin
+      QryExec.SQL.Text := 'SELECT * FROM promo WHERE CODART = :CODART AND :DAT_FAC BETWEEN DAT_DEB AND DAT_FIN';
+      QryExec.ParamByName('CODART').AsString := QryExecArticle.FieldByName('CODART').AsString;
+      QryExec.ParamByName('DAT_FAC').AsDateTime := FormEntvtejj.FDMemTableEntvtejj.FieldByName('DATE_').AsDateTime;
+      QryExec.Open;
+      if not QryExec.Eof then
+      begin
+        if QryExec.FieldByName('PRIXHT').AsFloat > 0 then
+          DSLigvtejj.DataSet.FieldByName('PRIXHT').AsFloat := QryExec.FieldByName('PRIXHT').AsFloat
+        else
+          DSLigvtejj.DataSet.FieldByName('PRC_REMISE').AsFloat := QryExec.FieldByName('PRC_REM').AsFloat;
+      end;
+    end;
+
+    // Recherche si remisable
+    if QryExecArticle.FieldByName('PREST').AsInteger = 1 then
+    begin
+      DSLigvtejj.DataSet.FieldByName('PRC_REMISE').AsFloat := 0;
+      JvDBSpinPrc_remise.Enabled := False;
+    end
     else
-      DSLigvtejj.DataSet.FieldByName('PRC_REMISE').AsFloat := QryExec.FieldByName('PRC_REMISE').Asfloat;
-  end;
+      JvDBSpinPrc_remise.Enabled := True;
 
-
-  //PRIX DE REVIENT-------------------
-  //Prix de revient article par defaut
-  DSLigvtejj.DataSet.FieldByName('PRIXREV').AsFloat := QryExecArticle.FieldByName('PMP').AsFloat;
-
-  //Prix de revient si gestion PMP par depot
-  if DM_Olivier.PMPGlobalMode=0 then
-  begin
-    QryExec.Close;
-    QryExec.SQL.Text := 'SELECT * FROM stodep WHERE CODART=:CODART AND CODDEP=:CODDEP';
-    QryExec.ParamByName('CODART').AsString:=QryExecArticle.FieldByName('CODART').AsString;
-    QryExec.ParamByName('CODDEP').AsInteger:=DSLigvtejj.DataSet.FieldByName('CODDEP').AsInteger;
+    // Recherche tarif général client
+    QryExec.SQL.Text := 'SELECT * FROM tarifart WHERE CODART = :CODART AND CODTAR = :CODTAR';
+    QryExec.ParamByName('CODART').AsString := QryExecArticle.FieldByName('CODART').AsString;
+    QryExec.ParamByName('CODTAR').AsString := QryExecClient.FieldByName('CODTAR').AsString;
     QryExec.Open;
     if not QryExec.Eof then
-      DSLigvtejj.DataSet.FieldByName('PRIXREV').AsFloat := QryExec.FieldByName('PMP').AsFloat;
-  end;
+    begin
+      DBCodtar.Enabled := True;
+      DBCodtar.Field.AsString := QryExec.FieldByName('CODTAR').AsString;
+      DSLigvtejj.DataSet.FieldByName('PRIXHT').AsFloat := QryExec.FieldByName('PRIXHT').AsFloat;
+    end
+    else
+    begin
+      DBCodtar.Enabled := False;
+      DBCodtar.Field.AsString := '';
+    end;
 
-  //Si le prix de revient est calculé sur une commission sur le prix de vente
-  IF QryExecArticle.FieldByName('COM_PR').AsFloat<>0 then
-  	DSLigvtejj.DataSet.FieldByName('PRIXREV').AsFloat := Round(QryExecArticle.FieldByName('PRIXVTE').AsFloat
-      -((QryExecArticle.FieldByName('PRIXVTE').AsFloat/100)*QryExecArticle.FieldByName('COM_PR').AsFloat));
-  //FIN Prix de revient-----------------------
-
-  //!CALCUL PRIXHT si basé sur coef major pr
-  if QryExecClient.FieldByName('coef_maj_pr').AsFloat<>0 then
-      DSLigvtejj.DataSet.FieldByName('PRIXHT').AsFloat	:= DSLigvtejj.DataSet.FieldByName('PRIX_REV').AsFloat
-        *QryExecClient.FieldByName('coef_maj_pr').AsFloat;
-
-  //!Calcul des prix détail GROSSISTE
-  DM_Olivier.FDQueryCtrstock.Open;
-  if DM_Olivier.FDQueryCtrstock.FieldByName('NATURE').AsString='G' then
-  begin
-  	DSLigvtejj.DataSet.FieldByName('DET_PPT').AsFloat	:= QryExecArticle.FieldByName('DET_PPT').AsFloat;
-    QryExec.Close;
-    QryExec.SQL.Text := 'SELECT * FROM prixgeo WHERE CODGEO=:CODGEO AND CODPRIX=:CODPRIX';
-    QryExec.ParamByName('CODGEO').AsString:=FormEntvtejj.FDMemTableEntvtejj.FieldByName('CODGEO').AsString;
-    QryExec.ParamByName('CODPRIX').AsString:=QryExecArticle.FieldByName('CODPRIX').AsString;
+    // Tarif spécifique au client
+    QryExec.SQL.Text := 'SELECT * FROM tarifcli WHERE CODART = :CODART AND CODCLI = :CODCLI';
+    QryExec.ParamByName('CODART').AsString := QryExecArticle.FieldByName('CODART').AsString;
+    QryExec.ParamByName('CODCLI').AsInteger := DSLigvtejj.DataSet.FieldByName('CODCLI').AsInteger;
     QryExec.Open;
     if not QryExec.Eof then
-  		DSLigvtejj.DataSet.FieldByName('DET_ILE').AsFloat := DSLigvtejj.DataSet.FieldByName('DET_PPT').AsFloat
-       *   QryExec.ParamByName('COEF').AsFloat;
+    begin
+      DBCodtar.Field.AsString := '';
+      if QryExec.FieldByName('PRIXVTE').AsFloat <> 0 then
+        DSLigvtejj.DataSet.FieldByName('PRIXHT').AsFloat := QryExec.FieldByName('PRIXVTE').AsFloat
+      else
+        DSLigvtejj.DataSet.FieldByName('PRC_REMISE').AsFloat := QryExec.FieldByName('PRC_REMISE').AsFloat;
+    end;
+
+    // PRIX DE REVIENT
+    DSLigvtejj.DataSet.FieldByName('PRIXREV').AsFloat := QryExecArticle.FieldByName('PMP').AsFloat;
+
+    if DM_Olivier.PMPGlobalMode = 0 then
+    begin
+      QryExec.SQL.Text := 'SELECT * FROM stodep WHERE CODART = :CODART AND CODDEP = :CODDEP';
+      QryExec.ParamByName('CODART').AsString := QryExecArticle.FieldByName('CODART').AsString;
+      QryExec.ParamByName('CODDEP').AsInteger := DSLigvtejj.DataSet.FieldByName('CODDEP').AsInteger;
+      QryExec.Open;
+      if not QryExec.Eof then
+        DSLigvtejj.DataSet.FieldByName('PRIXREV').AsFloat := QryExec.FieldByName('PMP').AsFloat;
+    end;
+
+    if QryExecArticle.FieldByName('COM_PR').AsFloat <> 0 then
+      DSLigvtejj.DataSet.FieldByName('PRIXREV').AsFloat := Round(QryExecArticle.FieldByName('PRIXVTE').AsFloat - ((QryExecArticle.FieldByName('PRIXVTE').AsFloat / 100) * QryExecArticle.FieldByName('COM_PR').AsFloat));
+
+    // Si basé sur coef major pr (Attention correction du nom de champ PRIX_REV -> PRIXREV)
+    if QryExecClient.FieldByName('coef_maj_pr').AsFloat <> 0 then
+      DSLigvtejj.DataSet.FieldByName('PRIXHT').AsFloat := DSLigvtejj.DataSet.FieldByName('PRIXREV').AsFloat * QryExecClient.FieldByName('coef_maj_pr').AsFloat;
+
+    // Calcul des prix détail GROSSISTE
+    DM_Olivier.FDQueryCtrstock.Open;
+    if DM_Olivier.FDQueryCtrstock.FieldByName('NATURE').AsString = 'G' then
+    begin
+      DSLigvtejj.DataSet.FieldByName('DET_PPT').AsFloat := QryExecArticle.FieldByName('DET_PPT').AsFloat;
+      QryExec.SQL.Text := 'SELECT * FROM prixgeo WHERE CODGEO = :CODGEO AND CODPRIX = :CODPRIX';
+      QryExec.ParamByName('CODGEO').AsString := FormEntvtejj.FDMemTableEntvtejj.FieldByName('CODGEO').AsString;
+      QryExec.ParamByName('CODPRIX').AsString := QryExecArticle.FieldByName('CODPRIX').AsString;
+      QryExec.Open;
+      if not QryExec.Eof then
+        DSLigvtejj.DataSet.FieldByName('DET_ILE').AsFloat := DSLigvtejj.DataSet.FieldByName('DET_PPT').AsFloat * QryExec.ParamByName('COEF').AsFloat;
+    end;
+
+    // Champs divers
+    DSLigvtejj.DataSet.FieldByName('CODSSF').AsString := QryExecArticle.FieldByName('CODSSF').AsString;
+    DSLigvtejj.DataSet.FieldByName('CODFOU').AsString := QryExecArticle.FieldByName('CODFOU').AsString;
+    DSLigvtejj.DataSet.FieldByName('CODFAM').AsString := QryExecArticle.FieldByName('CODFAM').AsString;
+    DSLigvtejj.DataSet.FieldByName('CODDPT').AsString := QryExecArticle.FieldByName('CODDPT').AsString;
+
+    // Prix nets et TTC
+    DSLigvtejj.DataSet.FieldByName('PRIXNET').AsFloat := DSLigvtejj.DataSet.FieldByName('PRIXHT').AsFloat - ((DSLigvtejj.DataSet.FieldByName('PRIXHT').AsFloat / 100) * DSLigvtejj.DataSet.FieldByName('PRC_REMISE').AsFloat);
+    DSLigvtejj.DataSet.FieldByName('PRIXTTC').AsFloat := DM_Olivier.CalculerTTC(DSLigvtejj.DataSet.FieldByName('PRIXNET').AsFloat, DBTx_tva.Field.AsFloat);
+    DSLigvtejj.DataSet.FieldByName('PXLVTTC').AsFloat := DM_Olivier.CalculerTTC(QryExecArticle.FieldByName('PXLVHT').AsFloat, DBTx_tva.Field.AsFloat);
+
+    CalculLigne;
+    DBQte.SetFocus;
+
+  finally
+    QryExec.Free;
+    QryExecArticle.Free;
+    QryExecClient.Free;
   end;
-
-  //Divers champs liés
-  DSLigvtejj.DataSet.FieldByName('CODSSF').AsString	:= QryExecArticle.FieldByName('CODSSF').AsString;
-  DSLigvtejj.DataSet.FieldByName('CODFOU').AsString	:= QryExecArticle.FieldByName('CODFOU').AsString;
-  DSLigvtejj.DataSet.FieldByName('CODFAM').AsString	:= QryExecArticle.FieldByName('CODFAM').AsString;
-  DSLigvtejj.DataSet.FieldByName('CODDPT').AsString	:= QryExecArticle.FieldByName('CODDPT').AsString;
-
-
-  //MAINTENANT CALCUL PRIX RESULTANTS
-  //PRIX NET HT
-  DSLigvtejj.DataSet.FieldByName('PRIXNET').AsFloat	:= DSLigvtejj.DataSet.FieldByName('PRIXHT').AsFloat
-    -((DSLigvtejj.DataSet.FieldByName('PRIXHT').AsFloat/100)
-    *DSLigvtejj.DataSet.FieldByName('PRC_REMISE').asFloat);
-
-  //PRIX TTC
-  DSLigvtejj.DataSet.FieldByName('PRIXTTC').AsFloat	:=
-    DM_Olivier.CalculerTTC(DSLigvtejj.DataSet.FieldByName('PRIXNET').AsFloat,DBTx_tva.Field.AsFloat);
-  DSLigvtejj.DataSet.FieldByName('PXLVTTC').AsFloat	:=
-    DM_Olivier.CalculerTTC(QryExecArticle.FieldByName('PXLVHT').AsFloat,DBTx_tva.Field.AsFloat);
-
-
-//IF article.qte_auto=1 ALORS
-//	SAI_MT_TTC..Etat=Actif
-//	DonneFocus(SAI_MT_TTC)
-//ELSE
-//	SAI_MT_TTC..Etat=Grisé
-//	DonneFocus(SAI_QTE)
-//END
-  CalculLigne;
-
-  DBQte.SetFocus;
-
 end;
+
 
 procedure TFormLigvtejj.JvDBSpinPrc_remiseChange(Sender: TObject);
 begin
@@ -587,7 +549,6 @@ begin
       end;
     end;
   finally
-
   end;
 end;
 
@@ -596,16 +557,9 @@ begin
   ExecuterAnnulation;
 end;
 
+
 procedure TFormLigvtejj.BtnValiderClick(Sender: TObject);
 begin
-  // Exemple de validation (à décommenter plus tard)
-  // if DBQte.Field.AsFloat = 0 then
-  // begin
-  //   ShowMessage('Erreur quantité.');
-  //   if DBQte.CanFocus then DBQte.SetFocus;
-  //   Exit;
-  // end;
-
   try
     // On valide le dataset via son DataSource (plus indépendant)
     if DSLigvtejj.Dataset.State in [dsEdit, dsInsert] then

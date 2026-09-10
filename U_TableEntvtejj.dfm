@@ -73,6 +73,15 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
       TabOrder = 4
       OnClick = BtnAideClick
     end
+    object BtnCentralisation: TButton
+      Left = 376
+      Top = 0
+      Width = 169
+      Height = 29
+      Caption = 'Centralisation des ventes'
+      TabOrder = 5
+      OnClick = BtnCentralisationClick
+    end
   end
   object JvDBGridEntvtejj: TJvDBGrid
     Left = 0

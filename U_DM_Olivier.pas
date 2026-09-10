@@ -82,6 +82,7 @@ type
     function fgTxTaxe(const DateCtrl: TDateTime; const CodeTVA: String): Double;
     function CalculDateEcheance(const ADate: TDateTime; AJrsCrd,
       AFinMois: Integer): TDateTime;
+    function CalculSoldeClient(pCODCLI: Integer): Double;
    end;
 
 var
@@ -104,6 +105,31 @@ begin
   ChargerParametresStock;
   ChargerParametresTVA;
   ChargerParametresCtrstock;
+end;
+
+function TDM_Olivier.CalculSoldeClient(pCODCLI: Integer): Double;
+var
+  QrySolde: TFDQuery;
+  TotalCredit: Double;
+begin
+  TotalCredit := 0;
+  QrySolde := TFDQuery.Create(nil);
+  try
+    QrySolde.Connection := DMGesCloud.ConnexionGesCloud;
+    // COALESCE gère proprement les éventuels NULL en les remplaçant par 0
+    QrySolde.SQL.Text := 'SELECT SUM(COALESCE(debit, 0) - COALESCE(credit, 0)) AS total_solde ' +
+                         'FROM tresor ' +
+                         'WHERE codcli = :CodCli AND solde = 0';
+    QrySolde.ParamByName('CodCli').AsInteger := pCODCLI;
+    QrySolde.Open;
+
+    if not QrySolde.FieldByName('total_solde').IsNull then
+      TotalCredit := QrySolde.FieldByName('total_solde').AsFloat;
+
+    Result := TotalCredit;
+  finally
+    QrySolde.Free;
+  end;
 end;
 
 

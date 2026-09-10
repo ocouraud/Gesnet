@@ -84,6 +84,7 @@ type
     EditCherche_CODCLI: TEdit;
     EditCherche_CODCAI: TEdit;
     FDQueryEntvtejjHeureLisible: TStringField;
+    BtnCentralisation: TButton;
     procedure CheckBoxToutesFacturesClick(Sender: TObject);
     procedure JvDBGridEntvtejjTitleBtnClick(Sender: TObject; ACol: LongInt;
       Field: TField);
@@ -101,6 +102,7 @@ type
       DataCol: Integer; Column: TColumn; State: TGridDrawState);
     procedure FDQueryEntvtejjAfterScroll(DataSet: TDataSet);
     procedure BtnSuspendreClick(Sender: TObject);
+    procedure BtnCentralisationClick(Sender: TObject);
   private
     procedure AppliquerFiltreMaitre;
     { Déclarations privées }
@@ -112,7 +114,7 @@ type
 implementation
 
 {$R *.dfm}
-uses U_DataModule, U_DM_Olivier, U_OutilsGrille, U_FormAide, U_FicheEntvtejj;
+uses U_DataModule, U_DM_Olivier, U_OutilsGrille, U_FormAide, U_FicheEntvtejj, U_FormCentraVentes;
 
 procedure TFrameTableEntvtejj.BtnAideClick(Sender: TObject);
 begin
@@ -142,6 +144,25 @@ begin
     end;
   finally
     FormEntvtejj.Free;
+  end;
+end;
+
+
+procedure TFrameTableEntvtejj.BtnCentralisationClick(Sender: TObject);
+begin
+  if FDQueryEntvtejj.IsEmpty then Exit;
+
+  FormCentraVentes := TFormCentraVentes.Create(Self);
+
+  try
+    FormCentraVentes.Caption := 'Centralisation des ventes non suspendues';
+
+    if FormCentraVentes.ShowModal = mrOk then
+    begin
+      FDQueryEntvtejj.Refresh;
+    end;
+  finally
+    FormCentraVentes.Free;
   end;
 end;
 
