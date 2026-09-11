@@ -18,6 +18,10 @@ type
     COMBO_Depot: TDBLookupComboBox;
     DSDepot: TDataSource;
     JvDate_Valid: TJvDateEdit;
+    Label1: TLabel;
+    Label2: TLabel;
+    Button1: TButton;
+    LabelMessage: TLabel;
     procedure BtnValidClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
   private
@@ -38,6 +42,7 @@ type
       Mois: Integer; const ALibelle: string; ADateValid: TDateTime);
     procedure TraiterLignesFacture(const ACodFac: Integer; Annee, Mois: Integer;
       QryEntite: TFDQuery; ADateValid: TDateTime);
+    procedure InsererReglementMensuel(QrySource: TFDQuery; ADateValid: TDateTime);
     { Déclarations privées }
   public
     { Déclarations publiques }
@@ -73,6 +78,7 @@ end;
 procedure TFormCentraVentes.FormShow(Sender: TObject);
 begin
   DM_Olivier.FDQueryDepot.Open;
+  COMBO_Depot.KeyValue:=DM_Olivier.gCoddep_defaut;
 end;
 
 // 2. Contrôle de cohérence sur le total des lignes
@@ -373,9 +379,16 @@ begin
   Qry := TFDQuery.Create(nil);
   try
     Qry.Connection := DMGesCloud.ConnexionGesCloud;
-    Qry.SQL.Text := 'SELECT * FROM ca_art WHERE codart = :CodArt AND annee = :Annee';
+    // --- AJOUTER CES OPTIONS POUR ÉVITER LES ERREURS DE STRUCTURE ---
+    Qry.UpdateOptions.UpdateTableName := 'ca_art';
+    Qry.UpdateOptions.KeyFields := 'codart;annee;mois';
+    Qry.UpdateOptions.UpdateChangedFields := False;
+    Qry.UpdateOptions.RefreshMode := rmManual;
+    // ----------------------------------------------------------------
+    Qry.SQL.Text := 'SELECT * FROM ca_art WHERE codart = :CodArt AND annee = :Annee AND mois = :Mois';
     Qry.ParamByName('CodArt').AsString := ACodArt;
     Qry.ParamByName('Annee').AsInteger := Annee;
+    Qry.ParamByName('Mois').AsInteger := Mois;
     Qry.Open;
 
     if Qry.Eof then
@@ -383,22 +396,17 @@ begin
       Qry.Insert;
       Qry.FieldByName('codart').AsString := ACodArt;
       Qry.FieldByName('annee').AsInteger := Annee;
+      Qry.FieldByName('mois').AsInteger := Mois;
     end
     else
     begin
       Qry.Edit;
     end;
 
-    // Noms des champs dynamiques selon le mois (ex: ca1, qte1, marge1, poids1)
-    ChampMoisCA := 'ca' + IntToStr(Mois);
-    ChampMoisQte := 'qte' + IntToStr(Mois);
-    ChampMoisMarge := 'marge' + IntToStr(Mois);
-    ChampMoisPoids := 'poids' + IntToStr(Mois);
-
-    Qry.FieldByName(ChampMoisCA).AsFloat := Qry.FieldByName(ChampMoisCA).AsFloat + MontantHT;
-    Qry.FieldByName(ChampMoisQte).AsFloat := Qry.FieldByName(ChampMoisQte).AsFloat + Qte;
-    Qry.FieldByName(ChampMoisMarge).AsFloat := Qry.FieldByName(ChampMoisMarge).AsFloat + Marge;
-    Qry.FieldByName(ChampMoisPoids).AsFloat := Qry.FieldByName(ChampMoisPoids).AsFloat + Poids;
+    Qry.FieldByName('CA').AsFloat := Qry.FieldByName('CA').AsFloat + MontantHT;
+    Qry.FieldByName('Qte').AsFloat := Qry.FieldByName('Qte').AsFloat + Qte;
+    Qry.FieldByName('Marge').AsFloat := Qry.FieldByName('Marge').AsFloat + Marge;
+    Qry.FieldByName('Poids').AsFloat := Qry.FieldByName('Poids').AsFloat + Poids;
 
     Qry.Post;
   finally
@@ -415,6 +423,12 @@ begin
   Qry := TFDQuery.Create(nil);
   try
     Qry.Connection := DMGesCloud.ConnexionGesCloud;
+    // --- AJOUTER CES OPTIONS POUR ÉVITER LES ERREURS DE STRUCTURE ---
+    Qry.UpdateOptions.UpdateTableName := 'stacliart';
+    Qry.UpdateOptions.KeyFields := 'codcli;codart;annee';
+    Qry.UpdateOptions.UpdateChangedFields := False;
+    Qry.UpdateOptions.RefreshMode := rmManual;
+    // ----------------------------------------------------------------
     Qry.SQL.Text := 'SELECT * FROM stacliart WHERE codcli = :CodCli AND codart = :CodArt AND annee = :Annee';
     Qry.ParamByName('CodCli').AsInteger := CodCli;
     Qry.ParamByName('CodArt').AsString := ACodArt;
@@ -446,487 +460,41 @@ begin
 end;
 
 
-//procedure TFormCentraVentes.BtnValidClick(Sender: TObject);
-//var
-//  DateValid: TDateTime;
-//  Alt: Boolean;
-//  QryVentesValidees: TFDQuery;
-//  ACodFac: Integer;
-//  ANetHT: Double;
-//  ANetTTC: Double;
-//  Annee, Mois, Jour: Word;
-//  QryReglements: TFDQuery;
-//  QryReglMensuel: TFDQuery;
-//  QryDel: TFDQuery;
-//  QryVerifFacture: TFDQuery;
-//  QryDelRegl: TFDQuery;
-//  WCumMvt: Integer;
-//  WSolde: Integer;
-//  WDateEch: TDateTime;
-//  QryTresor: TFDQuery;
-//  QryPaiement: TFDQuery;
-//  QryCrdCli: TFDQuery;
-//  QryUpdClient: TFDQuery;
-//  QryReglLoop: TFDQuery;
-//  QryClient: TFDQuery;
-//
-//begin
-//  // 1. Récupération directe de la date depuis le JvDBDateEdit
-//  if VarIsNull(JvDBDate_Valid.Field.Value) or (JvDBDate_Valid.Date = 0) then
-//    DateValid := Date
-//  else
-//    DateValid := JvDBDate_Valid.Date;
-//
-//  // 2. Boîte de dialogue de confirmation
-//  if MessageDlg('Attention, vous êtes sur le point de centraliser les ventes du jour - Plus personne ne doit travailler sur l''application Gescloud.',
-//                mtConfirmation, [mbYes, mbNo], 0) = mrNo then
-//  begin
-//    ShowMessage('Procédure annulée');
-//    Exit;
-//  end;
-//
-//  // 3. Contrôle du verrouillage (ctrstock)
-//  Alt := False;
-//  DMGesCloud.FDQueryCtrstock.First;
-//
-//  if not DMGesCloud.FDQueryCtrstock.Eof then
-//  begin
-//    if DMGesCloud.FDQueryCtrstock.FieldByName('flag_clo').AsInteger = 1 then
-//    begin
-//      Alt := True;
-//      ShowMessage('Centralisation déjà en cours !');
-//    end;
-//  end;
-//
-//  if Alt then
-//  begin
-//    ShowMessage('Procédure annulée !');
-//    Exit;
-//  end;
-//
-//  // 4. Ouverture de la transaction (FireDAC)
-//  try
-//    if not DMGesCloud.ConnexionGesCloud.InTransaction then
-//      DMGesCloud.ConnexionGesCloud.StartTransaction;
-//  except
-//    on E: Exception do
-//    begin
-//      ShowMessage('Erreur de transaction : ' + E.Message);
-//      Exit;
-//    end;
-//  end;
-//
-//  // 5. Marquage du verrouillage en cours
-//  DMGesCloud.FDQueryCtrstock.Edit;
-//  DMGesCloud.FDQueryCtrstock.FieldByName('flag_clo').AsInteger := 1;
-//  DMGesCloud.FDQueryCtrstock.FieldByName('err_sync').AsInteger := 0;
-//  DMGesCloud.FDQueryCtrstock.Post;
-//
-//  // OUVERTURE DU TRY GLOBAL POUR GÉRER LE ROLLBACK EN CAS D'ERREUR
-//  try
-//
-//    // 6. Boucle principale de validation et de contrôle des factures (entvtejj)
-//    DM_Olivier.FDQueryEntVteJJ.DisableControls;
-//    try
-//      DM_Olivier.FDQueryEntVteJJ.First;
-//      while not DM_Olivier.FDQueryEntVteJJ.Eof do
-//      begin
-//        // Ignorer si top_ = 'M'
-//        if DM_Olivier.FDQueryEntVteJJ.FieldByName('top_').AsString = 'M' then
-//        begin
-//          DM_Olivier.FDQueryEntVteJJ.Next;
-//          Continue;
-//        end;
-//
-//        // Filtrer par dépôt
-//        if DM_Olivier.FDQueryEntVteJJ.FieldByName('coddep').AsString <> COMBO_Depot.KeyValue then
-//        begin
-//          DM_Olivier.FDQueryEntVteJJ.Next;
-//          Continue;
-//        end;
-//
-//        // Vérifier si la facture existe déjà dans ENTVTEAA (déjà centralisée)
-//        if FactureDejaCentralisee(DM_Olivier.FDQueryEntVteJJ.FieldByName('codfac').AsString) then
-//        begin
-//          DM_Olivier.FDQueryEntVteJJ.Delete;
-//          Continue;
-//        end;
-//
-//        // Factures non réglées -> suspendues
-//        if DM_Olivier.FDQueryEntVteJJ.FieldByName('regl').AsInteger = 0 then
-//        begin
-//          DM_Olivier.FDQueryEntVteJJ.Edit;
-//          DM_Olivier.FDQueryEntVteJJ.FieldByName('top_').AsString := 'S';
-//          DM_Olivier.FDQueryEntVteJJ.Post;
-//        end;
-//
-//        if DM_Olivier.FDQueryEntVteJJ.FieldByName('top_').AsString = 'S' then
-//        begin
-//          DM_Olivier.FDQueryEntVteJJ.Edit;
-//          DM_Olivier.FDQueryEntVteJJ.FieldByName('sel').AsInteger := 0;
-//          DM_Olivier.FDQueryEntVteJJ.Post;
-//        end
-//        else
-//        begin
-//          // Contrôle de cohérence lignes
-//          if not ValiderCoherenceLignes(DM_Olivier.FDQueryEntVteJJ.FieldByName('codfac').AsString,
-//                                        DM_Olivier.FDQueryEntVteJJ.FieldByName('totht').AsFloat +
-//                                        DM_Olivier.FDQueryEntVteJJ.FieldByName('mt_remise').AsFloat) then
-//          begin
-//            DM_Olivier.FDQueryEntVteJJ.Next;
-//            Continue;
-//          end;
-//
-//          // Contrôle de cohérence règlements
-//          if not ValiderCoherenceReglements(DM_Olivier.FDQueryEntVteJJ.FieldByName('codfac').AsString,
-//                                            DM_Olivier.FDQueryEntVteJJ.FieldByName('mt_ttc').AsFloat) then
-//          begin
-//            DM_Olivier.FDQueryEntVteJJ.Next;
-//            Continue;
-//          end;
-//
-//          // Si tout est ok, on valide l'étape
-//          DM_Olivier.FDQueryEntVteJJ.Edit;
-//          DM_Olivier.FDQueryEntVteJJ.FieldByName('top_').AsString := 'F';
-//          DM_Olivier.FDQueryEntVteJJ.FieldByName('sel').AsInteger := 1;
-//          DM_Olivier.FDQueryEntVteJJ.Post;
-//        end;
-//
-//        DM_Olivier.FDQueryEntVteJJ.Next;
-//      end;
-//    finally
-//      DM_Olivier.FDQueryEntVteJJ.EnableControls;
-//    end;
-//
-//    // 7. Deuxième boucle : Traitement et centralisation des factures validées (top_ = 'F' et sel = 1)
-//    QryVentesValidees := TFDQuery.Create(nil);
-//    try
-//      QryVentesValidees.Connection := DMGesCloud.ConnexionGesCloud;
-//      QryVentesValidees.SQL.Text := 'SELECT * FROM entvtejj WHERE top_ = ''F'' AND sel = 1 AND coddep = :CodDep';
-//      QryVentesValidees.ParamByName('CodDep').AsString := COMBO_Depot.Text;
-//      QryVentesValidees.Open;
-//
-//      while not QryVentesValidees.Eof do
-//      begin
-//        ACodFac := QryVentesValidees.FieldByName('codfac').AsInteger;
-//        ANetHT := QryVentesValidees.FieldByName('totht').AsFloat;
-//        ANetTTC := QryVentesValidees.FieldByName('totht').AsFloat +
-//                   QryVentesValidees.FieldByName('mt_tva').AsFloat +
-//                   QryVentesValidees.FieldByName('mt_tsoc').AsFloat;
-//
-//        DecodeDate(QryVentesValidees.FieldByName('date_').AsDateTime, Annee, Mois, Jour);
-//
-//        // --- STATISTIQUES ---
-//        MettreAJourStatis('S', 'A', Annee, Mois, ANetHT);
-//        MettreAJourStatis('I', QryVentesValidees.FieldByName('codcai').AsString, Annee, Mois, ANetHT);
-//        MettreAJourStatis('V', QryVentesValidees.FieldByName('codven').AsString, Annee, Mois, ANetHT);
-//        MettreAJourStatis('C', QryVentesValidees.FieldByName('codcli').AsString, Annee, Mois, ANetHT);
-//        MettreAJourStatis('R', QryVentesValidees.FieldByName('codrep').AsString, Annee, Mois, ANetHT);
-//
-//        if QryVentesValidees.FieldByName('mt_tva1').AsFloat <> 0 then
-//          MettreAJourStatis('T', 'TVA1', Annee, Mois, QryVentesValidees.FieldByName('mt_tva1').AsFloat);
-//        if QryVentesValidees.FieldByName('mt_tva2').AsFloat <> 0 then
-//          MettreAJourStatis('T', 'TVA2', Annee, Mois, QryVentesValidees.FieldByName('mt_tva2').AsFloat);
-//        if QryVentesValidees.FieldByName('mt_tva3').AsFloat <> 0 then
-//          MettreAJourStatis('T', 'TVA3', Annee, Mois, QryVentesValidees.FieldByName('mt_tva3').AsFloat);
-//        if QryVentesValidees.FieldByName('mt_tsoc').AsFloat <> 0 then
-//          MettreAJourStatis('X', 'TS', Annee, Mois, QryVentesValidees.FieldByName('mt_tsoc').AsFloat);
-//        if QryVentesValidees.FieldByName('mt_tvai').AsFloat <> 0 then
-//          MettreAJourStatis('T', 'TVAI', Annee, Mois, QryVentesValidees.FieldByName('mt_tvai').AsFloat);
-//
-//        InsererEnteteMensuelle(QryVentesValidees, DateValid);
-//        TraiterLignesFacture(ACodFac, Annee, Mois, QryVentesValidees, DateValid);
-//
-//        // --- ÉCRITURE DE VENTES ET GÉRANCE TRÉSORERIE / RÈGLEMENTS ---
-//        // (Récupération préalable des infos client et calcul de WSOLDE si nécessaire)
-//        QryVentesValidees := TFDQuery.Create(nil);
-//        QryVentesValidees.Connection := DMGesCloud.ConnexionGesCloud;
-//        QryClient.SQL.Text := 'SELECT * FROM client WHERE codcli = :CodCli';
-//        QryClient.ParamByName('CodCli').AsInteger := QryVentesValidees.FieldByName('codcli').AsInteger;
-//        QryClient.Open;
-//        WCumMvt := QryClient.FieldByName('cum_mvt').AsInteger;
-//
-//        // --- CALCUL DE WSOLDE (Facture réglée au comptant / lettrable) ---
-//        WSolde := 0;
-//
-//        // On vérifie si la facture possède des règlements dont les modes de paiement sont de type 'C' (Comptant)
-//        // et couvrent le montant total TTC de la facture.
-//        QryPaiement.SQL.Text := 'SELECT SUM(r.montant) as total_regl, p.type_ ' +
-//                                'FROM regljj r ' +
-//                                'JOIN paiement p ON r.codpai = p.codpai ' +
-//                                'WHERE r.codfac = :CodFac ' +
-//                                'GROUP BY p.type_';
-//        QryPaiement.ParamByName('CodFac').AsInteger := ACodFac;
-//        QryPaiement.Open;
-//
-//        // Logique d'évaluation de WSolde selon ton process métier :
-//        // Si le montant réglé en mode comptant (type_ = 'C') égale le TTC de la facture
-//        while not QryPaiement.Eof do
-//        begin
-//          if (QryPaiement.FieldByName('type_').AsString = 'C') and
-//             (Abs(QryPaiement.FieldByName('total_regl').AsFloat - ANetTTC) < 0.01) then
-//          begin
-//            WSolde := 1;
-//            Break;
-//          end;
-//          QryPaiement.Next;
-//        end;
-//
-//        // --- ÉCRITURE DE VENTES DANS TRESOR ---
-//        // Si mouvements client cumulés (cum_mvt = 1) et règlements comptants (WSolde = 1), on ne fait rien, SINON on écrit dans tresor
-//        if not ((WCumMvt = 1) and (WSolde = 1)) then
-//        begin
-//          QryTresor.SQL.Text := 'SELECT * FROM tresor WHERE 1=0';
-//          QryTresor.Open;
-//          QryTresor.Insert;
-//
-//          QryTresor.FieldByName('codcli').AsInteger := QryVentesValidees.FieldByName('codcli').AsInteger;
-//          QryTresor.FieldByName('codrep').AsString := QryVentesValidees.FieldByName('codrep').AsString;
-//          QryTresor.FieldByName('date_').AsDateTime := QryVentesValidees.FieldByName('date_').AsDateTime;
-//          QryTresor.FieldByName('date_ech').AsDateTime := WDateEch;
-//          QryTresor.FieldByName('date_oper').AsDateTime := DateValid;
-//          QryTresor.FieldByName('annee').AsInteger := Annee;
-//          QryTresor.FieldByName('mois').AsInteger := Mois;
-//          QryTresor.FieldByName('top_').AsString := 'Z';
-//          QryTresor.FieldByName('type_').AsString := 'V';
-//          QryTresor.FieldByName('origin').AsString := 'V';
-//
-//          if QryVentesValidees.FieldByName('reference_').AsString = '' then
-//            QryTresor.FieldByName('reference_').AsString := QryVentesValidees.FieldByName('codfac').AsString
-//          else
-//            QryTresor.FieldByName('reference_').AsString := QryVentesValidees.FieldByName('reference_').AsString;
-//
-//          if ANetTTC > 0 then
-//          begin
-//            QryTresor.FieldByName('libelle').AsString := 'Facture No ' + QryVentesValidees.FieldByName('codfac').AsString;
-//            QryTresor.FieldByName('debit').AsFloat := ANetTTC;
-//          end;
-//
-//          if ANetTTC < 0 then
-//          begin
-//            QryTresor.FieldByName('libelle').AsString := 'Avoir No ' + QryVentesValidees.FieldByName('codfac').AsString;
-//            QryTresor.FieldByName('credit').AsFloat := -ANetTTC;
-//          end;
-//
-//          QryTresor.FieldByName('solde').AsInteger := WSolde;
-//
-//          if ANetTTC <> 0 then
-//            QryTresor.Post;
-//        end;
-//
-//        // --- GÉNÉRATION DES RÈGLEMENTS (regljj -> tresor / crd_cli) ---
-//        QryReglLoop := TFDQuery.Create(nil);
-//        try
-//          QryReglLoop.Connection := DMGesCloud.ConnexionGesCloud;
-//          QryReglLoop.SQL.Text := 'SELECT * FROM regljj WHERE codfac = :CodFac AND montant <> 0';
-//          QryReglLoop.ParamByName('CodFac').AsInteger := ACodFac;
-//          QryReglLoop.Open;
-//
-//          while not QryReglLoop.Eof do
-//          begin
-//            // Vérification du type de paiement pour chaque règlement
-//            QryPaiement.SQL.Text := 'SELECT * FROM paiement WHERE codpai = :CodPai';
-//            QryPaiement.ParamByName('CodPai').AsString := QryReglLoop.FieldByName('codpai').AsString;
-//            QryPaiement.Open;
-//
-//            if WCumMvt = 0 then // On gère la trésorerie si pas de mouvements cumulés
-//            begin
-//              if QryPaiement.FieldByName('type_').AsString = 'D' then
-//              begin
-//                // --- Cumul CREDIT Client (crd_cli) ---
-//                QryCrdCli.SQL.Text := 'SELECT * FROM crd_cli WHERE codcli = :CodCli AND annee = :Annee AND mois = :Mois';
-//                QryCrdCli.ParamByName('CodCli').AsInteger := QryVentesValidees.FieldByName('codcli').AsInteger;
-//                QryCrdCli.ParamByName('Annee').AsInteger := Annee;
-//                QryCrdCli.ParamByName('Mois').AsInteger := Mois;
-//                QryCrdCli.Open;
-//
-//                if QryCrdCli.IsEmpty then
-//                begin
-//                  QryCrdCli.Insert;
-//                  QryCrdCli.FieldByName('codcli').AsInteger := QryVentesValidees.FieldByName('codcli').AsInteger;
-//                  QryCrdCli.FieldByName('annee').AsInteger := Annee;
-//                  QryCrdCli.FieldByName('mois').AsInteger := Mois;
-//                end
-//                else
-//                  QryCrdCli.Edit;
-//
-//                QryCrdCli.FieldByName('credit').AsFloat := QryCrdCli.FieldByName('credit').AsFloat + QryReglLoop.FieldByName('montant').AsFloat;
-//                QryCrdCli.Post;
-//
-//                QryUpdClient.SQL.Text := 'UPDATE client SET credit = credit + :Montant WHERE codcli = :CodCli';
-//                QryUpdClient.ParamByName('Montant').AsFloat := QryReglLoop.FieldByName('montant').AsFloat;
-//                QryUpdClient.ParamByName('CodCli').AsInteger := QryVentesValidees.FieldByName('codcli').AsInteger;
-//                QryUpdClient.ExecSQL;
-//              end
-//              else
-//              begin
-//                // --- Écriture de règlement comptant dans tresor (Type 'R') ---
-//                QryTresor.SQL.Text := 'SELECT * FROM tresor WHERE 1=0';
-//                QryTresor.Open;
-//                QryTresor.Insert;
-//
-//                QryTresor.FieldByName('codcli').AsInteger := QryVentesValidees.FieldByName('codcli').AsInteger;
-//                QryTresor.FieldByName('codrep').AsString := QryVentesValidees.FieldByName('codrep').AsString;
-//                QryTresor.FieldByName('date_').AsDateTime := QryReglLoop.FieldByName('date_').AsDateTime;
-//                QryTresor.FieldByName('date_ech').AsDateTime := QryReglLoop.FieldByName('echeance').AsDateTime;
-//                QryTresor.FieldByName('date_oper').AsDateTime := DateValid;
-//                QryTresor.FieldByName('codpai').AsString := QryReglLoop.FieldByName('codpai').AsString;
-//                QryTresor.FieldByName('annee').AsInteger := Annee;
-//                QryTresor.FieldByName('mois').AsInteger := Mois;
-//                QryTresor.FieldByName('top_').AsString := 'Z';
-//                QryTresor.FieldByName('type_').AsString := 'R';
-//                QryTresor.FieldByName('origin').AsString := 'V';
-//
-//                if QryVentesValidees.FieldByName('reference_').AsString = '' then
-//                  QryTresor.FieldByName('reference_').AsString := QryVentesValidees.FieldByName('codfac').AsString
-//                else
-//                  QryTresor.FieldByName('reference_').AsString := QryVentesValidees.FieldByName('reference_').AsString;
-//
-//                QryTresor.FieldByName('solde').AsInteger := WSolde;
-//
-//                if QryReglLoop.FieldByName('montant').AsFloat > 0 then
-//                begin
-//                  QryTresor.FieldByName('libelle').AsString := QryReglLoop.FieldByName('libelle').AsString;
-//                  QryTresor.FieldByName('credit').AsFloat := QryReglLoop.FieldByName('montant').AsFloat;
-//                end;
-//
-//                if QryReglLoop.FieldByName('montant').AsFloat < 0 then
-//                begin
-//                  QryTresor.FieldByName('libelle').AsString := QryReglLoop.FieldByName('libelle').AsString;
-//                  QryTresor.FieldByName('debit').AsFloat := -QryReglLoop.FieldByName('montant').AsFloat;
-//                end;
-//
-//                QryTresor.Post;
-//              end;
-//            end;
-//
-//            QryReglLoop.Next;
-//          end;
-//        finally
-//          QryReglLoop.Free;
-//        end;
-//
-//        // 9. Nettoyage immédiat des tables journalières pour chaque facture validée
-//        QryDel := TFDQuery.Create(nil);
-//        try
-//          QryDel.Connection := DMGesCloud.ConnexionGesCloud;
-//
-//          QryDel.SQL.Text := 'DELETE FROM regljj WHERE codfac = :CodFac';
-//          QryDel.ParamByName('CodFac').AsInteger := ACodFac;
-//          QryDel.ExecSQL;
-//
-//          QryDel.SQL.Text := 'DELETE FROM ligvtejj WHERE codfac = :CodFac';
-//          QryDel.ParamByName('CodFac').AsInteger := ACodFac;
-//          QryDel.ExecSQL;
-//
-//          QryDel.SQL.Text := 'DELETE FROM entvtejj WHERE codfac = :CodFac';
-//          QryDel.ParamByName('CodFac').AsInteger := ACodFac;
-//          QryDel.ExecSQL;
-//        finally
-//          QryDel.Free;
-//        end;
-//
-//        QryVentesValidees.Next;
-//      end;
-//    finally
-//      QryVentesValidees.Free;
-//    end;
-//
-//    // 8. Traitement et archivage des règlements restants (regljj -> reglaa)
-//    QryReglements := TFDQuery.Create(nil);
-//    QryReglMensuel := TFDQuery.Create(nil);
-//    QryVerifFacture := TFDQuery.Create(nil);
-//    QryDelRegl := TFDQuery.Create(nil);
-//    try
-//      QryReglements.Connection := DMGesCloud.ConnexionGesCloud;
-//      QryReglMensuel.Connection := DMGesCloud.ConnexionGesCloud;
-//      QryVerifFacture.Connection := DMGesCloud.ConnexionGesCloud;
-//      QryDelRegl.Connection := DMGesCloud.ConnexionGesCloud;
-//
-//      QryReglements.SQL.Text := 'SELECT * FROM regljj';
-//      QryReglements.Open;
-//
-//      while not QryReglements.Eof do
-//      begin
-//        QryVerifFacture.SQL.Text := 'SELECT COUNT(*) FROM entvtejj WHERE codfac = :CodFac';
-//        QryVerifFacture.ParamByName('CodFac').AsInteger := QryReglements.FieldByName('codfac').AsInteger;
-//        QryVerifFacture.Open;
-//
-//        if QryVerifFacture.Fields[0].AsInteger = 0 then
-//        begin
-//          QryVerifFacture.SQL.Text := 'SELECT COUNT(*) FROM entvteaa WHERE codfac = :CodFac';
-//          QryVerifFacture.ParamByName('CodFac').AsInteger := QryReglements.FieldByName('codfac').AsInteger;
-//          QryVerifFacture.Open;
-//
-//          if QryVerifFacture.Fields[0].AsInteger = 0 then
-//          begin
-//            QryDelRegl.SQL.Text := 'DELETE FROM regljj WHERE codfac = :CodFac AND Noenr = :Noenr';
-//            QryDelRegl.ParamByName('CodFac').AsInteger := QryReglements.FieldByName('codfac').AsInteger;
-//            QryDelRegl.ParamByName('Noenr').AsInteger := QryReglements.FieldByName('Noenr').AsInteger;
-//            QryDelRegl.ExecSQL;
-//
-//            QryReglements.Next;
-//            Continue;
-//          end;
-//
-//          QryReglMensuel.SQL.Text := 'SELECT * FROM reglaa WHERE 1=0';
-//          QryReglMensuel.Open;
-//          QryReglMensuel.Insert;
-//
-//          QryReglMensuel.FieldByName('codfac').AsInteger := QryReglements.FieldByName('codfac').AsInteger;
-//          QryReglMensuel.FieldByName('codcai').AsString := QryReglements.FieldByName('codcai').AsString;
-//          QryReglMensuel.FieldByName('codven').AsInteger := QryReglements.FieldByName('codven').AsInteger;
-//          QryReglMensuel.FieldByName('date_').AsDateTime := QryReglements.FieldByName('date_').AsDateTime;
-//          QryReglMensuel.FieldByName('top_').AsString := 'Z';
-//          QryReglMensuel.FieldByName('libelle').AsString := QryReglements.FieldByName('libelle').AsString;
-//          QryReglMensuel.FieldByName('montant').AsFloat := QryReglements.FieldByName('montant').AsFloat;
-//          QryReglMensuel.FieldByName('date_ech').AsDateTime := QryReglements.FieldByName('echeance').AsDateTime;
-//          QryReglMensuel.FieldByName('codpai').AsString := QryReglements.FieldByName('codpai').AsString;
-//          QryReglMensuel.FieldByName('type_').AsString := QryReglements.FieldByName('type_').AsString;
-//          QryReglMensuel.FieldByName('select_').AsString := '';
-//          QryReglMensuel.FieldByName('date_oper').AsDateTime := DateValid;
-//          QryReglMensuel.FieldByName('date_compta').AsString := '';
-//
-//          QryReglMensuel.Post;
-//        end;
-//
-//        QryReglements.Next;
-//      end;
-//    finally
-//      QryReglements.Free;
-//      QryReglMensuel.Free;
-//      QryVerifFacture.Free;
-//      QryDelRegl.Free;
-//    end;
-//
-//    // 10. Clôture du verrouillage et Validation de la transaction (Commit)
-//    DMGesCloud.FDQueryCtrstock.Edit;
-//    DMGesCloud.FDQueryCtrstock.FieldByName('flag_clo').AsInteger := 0;
-//    DMGesCloud.FDQueryCtrstock.FieldByName('err_sync').AsInteger := 0;
-//    DMGesCloud.FDQueryCtrstock.Post;
-//
-//    if DMGesCloud.ConnexionGesCloud.InTransaction then
-//      DMGesCloud.ConnexionGesCloud.Commit;
-//
-//    ShowMessage('Centralisation des ventes effectuée avec succès !');
-//
-//  except
-//    on E: Exception do
-//    begin
-//      if DMGesCloud.ConnexionGesCloud.InTransaction then
-//        DMGesCloud.ConnexionGesCloud.Rollback;
-//
-//      try
-//        DMGesCloud.FDQueryCtrstock.Edit;
-//        DMGesCloud.FDQueryCtrstock.FieldByName('flag_clo').AsInteger := 0;
-//        DMGesCloud.FDQueryCtrstock.Post;
-//      except
-//      end;
-//
-//      ShowMessage('Erreur durant la centralisation (Annulation effectuée) : ' + E.Message);
-//    end;
-//  end;
-//end;
+procedure TFormCentraVentes.InsererReglementMensuel(QrySource: TFDQuery; ADateValid: TDateTime);
+var
+  QryInsert: TFDQuery;
+  Annee, Mois, Jour: Word;
+begin
+  QryInsert := TFDQuery.Create(nil);
+  try
+    QryInsert.Connection := DMGesCloud.ConnexionGesCloud;
+    QryInsert.UpdateOptions.UpdateChangedFields := False;
+    QryInsert.UpdateOptions.RefreshMode := rmManual;
+    QryInsert.SQL.Text := 'SELECT * FROM reglaa WHERE 1=0';
+    QryInsert.Open;
+    QryInsert.Insert;
+
+    DecodeDate(QrySource.FieldByName('date_').AsDateTime, Annee, Mois, Jour);
+
+    QryInsert.FieldByName('codfac').AsInteger := QrySource.FieldByName('codfac').AsInteger;
+    QryInsert.FieldByName('codcai').AsString := QrySource.FieldByName('codcai').AsString;
+    QryInsert.FieldByName('libelle').AsString := QrySource.FieldByName('libelle').AsString;
+    QryInsert.FieldByName('date_').AsDateTime := QrySource.FieldByName('date_').AsDateTime;
+    QryInsert.FieldByName('date_ech').AsDateTime := QrySource.FieldByName('date_ech').AsDateTime;
+    QryInsert.FieldByName('montant').AsFloat := QrySource.FieldByName('montant').AsFloat;
+    QryInsert.FieldByName('codpai').AsString := QrySource.FieldByName('codpai').AsString;
+    QryInsert.FieldByName('type_').AsString := QrySource.FieldByName('type_').AsString;
+    QryInsert.FieldByName('date_oper').AsDateTime := ADateValid;
+    QryInsert.FieldByName('codven').AsInteger := QrySource.FieldByName('codven').AsInteger;
+    QryInsert.FieldByName('top_').AsString := 'Z';
+    // Ajoute ou ajuste ici les autres champs spécifiques de la table des règlements (regljj -> reglaa)
+
+    QryInsert.Post;
+  finally
+    QryInsert.Free;
+  end;
+end;
+
 
 procedure TFormCentraVentes.BtnValidClick(Sender: TObject);
 var
@@ -937,6 +505,7 @@ var
   ANetHT: Double;
   ANetTTC: Double;
   ACodven: Integer;
+  ANbFactures: Integer;
   Annee, Mois, Jour: Word;
   QryReglements: TFDQuery;
   QryReglMensuel: TFDQuery;
@@ -1006,6 +575,8 @@ begin
     end;
   end;
 
+  LabelMessage.Caption:='Controles de cohérence...';
+
   // 5. Marquage du verrouillage en cours
   DMGesCloud.FDQueryCtrstock.Edit;
   DMGesCloud.FDQueryCtrstock.FieldByName('flag_clo').AsInteger := 1;
@@ -1016,6 +587,7 @@ begin
   try
 
     // 6. Boucle principale de validation et de contrôle des factures (entvtejj)
+    DM_Olivier.FDQueryEntVteJJ.Close;   //Pour reinitialiser avant de lire
     DM_Olivier.FDQueryEntVteJJ.Open;
     DM_Olivier.FDQueryEntVteJJ.DisableControls;
     try
@@ -1039,7 +611,7 @@ begin
         // Vérifier si la facture existe déjà dans ENTVTEAA (déjà centralisée)
         if FactureDejaCentralisee(DM_Olivier.FDQueryEntVteJJ.FieldByName('codfac').AsInteger) then
         begin
-        ShowMessage('Facture deja centralisee '+inttostr(DM_Olivier.FDQueryEntVteJJ.FieldByName('codfac').AsInteger));
+          ShowMessage('Facture deja centralisée '+inttostr(DM_Olivier.FDQueryEntVteJJ.FieldByName('codfac').AsInteger));
 
           DM_Olivier.FDQueryEntVteJJ.Delete;
           Continue;
@@ -1066,7 +638,7 @@ begin
                                        DM_Olivier.FDQueryEntVteJJ.FieldByName('totht').AsFloat +
                                        DM_Olivier.FDQueryEntVteJJ.FieldByName('mt_remise').AsFloat) then
           begin
-            ShowMessage('Echec coherence lignes facture '+inttostr(DM_Olivier.FDQueryEntVteJJ.FieldByName('codfac').AsInteger));
+            ShowMessage('Echec cohérence lignes facture '+inttostr(DM_Olivier.FDQueryEntVteJJ.FieldByName('codfac').AsInteger));
             DM_Olivier.FDQueryEntVteJJ.Next;
             Continue;
           end;
@@ -1075,7 +647,7 @@ begin
           if not ValiderCoherenceReglements(DM_Olivier.FDQueryEntVteJJ.FieldByName('codfac').AsInteger,
                                             DM_Olivier.FDQueryEntVteJJ.FieldByName('mt_ttc').AsFloat) then
           begin
-            ShowMessage('Echec coherence reglements facture '+inttostr(DM_Olivier.FDQueryEntVteJJ.FieldByName('codfac').AsInteger));
+            ShowMessage('Echec cohérence règlements facture '+inttostr(DM_Olivier.FDQueryEntVteJJ.FieldByName('codfac').AsInteger));
             DM_Olivier.FDQueryEntVteJJ.Next;
             Continue;
           end;
@@ -1112,17 +684,18 @@ begin
       QryVentesValidees.SQL.Text := 'SELECT * FROM entvtejj WHERE top_ = ''F'' AND sel = 1 AND coddep = :CodDep';
       QryVentesValidees.ParamByName('CodDep').AsString := COMBO_Depot.KeyValue;
       QryVentesValidees.Open;
+      ANbFactures:=0;
 
       while not QryVentesValidees.Eof do
       begin
-        ShowMessage('Traitement facture '+inttostr(QryVentesValidees.FieldByName('codfac').AsInteger));
-
+        LabelMessage.Caption:='Traitement de la facture '+inttostr(QryVentesValidees.FieldByName('codfac').AsInteger);
+        ANbFactures:=ANbFactures+1;
         ACodFac := QryVentesValidees.FieldByName('codfac').AsInteger;
         ANetHT := QryVentesValidees.FieldByName('totht').AsFloat;
         ANetTTC := QryVentesValidees.FieldByName('totht').AsFloat +
                    QryVentesValidees.FieldByName('mt_tva').AsFloat +
                    QryVentesValidees.FieldByName('mt_tsoc').AsFloat;
-        ACodFac := QryVentesValidees.FieldByName('codven').AsInteger;
+        ACodven := QryVentesValidees.FieldByName('codven').AsInteger;
 
         DecodeDate(QryVentesValidees.FieldByName('date_').AsDateTime, Annee, Mois, Jour);
 
@@ -1139,12 +712,14 @@ begin
           MettreAJourStatis('T', 'TVA2', Annee, Mois, QryVentesValidees.FieldByName('mt_tva2').AsFloat);
         if QryVentesValidees.FieldByName('mt_tva3').AsFloat <> 0 then
           MettreAJourStatis('T', 'TVA3', Annee, Mois, QryVentesValidees.FieldByName('mt_tva3').AsFloat);
-        if QryVentesValidees.FieldByName('mt_tsoc').AsFloat <> 0 then
-          MettreAJourStatis('X', 'TS', Annee, Mois, QryVentesValidees.FieldByName('mt_tsoc').AsFloat);
+//        if QryVentesValidees.FieldByName('mt_tsoc').AsFloat <> 0 then
+//          MettreAJourStatis('X', 'TS', Annee, Mois, QryVentesValidees.FieldByName('mt_tsoc').AsFloat);
         if QryVentesValidees.FieldByName('mt_tvai').AsFloat <> 0 then
           MettreAJourStatis('T', 'TVAI', Annee, Mois, QryVentesValidees.FieldByName('mt_tvai').AsFloat);
 
+        //INSERTION ENTVTEAA ++
         InsererEnteteMensuelle(QryVentesValidees, DateValid, ACodven);
+        //INSERTION LIGVTEAA ++
         TraiterLignesFacture(ACodFac, Annee, Mois, QryVentesValidees, DateValid);
 
         // --- ÉCRITURE DE VENTES ET GÉRANCE TRÉSORERIE / RÈGLEMENTS ---
@@ -1153,29 +728,17 @@ begin
         QryClient.Open;
         WCumMvt := QryClient.FieldByName('cum_mvt').AsInteger;
 
-        // --- CALCUL DE WSOLDE (Facture réglée au comptant / lettrable) ---
+        // --- Indicateur WSOLDE (Facture réglée au comptant / lettrable) ---
         WSolde := 0;
-
-        QryPaiement.SQL.Text := 'SELECT SUM(r.montant) as total_regl, p.type_ ' +
-                                'FROM regljj r ' +
-                                'JOIN paiement p ON r.codpai = p.codpai ' +
-                                'WHERE r.codfac = :CodFac ' +
-                                'GROUP BY p.type_';
+        QryPaiement.SQL.Text := 'SELECT * from regljj where type_=''D'' and codfac=:codfac';
         QryPaiement.ParamByName('CodFac').AsInteger := ACodFac;
         QryPaiement.Open;
+        if QryPaiement.eof then
+            WSolde := 1;    //Si pas de credit c'est donc soldé
 
-        while not QryPaiement.Eof do
-        begin
-          if (QryPaiement.FieldByName('type_').AsString = 'C') and
-             (Abs(QryPaiement.FieldByName('total_regl').AsFloat - ANetTTC) < 0.01) then
-          begin
-            WSolde := 1;
-            Break;
-          end;
-          QryPaiement.Next;
-        end;
 
-        // --- ÉCRITURE DE VENTES DANS TRESOR ---
+        // --- ÉCRITURE DE VENTES DANS TRESOR
+        //  (sauf si client centralisateur combine facture entierement comptant) ---
         if not ((WCumMvt = 1) and (WSolde = 1)) then
         begin
           QryTresor.UpdateOptions.UpdateChangedFields := False;
@@ -1199,6 +762,9 @@ begin
             QryTresor.FieldByName('reference_').AsString := IntToStr(QryVentesValidees.FieldByName('codfac').AsInteger)
           else
             QryTresor.FieldByName('reference_').AsString := QryVentesValidees.FieldByName('reference_').AsString;
+
+          QryTresor.FieldByName('credit').AsFloat := 0;
+          QryTresor.FieldByName('debit').AsFloat := 0;
 
           if ANetTTC > 0 then
           begin
@@ -1228,6 +794,11 @@ begin
 
           while not QryReglLoop.Eof do
           begin
+
+            //INSERTION REGLAA
+            InsererReglementMensuel(QryReglLoop, DateValid);
+
+            //PUIS crd_cli, TRESOR
             QryPaiement.SQL.Text := 'SELECT * FROM paiement WHERE codpai = :CodPai';
             QryPaiement.ParamByName('CodPai').AsString := QryReglLoop.FieldByName('codpai').AsString;
             QryPaiement.Open;
@@ -1271,7 +842,7 @@ begin
                 QryTresor.FieldByName('codcli').AsInteger := QryVentesValidees.FieldByName('codcli').AsInteger;
                 QryTresor.FieldByName('codrep').AsString := QryVentesValidees.FieldByName('codrep').AsString;
                 QryTresor.FieldByName('date_').AsDateTime := QryReglLoop.FieldByName('date_').AsDateTime;
-                QryTresor.FieldByName('date_ech').AsDateTime := QryReglLoop.FieldByName('echeance').AsDateTime;
+                QryTresor.FieldByName('date_ech').AsDateTime := QryReglLoop.FieldByName('date_ech').AsDateTime;
                 QryTresor.FieldByName('date_oper').AsDateTime := DateValid;
                 QryTresor.FieldByName('codpai').AsString := QryReglLoop.FieldByName('codpai').AsString;
                 QryTresor.FieldByName('annee').AsInteger := Annee;
@@ -1286,6 +857,8 @@ begin
                   QryTresor.FieldByName('reference_').AsString := QryVentesValidees.FieldByName('reference_').AsString;
 
                 QryTresor.FieldByName('solde').AsInteger := WSolde;
+                QryTresor.FieldByName('credit').AsFloat := 0;
+                QryTresor.FieldByName('debit').AsFloat := 0;
 
                 if QryReglLoop.FieldByName('montant').AsFloat > 0 then
                 begin
@@ -1340,7 +913,8 @@ begin
       QryUpdClient.Free;
     end;
 
-    // 8. Traitement et archivage des règlements restants (regljj -> reglaa)
+    // 8. Traitement et archivage des règlements isolés (regljj -> reglaa) - (cas improbables)
+    LabelMessage.Caption:='Traitement des règlements isolés...';
     QryReglements := TFDQuery.Create(nil);
     QryReglMensuel := TFDQuery.Create(nil);
     QryVerifFacture := TFDQuery.Create(nil);
@@ -1356,17 +930,17 @@ begin
 
       while not QryReglements.Eof do
       begin
-        QryVerifFacture.SQL.Text := 'SELECT COUNT(*) FROM entvtejj WHERE codfac = :CodFac';
+        QryVerifFacture.SQL.Text := 'SELECT * FROM entvtejj WHERE codfac = :CodFac';
         QryVerifFacture.ParamByName('CodFac').AsInteger := QryReglements.FieldByName('codfac').AsInteger;
         QryVerifFacture.Open;
-
-        if QryVerifFacture.Fields[0].AsInteger = 0 then
+        //Regljj orphelin de entvtejj
+        if QryVerifFacture.Eof then
         begin
-          QryVerifFacture.SQL.Text := 'SELECT COUNT(*) FROM entvteaa WHERE codfac = :CodFac';
+          QryVerifFacture.SQL.Text := 'SELECT * FROM entvteaa WHERE codfac = :CodFac';
           QryVerifFacture.ParamByName('CodFac').AsInteger := QryReglements.FieldByName('codfac').AsInteger;
           QryVerifFacture.Open;
-
-          if QryVerifFacture.Fields[0].AsInteger = 0 then
+          //Regljj orphelin de entvteaa
+          if QryVerifFacture.Eof then
           begin
             QryDelRegl.SQL.Text := 'DELETE FROM regljj WHERE codfac = :CodFac AND Noenr = :Noenr';
             QryDelRegl.ParamByName('CodFac').AsInteger := QryReglements.FieldByName('codfac').AsInteger;
@@ -1398,6 +972,12 @@ begin
           QryReglMensuel.FieldByName('date_compta').AsString := '';
 
           QryReglMensuel.Post;
+
+          //Suppression du regljj isolé (cas improbable)
+          QryDelRegl.SQL.Text := 'DELETE FROM regljj WHERE codfac = :CodFac AND Noenr = :Noenr';
+          QryDelRegl.ParamByName('CodFac').AsInteger := QryReglements.FieldByName('codfac').AsInteger;
+          QryDelRegl.ParamByName('Noenr').AsInteger := QryReglements.FieldByName('Noenr').AsInteger;
+          QryDelRegl.ExecSQL;
         end;
 
         QryReglements.Next;
@@ -1410,6 +990,7 @@ begin
     end;
 
     // --- NETTOYAGE DES LIGNES ORPHELINES (ligvtejj) ET REMISE EN STOCK ---
+    LabelMessage.Caption:='Traitement des lignes ophelines...';
     QryOrphan := TFDQuery.Create(nil);
     QryStock := TFDQuery.Create(nil);
     QryDepot := TFDQuery.Create(nil);
@@ -1494,6 +1075,7 @@ begin
     end;
 
     // --- CENTRALISATION DE LA TRÉSORERIE ---
+    LabelMessage.Caption:='Centralisation de la trésorerie...';
     with TFDQuery.Create(nil) do
     try
       Connection := DMGesCloud.ConnexionGesCloud;
@@ -1504,6 +1086,7 @@ begin
     end;
 
     // --- CENTRALISATION DES SORTIES DE CAISSES ---
+    LabelMessage.Caption:='Centralisation de la caisse...';
     with TFDQuery.Create(nil) do
     try
       Connection := DMGesCloud.ConnexionGesCloud;
@@ -1514,6 +1097,7 @@ begin
     end;
 
     // --- RECALCUL DU SOLDE CLIENTS ---
+    LabelMessage.Caption:='Calcul du solde des clients...';
     var
       QryUpdate: TFDQuery;
     begin
@@ -1535,6 +1119,7 @@ begin
     end;
 
     // --- VALIDATION COMPTAGE DE CAISSE DU JOUR ---
+    LabelMessage.Caption:='Validation du comptage de la caisse du jour...';
     QryCaisse := TFDQuery.Create(nil);
     try
       QryCaisse.Connection := DMGesCloud.ConnexionGesCloud;
@@ -1553,15 +1138,16 @@ begin
     end;
 
     // 10. Clôture du verrouillage et Validation de la transaction (Commit)
+    LabelMessage.Caption:='Validation globale de la transaction...';
     DMGesCloud.FDQueryCtrstock.Edit;
     DMGesCloud.FDQueryCtrstock.FieldByName('flag_clo').AsInteger := 0;
     DMGesCloud.FDQueryCtrstock.FieldByName('err_sync').AsInteger := 0;
     DMGesCloud.FDQueryCtrstock.Post;
 
     if DMGesCloud.ConnexionGesCloud.InTransaction then
-      DMGesCloud.ConnexionGesCloud.Commit;
-
-    ShowMessage('Centralisation des ventes effectuée avec succès !');
+    DMGesCloud.ConnexionGesCloud.Commit;
+    LabelMessage.Caption:='Centralisation terminée.';
+    ShowMessage('Centralisation des ventes effectuée sur '+ IntToStr(ANbFactures) +' factures avec succès !');
 
   except
     on E: Exception do
@@ -1579,5 +1165,8 @@ begin
       ShowMessage('Erreur durant la centralisation (Annulation effectuée) : ' + E.Message);
     end;
   end;
+  //close;
+
 end;
+
 end.

@@ -3,7 +3,8 @@
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
+  System.UITypes, Vcl.Graphics,
   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, FireDAC.Stan.Intf, FireDAC.Stan.Option,
   FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf,
   FireDAC.DApt.Intf, Data.DB, FireDAC.Comp.DataSet, FireDAC.Comp.Client,
@@ -1364,8 +1365,6 @@ end;
 
 
 procedure TFormEntvtejj.DBCODREPChange(Sender: TObject);
-var
-  QryExec: TFDQuery;
 begin
   // On ne fait rien si la table est simplement en train d'être lue/initialisée (sinon plantage)
   if not (FDMemTableEntvtejj.State in [dsEdit, dsInsert]) then

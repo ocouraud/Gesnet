@@ -42,6 +42,8 @@ type
     SplitViewMenu: TSplitView;
     Gestiondesutilisateurs1: TMenuItem;
     Modifmotdepasseutilisateur1: TMenuItem;
+    PopupMenuFinJournee: TPopupMenu;
+    Centralisationdesventes1: TMenuItem;
 
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -75,6 +77,8 @@ type
     procedure TravauxRecalculStockClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure FacturationClick(Sender: TObject);
+    procedure Centralisationdesventes1Click(Sender: TObject);
+    procedure TravauxFinJournee(Sender: TObject);
   private
     function ChercherEtActiverOnglet(const ACaption: string): Boolean;
     function OuvrirOnglet<T: TControl>(const ACaption: string; const AImageName: string = ''; AOnCreate: TProc<T> = nil): T;
@@ -95,7 +99,8 @@ uses
   U_Learning, U_TableFournis, U_TablePaiement, U_TableParameTVA, U_TableParameDevises,
   U_TableRepres, U_TableGeo, U_TableDepots, U_TablePostesAchats, U_TableActivite,
   U_TableSousfam, U_TableDepart, U_TableChrono, U_TableTarif, U_TableInfoscompl,
-  U_FicheCtrstock, U_FicheCaisse, U_FormGestionDroits, U_TableArticles, U_TableEntvtejj;
+  U_FicheCtrstock, U_FicheCaisse, U_FormGestionDroits, U_TableArticles, U_TableEntvtejj,
+  U_FormCentraVentes;
 
 procedure TFormMenuPrincipal.FormCreate(Sender: TObject);
 begin
@@ -170,6 +175,14 @@ var
 begin
   GetCursorPos(Pt);
   PopupMenuParametres.Popup(Pt.X, Pt.Y);
+end;
+
+procedure TFormMenuPrincipal.TravauxFinJournee(Sender: TObject);
+var
+  Pt: TPoint;
+begin
+  GetCursorPos(Pt);
+  PopupMenuFinJournee.Popup(Pt.X, Pt.Y);
 end;
 
 procedure TFormMenuPrincipal.RzPageControl1Close(Sender: TObject; var AllowClose: Boolean);
@@ -356,6 +369,47 @@ end;
 procedure TFormMenuPrincipal.Catgoriestarifaires1Click(Sender: TObject);
 begin
   OuvrirOnglet<TFrameTableActivite>('Catégories tarifaires', 'server_configuration');
+end;
+
+
+procedure TFormMenuPrincipal.Centralisationdesventes1Click(Sender: TObject);
+var
+  Fiche: TFormCentraVentes;
+  i, j: Integer;
+  OngletTrouve: TRzTabSheet;
+begin
+  OngletTrouve := nil;
+
+  // 1. Recherche si la frame est ouverte et récupère son onglet parent
+  for i := 0 to RzPageControl1.PageCount - 1 do
+  begin
+    for j := 0 to RzPageControl1.Pages[i].ControlCount - 1 do
+    begin
+      if RzPageControl1.Pages[i].Controls[j] is TFrameTableEntvtejj then
+      begin
+        OngletTrouve := RzPageControl1.Pages[i];
+        Break;
+      end;
+    end;
+    if OngletTrouve <> nil then Break;
+  end;
+
+  // 2. Si trouvée, on l'active et on bloque la centralisation
+  if OngletTrouve <> nil then
+  begin
+    RzPageControl1.ActivePage := OngletTrouve; // Bascule directement sur l'onglet
+    ShowMessage('Par sécurité vous devez fermer la table des factures.');
+    Exit;
+  end;
+
+
+  // 3. Sinon, on ouvre la centralisation normalement
+  Fiche := TFormCentraVentes.Create(nil);
+  try
+    Fiche.ShowModal;
+  finally
+    Fiche.Free;
+  end;
 end;
 
 procedure TFormMenuPrincipal.Nodechronopices1Click(Sender: TObject);

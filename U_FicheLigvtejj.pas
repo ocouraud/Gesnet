@@ -297,7 +297,7 @@ begin
       DbQte.Field.AsFloat := -DbQte.Field.AsFloat;
 
     if (QryExecArticle.FieldByName('OBSERV_FAC').AsString <> '') then
-      DSLigvtejj.DataSet.FieldByName('OBSERV').AsString := DSLigvtejj.DataSet.FieldByName('OBSERV').AsString + #13#10 + QryExecArticle.FieldByName('OBSERV_FAC').AsString;
+      DBLibelle.Text := DBLibelle.Text + #13#10 + QryExecArticle.FieldByName('OBSERV').AsString;
 
     // Lecture Client
     QryExecClient.SQL.Text := 'SELECT * FROM client WHERE CODCLI = :CODCLI';

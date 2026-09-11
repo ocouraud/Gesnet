@@ -116,6 +116,7 @@ implementation
 {$R *.dfm}
 uses U_DataModule, U_DM_Olivier, U_OutilsGrille, U_FormAide, U_FicheEntvtejj, U_FormCentraVentes;
 
+
 procedure TFrameTableEntvtejj.BtnAideClick(Sender: TObject);
 begin
   // 1. On s'assure que la fiche d'aide existe en mémoire
