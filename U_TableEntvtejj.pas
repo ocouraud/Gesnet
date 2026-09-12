@@ -85,6 +85,7 @@ type
     EditCherche_CODCAI: TEdit;
     FDQueryEntvtejjHeureLisible: TStringField;
     BtnCentralisation: TButton;
+    BtnImprimer: TButton;
     procedure CheckBoxToutesFacturesClick(Sender: TObject);
     procedure JvDBGridEntvtejjTitleBtnClick(Sender: TObject; ACol: LongInt;
       Field: TField);
@@ -103,6 +104,7 @@ type
     procedure FDQueryEntvtejjAfterScroll(DataSet: TDataSet);
     procedure BtnSuspendreClick(Sender: TObject);
     procedure BtnCentralisationClick(Sender: TObject);
+    procedure BtnImprimerClick(Sender: TObject);
   private
     procedure AppliquerFiltreMaitre;
     { Déclarations privées }
@@ -114,7 +116,7 @@ type
 implementation
 
 {$R *.dfm}
-uses U_DataModule, U_DM_Olivier, U_OutilsGrille, U_FormAide, U_FicheEntvtejj, U_FormCentraVentes;
+uses U_DataModule, U_DM_Olivier, U_OutilsGrille, U_FormAide, U_FicheEntvtejj, U_FormCentraVentes, U_ReportFactureMem;
 
 
 procedure TFrameTableEntvtejj.BtnAideClick(Sender: TObject);
@@ -242,6 +244,55 @@ begin
     JvDBGridEntvtejj.SetFocus;
   finally
     QryExec.Free; // S'exécutera proprement dans tous les cas
+  end;
+end;
+
+
+procedure TFrameTableEntvtejj.BtnImprimerClick(Sender: TObject);
+var
+  FormFactureMemPrint: TFormFactureMemPrint;
+  QryEnt, QryLig, QryReg: TFDQuery;
+  ACodFac: Integer;
+begin
+  if FDQueryEntvtejj.IsEmpty then Exit;
+
+  // 1. On récupère le code de la facture actuellement sélectionnée dans la grille
+  ACodFac := FDQueryEntvtejj.FieldByName('CODFAC').AsInteger;
+
+  // 2. On crée des requêtes dédiées et isolées pour l'impression de cette facture
+  QryEnt := TFDQuery.Create(nil);
+  QryLig := TFDQuery.Create(nil);
+  QryReg := TFDQuery.Create(nil);
+  try
+    QryEnt.Connection := DMGesCloud.ConnexionGesCloud;
+    QryLig.Connection := DMGesCloud.ConnexionGesCloud;
+    QryReg.Connection := DMGesCloud.ConnexionGesCloud;
+
+    // On sélectionne uniquement l'en-tête, les lignes et les règlements de CE code facture
+    QryEnt.SQL.Text := 'SELECT * FROM entvtejj WHERE codfac = :CodFac';
+    QryEnt.ParamByName('CodFac').AsInteger := ACodFac;
+    QryEnt.Open;
+
+    QryLig.SQL.Text := 'SELECT * FROM ligvtejj WHERE codfac = :CodFac';
+    QryLig.ParamByName('CodFac').AsInteger := ACodFac;
+    QryLig.Open;
+
+    QryReg.SQL.Text := 'SELECT * FROM regljj WHERE codfac = :CodFac';
+    QryReg.ParamByName('CodFac').AsInteger := ACodFac;
+    QryReg.Open;
+
+    // 3. On lance l'impression avec ces données strictement filtrées
+    FormFactureMemPrint := TFormFactureMemPrint.Create(nil);
+    try
+      FormFactureMemPrint.ImprimerFacture(QryEnt, QryLig, QryReg);
+    finally
+      FormFactureMemPrint.Free;
+    end;
+
+  finally
+    QryEnt.Free;
+    QryLig.Free;
+    QryReg.Free;
   end;
 end;
 

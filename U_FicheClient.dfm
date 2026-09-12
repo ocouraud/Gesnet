@@ -194,7 +194,7 @@ object FormFicheClient: TFormFicheClient
     Top = 112
     Width = 799
     Height = 406
-    ActivePage = TabSheet2
+    ActivePage = TabSheet4
     Align = alCustom
     Anchors = [akLeft, akTop, akRight, akBottom]
     TabOrder = 5

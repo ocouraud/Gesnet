@@ -74,13 +74,22 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
       OnClick = BtnAideClick
     end
     object BtnCentralisation: TButton
-      Left = 376
+      Left = 472
       Top = 0
       Width = 169
       Height = 29
       Caption = 'Centralisation des ventes'
       TabOrder = 5
       OnClick = BtnCentralisationClick
+    end
+    object BtnImprimer: TButton
+      Left = 270
+      Top = 0
+      Width = 75
+      Height = 29
+      Caption = 'Imprimer'
+      TabOrder = 6
+      OnClick = BtnImprimerClick
     end
   end
   object JvDBGridEntvtejj: TJvDBGrid

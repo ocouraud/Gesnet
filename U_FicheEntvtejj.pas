@@ -170,6 +170,13 @@ uses U_DM_Olivier, U_TableEntvtejj, U_DataModule, U_FicheLigvtejj, U_FicheRegljj
 
 procedure TFormEntvtejj.CMDialogKey(var Msg: TCMDialogKey);
 begin
+  //Ctrl+Entree -> Pour valider la fiche
+ if (Msg.CharCode = VK_RETURN) and ((GetKeyState(VK_CONTROL) + $8000) <> 0) then
+  begin
+    BtnValider.Click;
+    Msg.Result := 1;
+    Exit;
+  end;
   // Si le focus est sur la grille et qu'on appuie sur Entrée
   if (ActiveControl = JvDBGridLigvtejj) and (Msg.CharCode = VK_RETURN) then
   begin
@@ -225,46 +232,51 @@ end;
 
 
 procedure TFormEntvtejj.BtnAjouterLigneClick(Sender: TObject);
+var
+  Continuer: Boolean;
 begin
-  // Création et affichage de la fiche de saisie
-  FormLigvtejj := TFormLigvtejj.Create(Self);
-  try
-    FormLigvtejj.DSLigvtejj.DataSet := FDMemTableLigvtejj;
+  repeat
+    // Création et affichage de la fiche de saisie
+    FormLigvtejj := TFormLigvtejj.Create(Self);
+    try
+      FormLigvtejj.DSLigvtejj.DataSet := FDMemTableLigvtejj;
 
-    // Configuration de la fiche
-    FormLigvtejj.ModeSaisieLigne := U_FicheLigvtejj.msAjout;
-    FormLigvtejj.Caption := 'Nouvelle ligne de facture';
-    if FormEntvtejj.RzDBRadioGroupType.Value <> 'F' then
-      FormLigvtejj.Caption := 'Nouvelle ligne d''avoir';
+      // Configuration de la fiche
+      FormLigvtejj.ModeSaisieLigne := U_FicheLigvtejj.msAjout;
+      FormLigvtejj.Caption := 'Nouvelle ligne de facture';
+      if FormEntvtejj.RzDBRadioGroupType.Value <> 'F' then
+        FormLigvtejj.Caption := 'Nouvelle ligne d''avoir';
 
-    // Passage en mode insertion
-    FDMemTableLigvtejj.Insert;
+      // Passage en mode insertion
+      FDMemTableLigvtejj.Insert;
 
-    // Pré-remplir les champs correctement
-    FDMemTableLigvtejj.FieldByName('CODFAC').AsInteger := FDMemTableEntvtejj.FieldByName('CODFAC').AsInteger;
-    FDMemTableLigvtejj.FieldByName('CODDEV').AsInteger := FDMemTableEntvtejj.FieldByName('CODDEV').AsInteger;
-    FDMemTableLigvtejj.FieldByName('CODDEP').AsInteger := FDMemTableEntvtejj.FieldByName('CODDEP').AsInteger;
-    FDMemTableLigvtejj.FieldByName('CODCLI').AsInteger := FDMemTableEntvtejj.FieldByName('CODCLI').AsInteger;
-    FDMemTableLigvtejj.FieldByName('CODCAI').AsString := FDMemTableEntvtejj.FieldByName('CODCAI').AsString;
-    FDMemTableLigvtejj.FieldByName('TYPE_').AsString := FDMemTableEntvtejj.FieldByName('TYPE_').AsString;
+      // Pré-remplir les champs correctement
+      FDMemTableLigvtejj.FieldByName('CODFAC').AsInteger := FDMemTableEntvtejj.FieldByName('CODFAC').AsInteger;
+      FDMemTableLigvtejj.FieldByName('CODDEV').AsInteger := FDMemTableEntvtejj.FieldByName('CODDEV').AsInteger;
+      FDMemTableLigvtejj.FieldByName('CODDEP').AsInteger := FDMemTableEntvtejj.FieldByName('CODDEP').AsInteger;
+      FDMemTableLigvtejj.FieldByName('CODCLI').AsInteger := FDMemTableEntvtejj.FieldByName('CODCLI').AsInteger;
+      FDMemTableLigvtejj.FieldByName('CODCAI').AsString := FDMemTableEntvtejj.FieldByName('CODCAI').AsString;
+      FDMemTableLigvtejj.FieldByName('TYPE_').AsString := FDMemTableEntvtejj.FieldByName('TYPE_').AsString;
 
-    // Si l'utilisateur clique sur Valider (et que le .Post interne a réussi) :
-    if FormLigvtejj.ShowModal = mrOk then
-    begin
-      // Le .Post a DEJA été fait à l'intérieur de FormFicheStock !
-      CalculCompletFacture;
-    end
-    else
-    begin
-      // Si l'utilisateur a annulé, on annule l'insertion
-      FDMemTableLigvtejj.Cancel;
+      // Si l'utilisateur clique sur Valider
+      Continuer := (FormLigvtejj.ShowModal = mrOk);
+      if Continuer then
+      begin
+        // Le .Post a DEJA été fait à l'intérieur de la fiche
+        CalculCompletFacture;
+      end
+      else
+      begin
+        // Si l'utilisateur a annulé, on annule l'insertion
+        FDMemTableLigvtejj.Cancel;
+      end;
+    finally
+      FormLigvtejj.Free;
     end;
-  finally
-    FormLigvtejj.Free;
-    JvDBGridLigvtejj.SetFocus;
-  end;
-end;
+  until not Continuer; // La boucle tourne tant que l'utilisateur valide (mrOk)
 
+  JvDBGridLigvtejj.SetFocus;
+end;
 
 function TFormEntvtejj.ExecuterAjoutReglement: Boolean;
 var

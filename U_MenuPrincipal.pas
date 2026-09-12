@@ -79,6 +79,7 @@ type
     procedure FacturationClick(Sender: TObject);
     procedure Centralisationdesventes1Click(Sender: TObject);
     procedure TravauxFinJournee(Sender: TObject);
+    procedure CategoryButtonsGralCategories2Items0Click(Sender: TObject);
   private
     function ChercherEtActiverOnglet(const ACaption: string): Boolean;
     function OuvrirOnglet<T: TControl>(const ACaption: string; const AImageName: string = ''; AOnCreate: TProc<T> = nil): T;
@@ -100,7 +101,7 @@ uses
   U_TableRepres, U_TableGeo, U_TableDepots, U_TablePostesAchats, U_TableActivite,
   U_TableSousfam, U_TableDepart, U_TableChrono, U_TableTarif, U_TableInfoscompl,
   U_FicheCtrstock, U_FicheCaisse, U_FormGestionDroits, U_TableArticles, U_TableEntvtejj,
-  U_FormCentraVentes;
+  U_TableEntvteaa, U_FormCentraVentes;
 
 procedure TFormMenuPrincipal.FormCreate(Sender: TObject);
 begin
@@ -363,6 +364,16 @@ begin
     //if MonFrame.CanFocus then
     //  MonFrame.SetFocus;
   end;
+end;
+
+
+procedure TFormMenuPrincipal.CategoryButtonsGralCategories2Items0Click(
+  Sender: TObject);
+var
+  MonFrame: TFrameTableEntvteaa;
+begin
+  // Votre méthode qui crée ou ouvre l'onglet/frame
+  MonFrame := OuvrirOnglet<TFrameTableEntvteaa>('Historique des Factures', 'shell32_16741');
 end;
 
 

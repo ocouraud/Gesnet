@@ -576,6 +576,7 @@ begin
   end;
 
   LabelMessage.Caption:='Controles de cohérence...';
+  Application.ProcessMessages; // Force l'interface à se rafraîchir instantanément
 
   // 5. Marquage du verrouillage en cours
   DMGesCloud.FDQueryCtrstock.Edit;
@@ -689,6 +690,8 @@ begin
       while not QryVentesValidees.Eof do
       begin
         LabelMessage.Caption:='Traitement de la facture '+inttostr(QryVentesValidees.FieldByName('codfac').AsInteger);
+        Application.ProcessMessages; // Force l'interface à se rafraîchir instantanément
+
         ANbFactures:=ANbFactures+1;
         ACodFac := QryVentesValidees.FieldByName('codfac').AsInteger;
         ANetHT := QryVentesValidees.FieldByName('totht').AsFloat;
@@ -913,84 +916,28 @@ begin
       QryUpdClient.Free;
     end;
 
-    // 8. Traitement et archivage des règlements isolés (regljj -> reglaa) - (cas improbables)
-    LabelMessage.Caption:='Traitement des règlements isolés...';
-    QryReglements := TFDQuery.Create(nil);
-    QryReglMensuel := TFDQuery.Create(nil);
-    QryVerifFacture := TFDQuery.Create(nil);
-    QryDelRegl := TFDQuery.Create(nil);
+    // 8. Nettoyage des règlements orphelins en une seule requête SQL
+    LabelMessage.Caption := 'Traitement des règlements orphelins...';
+    Application.ProcessMessages; // Force l'interface à se rafraîchir instantanément
+
+    with TFDQuery.Create(nil) do
     try
-      QryReglements.Connection := DMGesCloud.ConnexionGesCloud;
-      QryReglMensuel.Connection := DMGesCloud.ConnexionGesCloud;
-      QryVerifFacture.Connection := DMGesCloud.ConnexionGesCloud;
-      QryDelRegl.Connection := DMGesCloud.ConnexionGesCloud;
+      Connection := DMGesCloud.ConnexionGesCloud;
 
-      QryReglements.SQL.Text := 'SELECT * FROM regljj';
-      QryReglements.Open;
-
-      while not QryReglements.Eof do
-      begin
-        QryVerifFacture.SQL.Text := 'SELECT * FROM entvtejj WHERE codfac = :CodFac';
-        QryVerifFacture.ParamByName('CodFac').AsInteger := QryReglements.FieldByName('codfac').AsInteger;
-        QryVerifFacture.Open;
-        //Regljj orphelin de entvtejj
-        if QryVerifFacture.Eof then
-        begin
-          QryVerifFacture.SQL.Text := 'SELECT * FROM entvteaa WHERE codfac = :CodFac';
-          QryVerifFacture.ParamByName('CodFac').AsInteger := QryReglements.FieldByName('codfac').AsInteger;
-          QryVerifFacture.Open;
-          //Regljj orphelin de entvteaa
-          if QryVerifFacture.Eof then
-          begin
-            QryDelRegl.SQL.Text := 'DELETE FROM regljj WHERE codfac = :CodFac AND Noenr = :Noenr';
-            QryDelRegl.ParamByName('CodFac').AsInteger := QryReglements.FieldByName('codfac').AsInteger;
-            QryDelRegl.ParamByName('Noenr').AsInteger := QryReglements.FieldByName('Noenr').AsInteger;
-            QryDelRegl.ExecSQL;
-
-            QryReglements.Next;
-            Continue;
-          end;
-
-          QryReglMensuel.UpdateOptions.UpdateChangedFields := False;
-          QryReglMensuel.UpdateOptions.RefreshMode := rmManual;
-          QryReglMensuel.SQL.Text := 'SELECT * FROM reglaa WHERE 1=0';
-          QryReglMensuel.Open;
-          QryReglMensuel.Insert;
-
-          QryReglMensuel.FieldByName('codfac').AsInteger := QryReglements.FieldByName('codfac').AsInteger;
-          QryReglMensuel.FieldByName('codcai').AsString := QryReglements.FieldByName('codcai').AsString;
-          QryReglMensuel.FieldByName('codven').AsInteger := QryReglements.FieldByName('codven').AsInteger;
-          QryReglMensuel.FieldByName('date_').AsDateTime := QryReglements.FieldByName('date_').AsDateTime;
-          QryReglMensuel.FieldByName('top_').AsString := 'Z';
-          QryReglMensuel.FieldByName('libelle').AsString := QryReglements.FieldByName('libelle').AsString;
-          QryReglMensuel.FieldByName('montant').AsFloat := QryReglements.FieldByName('montant').AsFloat;
-          QryReglMensuel.FieldByName('date_ech').AsDateTime := QryReglements.FieldByName('date_ech').AsDateTime;
-          QryReglMensuel.FieldByName('codpai').AsString := QryReglements.FieldByName('codpai').AsString;
-          QryReglMensuel.FieldByName('type_').AsString := QryReglements.FieldByName('type_').AsString;
-          QryReglMensuel.FieldByName('select_').AsString := '';
-          QryReglMensuel.FieldByName('date_oper').AsDateTime := DateValid;
-          QryReglMensuel.FieldByName('date_compta').AsString := '';
-
-          QryReglMensuel.Post;
-
-          //Suppression du regljj isolé (cas improbable)
-          QryDelRegl.SQL.Text := 'DELETE FROM regljj WHERE codfac = :CodFac AND Noenr = :Noenr';
-          QryDelRegl.ParamByName('CodFac').AsInteger := QryReglements.FieldByName('codfac').AsInteger;
-          QryDelRegl.ParamByName('Noenr').AsInteger := QryReglements.FieldByName('Noenr').AsInteger;
-          QryDelRegl.ExecSQL;
-        end;
-
-        QryReglements.Next;
-      end;
+      // Suppression directe de tous les règlements orphelins en une seule passe
+      SQL.Text := 'DELETE FROM regljj ' +
+                  'WHERE NOT EXISTS (' +
+                  '  SELECT 1 FROM entvtejj WHERE entvtejj.codfac = regljj.codfac' +
+                  ')';
+      ExecSQL;
     finally
-      QryReglements.Free;
-      QryReglMensuel.Free;
-      QryVerifFacture.Free;
-      QryDelRegl.Free;
+      Free;
     end;
 
     // --- NETTOYAGE DES LIGNES ORPHELINES (ligvtejj) ET REMISE EN STOCK ---
     LabelMessage.Caption:='Traitement des lignes ophelines...';
+    Application.ProcessMessages; // Force l'interface à se rafraîchir instantanément
+
     QryOrphan := TFDQuery.Create(nil);
     QryStock := TFDQuery.Create(nil);
     QryDepot := TFDQuery.Create(nil);
@@ -1074,8 +1021,11 @@ begin
       QryArticle.Free;
     end;
 
+
     // --- CENTRALISATION DE LA TRÉSORERIE ---
     LabelMessage.Caption:='Centralisation de la trésorerie...';
+    Application.ProcessMessages; // Force l'interface à se rafraîchir instantanément
+
     with TFDQuery.Create(nil) do
     try
       Connection := DMGesCloud.ConnexionGesCloud;
@@ -1085,8 +1035,11 @@ begin
       Free;
     end;
 
+
     // --- CENTRALISATION DES SORTIES DE CAISSES ---
     LabelMessage.Caption:='Centralisation de la caisse...';
+    Application.ProcessMessages; // Force l'interface à se rafraîchir instantanément
+
     with TFDQuery.Create(nil) do
     try
       Connection := DMGesCloud.ConnexionGesCloud;
@@ -1096,8 +1049,11 @@ begin
       Free;
     end;
 
+
     // --- RECALCUL DU SOLDE CLIENTS ---
     LabelMessage.Caption:='Calcul du solde des clients...';
+    Application.ProcessMessages; // Force l'interface à se rafraîchir instantanément
+
     var
       QryUpdate: TFDQuery;
     begin
@@ -1118,8 +1074,11 @@ begin
       end;
     end;
 
+
     // --- VALIDATION COMPTAGE DE CAISSE DU JOUR ---
     LabelMessage.Caption:='Validation du comptage de la caisse du jour...';
+    Application.ProcessMessages; // Force l'interface à se rafraîchir instantanément
+
     QryCaisse := TFDQuery.Create(nil);
     try
       QryCaisse.Connection := DMGesCloud.ConnexionGesCloud;
@@ -1137,8 +1096,11 @@ begin
       QryCaisse.Free;
     end;
 
+
     // 10. Clôture du verrouillage et Validation de la transaction (Commit)
     LabelMessage.Caption:='Validation globale de la transaction...';
+    Application.ProcessMessages; // Force l'interface à se rafraîchir instantanément
+
     DMGesCloud.FDQueryCtrstock.Edit;
     DMGesCloud.FDQueryCtrstock.FieldByName('flag_clo').AsInteger := 0;
     DMGesCloud.FDQueryCtrstock.FieldByName('err_sync').AsInteger := 0;
@@ -1165,8 +1127,6 @@ begin
       ShowMessage('Erreur durant la centralisation (Annulation effectuée) : ' + E.Message);
     end;
   end;
-  //close;
-
 end;
 
 end.

@@ -171,7 +171,8 @@ var
 implementation
 
 uses U_FicheTarifClient, U_DataModule, U_DM_Olivier, System.Generics.Collections, System.Generics.Defaults,
-  U_ReportFactureAA, U_ReportDevisAA, U_FicheFacture, U_FicheDevis, U_FormAide, U_SelCodInfoCompl; // <--- C'est cette ligne qui donne l'accès à DMGesCloud !
+  U_ReportFactureAA, U_ReportDevisAA, U_FicheFacture, U_FicheDevis, U_FormAide, U_SelCodInfoCompl,
+  U_ReportFactureMem; // <--- C'est cette ligne qui donne l'accès à DMGesCloud !
 
 {$R *.dfm}
 
@@ -311,44 +312,51 @@ begin
 
 procedure TFormFicheClient.BtnImprimerFactureClick(Sender: TObject);
 var
-  NumFactureSelectionnee: Integer;
+  FormFactureMemPrint: TFormFactureMemPrint;
+  QryEnt, QryLig, QryReg: TFDQuery;
+  ACodFac: Integer;
 begin
-  // 1. On récupère le numéro de la facture sélectionnée dans la grille des factures
-  // (Assurez-vous de cibler le bon champ, ici supposé 'CODFAC')
-  NumFactureSelectionnee := FDQueryEntvteaa.FieldByName('CODFAC').AsInteger;
+  if FDQueryEntvteaa.IsEmpty then Exit;
 
-  if NumFactureSelectionnee = 0 then
-  begin
-    ShowMessage('Veuillez sélectionner une facture dans la liste.');
-    Exit;
-  end;
+  // 1. On récupère le code de la facture actuellement sélectionnée dans la grille
+  ACodFac := FDQueryEntvteaa.FieldByName('CODFAC').AsInteger;
 
-  // 2. On injecte le paramètre et on ouvre les requêtes sur le DataModule
-  DMGesCloud.FDQueryPrintEntvteaa.Close;
-  DMGesCloud.FDQueryPrintEntvteaa.ParamByName('CODFAC').AsInteger := NumFactureSelectionnee;
-  DMGesCloud.FDQueryPrintEntvteaa.Open;
-
-  DMGesCloud.FDQueryLigvteaa.Close;
-  DMGesCloud.FDQueryLigvteaa.ParamByName('CODFAC').AsInteger := NumFactureSelectionnee;
-  DMGesCloud.FDQueryLigvteaa.Open;
-
-  DMGesCloud.FDQueryReglaa.Close;
-  DMGesCloud.FDQueryReglaa.ParamByName('CODFAC').AsInteger := NumFactureSelectionnee;
-  DMGesCloud.FDQueryReglaa.Open;
-
-  DMGesCloud.FDQueryRepres.Close;
-  DMGesCloud.FDQueryRepres.ParamByName('CODREP').AsInteger := FDQueryEntvteaa.FieldByName('CODREP').AsInteger;
-  DMGesCloud.FDQueryRepres.Open;
-
-  // 3. On crée la fiche d'impression, on affiche l'aperçu, puis on libère la mémoire
-  FormFacturePrint := TFormFacturePrint.Create(Self);
+  // 2. On crée des requêtes dédiées et isolées pour l'impression de cette facture
+  QryEnt := TFDQuery.Create(nil);
+  QryLig := TFDQuery.Create(nil);
+  QryReg := TFDQuery.Create(nil);
   try
-    // RLReport1 est le nom de votre composant TRLReport sur FormFacturePrint
-    FormFacturePrint.RLReport1.Preview;
+    QryEnt.Connection := DMGesCloud.ConnexionGesCloud;
+    QryLig.Connection := DMGesCloud.ConnexionGesCloud;
+    QryReg.Connection := DMGesCloud.ConnexionGesCloud;
+
+    // On sélectionne uniquement l'en-tête, les lignes et les règlements de CE code facture
+    QryEnt.SQL.Text := 'SELECT * FROM entvteaa WHERE codfac = :CodFac';
+    QryEnt.ParamByName('CodFac').AsInteger := ACodFac;
+    QryEnt.Open;
+
+    QryLig.SQL.Text := 'SELECT * FROM ligvteaa WHERE codfac = :CodFac';
+    QryLig.ParamByName('CodFac').AsInteger := ACodFac;
+    QryLig.Open;
+
+    QryReg.SQL.Text := 'SELECT * FROM reglaa WHERE codfac = :CodFac';
+    QryReg.ParamByName('CodFac').AsInteger := ACodFac;
+    QryReg.Open;
+
+    // 3. On lance l'impression avec ces données strictement filtrées
+    FormFactureMemPrint := TFormFactureMemPrint.Create(nil);
+    try
+      FormFactureMemPrint.ImprimerFacture(QryEnt, QryLig, QryReg);
+    finally
+      FormFactureMemPrint.Free;
+    end;
+
   finally
-    FormFacturePrint.Free;
+    QryEnt.Free;
+    QryLig.Free;
+    QryReg.Free;
   end;
- end;
+end;
 
 
 //Modifier Tarifcli

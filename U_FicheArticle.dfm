@@ -103,7 +103,7 @@ object FormFicheArticle: TFormFicheArticle
     Top = 104
     Width = 768
     Height = 488
-    ActivePage = TabSheetStock
+    ActivePage = TabSheetLigvteaa
     TabOrder = 5
     object TabSheetGral: TTabSheet
       Caption = 'G'#233'n'#233'ral'
