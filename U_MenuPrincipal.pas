@@ -76,10 +76,11 @@ type
     procedure FichiersArticles(Sender: TObject);
     procedure TravauxRecalculStockClick(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
-    procedure FacturationClick(Sender: TObject);
+    procedure TravauxFacturationClick(Sender: TObject);
     procedure Centralisationdesventes1Click(Sender: TObject);
     procedure TravauxFinJournee(Sender: TObject);
-    procedure CategoryButtonsGralCategories2Items0Click(Sender: TObject);
+    procedure HistoriqueFacturesClick(Sender: TObject);
+    procedure TravauxDevisClick(Sender: TObject);
   private
     function ChercherEtActiverOnglet(const ACaption: string): Boolean;
     function OuvrirOnglet<T: TControl>(const ACaption: string; const AImageName: string = ''; AOnCreate: TProc<T> = nil): T;
@@ -101,7 +102,7 @@ uses
   U_TableRepres, U_TableGeo, U_TableDepots, U_TablePostesAchats, U_TableActivite,
   U_TableSousfam, U_TableDepart, U_TableChrono, U_TableTarif, U_TableInfoscompl,
   U_FicheCtrstock, U_FicheCaisse, U_FormGestionDroits, U_TableArticles, U_TableEntvtejj,
-  U_TableEntvteaa, U_FormCentraVentes;
+  U_TableEntvteaa, U_FormCentraVentes, U_TableDevis;
 
 procedure TFormMenuPrincipal.FormCreate(Sender: TObject);
 begin
@@ -347,7 +348,7 @@ begin
   end;
 end;
 
-procedure TFormMenuPrincipal.FacturationClick(Sender: TObject);
+procedure TFormMenuPrincipal.TravauxFacturationClick(Sender: TObject);
 var
   MonFrame: TFrameTableEntvtejj;
 begin
@@ -367,7 +368,17 @@ begin
 end;
 
 
-procedure TFormMenuPrincipal.CategoryButtonsGralCategories2Items0Click(
+procedure TFormMenuPrincipal.TravauxDevisClick(
+  Sender: TObject);
+var
+  MonFrame: TFrameTableDevis;
+begin
+  // Votre méthode qui crée ou ouvre l'onglet/frame
+  MonFrame := OuvrirOnglet<TFrameTableDevis>('Historique des devis', 'shell32_16741');
+end;
+
+
+procedure TFormMenuPrincipal.HistoriqueFacturesClick(
   Sender: TObject);
 var
   MonFrame: TFrameTableEntvteaa;

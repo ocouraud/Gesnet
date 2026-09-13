@@ -35,6 +35,7 @@ type
     FDQueryLigvtejj: TFDQuery;
     FDQueryReglJJ: TFDQuery;
     FDQueryPrixgeo: TFDQuery;
+    FDQueryLig_prof: TFDQuery;
     procedure FDQueryParameDeviseNewRecord(DataSet: TDataSet);
     procedure UpperCaseSetText(Sender: TField; const Text: string);
     procedure FDQueryDepotNewRecord(DataSet: TDataSet);

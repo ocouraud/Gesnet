@@ -1,0 +1,685 @@
+object FormLig_prof: TFormLig_prof
+  Left = 0
+  Top = 0
+  Caption = 'Ligne de facture'
+  ClientHeight = 334
+  ClientWidth = 845
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -12
+  Font.Name = 'Segoe UI'
+  Font.Style = []
+  KeyPreview = True
+  Position = poMainFormCenter
+  OnCreate = FormCreate
+  OnKeyDown = FormKeyDown
+  OnShow = FormShow
+  TextHeight = 15
+  object Panel1: TPanel
+    Left = 740
+    Top = 0
+    Width = 105
+    Height = 334
+    Align = alRight
+    BevelOuter = bvNone
+    TabOrder = 1
+    StyleElements = [seFont, seBorder]
+    object BtnValider: TBitBtn
+      Left = 0
+      Top = 0
+      Width = 105
+      Height = 28
+      Align = alTop
+      Caption = '&Valider'
+      Default = True
+      TabOrder = 0
+      OnClick = BtnValiderClick
+    end
+    object BtnAnnuler: TBitBtn
+      Left = 0
+      Top = 31
+      Width = 105
+      Height = 32
+      Cancel = True
+      Caption = '&Annuler'
+      ModalResult = 2
+      TabOrder = 1
+      OnClick = BtnAnnulerClick
+    end
+  end
+  object PanelFond: TPanel
+    Left = 0
+    Top = 0
+    Width = 740
+    Height = 334
+    Align = alClient
+    TabOrder = 0
+    object Shape1: TShape
+      Left = 2
+      Top = 148
+      Width = 732
+      Height = 72
+      Brush.Style = bsClear
+    end
+    object Label4: TLabel
+      Left = 133
+      Top = 159
+      Width = 42
+      Height = 15
+      Caption = 'PRIX HT'
+    end
+    object Label5: TLabel
+      Left = 319
+      Top = 159
+      Width = 66
+      Height = 15
+      Caption = 'PRIX NET HT'
+      FocusControl = DBPrixnet
+    end
+    object Label6: TLabel
+      Left = 398
+      Top = 159
+      Width = 46
+      Height = 15
+      Caption = 'PRIX TTC'
+    end
+    object Label7: TLabel
+      Left = 506
+      Top = 159
+      Width = 53
+      Height = 15
+      Caption = 'TOTAL HT.'
+      FocusControl = DBTotht
+    end
+    object Label8: TLabel
+      Left = 621
+      Top = 159
+      Width = 54
+      Height = 15
+      Caption = 'TOTAL TTC'
+      FocusControl = DBMt_ttc
+    end
+    object Label9: TLabel
+      Left = 247
+      Top = 159
+      Width = 52
+      Height = 15
+      Caption = '% REMISE'
+    end
+    object Label14: TLabel
+      Left = 251
+      Top = 288
+      Width = 61
+      Height = 15
+      Caption = 'PX DET ILES'
+      Enabled = False
+      FocusControl = DBDET_ILE
+    end
+    object Label16: TLabel
+      Left = 6
+      Top = 159
+      Width = 29
+      Height = 15
+      Caption = 'TARIF'
+      FocusControl = DBCodtar
+    end
+    object Label2: TLabel
+      Left = 359
+      Top = 8
+      Width = 40
+      Height = 15
+      Caption = 'LIBELLE'
+      FocusControl = DBLibelle
+    end
+    object Label3: TLabel
+      Left = 43
+      Top = 159
+      Width = 55
+      Height = 15
+      Caption = 'QUANTITE'
+    end
+    object Label1: TLabel
+      Left = 8
+      Top = 8
+      Width = 47
+      Height = 15
+      Caption = 'CODBAR'
+      FocusControl = DBCodbar
+    end
+    object Label10: TLabel
+      Left = 251
+      Top = 240
+      Width = 62
+      Height = 15
+      Caption = 'MT. REMISE'
+      Enabled = False
+      FocusControl = DBMt_remise
+    end
+    object Label11: TLabel
+      Left = 158
+      Top = 240
+      Width = 36
+      Height = 15
+      Caption = 'TX TVA'
+      Enabled = False
+      FocusControl = DBTx_tva
+    end
+    object Label12: TLabel
+      Left = 457
+      Top = 240
+      Width = 43
+      Height = 15
+      Caption = 'MT. TVA'
+      Enabled = False
+      FocusControl = DBMt_tva
+    end
+    object Label13: TLabel
+      Left = 252
+      Top = 264
+      Width = 60
+      Height = 15
+      Caption = 'PX DET PPT'
+      Enabled = False
+      FocusControl = DBDET_PPT
+    end
+    object JvDBLookupComboCodbar: TJvDBLookupCombo
+      Left = 115
+      Top = 29
+      Width = 234
+      Height = 22
+      DropDownCount = 25
+      DropDownWidth = 550
+      DataField = 'CODBAR'
+      DataSource = DSLig_prof
+      LookupField = 'codbar'
+      LookupDisplay = 'codbar;libelle;prixvte'
+      LookupDisplayIndex = 1
+      LookupSource = DSCodbar
+      TabOrder = 1
+      OnChange = DBCodbarExit
+      OnEnter = DBCodbarEnter
+      OnExit = DBCodbarExit
+    end
+    object JvDBSpinPrc_remise: TJvDBSpinEdit
+      Left = 249
+      Top = 180
+      Width = 64
+      Height = 25
+      ValueType = vtFloat
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Segoe UI'
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 4
+      OnChange = JvDBSpinPrc_remiseChange
+      OnEnter = JvDBSpinPrc_remiseEnter
+      OnExit = JvDBSpinPrc_remiseExit
+      DataField = 'PRC_REMISE'
+      DataSource = DSLig_prof
+    end
+    object DBPrixht: TJvDBCalcEdit
+      Left = 133
+      Top = 180
+      Width = 106
+      Height = 25
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Segoe UI'
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 3
+      DecimalPlacesAlwaysShown = False
+      OnExit = DBPrixhtExit
+      DataField = 'PRIXHT'
+      DataSource = DSLig_prof
+      EmptyIsNull = False
+    end
+    object DBPrixnet: TDBEdit
+      Left = 319
+      Top = 180
+      Width = 73
+      Height = 25
+      DataField = 'PRIXNET'
+      DataSource = DSLig_prof
+      Enabled = False
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Segoe UI'
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 5
+    end
+    object DBPrixttc: TJvDBCalcEdit
+      Left = 398
+      Top = 180
+      Width = 97
+      Height = 25
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Segoe UI'
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 6
+      DecimalPlacesAlwaysShown = False
+      OnExit = DBPrixttcExit
+      DataField = 'PRIXTTC'
+      DataSource = DSLig_prof
+    end
+    object DBQte: TJvDBCalcEdit
+      Left = 43
+      Top = 180
+      Width = 79
+      Height = 25
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Segoe UI'
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 2
+      DecimalPlacesAlwaysShown = False
+      OnEnter = DBQteEnter
+      OnExit = DBQteExit
+      DataField = 'QTE'
+      DataSource = DSLig_prof
+    end
+    object DBMt_ttc: TDBEdit
+      Left = 621
+      Top = 175
+      Width = 95
+      Height = 29
+      DataField = 'MT_TTC'
+      DataSource = DSLig_prof
+      Enabled = False
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -16
+      Font.Name = 'Segoe UI'
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 7
+    end
+    object DBMt_tva: TDBEdit
+      Left = 506
+      Top = 238
+      Width = 92
+      Height = 23
+      DataField = 'MT_TVA'
+      DataSource = DSLig_prof
+      Enabled = False
+      TabOrder = 8
+    end
+    object DBTotht: TDBEdit
+      Left = 506
+      Top = 180
+      Width = 92
+      Height = 25
+      DataField = 'TOTHT'
+      DataSource = DSLig_prof
+      Enabled = False
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Segoe UI'
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 9
+    end
+    object DBTx_tva: TDBEdit
+      Left = 200
+      Top = 237
+      Width = 35
+      Height = 23
+      DataField = 'TX_TVA'
+      DataSource = DSLig_prof
+      Enabled = False
+      TabOrder = 10
+    end
+    object DBCodbar: TDBEdit
+      Left = 8
+      Top = 29
+      Width = 101
+      Height = 23
+      DataField = 'CODBAR'
+      DataSource = DSLig_prof
+      TabOrder = 0
+      OnEnter = DBCodbarEnter
+      OnExit = DBCodbarExit
+    end
+    object DBDET_PPT: TDBEdit
+      Left = 318
+      Top = 261
+      Width = 74
+      Height = 23
+      DataField = 'DET_PPT'
+      DataSource = DSLig_prof
+      Enabled = False
+      TabOrder = 11
+    end
+    object DBDET_ILE: TDBEdit
+      Left = 318
+      Top = 285
+      Width = 74
+      Height = 23
+      DataField = 'DET_ILE'
+      DataSource = DSLig_prof
+      Enabled = False
+      TabOrder = 12
+    end
+    object DBCodtar: TDBEdit
+      Left = 12
+      Top = 180
+      Width = 19
+      Height = 25
+      DataField = 'CODTAR'
+      DataSource = DSLig_prof
+      Enabled = False
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Segoe UI'
+      Font.Style = [fsBold]
+      ParentFont = False
+      TabOrder = 13
+    end
+    object DBMt_remise: TDBEdit
+      Left = 319
+      Top = 237
+      Width = 73
+      Height = 23
+      DataField = 'MT_REMISE'
+      DataSource = DSLig_prof
+      Enabled = False
+      TabOrder = 14
+    end
+    object DBLibelle: TDBMemo
+      Left = 355
+      Top = 29
+      Width = 357
+      Height = 108
+      DataField = 'LIBELLE'
+      DataSource = DSLig_prof
+      ScrollBars = ssVertical
+      TabOrder = 15
+    end
+  end
+  object DSLig_prof: TDataSource
+    Left = 8
+    Top = 80
+  end
+  object FDQueryCodbar: TFDQuery
+    Connection = DMGesCloud.ConnexionGesCloud
+    SQL.Strings = (
+      'SELECT article.*, codbar.codbar '
+      'FROM article '
+      'JOIN codbar ON codbar.codart = article.codart '
+      'WHERE article.ferme <> 1 OR article.ferme IS NULL '
+      'ORDER BY article.libelle;')
+    Left = 88
+    Top = 256
+    object FDQueryCodbarOBSERV: TMemoField
+      AutoGenerateValue = arDefault
+      FieldName = 'OBSERV'
+      Origin = 'OBSERV'
+      BlobType = ftMemo
+    end
+    object FDQueryCodbarCODART: TStringField
+      FieldName = 'CODART'
+      Origin = 'CODART'
+      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
+      Required = True
+      Size = 13
+    end
+    object FDQueryCodbarFERME: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'FERME'
+      Origin = 'FERME'
+    end
+    object FDQueryCodbarLIBELLE: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'LIBELLE'
+      Origin = 'LIBELLE'
+      Size = 30
+    end
+    object FDQueryCodbarCODFAM: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODFAM'
+      Origin = 'CODFAM'
+      Size = 6
+    end
+    object FDQueryCodbarCODDPT: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODDPT'
+      Origin = 'CODDPT'
+      Size = 1
+    end
+    object FDQueryCodbarCODSSF: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODSSF'
+      Origin = 'CODSSF'
+      Size = 4
+    end
+    object FDQueryCodbarCODFOU: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODFOU'
+      Origin = 'CODFOU'
+      Size = 7
+    end
+    object FDQueryCodbarREF_FOU: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'REF_FOU'
+      Origin = 'REF_FOU'
+    end
+    object FDQueryCodbarCOND: TIntegerField
+      AutoGenerateValue = arDefault
+      FieldName = 'COND'
+      Origin = 'COND'
+    end
+    object FDQueryCodbarQTEMIN: TIntegerField
+      AutoGenerateValue = arDefault
+      FieldName = 'QTEMIN'
+      Origin = 'QTEMIN'
+    end
+    object FDQueryCodbarUNIMIN: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'UNIMIN'
+      Origin = 'UNIMIN'
+    end
+    object FDQueryCodbarPRIXVTE: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'PRIXVTE'
+      Origin = 'PRIXVTE'
+      Precision = 10
+      Size = 2
+    end
+    object FDQueryCodbarPMP: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'PMP'
+      Origin = 'PMP'
+      Precision = 11
+      Size = 2
+    end
+    object FDQueryCodbarPRIXACH: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'PRIXACH'
+      Origin = 'PRIXACH'
+      Precision = 9
+      Size = 2
+    end
+    object FDQueryCodbarCOM_PR: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'COM_PR'
+      Origin = 'COM_PR'
+      Precision = 7
+      Size = 2
+    end
+    object FDQueryCodbarQTE: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'QTE'
+      Origin = 'QTE'
+      Precision = 9
+      Size = 3
+    end
+    object FDQueryCodbarUNIT: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'UNIT'
+      Origin = 'UNIT'
+    end
+    object FDQueryCodbarQTECDE: TIntegerField
+      AutoGenerateValue = arDefault
+      FieldName = 'QTECDE'
+      Origin = 'QTECDE'
+    end
+    object FDQueryCodbarCODEMP: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODEMP'
+      Origin = 'CODEMP'
+    end
+    object FDQueryCodbarVOLUME: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'VOLUME'
+      Origin = 'VOLUME'
+      Precision = 7
+      Size = 2
+    end
+    object FDQueryCodbarUC: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'UC'
+      Origin = 'UC'
+      Size = 10
+    end
+    object FDQueryCodbarQTE_UV_UC: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'QTE_UV_UC'
+      Origin = 'QTE_UV_UC'
+    end
+    object FDQueryCodbarPOIDS: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'POIDS'
+      Origin = 'POIDS'
+      Precision = 7
+      Size = 3
+    end
+    object FDQueryCodbarTVA: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'TVA'
+      Origin = 'TVA'
+      Size = 5
+    end
+    object FDQueryCodbarPREST: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'PREST'
+      Origin = 'PREST'
+    end
+    object FDQueryCodbarG_STO: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'G_STO'
+      Origin = 'G_STO'
+    end
+    object FDQueryCodbarDET_PPT: TIntegerField
+      AutoGenerateValue = arDefault
+      FieldName = 'DET_PPT'
+      Origin = 'DET_PPT'
+    end
+    object FDQueryCodbarCODPRIX: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODPRIX'
+      Origin = 'CODPRIX'
+      Size = 1
+    end
+    object FDQueryCodbarSELECT_: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'SELECT_'
+      Origin = 'SELECT_'
+    end
+    object FDQueryCodbarLOT: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'LOT'
+      Origin = 'LOT'
+    end
+    object FDQueryCodbarGARANTIE: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'GARANTIE'
+      Origin = 'GARANTIE'
+    end
+    object FDQueryCodbarQTE_AUTO: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'QTE_AUTO'
+      Origin = 'QTE_AUTO'
+    end
+    object FDQueryCodbarDER_MODIF: TSQLTimeStampField
+      AutoGenerateValue = arDefault
+      FieldName = 'DER_MODIF'
+      Origin = 'DER_MODIF'
+    end
+    object FDQueryCodbarOBSERV_FAC: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'OBSERV_FAC'
+      Origin = 'OBSERV_FAC'
+    end
+    object FDQueryCodbarIMAGE: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'IMAGE'
+      Origin = 'IMAGE'
+      Size = 128
+    end
+    object FDQueryCodbarCODFAM_WEB: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODFAM_WEB'
+      Origin = 'CODFAM_WEB'
+      Size = 5
+    end
+    object FDQueryCodbarLIBCOURT: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'LIBCOURT'
+      Origin = 'LIBCOURT'
+    end
+    object FDQueryCodbarPXLVHT: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'PXLVHT'
+      Origin = 'PXLVHT'
+      Precision = 11
+      Size = 2
+    end
+    object FDQueryCodbarLIBRE_PPT: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'LIBRE_PPT'
+      Origin = 'LIBRE_PPT'
+    end
+    object FDQueryCodbarTAX_SOC: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'TAX_SOC'
+      Origin = 'TAX_SOC'
+    end
+    object FDQueryCodbarEXCLU_TVA1: TBooleanField
+      AutoGenerateValue = arDefault
+      FieldName = 'EXCLU_TVA1'
+      Origin = 'EXCLU_TVA1'
+    end
+    object FDQueryCodbarcodbar: TStringField
+      AutoGenerateValue = arDefault
+      DisplayWidth = 13
+      FieldName = 'codbar'
+      Origin = 'CODBAR'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 13
+    end
+  end
+  object DSCodbar: TDataSource
+    DataSet = FDQueryCodbar
+    Left = 144
+    Top = 272
+  end
+  object BalloonHint1: TBalloonHint
+    HideAfter = 2000
+    Left = 664
+    Top = 240
+  end
+end

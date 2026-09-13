@@ -261,7 +261,7 @@ implementation
 
 uses U_DataModule, U_DM_Olivier, System.Generics.Collections, System.Generics.Defaults,
   U_ReportFactureAA, U_FicheFacture, U_FormAide, U_SelCodInfoCompl, U_FicheStock,
-  U_FicheStockTransfert, U_FicheDevis, U_ReportDevisAA, BarcodeEAN13, U_ReportFactureMem;
+  U_FicheStockTransfert, U_FicheDevis, U_ReportDevis, BarcodeEAN13, U_ReportFactureMem;
 
 procedure TFormFicheArticle.BtnAideClick(Sender: TObject);
 begin

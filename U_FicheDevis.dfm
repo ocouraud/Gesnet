@@ -3,7 +3,7 @@ object FormFicheDevis: TFormFicheDevis
   Top = 0
   Caption = 'Devis'
   ClientHeight = 545
-  ClientWidth = 762
+  ClientWidth = 884
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -13,7 +13,7 @@ object FormFicheDevis: TFormFicheDevis
   Position = poMainFormCenter
   OnShow = FormShow
   DesignSize = (
-    762
+    884
     545)
   TextHeight = 15
   object Label1: TLabel
@@ -209,7 +209,7 @@ object FormFicheDevis: TFormFicheDevis
   object JvDBGridLig_prof: TJvDBGrid
     Left = 8
     Top = 174
-    Width = 746
+    Width = 868
     Height = 259
     Anchors = [akLeft, akTop, akRight, akBottom]
     DataSource = DSLig_prof
@@ -337,15 +337,16 @@ object FormFicheDevis: TFormFicheDevis
   object Panel1: TPanel
     Left = 0
     Top = 439
-    Width = 762
+    Width = 884
     Height = 106
     Align = alBottom
     TabOrder = 12
+    ExplicitWidth = 762
     DesignSize = (
-      762
+      884
       106)
     object Label13: TLabel
-      Left = 470
+      Left = 592
       Top = 7
       Width = 55
       Height = 15
@@ -357,9 +358,10 @@ object FormFicheDevis: TFormFicheDevis
       Font.Name = 'Segoe UI'
       Font.Style = [fsBold]
       ParentFont = False
+      ExplicitLeft = 470
     end
     object Label12: TLabel
-      Left = 588
+      Left = 710
       Top = 7
       Width = 65
       Height = 15
@@ -371,9 +373,10 @@ object FormFicheDevis: TFormFicheDevis
       Font.Name = 'Segoe UI'
       Font.Style = [fsBold]
       ParentFont = False
+      ExplicitLeft = 588
     end
     object Label14: TLabel
-      Left = 598
+      Left = 720
       Top = 32
       Width = 55
       Height = 15
@@ -385,9 +388,10 @@ object FormFicheDevis: TFormFicheDevis
       Font.Name = 'Segoe UI'
       Font.Style = [fsBold]
       ParentFont = False
+      ExplicitLeft = 598
     end
     object Label16: TLabel
-      Left = 569
+      Left = 691
       Top = 55
       Width = 84
       Height = 15
@@ -399,9 +403,10 @@ object FormFicheDevis: TFormFicheDevis
       Font.Name = 'Segoe UI'
       Font.Style = [fsBold]
       ParentFont = False
+      ExplicitLeft = 569
     end
     object Label15: TLabel
-      Left = 593
+      Left = 715
       Top = 80
       Width = 60
       Height = 15
@@ -413,9 +418,10 @@ object FormFicheDevis: TFormFicheDevis
       Font.Name = 'Segoe UI'
       Font.Style = [fsBold]
       ParentFont = False
+      ExplicitLeft = 593
     end
     object DBEdit13: TDBEdit
-      Left = 535
+      Left = 657
       Top = 4
       Width = 35
       Height = 23
@@ -433,9 +439,10 @@ object FormFicheDevis: TFormFicheDevis
       ParentFont = False
       ReadOnly = True
       TabOrder = 0
+      ExplicitLeft = 535
     end
     object DBEdit12: TDBEdit
-      Left = 659
+      Left = 781
       Top = 4
       Width = 85
       Height = 23
@@ -453,9 +460,10 @@ object FormFicheDevis: TFormFicheDevis
       ParentFont = False
       ReadOnly = True
       TabOrder = 1
+      ExplicitLeft = 659
     end
     object DBEdit14: TDBEdit
-      Left = 659
+      Left = 781
       Top = 28
       Width = 86
       Height = 23
@@ -473,9 +481,10 @@ object FormFicheDevis: TFormFicheDevis
       ParentFont = False
       ReadOnly = True
       TabOrder = 2
+      ExplicitLeft = 659
     end
     object DBEdit16: TDBEdit
-      Left = 659
+      Left = 781
       Top = 52
       Width = 87
       Height = 23
@@ -493,9 +502,10 @@ object FormFicheDevis: TFormFicheDevis
       ParentFont = False
       ReadOnly = True
       TabOrder = 3
+      ExplicitLeft = 659
     end
     object DBEdit15: TDBEdit
-      Left = 659
+      Left = 781
       Top = 76
       Width = 86
       Height = 23
@@ -513,6 +523,7 @@ object FormFicheDevis: TFormFicheDevis
       ParentFont = False
       ReadOnly = True
       TabOrder = 4
+      ExplicitLeft = 659
     end
   end
   object DBEdit22: TDBEdit
@@ -525,30 +536,8 @@ object FormFicheDevis: TFormFicheDevis
     Enabled = False
     TabOrder = 13
   end
-  object RzDBRadioGroupType: TRzDBRadioGroup
-    Left = 631
-    Top = 42
-    Width = 123
-    Height = 84
-    DataField = 'TYPE_'
-    DataSource = DSEnt_prof
-    Items.Strings = (
-      'Facture'
-      'Avoir'
-      'Avoir financier')
-    ReadOnly = True
-    Values.Strings = (
-      'F'
-      'A'
-      'P')
-    Anchors = [akTop, akRight]
-    Caption = 'Nature'
-    Color = 15658734
-    Enabled = False
-    TabOrder = 14
-  end
   object RzDBCheckBox1: TRzDBCheckBox
-    Left = 649
+    Left = 771
     Top = 132
     Width = 87
     Height = 18
@@ -560,10 +549,11 @@ object FormFicheDevis: TFormFicheDevis
     Anchors = [akTop, akRight]
     Caption = 'Exonere TVA'
     Enabled = False
-    TabOrder = 15
+    TabOrder = 14
+    ExplicitLeft = 649
   end
   object BtnAnnuler: TBitBtn
-    Left = 631
+    Left = 753
     Top = 4
     Width = 123
     Height = 32
@@ -571,10 +561,11 @@ object FormFicheDevis: TFormFicheDevis
     Cancel = True
     Caption = '&Fermer'
     ModalResult = 8
-    TabOrder = 16
+    TabOrder = 15
+    ExplicitLeft = 631
   end
   object RzDBCheckBox2: TRzDBCheckBox
-    Left = 649
+    Left = 771
     Top = 150
     Width = 62
     Height = 18
@@ -586,7 +577,8 @@ object FormFicheDevis: TFormFicheDevis
     Anchors = [akTop, akRight]
     Caption = 'TVA Iles'
     Enabled = False
-    TabOrder = 17
+    TabOrder = 16
+    ExplicitLeft = 649
   end
   object DSEnt_prof: TDataSource
     DataSet = DM_Olivier.FDQueryEnt_prof

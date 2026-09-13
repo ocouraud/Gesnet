@@ -48,7 +48,6 @@ type
     DBEdit16: TDBEdit;
     DBEdit15: TDBEdit;
     DBEdit22: TDBEdit;
-    RzDBRadioGroupType: TRzDBRadioGroup;
     RzDBCheckBox1: TRzDBCheckBox;
     BtnAnnuler: TBitBtn;
     DSRepres: TDataSource;
