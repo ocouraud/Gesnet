@@ -189,11 +189,11 @@ object FormLig_prof: TFormLig_prof
       Width = 234
       Height = 22
       DropDownCount = 25
-      DropDownWidth = 550
+      DropDownWidth = 700
       DataField = 'CODBAR'
       DataSource = DSLig_prof
       LookupField = 'codbar'
-      LookupDisplay = 'codbar;libelle;prixvte'
+      LookupDisplay = 'codbar;libelle;prixvte;qte'
       LookupDisplayIndex = 1
       LookupSource = DSCodbar
       TabOrder = 1

@@ -12,19 +12,17 @@ object FrameTableDevis: TFrameTableDevis
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 0
-    object BtnOuvrir: TBitBtn
-      Left = 87
+    object BtnTransformer: TBitBtn
+      Left = 348
       Top = 0
-      Width = 87
+      Width = 141
       Height = 29
       Margins.Left = 6
       Margins.Right = 6
       Align = alLeft
-      Caption = '&Ouvrir'
-      Default = True
+      Caption = '&Transformer en facture'
       TabOrder = 0
-      OnClick = BtnOuvrirClick
-      ExplicitLeft = 186
+      OnClick = BtnTransformerClick
     end
     object BtnFermer: TBitBtn
       Left = 734
@@ -50,13 +48,15 @@ object FrameTableDevis: TFrameTableDevis
       OnClick = BtnAideClick
     end
     object BtnImprimer: TButton
-      Left = 176
+      Left = 489
       Top = 0
       Width = 75
       Height = 29
-      Caption = 'Imprimer'
+      Align = alLeft
+      Caption = '&Imprimer'
       TabOrder = 3
       OnClick = BtnImprimerClick
+      ExplicitLeft = 500
     end
     object BtnAjouter: TBitBtn
       Left = 0
@@ -69,15 +69,54 @@ object FrameTableDevis: TFrameTableDevis
       Caption = '&Ajouter'
       TabOrder = 4
       OnClick = BtnAjouterClick
-      ExplicitLeft = 39
-      ExplicitTop = 6
+    end
+    object BtnSupprimer: TBitBtn
+      Left = 261
+      Top = 0
+      Width = 87
+      Height = 29
+      Margins.Left = 6
+      Margins.Right = 6
+      Align = alLeft
+      Caption = '&Supprimer'
+      TabOrder = 5
+      StyleElements = [seClient, seBorder]
+      OnClick = BtnSupprimerClick
+      ExplicitLeft = 260
+    end
+    object BtnOublier: TBitBtn
+      Left = 174
+      Top = 0
+      Width = 87
+      Height = 29
+      Margins.Left = 6
+      Margins.Right = 6
+      Align = alLeft
+      Caption = 'Ou&blier'
+      TabOrder = 6
+      StyleElements = [seClient, seBorder]
+      OnClick = BtnOublierClick
+      ExplicitLeft = 260
+    end
+    object BtnOuvrir: TBitBtn
+      Left = 87
+      Top = 0
+      Width = 87
+      Height = 29
+      Margins.Left = 6
+      Margins.Right = 6
+      Align = alLeft
+      Caption = '&Ouvrir'
+      Default = True
+      TabOrder = 7
+      OnClick = BtnOuvrirClick
     end
   end
   object JvDBGridEnt_prof: TJvDBGrid
     Left = 0
-    Top = 57
+    Top = 73
     Width = 821
-    Height = 394
+    Height = 378
     Align = alClient
     DataSource = DSEnt_prof
     Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
@@ -101,15 +140,9 @@ object FrameTableDevis: TFrameTableDevis
     Columns = <
       item
         Expanded = False
-        FieldName = 'SEL'
-        Title.Caption = 'Lot'
-        Width = 31
-        Visible = True
-      end
-      item
-        Expanded = False
         FieldName = 'TYPE_'
-        Title.Caption = 'Nature'
+        Title.Caption = 'Etat'
+        Width = 28
         Visible = True
       end
       item
@@ -381,22 +414,22 @@ object FrameTableDevis: TFrameTableDevis
     Left = 0
     Top = 0
     Width = 821
-    Height = 57
+    Height = 73
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 2
-    object EdtCherche_CODFAC: TEdit
-      Left = 85
-      Top = 28
+    object EdtCherche_CODDEV: TEdit
+      Left = 42
+      Top = 46
       Width = 76
       Height = 23
       TabOrder = 0
       TextHint = 'Filtrer par numero'
-      OnChange = EdtCherche_CODFACChange
+      OnChange = EdtCherche_CODDEVChange
     end
     object EdtCherche_NOM: TEdit
-      Left = 368
-      Top = 28
+      Left = 338
+      Top = 46
       Width = 193
       Height = 23
       TabOrder = 1
@@ -404,51 +437,57 @@ object FrameTableDevis: TFrameTableDevis
       OnChange = EdtCherche_NOMChange
     end
     object CheckBoxToutesFactures: TCheckBox
-      Left = 680
-      Top = 0
-      Width = 141
-      Height = 57
-      Align = alRight
-      Caption = 'Tous les devis'
+      Left = 641
+      Top = 10
+      Width = 101
+      Height = 30
+      Caption = 'Tous les postes'
       TabOrder = 2
-      Visible = False
       OnClick = CheckBoxToutesFacturesClick
     end
-    object EditCherche_SEL: TEdit
-      Left = 16
-      Top = 28
-      Width = 34
-      Height = 23
-      TabOrder = 3
-      TextHint = 'Filtrer par lot'
-      OnChange = EditCherche_SELChange
-    end
     object EditCherche_DATE_: TEdit
-      Left = 164
-      Top = 28
+      Left = 123
+      Top = 46
       Width = 61
       Height = 23
-      TabOrder = 4
+      TabOrder = 3
       TextHint = 'Filtrer par date'
-      OnChange = EdtCherche_CODFACChange
+      OnChange = EdtCherche_CODDEVChange
     end
     object EditCherche_CODCLI: TEdit
-      Left = 304
-      Top = 28
+      Left = 272
+      Top = 46
       Width = 65
       Height = 23
-      TabOrder = 5
+      TabOrder = 4
       TextHint = 'Filtrer par no client'
-      OnChange = EdtCherche_CODFACChange
+      OnChange = EdtCherche_CODDEVChange
     end
     object EditCherche_CODCAI: TEdit
-      Left = 680
-      Top = 28
+      Left = 641
+      Top = 46
       Width = 34
       Height = 23
-      TabOrder = 6
+      TabOrder = 5
       TextHint = 'Filtrer par no poste'
-      OnChange = EdtCherche_CODFACChange
+      OnChange = EdtCherche_CODDEVChange
+    end
+    object RadioGroupEtat: TRadioGroup
+      Left = 16
+      Top = 0
+      Width = 441
+      Height = 40
+      Caption = 'Etat'
+      Columns = 3
+      Items.Strings = (
+        'Devis factur'#233's'
+        'Devis non factur'#233's'
+        'Devis oubli'#233's')
+      ParentShowHint = False
+      RadioTabStop = False
+      ShowHint = False
+      TabOrder = 6
+      OnClick = RadioGroupEtatClick
     end
   end
   object FDQueryEnt_prof: TFDQuery
@@ -736,6 +775,13 @@ object FrameTableDevis: TFrameTableDevis
       FieldName = 'HeureLisible'
       Size = 12
       Calculated = True
+    end
+    object FDQueryEnt_profMT_TSOC: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_TSOC'
+      Origin = 'MT_TSOC'
+      Precision = 9
+      Size = 2
     end
   end
   object DSEnt_prof: TDataSource

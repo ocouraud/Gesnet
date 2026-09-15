@@ -479,7 +479,36 @@ begin
 end;
 
 procedure TFormLig_prof.DBQteExit(Sender: TObject);
+var QryStodep: TFDQuery;
 begin
+  //Controle stock
+  QryStodep := nil;
+  QryStodep := TFDQuery.Create(nil);
+  QryStodep.Connection := DMGesCloud.ConnexionGesCloud;
+  QryStodep.SQL.Text := 'SELECT * FROM stodep WHERE CODART = :CODART AND CODDEP = :CODDEP';
+  QryStodep.ParamByName('CODART').AsString := DSlig_prof.DataSet.FieldByName('CODART').AsString;
+  QryStodep.ParamByName('CODDEP').AsInteger := DSlig_prof.DataSet.FieldByName('CODDEP').AsInteger;
+  QryStodep.Open;
+
+  //Si quantite insuffisante
+  if QryStodep.FieldByName('QTE').AsFloat < DBQte.Field.AsFloat then
+  begin
+    //Selon parametrage global
+    if DM_Olivier.gALERT_ASTO='A' then   // On autorise
+      Exit;
+
+    if DM_Olivier.gALERT_ASTO='R' then  // On refuse
+    begin
+      ShowMessage('Quantité en stock dépôt insuffisante');
+      DBQte.SetFocus;
+      exit;
+    end;
+
+    // On demande
+    if MessageDlg('Quantité en stock dépôt insuffisante, forcer l''opération ?', mtConfirmation, [mbYes, mbNo], 0) = mrNo then
+      Exit;
+  end;
+
   CalculLigne;
 end;
 

@@ -159,6 +159,9 @@ begin
   //Ctrl+Entree -> Pour valider la fiche
  if (Msg.CharCode = VK_RETURN) and ((GetKeyState(VK_CONTROL) + $8000) <> 0) then
   begin
+    if FDMemTableEnt_prof.FieldByName('TYPE_').AsString = 'F' then
+      Exit;
+
     BtnValider.Click;
     Msg.Result := 1;
     Exit;
@@ -166,6 +169,9 @@ begin
   // Si le focus est sur la grille et qu'on appuie sur Entrée
   if (ActiveControl = JvDBGridLig_prof) and (Msg.CharCode = VK_RETURN) then
   begin
+    if FDMemTableEnt_prof.FieldByName('TYPE_').AsString = 'F' then
+      Exit;
+
     BtnModifierLigne.Click;
     Msg.Result := 1; // Indique que le message a été traité
     Exit;
@@ -216,6 +222,10 @@ procedure TFormEnt_prof.BtnAjouterLigneClick(Sender: TObject);
 var
   Continuer: Boolean;
 begin
+  // Si le focus est sur la grille et qu'on appuie sur Entrée
+  if FDMemTableEnt_prof.FieldByName('TYPE_').AsString = 'F' then
+      Exit;
+
   repeat
     // Création et affichage de la fiche de saisie
     FormLig_prof := TFormLig_prof.Create(Self);
@@ -263,10 +273,13 @@ begin
   // Si l'utilisateur essaie d'annuler/fermer la fiche
   if ModalResult = mrCancel then
   begin
-    if MessageDlg('⚠ Etes-vous sûr de vouloir annuler les modifications apportées au devis ?',
-      mtConfirmation, [mbYes, mbNo], 0) <> mrYes then
+    if FDMemTableEnt_prof.FieldByName('TYPE_').AsString<>'F' then
     begin
-      CanClose := False; // On bloque la fermeture, l'utilisateur reste dans le formulaire
+      if MessageDlg('⚠ Etes-vous sûr de vouloir annuler les modifications apportées au devis ?',
+        mtConfirmation, [mbYes, mbNo], 0) <> mrYes then
+      begin
+        CanClose := False; // On bloque la fermeture, l'utilisateur reste dans le formulaire
+      end;
     end;
   end;
 end;
@@ -276,6 +289,10 @@ procedure TFormEnt_prof.BtnModifierLigneClick(Sender: TObject);
 begin
   // Vérifie qu'une ligne est bien sélectionnée
   if FDMemTableLig_prof.IsEmpty then Exit;
+
+    // Si le focus est sur la grille et qu'on appuie sur Entrée
+  if FDMemTableEnt_prof.FieldByName('TYPE_').AsString = 'F' then
+      Exit;
 
   FormLig_prof := TFormLig_prof.Create(Self);
   try
@@ -313,6 +330,10 @@ end;
 
 procedure TFormEnt_prof.BtnSupprimerLigneClick(Sender: TObject);
 begin
+  // Si le focus est sur la grille et qu'on appuie sur Entrée
+  if FDMemTableEnt_prof.FieldByName('TYPE_').AsString = 'F' then
+      Exit;
+
   if FDMemTableLig_prof.IsEmpty then
   begin
     ShowMessage('Aucune ligne sélectionnée à supprimer.');
@@ -367,11 +388,6 @@ begin
   if FDMemTableLig_prof.State in [dsEdit, dsInsert] then
     FDMemTableLig_prof.Post;
 
-  FDMemTableEnt_prof.Edit;
-
-  //Mise à jour top facture à F (non suspendue)
-  FDMemTableEnt_prof.Post;
-
   // Création d'une requête temporaire dédiée aux exécutables SQL
   QryExec := TFDQuery.Create(nil);
   QryExec2 := TFDQuery.Create(nil);
@@ -405,7 +421,7 @@ begin
         // Exemple d'INSERT pour l'en-tête (adaptez les noms de champs selon votre table)
         QryExec.close;
         QryExec.SQL.Text := 'INSERT INTO `ent_prof` (' +
-          '`OBSERV`, `CODFAC`, `CODCLI`, `CODCAI`, `CODDEV`, `CODDEP, `NOM`, `NOTAHITI`, ' +
+          '`OBSERV`, `CODFAC`, `CODCLI`, `CODCAI`, `CODDEV`, `CODDEP`, `NOM`, `NOTAHITI`, ' +
           '`TYPE_`, `EXO_TVA`, `ANNEE`, `MOIS`, `DATE_`, `HEURE`, `PRC_REMISE`, `MT_REMISE`, `TOTHT`, `MT_TTC`, ' +
           '`MT_HT0`, `MT_HT1`, `MT_HT2`, `MT_HT3`, `MT_TVA1`, `MT_TVA2`, `MT_TVA3`, `MT_TVA`, `MARGE`, `REFERENCE_`, ' +
           '`CODREP`, `NO_SEM`, `NO_JOUR`, `REGL`, `CODPAI`, `JRSCRD`, `FIN_MOIS`, `LIBREG`, `CRD_FORCE`, `date_ech`, ' +
@@ -420,10 +436,10 @@ begin
 
         // Assignation directe des valeurs depuis la table mémoire
         QryExec.ParamByName('OBSERV').AsString     := FDMemTableEnt_prof.FieldByName('OBSERV').AsString;
-        QryExec.ParamByName('CODFAC').AsInteger    := NumDevis;
+        QryExec.ParamByName('CODDEV').AsInteger    := NumDevis;
         QryExec.ParamByName('CODCLI').AsInteger    := FDMemTableEnt_prof.FieldByName('CODCLI').AsInteger;
         QryExec.ParamByName('CODCAI').AsString     := FDMemTableEnt_prof.FieldByName('CODCAI').AsString;
-        QryExec.ParamByName('CODDEV').AsInteger    := FDMemTableEnt_prof.FieldByName('CODDEV').AsInteger;
+        QryExec.ParamByName('CODFAC').AsInteger    := FDMemTableEnt_prof.FieldByName('CODFAC').AsInteger;
         QryExec.ParamByName('CODDEP').AsInteger    := FDMemTableEnt_prof.FieldByName('CODDEP').AsInteger;
         QryExec.ParamByName('NOM').AsString        := FDMemTableEnt_prof.FieldByName('NOM').AsString;
         QryExec.ParamByName('NOTAHITI').AsString   := FDMemTableEnt_prof.FieldByName('NOTAHITI').AsString;
@@ -694,11 +710,11 @@ begin
 
     // 1. Gestion de l'En-tête
     DM_Olivier.FDQueryEnt_prof.Close;
-    if ModeSaisie = msModification then
-    begin
+//    if ModeSaisie = msModification then
+//    begin
       DM_Olivier.FDQueryEnt_prof.SQL.Text := 'select * from ent_prof where coddev = :CODDEV';
       DM_Olivier.FDQueryEnt_prof.ParamByName('CODDEV').AsInteger := ACoddev;
-    end;
+//    end;
     DM_Olivier.FDQueryEnt_prof.Open;
 
     FDMemTableEnt_prof.Close;
@@ -771,7 +787,26 @@ begin
     FDMemTableEnt_prof.Edit;
 
     if ModeSaisie = msAjout then
-      DBCODCLIExit(self);
+      DBCODCLIExit(self)
+    else
+    begin
+      var i: Integer;
+      if FDMemTableEnt_prof.FieldByName('TYPE_').AsString = 'F' then
+      begin
+//        for i := 0 to ControlCount - 1 do
+//        begin
+//          // On désactive tout SAUF le bouton Annuler qui contient les boutons d'action
+//          //if (Controls[i] <> Panel1) and (Controls[i] <> Panel12) then
+//            Controls[i].Enabled := False;
+//        end;
+
+        BtnAnnuler.Caption := 'Quitter';
+        BtnValider.Enabled := False;
+        BtnAjouterLigne.Enabled := False;
+        BtnSupprimerLigne.Enabled := False;
+        BtnModifierLigne.Enabled := False;
+      end;
+    end;
 
     if DM_Olivier.fgTxTaxe(FDMemTableEnt_prof.FieldByName('DATE_').AsDateTime, 'TVAI') = 0 then
     begin

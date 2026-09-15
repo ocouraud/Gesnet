@@ -210,40 +210,67 @@ begin
 end;
 
 
-procedure TFrameTableEntvtejj.BtnSuspendreClick(Sender: TObject); // ou Sender d'origine
+procedure TFrameTableEntvtejj.BtnSuspendreClick(Sender: TObject);
 var
   QryExec: TFDQuery;
+  NouveauTop: string;
+  CodFacCourant: Integer;
+  TotalRegle, TotalTtc: Currency;
+  TopActuel: string;
 begin
   if FDQueryEntvtejj.IsEmpty then Exit;
 
-  QryExec := nil; // Initialisation indispensable
-  try
-    FDQueryEntvtejj.Edit;
-    if FDQueryEntvtejj.FieldByName('TOP_').AsString = 'F' then
-    begin
-      FDQueryEntvtejj.FieldByName('TOP_').AsString := 'S';
-    end
-    else
-    begin
-      QryExec := TFDQuery.Create(nil);
+  // Récupération des données nécessaires de la ligne courante
+  CodFacCourant := FDQueryEntvtejj.FieldByName('CODFAC').AsInteger;
+  TopActuel     := FDQueryEntvtejj.FieldByName('TOP_').AsString;
+  TotalTtc      := FDQueryEntvtejj.FieldByName('mt_ttc').AsCurrency;
+
+  // Détermination du nouveau statut TOP_
+  if TopActuel = 'F' then
+  begin
+    NouveauTop := 'S';
+  end
+  else
+  begin
+    // Vérification des règlements via une requête dédiée
+    QryExec := TFDQuery.Create(nil);
+    try
       QryExec.Connection := DMGesCloud.ConnexionGesCloud;
-      QryExec.SQL.Text := 'select sum(montant) as totreg from regljj where codfac=:codfac';
-      QryExec.ParamByName('CODFAC').AsInteger := FDQueryEntvtejj.FieldByName('CODFAC').AsInteger;
+      QryExec.SQL.Text := 'SELECT SUM(montant) AS totreg FROM regljj WHERE codfac = :codfac';
+      QryExec.ParamByName('CODFAC').AsInteger := CodFacCourant;
       QryExec.Open;
 
+      TotalRegle := 0;
       if not QryExec.Eof then
-      begin
-        // Utilise de préférence .AsCurrency ou .AsFloat pour comparer des montants
-        if QryExec.FieldByName('totreg').AsCurrency = FDQueryEntvtejj.FieldByName('mt_ttc').AsCurrency then
-          FDQueryEntvtejj.FieldByName('TOP_').AsString := 'F'
-        else
-          ShowMessage('Opération impossible, règlement incomplet.');
-      end;
+        TotalRegle := QryExec.FieldByName('totreg').AsCurrency;
+    finally
+      QryExec.Free;
     end;
-    FDQueryEntvtejj.Post;
+
+    // Comparaison des montants
+    if TotalRegle = TotalTtc then
+      NouveauTop := 'F'
+    else
+    begin
+      ShowMessage('Opération impossible, règlement incomplet.');
+      Exit; // On stoppe net si le règlement ne correspond pas
+    end;
+  end;
+
+  // Exécution de l'UPDATE direct et sécurisé par la clé unique (CODFAC)
+  QryExec := TFDQuery.Create(nil);
+  try
+    QryExec.Connection := DMGesCloud.ConnexionGesCloud;
+    QryExec.SQL.Text := 'UPDATE entvtejj SET TOP_ = :NOUVEAU_TOP WHERE CODFAC = :CODFAC';
+    QryExec.ParamByName('NOUVEAU_TOP').AsString := NouveauTop;
+    QryExec.ParamByName('CODFAC').AsInteger := CodFacCourant;
+    QryExec.ExecSQL;
+
+    // Rafraîchissement propre de la grille
+    FDQueryEntvtejj.Refresh;
     JvDBGridEntvtejj.SetFocus;
   finally
-    QryExec.Free; // S'exécutera proprement dans tous les cas
+    QryExec.Free;
   end;
 end;
 

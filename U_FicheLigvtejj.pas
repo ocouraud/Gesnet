@@ -485,9 +485,38 @@ begin
 end;
 
 procedure TFormLigvtejj.DBQteExit(Sender: TObject);
+var QryStodep: TFDQuery;
 begin
   if (FormEntvtejj.RzDBRadioGroupType.Value <> 'F') and (DbQte.Field.AsFloat>0) then   // Facture ou Avoir
     DbQte.Field.AsFloat := -DbQte.Field.AsFloat;
+
+  //Controle stock
+  QryStodep := nil;
+  QryStodep := TFDQuery.Create(nil);
+  QryStodep.Connection := DMGesCloud.ConnexionGesCloud;
+  QryStodep.SQL.Text := 'SELECT * FROM stodep WHERE CODART = :CODART AND CODDEP = :CODDEP';
+  QryStodep.ParamByName('CODART').AsString := DSLigvtejj.DataSet.FieldByName('CODART').AsString;
+  QryStodep.ParamByName('CODDEP').AsInteger := DSLigvtejj.DataSet.FieldByName('CODDEP').AsInteger;
+  QryStodep.Open;
+
+  //Si quantite insuffisante
+  if QryStodep.FieldByName('QTE').AsFloat < DBQte.Field.AsFloat then
+  begin
+    //Selon parametrage global
+    if DM_Olivier.gALERT_ASTO='A' then   // On autorise
+      Exit;
+
+    if DM_Olivier.gALERT_ASTO='R' then  // On refuse
+    begin
+      ShowMessage('Quantité en stock dépôt insuffisante');
+      DBQte.SetFocus;
+      exit;
+    end;
+
+    // On demande
+    if MessageDlg('Quantité en stock dépôt insuffisante, forcer la vente ?', mtConfirmation, [mbYes, mbNo], 0) = mrNo then
+      Exit;
+  end;
 
   CalculLigne;
 end;

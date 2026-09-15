@@ -107,10 +107,14 @@ begin
 //      end;
 
       DSRegljj.Dataset.Post;
-    end;
+      Self.ModalResult := mrOk;
+    end
+    else
+      Self.ModalResult := mrCancel;
+
 
     // Si le Post a réussi sans exception, on autorise la fermeture
-    Self.ModalResult := mrOk;
+    //Self.ModalResult := mrOk;
   except
     on E: Exception do
     begin
@@ -151,7 +155,7 @@ begin
         DSRegljj.DataSet.Edit;
   end;
   DM_Olivier.FDQueryPaiement.Open;
-  ControleReglement(Sender);
+  //ControleReglement(Sender);
 end;
 
 
@@ -182,6 +186,8 @@ var
   QryClient: TFDQuery;
   wTOTREG: Integer;
   wPlaf_crd: Integer;
+  Values: array of string;
+  MotDePasse: string;
 begin
   // Si l'utilisateur clique sur le bouton Annuler, on ne bloque pas la sortie
   if Screen.ActiveControl = BtnAnnuler then
@@ -227,8 +233,32 @@ begin
         begin
           BalloonHint1.Description := '⚠ Plafond crédit depassé';
           BalloonHint1.ShowHint(JvDBLookupComboPaiement);
-          JvDBLookupComboPaiement.SetFocus;
-          Exit;
+          SetLength(Values, 1);
+          Values[0] := '';
+          // Le '#1' au début du libellé active le masquage de type mot de passe
+          if InputQuery('Contrôle Crédit client', [#1'Mot de passe :'], Values) then
+            begin
+              MotDePasse := Values[0];
+              // Traitement...
+              if MotDePasse<>DM_Olivier.gPass_modif_fac then
+              begin
+                ShowMessage('Erreur mot de passe, Plafond crédit depassé.');
+                JvDBLookupComboPaiement.SetFocus;
+                exit
+              end
+              else
+              begin
+                //Mot de passe correct on accepte la remise
+              end;
+          end
+          else
+          begin
+            // L'utilisateur a cliqué sur ANNULER
+            JvDBLookupComboPaiement.SetFocus;
+            exit;
+          end;
+          //JvDBLookupComboPaiement.SetFocus;
+          //Exit;
         end;
 
         DSRegljj.DataSet.FieldByName('DATE_ECH').AsDateTime := Now;

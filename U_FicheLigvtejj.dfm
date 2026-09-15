@@ -198,11 +198,11 @@ object FormLigvtejj: TFormLigvtejj
       Width = 234
       Height = 22
       DropDownCount = 25
-      DropDownWidth = 550
+      DropDownWidth = 700
       DataField = 'CODBAR'
       DataSource = DSLigvtejj
       LookupField = 'codbar'
-      LookupDisplay = 'codbar;libelle;prixvte'
+      LookupDisplay = 'codbar;libelle;prixvte;qte'
       LookupDisplayIndex = 1
       LookupSource = DSCodbar
       TabOrder = 1

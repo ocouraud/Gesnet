@@ -55,6 +55,7 @@ type
   public
     { Déclarations publiques }
     PMPGlobalMode: Integer; // Variable globale de l'application
+    gALERT_ASTO: string;
     gCodCai: string;
     gCoddep_defaut: Integer;
     gCodcli_defaut: Integer;
@@ -84,6 +85,10 @@ type
     function CalculDateEcheance(const ADate: TDateTime; AJrsCrd,
       AFinMois: Integer): TDateTime;
     function CalculSoldeClient(pCODCLI: Integer): Double;
+    procedure ExecuterInsertionEntVteJJ(ASource: TDataSet; AQryExec: TFDQuery;
+      ACoddev: Integer; ACodfac: Integer);
+    procedure ExecuterInsertionLigVteJJ(ASource: TDataSet; AQryExec: TFDQuery;
+      ACoddev: Integer; ACodfac: Integer; ANoenr: Integer);
    end;
 
 var
@@ -107,6 +112,142 @@ begin
   ChargerParametresTVA;
   ChargerParametresCtrstock;
 end;
+
+
+procedure TDM_Olivier.ExecuterInsertionEntVteJJ(ASource: TDataSet; AQryExec: TFDQuery;
+ ACoddev: Integer; ACodfac: Integer);
+begin
+  AQryExec.SQL.Text :=
+    'INSERT INTO `entvtejj` (' +
+    '`OBSERV`, `CODFAC`, `TOP_`, `CODCLI`, `CODCAI`, `CODDEV`, `CODDEP`, `CODVEN`, `NOM`, `NOTAHITI`, ' +
+    '`TYPE_`, `EXO_TVA`, `ANNEE`, `MOIS`, `DATE_`, `HEURE`, `PRC_REMISE`, `MT_REMISE`, `TOTHT`, `MT_TTC`, ' +
+    '`MT_HT0`, `MT_HT1`, `MT_HT2`, `MT_HT3`, `MT_TVA1`, `MT_TVA2`, `MT_TVA3`, `MT_TVA`, `MARGE`, `REFERENCE_`, ' +
+    '`CODREP`, `NO_SEM`, `NO_JOUR`, `REGL`, `CODPAI`, `JRSCRD`, `FIN_MOIS`, `LIBREG`, `CRD_FORCE`, `date_ech`, ' +
+    '`ACOMPTE`, `CODGEO`, `FLAG_TAX`, `SEL`, `DER_MODIF`, `NOMVEN`, `MT_TSOC`, `MT_HTSOC`, `TX_TSOC`, `EXO_CPS`, ' +
+    '`MT_TVAI`, `MT_HTI`, `TVA_ILES`) VALUES (' +
+    ':OBSERV, :CODFAC, :TOP_, :CODCLI, :CODCAI, :CODDEV, :CODDEP, :CODVEN, :NOM, :NOTAHITI, ' +
+    ':TYPE_, :EXO_TVA, :ANNEE, :MOIS, :DATE_, :HEURE, :PRC_REMISE, :MT_REMISE, :TOTHT, :MT_TTC, ' +
+    ':MT_HT0, :MT_HT1, :MT_HT2, :MT_HT3, :MT_TVA1, :MT_TVA2, :MT_TVA3, :MT_TVA, :MARGE, :REFERENCE_, ' +
+    ':CODREP, :NO_SEM, :NO_JOUR, :REGL, :CODPAI, :JRSCRD, :FIN_MOIS, :LIBREG, :CRD_FORCE, :date_ech, ' +
+    ':ACOMPTE, :CODGEO, :FLAG_TAX, :SEL, CURRENT_TIMESTAMP, :NOMVEN, :MT_TSOC, :MT_HTSOC, :TX_TSOC, :EXO_CPS, ' +
+    ':MT_TVAI, :MT_HTI, :TVA_ILES)';
+
+  // Affectation des paramètres depuis la source
+  AQryExec.ParamByName('OBSERV').AsString      := ASource.FieldByName('OBSERV').AsString;
+  AQryExec.ParamByName('CODFAC').AsInteger     := Acodfac;
+  AQryExec.ParamByName('TOP_').AsString        := 'S';
+  AQryExec.ParamByName('CODCLI').AsInteger     := ASource.FieldByName('CODCLI').AsInteger;
+  AQryExec.ParamByName('CODCAI').AsString      := DM_Olivier.gCodCai;
+  AQryExec.ParamByName('CODDEV').AsInteger     := ACoddev;
+  AQryExec.ParamByName('CODDEP').AsInteger     := ASource.FieldByName('CODDEP').AsInteger;
+  AQryExec.ParamByName('CODVEN').AsInteger     := DMGesCloud.gCodven_defaut;
+  AQryExec.ParamByName('NOM').AsString         := ASource.FieldByName('NOM').AsString;
+  AQryExec.ParamByName('NOTAHITI').AsString    := ASource.FieldByName('NOTAHITI').AsString;
+  AQryExec.ParamByName('TYPE_').AsString       := 'F';
+  AQryExec.ParamByName('EXO_TVA').AsInteger    := ASource.FieldByName('EXO_TVA').AsInteger;
+  AQryExec.ParamByName('ANNEE').AsInteger      := ASource.FieldByName('ANNEE').AsInteger;
+  AQryExec.ParamByName('MOIS').AsInteger       := ASource.FieldByName('MOIS').AsInteger;
+  AQryExec.ParamByName('DATE_').AsDateTime     := ASource.FieldByName('DATE_').AsDateTime;
+  AQryExec.ParamByName('HEURE').AsInteger      := ASource.FieldByName('HEURE').AsInteger;
+  AQryExec.ParamByName('PRC_REMISE').AsFloat   := ASource.FieldByName('PRC_REMISE').AsFloat;
+  AQryExec.ParamByName('MT_REMISE').AsFloat    := ASource.FieldByName('MT_REMISE').AsFloat;
+  AQryExec.ParamByName('TOTHT').AsFloat        := ASource.FieldByName('TOTHT').AsFloat;
+  AQryExec.ParamByName('MT_TTC').AsInteger     := ASource.FieldByName('MT_TTC').AsInteger;
+  AQryExec.ParamByName('MT_HT0').AsFloat       := ASource.FieldByName('MT_HT0').AsFloat;
+  AQryExec.ParamByName('MT_HT1').AsFloat       := ASource.FieldByName('MT_HT1').AsFloat;
+  AQryExec.ParamByName('MT_HT2').AsFloat       := ASource.FieldByName('MT_HT2').AsFloat;
+  AQryExec.ParamByName('MT_HT3').AsFloat       := ASource.FieldByName('MT_HT3').AsFloat;
+  AQryExec.ParamByName('MT_TVA1').AsFloat      := ASource.FieldByName('MT_TVA1').AsFloat;
+  AQryExec.ParamByName('MT_TVA2').AsFloat      := ASource.FieldByName('MT_TVA2').AsFloat;
+  AQryExec.ParamByName('MT_TVA3').AsFloat      := ASource.FieldByName('MT_TVA3').AsFloat;
+  AQryExec.ParamByName('MT_TVA').AsFloat       := ASource.FieldByName('MT_TVA').AsFloat;
+  AQryExec.ParamByName('MARGE').AsFloat        := ASource.FieldByName('MARGE').AsFloat;
+  AQryExec.ParamByName('REFERENCE_').AsString  := ASource.FieldByName('REFERENCE_').AsString;
+  AQryExec.ParamByName('CODREP').AsInteger     := ASource.FieldByName('CODREP').AsInteger;
+  AQryExec.ParamByName('NO_SEM').AsInteger     := ASource.FieldByName('NO_SEM').AsInteger;
+  AQryExec.ParamByName('NO_JOUR').AsInteger    := ASource.FieldByName('NO_JOUR').AsInteger;
+  AQryExec.ParamByName('REGL').AsInteger       := ASource.FieldByName('REGL').AsInteger;
+  AQryExec.ParamByName('CODPAI').AsString      := ASource.FieldByName('CODPAI').AsString;
+  AQryExec.ParamByName('JRSCRD').AsInteger     := ASource.FieldByName('JRSCRD').AsInteger;
+  AQryExec.ParamByName('FIN_MOIS').AsInteger   := ASource.FieldByName('FIN_MOIS').AsInteger;
+  AQryExec.ParamByName('LIBREG').AsString      := ASource.FieldByName('LIBREG').AsString;
+  AQryExec.ParamByName('CRD_FORCE').AsInteger  := ASource.FieldByName('CRD_FORCE').AsInteger;
+  AQryExec.ParamByName('date_ech').AsDateTime  := ASource.FieldByName('date_ech').AsDateTime;
+  AQryExec.ParamByName('ACOMPTE').AsInteger    := 0;
+  AQryExec.ParamByName('CODGEO').AsString      := ASource.FieldByName('CODGEO').AsString;
+  AQryExec.ParamByName('FLAG_TAX').AsInteger   := ASource.FieldByName('FLAG_TAX').AsInteger;
+  AQryExec.ParamByName('SEL').AsInteger        := 0;
+  AQryExec.ParamByName('NOMVEN').AsString      := DMGesCloud.LoggedUser;
+  AQryExec.ParamByName('MT_TSOC').AsFloat      := ASource.FieldByName('MT_TSOC').AsFloat;
+  AQryExec.ParamByName('MT_HTSOC').AsFloat     := ASource.FieldByName('MT_HTSOC').AsFloat;
+  AQryExec.ParamByName('TX_TSOC').AsFloat      := ASource.FieldByName('TX_TSOC').AsFloat;
+  AQryExec.ParamByName('EXO_CPS').AsInteger    := ASource.FieldByName('EXO_CPS').AsInteger;
+  AQryExec.ParamByName('MT_TVAI').AsFloat      := ASource.FieldByName('MT_TVAI').AsFloat;
+  AQryExec.ParamByName('MT_HTI').AsFloat       := ASource.FieldByName('MT_HTI').AsFloat;
+  AQryExec.ParamByName('TVA_ILES').AsBoolean   := ASource.FieldByName('TVA_ILES').AsBoolean;
+
+  // Exécution finale
+  AQryExec.ExecSQL;
+end;
+
+procedure TDM_Olivier.ExecuterInsertionLigVteJJ(ASource: TDataSet; AQryExec: TFDQuery;
+ ACoddev: Integer; ACodfac: Integer; ANoenr: Integer);
+begin
+  AQryExec.SQL.Text :=
+    'INSERT INTO `ligvtejj` (' +
+    '`LIBELLE`, `CODFAC`, `CODCLI`, `CODCAI`, `CODDEV`, `CODDEP`, `NOENR`, `ANNEE`, `MOIS`, `CODREP`, ' +
+    '`CODFOU`, `CODSSF`, `CODFAM`, `CODDPT`, `TYPE_`, `CODART`, `CODBAR`, `QTE`, `POIDS`, `CODTAR`, ' +
+    '`PRIXHT`, `PRIXTTC`, `PRIXNET`, `TOTHT`, `MT_TTC`, `PRC_REMISE`, `MT_REMISE`, `TX_TVA`, `MT_TVA`, `NO_TVA`, ' +
+    '`PRIXREV`, `MARGE`, `NO_SEM`, `NO_JOUR`, `DET_PPT`, `DET_ILE`, `PXLVTTC`, `DER_MODIF`, `TX_TSOC`, `MT_TSOC`) VALUES (' +
+    ':LIBELLE, :CODFAC, :CODCLI, :CODCAI, :CODDEV, :CODDEP, :NOENR, :ANNEE, :MOIS, :CODREP, ' +
+    ':CODFOU, :CODSSF, :CODFAM, :CODDPT, :TYPE_, :CODART, :CODBAR, :QTE, :POIDS, :CODTAR, ' +
+    ':PRIXHT, :PRIXTTC, :PRIXNET, :TOTHT, :MT_TTC, :PRC_REMISE, :MT_REMISE, :TX_TVA, :MT_TVA, :NO_TVA, ' +
+    ':PRIXREV, :MARGE, :NO_SEM, :NO_JOUR, :DET_PPT, :DET_ILE, :PXLVTTC, CURRENT_TIMESTAMP, :TX_TSOC, :MT_TSOC)';
+
+  // Assignation directe des valeurs depuis la source des lignes
+  AQryExec.ParamByName('LIBELLE').AsString     := ASource.FieldByName('LIBELLE').AsString;
+  AQryExec.ParamByName('CODFAC').AsInteger     := ACodfac;
+  AQryExec.ParamByName('CODCLI').AsInteger     := ASource.FieldByName('CODCLI').AsInteger;
+  AQryExec.ParamByName('CODCAI').AsString      := DM_Olivier.gCodCai;
+  AQryExec.ParamByName('CODDEV').AsInteger     := ACoddev;
+  AQryExec.ParamByName('CODDEP').AsInteger     := ASource.FieldByName('CODDEP').AsInteger;
+  AQryExec.ParamByName('NOENR').AsInteger      := ANoenr;
+  AQryExec.ParamByName('ANNEE').AsInteger      := ASource.FieldByName('ANNEE').AsInteger;
+  AQryExec.ParamByName('MOIS').AsInteger       := ASource.FieldByName('MOIS').AsInteger;
+  AQryExec.ParamByName('CODREP').AsInteger     := ASource.FieldByName('CODREP').AsInteger;
+  AQryExec.ParamByName('CODFOU').AsString      := ASource.FieldByName('CODFOU').AsString;
+  AQryExec.ParamByName('CODSSF').AsString      := ASource.FieldByName('CODSSF').AsString;
+  AQryExec.ParamByName('CODFAM').AsString      := ASource.FieldByName('CODFAM').AsString;
+  AQryExec.ParamByName('CODDPT').AsString      := ASource.FieldByName('CODDPT').AsString;
+  AQryExec.ParamByName('TYPE_').AsString       := ASource.FieldByName('TYPE_').AsString;
+  AQryExec.ParamByName('CODART').AsString      := ASource.FieldByName('CODART').AsString;
+  AQryExec.ParamByName('CODBAR').AsString      := ASource.FieldByName('CODBAR').AsString;
+  AQryExec.ParamByName('QTE').AsFloat          := ASource.FieldByName('QTE').AsFloat;
+  AQryExec.ParamByName('POIDS').AsFloat        := ASource.FieldByName('POIDS').AsFloat;
+  AQryExec.ParamByName('CODTAR').AsString      := ASource.FieldByName('CODTAR').AsString;
+  AQryExec.ParamByName('PRIXHT').AsFloat       := ASource.FieldByName('PRIXHT').AsFloat;
+  AQryExec.ParamByName('PRIXTTC').AsInteger    := ASource.FieldByName('PRIXTTC').AsInteger;
+  AQryExec.ParamByName('PRIXNET').AsFloat      := ASource.FieldByName('PRIXNET').AsFloat;
+  AQryExec.ParamByName('TOTHT').AsFloat        := ASource.FieldByName('TOTHT').AsFloat;
+  AQryExec.ParamByName('MT_TTC').AsInteger     := ASource.FieldByName('MT_TTC').AsInteger;
+  AQryExec.ParamByName('PRC_REMISE').AsFloat   := ASource.FieldByName('PRC_REMISE').AsFloat;
+  AQryExec.ParamByName('MT_REMISE').AsFloat    := ASource.FieldByName('MT_REMISE').AsFloat;
+  AQryExec.ParamByName('TX_TVA').AsFloat       := ASource.FieldByName('TX_TVA').AsFloat;
+  AQryExec.ParamByName('MT_TVA').AsFloat       := ASource.FieldByName('MT_TVA').AsFloat;
+  AQryExec.ParamByName('NO_TVA').AsInteger     := ASource.FieldByName('NO_TVA').AsInteger;
+  AQryExec.ParamByName('PRIXREV').AsFloat      := ASource.FieldByName('PRIXREV').AsFloat;
+  AQryExec.ParamByName('MARGE').AsFloat        := ASource.FieldByName('MARGE').AsFloat;
+  AQryExec.ParamByName('NO_SEM').AsInteger     := ASource.FieldByName('NO_SEM').AsInteger;
+  AQryExec.ParamByName('NO_JOUR').AsInteger    := ASource.FieldByName('NO_JOUR').AsInteger;
+  AQryExec.ParamByName('DET_PPT').AsFloat      := ASource.FieldByName('DET_PPT').AsFloat;
+  AQryExec.ParamByName('DET_ILE').AsFloat      := ASource.FieldByName('DET_ILE').AsFloat;
+  AQryExec.ParamByName('PXLVTTC').AsInteger    := 0;
+  AQryExec.ParamByName('TX_TSOC').AsFloat      := ASource.FieldByName('TX_TSOC').AsFloat;;
+  AQryExec.ParamByName('MT_TSOC').AsFloat      := ASource.FieldByName('MT_TSOC').AsFloat;;
+
+  AQryExec.ExecSQL;
+end;
+
 
 function TDM_Olivier.CalculSoldeClient(pCODCLI: Integer): Double;
 var
@@ -643,13 +784,17 @@ begin
   FDQueryParam := TFDQuery.Create(nil);
   try
     FDQueryParam.Connection := DMGesCloud.ConnexionGesCloud; // Votre connexion active
-    FDQueryParam.SQL.Text := 'SELECT PMP_GLO FROM ctrstock';
+    FDQueryParam.SQL.Text := 'SELECT * FROM ctrstock';
     FDQueryParam.Open;
 
+    //Gestion du PMP
     if not FDQueryParam.Eof then
       PMPGlobalMode := FDQueryParam.FieldByName('PMP_GLO').AsInteger
     else
       PMPGlobalMode := 0; // Valeur par défaut si la table est vide
+
+    //Gestion des quantites insuffisantes en facturation
+    gALERT_ASTO := FDQueryParam.FieldByName('ALERT_STO').AsString;
 
     FDQueryParam.Close;
   finally
