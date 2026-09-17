@@ -6,20 +6,19 @@ object FrameTableDevis: TFrameTableDevis
   TabOrder = 0
   object Panel2: TPanel
     Left = 0
-    Top = 451
+    Top = 416
     Width = 821
-    Height = 29
+    Height = 64
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 0
     object BtnTransformer: TBitBtn
-      Left = 348
-      Top = 0
-      Width = 141
+      Left = 90
+      Top = 32
+      Width = 176
       Height = 29
       Margins.Left = 6
       Margins.Right = 6
-      Align = alLeft
       Caption = '&Transformer en facture'
       TabOrder = 0
       OnClick = BtnTransformerClick
@@ -28,7 +27,7 @@ object FrameTableDevis: TFrameTableDevis
       Left = 734
       Top = 0
       Width = 87
-      Height = 29
+      Height = 64
       Margins.Left = 6
       Margins.Right = 6
       Align = alRight
@@ -41,22 +40,20 @@ object FrameTableDevis: TFrameTableDevis
       Left = 647
       Top = 0
       Width = 87
-      Height = 29
+      Height = 64
       Align = alRight
       Caption = 'Aide'
       TabOrder = 2
       OnClick = BtnAideClick
     end
     object BtnImprimer: TButton
-      Left = 489
+      Left = 275
       Top = 0
-      Width = 75
+      Width = 87
       Height = 29
-      Align = alLeft
       Caption = '&Imprimer'
       TabOrder = 3
       OnClick = BtnImprimerClick
-      ExplicitLeft = 500
     end
     object BtnAjouter: TBitBtn
       Left = 0
@@ -65,58 +62,64 @@ object FrameTableDevis: TFrameTableDevis
       Height = 29
       Margins.Left = 6
       Margins.Right = 6
-      Align = alLeft
       Caption = '&Ajouter'
       TabOrder = 4
       OnClick = BtnAjouterClick
     end
     object BtnSupprimer: TBitBtn
-      Left = 261
+      Left = 179
       Top = 0
       Width = 87
       Height = 29
       Margins.Left = 6
       Margins.Right = 6
-      Align = alLeft
       Caption = '&Supprimer'
       TabOrder = 5
       StyleElements = [seClient, seBorder]
       OnClick = BtnSupprimerClick
-      ExplicitLeft = 260
     end
     object BtnOublier: TBitBtn
-      Left = 174
-      Top = 0
+      Left = 0
+      Top = 32
       Width = 87
       Height = 29
       Margins.Left = 6
       Margins.Right = 6
-      Align = alLeft
       Caption = 'Ou&blier'
       TabOrder = 6
       StyleElements = [seClient, seBorder]
       OnClick = BtnOublierClick
-      ExplicitLeft = 260
     end
     object BtnOuvrir: TBitBtn
-      Left = 87
+      Left = 90
       Top = 0
       Width = 87
       Height = 29
       Margins.Left = 6
       Margins.Right = 6
-      Align = alLeft
       Caption = '&Ouvrir'
       Default = True
       TabOrder = 7
       OnClick = BtnOuvrirClick
+    end
+    object BtnDupliquer: TBitBtn
+      Left = 275
+      Top = 32
+      Width = 87
+      Height = 29
+      Margins.Left = 6
+      Margins.Right = 6
+      Caption = '&Dupliquer'
+      TabOrder = 8
+      StyleElements = [seClient, seBorder]
+      OnClick = BtnDupliquerClick
     end
   end
   object JvDBGridEnt_prof: TJvDBGrid
     Left = 0
     Top = 73
     Width = 821
-    Height = 378
+    Height = 343
     Align = alClient
     DataSource = DSEnt_prof
     Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
@@ -160,16 +163,9 @@ object FrameTableDevis: TFrameTableDevis
       end
       item
         Expanded = False
-        FieldName = 'HeureLisible'
-        Title.Caption = 'Heure'
-        Width = 52
-        Visible = True
-      end
-      item
-        Expanded = False
-        FieldName = 'TOP_'
-        Title.Caption = 'Etat'
-        Width = 30
+        FieldName = 'CODFAC'
+        Title.Caption = 'No Facture'
+        Width = 84
         Visible = True
       end
       item
@@ -489,6 +485,15 @@ object FrameTableDevis: TFrameTableDevis
       TabOrder = 6
       OnClick = RadioGroupEtatClick
     end
+    object EdtCherche_CODFAC: TEdit
+      Left = 190
+      Top = 46
+      Width = 76
+      Height = 23
+      TabOrder = 7
+      TextHint = 'Filtrer par numero'
+      OnChange = EdtCherche_CODDEVChange
+    end
   end
   object FDQueryEnt_prof: TFDQuery
     OnCalcFields = FDQueryEnt_profCalcFields
@@ -788,5 +793,1917 @@ object FrameTableDevis: TFrameTableDevis
     DataSet = FDQueryEnt_prof
     Left = 360
     Top = 344
+  end
+  object frxReportDevis: TfrxReport
+    Version = '2024.1.2'
+    DotMatrixReport = False
+    IniFile = '\Software\Fast Reports'
+    PreviewOptions.Buttons = [pbPrint, pbLoad, pbSave, pbExport, pbZoom, pbFind, pbOutline, pbPageSetup, pbTools, pbEdit, pbNavigator, pbExportQuick, pbCopy, pbSelection, pbWatermarks]
+    PreviewOptions.Zoom = 1.000000000000000000
+    PrintOptions.Printer = 'Default'
+    PrintOptions.PrintOnSheet = 0
+    ReportOptions.CreateDate = 46280.575471794000000000
+    ReportOptions.LastChange = 46281.725672847220000000
+    ScriptLanguage = 'PascalScript'
+    ScriptText.Strings = (
+      'begin'
+      ''
+      'end.')
+    OnBeforePrint = frxReportDevisBeforePrint
+    Left = 480
+    Top = 272
+    Datasets = <
+      item
+        DataSet = frxDBDataset1
+        DataSetName = 'frxDBDataset1'
+      end>
+    Variables = <
+      item
+        Name = ' Globales'
+        Value = Null
+      end
+      item
+        Name = 'VarNomEntreprise'
+        Value = ''
+      end
+      item
+        Name = 'VarTelephone'
+        Value = ''
+      end
+      item
+        Name = 'VarAdresse'
+        Value = ''
+      end>
+    Style = <>
+    Watermarks = <>
+    object Data: TfrxDataPage
+      Height = 1000.000000000000000000
+      Width = 1000.000000000000000000
+    end
+    object Page1: TfrxReportPage
+      PaperWidth = 210.000000000000000000
+      PaperHeight = 297.000000000000000000
+      PaperSize = 9
+      LeftMargin = 10.000000000000000000
+      RightMargin = 10.000000000000000000
+      TopMargin = 10.000000000000000000
+      BottomMargin = 10.000000000000000000
+      Frame.Typ = []
+      MirrorMode = []
+      object GroupHeader1: TfrxGroupHeader
+        FillType = ftBrush
+        FillGap.Top = 0
+        FillGap.Left = 0
+        FillGap.Bottom = 0
+        FillGap.Right = 0
+        Frame.Typ = []
+        Height = 245.669450000000000000
+        Top = 18.897650000000000000
+        Width = 718.110700000000000000
+        Condition = 'frxDBDataset1."CODDEV"'
+        ResetPageNumbers = True
+        StartNewPage = True
+        object MemofrxDBDataset1CODDEV: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 359.055350000000000000
+          Top = 3.779530000000000000
+          Width = 94.488250000000000000
+          Height = 18.897650000000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataField = 'CODDEV'
+          DataSet = frxDBDataset1
+          DataSetName = 'frxDBDataset1'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -16
+          Font.Name = 'Arial'
+          Font.Style = [fsBold]
+          Frame.Typ = []
+          Memo.UTF8W = (
+            '[frxDBDataset1."CODDEV"]')
+          ParentFont = False
+        end
+        object MemofrxDBDataset1CODCLI: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 124.724490000000000000
+          Top = 113.385900000000000000
+          Width = 79.370130000000000000
+          Height = 18.897650000000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataField = 'CODCLI'
+          DataSet = frxDBDataset1
+          DataSetName = 'frxDBDataset1'
+          Frame.Typ = []
+          Memo.UTF8W = (
+            '[frxDBDataset1."CODCLI"]')
+        end
+        object MemofrxDBDataset1NOM: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 211.653680000000000000
+          Top = 113.385900000000000000
+          Width = 400.630180000000000000
+          Height = 18.897650000000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataField = 'NOM'
+          DataSet = frxDBDataset1
+          DataSetName = 'frxDBDataset1'
+          Frame.Typ = []
+          Memo.UTF8W = (
+            '[frxDBDataset1."NOM"]')
+        end
+        object MemofrxDBDataset1DATE_: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 619.842920000000000000
+          Top = 154.960730000000000000
+          Width = 79.370130000000000000
+          Height = 18.897650000000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataField = 'DATE_'
+          DataSet = frxDBDataset1
+          DataSetName = 'frxDBDataset1'
+          Frame.Typ = []
+          Memo.UTF8W = (
+            '[frxDBDataset1."DATE_"]')
+        end
+        object MemoVarNomEntreprise: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 3.779530000000000000
+          Top = 3.779530000000000000
+          Width = 336.378170000000000000
+          Height = 18.897650000000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = [fsBold]
+          Frame.Typ = []
+          Memo.UTF8W = (
+            '[VarNomEntreprise]')
+          ParentFont = False
+        end
+        object MemoVarTelephone: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 3.779530000000000000
+          Top = 68.031540000000000000
+          Width = 260.787570000000000000
+          Height = 18.897650000000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Frame.Typ = []
+          Memo.UTF8W = (
+            '[VarTelephone]')
+        end
+        object MemoVarAdresse: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 3.779530000000000000
+          Top = 26.456710000000000000
+          Width = 336.378170000000000000
+          Height = 18.897650000000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Frame.Typ = []
+          Memo.UTF8W = (
+            '[VarAdresse]')
+        end
+        object Memo1: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 3.779530000000000000
+          Top = 113.385900000000000000
+          Width = 79.370130000000000000
+          Height = 18.897650000000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Frame.Typ = []
+          Memo.UTF8W = (
+            '[VarNoTAHITI]')
+        end
+        object LogoEntreprise: TfrxPictureView
+          AllowVectorExport = True
+          Left = 578.268066410000000000
+          Top = 11.338590390000000000
+          Width = 94.488281250000000000
+          Height = 94.488247860000000000
+          Center = True
+          Frame.Typ = []
+          HightQuality = False
+          Transparent = False
+          TransparentColor = clWhite
+        end
+        object VarEMAIL: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 3.779530000000000000
+          Top = 45.354360000000000000
+          Width = 336.378170000000000000
+          Height = 18.897650000000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Frame.Typ = []
+          Memo.UTF8W = (
+            '[VarEMAIL]')
+        end
+        object VarFAX: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 3.779530000000000000
+          Top = 90.708720000000000000
+          Width = 260.787570000000000000
+          Height = 18.897650000000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Frame.Typ = []
+          Memo.UTF8W = (
+            '[VarFAX]')
+        end
+      end
+      object MasterData1: TfrxMasterData
+        FillType = ftBrush
+        FillGap.Top = 0
+        FillGap.Left = 0
+        FillGap.Bottom = 0
+        FillGap.Right = 0
+        Frame.Typ = []
+        Height = 19.653543307086610000
+        Top = 287.244280000000000000
+        Width = 718.110700000000000000
+        DataSet = frxDBDataset1
+        DataSetName = 'frxDBDataset1'
+        RowCount = 0
+        object MemofrxDBDataset1CODART: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 3.779530000000000000
+          Width = 83.149660000000000000
+          Height = 18.897637795275590000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataField = 'CODART'
+          DataSet = frxDBDataset1
+          DataSetName = 'frxDBDataset1'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftBottom]
+          Memo.UTF8W = (
+            '[frxDBDataset1."CODART"]')
+          ParentFont = False
+        end
+        object MemofrxDBDataset1LIBELLE: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 86.929190000000000000
+          Width = 260.787570000000000000
+          Height = 18.897650000000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataField = 'LIBELLE'
+          DataSet = frxDBDataset1
+          DataSetName = 'frxDBDataset1'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftBottom]
+          Memo.UTF8W = (
+            '[frxDBDataset1."LIBELLE"]')
+          ParentFont = False
+        end
+        object MemofrxDBDataset1QTE: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 347.716760000000000000
+          Width = 83.149660000000000000
+          Height = 18.897650000000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataField = 'QTE'
+          DataSet = frxDBDataset1
+          DataSetName = 'frxDBDataset1'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftBottom]
+          Memo.UTF8W = (
+            '[frxDBDataset1."QTE"]')
+          ParentFont = False
+        end
+        object MemofrxDBDataset1PRIXHT: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 430.866420000000000000
+          Width = 79.370130000000000000
+          Height = 18.897650000000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataField = 'PRIXHT'
+          DataSet = frxDBDataset1
+          DataSetName = 'frxDBDataset1'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftBottom]
+          Memo.UTF8W = (
+            '[frxDBDataset1."PRIXHT"]')
+          ParentFont = False
+        end
+        object MemofrxDBDataset1PRC_REMISE_2: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 517.795610000000000000
+          Width = 45.354360000000000000
+          Height = 18.897650000000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataField = 'PRC_REMISE_2'
+          DataSet = frxDBDataset1
+          DataSetName = 'frxDBDataset1'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftBottom]
+          Memo.UTF8W = (
+            '[frxDBDataset1."PRC_REMISE_2"]')
+          ParentFont = False
+        end
+        object MemofrxDBDataset1PRIXNET: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 566.929500000000000000
+          Width = 79.370130000000000000
+          Height = 18.897650000000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataField = 'PRIXNET'
+          DataSet = frxDBDataset1
+          DataSetName = 'frxDBDataset1'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftBottom]
+          Memo.UTF8W = (
+            '[frxDBDataset1."PRIXNET"]')
+          ParentFont = False
+        end
+        object MemofrxDBDataset1TOTHT_1: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 650.079160000000000000
+          Width = 64.252010000000000000
+          Height = 18.897650000000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataField = 'TOTHT_1'
+          DataSet = frxDBDataset1
+          DataSetName = 'frxDBDataset1'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftRight, ftBottom]
+          Memo.UTF8W = (
+            '[frxDBDataset1."TOTHT_1"]')
+          ParentFont = False
+        end
+      end
+      object PageFooter1: TfrxPageFooter
+        FillType = ftBrush
+        FillGap.Top = 0
+        FillGap.Left = 0
+        FillGap.Bottom = 0
+        FillGap.Right = 0
+        Frame.Typ = []
+        Height = 105.826840000000000000
+        Top = 366.614410000000000000
+        Width = 718.110700000000000000
+        PrintOnFirstPage = False
+        PrintOnSinglePage = True
+        object VarMEMO_DEV: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 3.779530000000000000
+          Top = 7.559060000000000000
+          Width = 374.173470000000000000
+          Height = 18.897650000000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Frame.Typ = []
+          Memo.UTF8W = (
+            '[VarMEMO_DEV]')
+        end
+      end
+    end
+  end
+  object frxDBDataset1: TfrxDBDataset
+    UserName = 'frxDBDataset1'
+    CloseDataSource = False
+    DataSet = FDQueryDevis
+    BCDToCurrency = False
+    DataSetOptions = []
+    Left = 568
+    Top = 288
+    FieldDefs = <
+      item
+        FieldName = 'OBSERV'
+        FieldType = fftString
+        Size = 1000
+      end
+      item
+        FieldName = 'TYPE_'
+        FieldType = fftString
+      end
+      item
+        FieldName = 'CODDEV'
+      end
+      item
+        FieldName = 'CODCLI'
+      end
+      item
+        FieldName = 'CODFAC'
+      end
+      item
+        FieldName = 'CODCAI'
+        FieldType = fftString
+      end
+      item
+        FieldName = 'CODDEP'
+      end
+      item
+        FieldName = 'NOM'
+        FieldType = fftString
+        Size = 50
+      end
+      item
+        FieldName = 'NOTAHITI'
+        FieldType = fftString
+      end
+      item
+        FieldName = 'EXO_TVA'
+      end
+      item
+        FieldName = 'ANNEE'
+      end
+      item
+        FieldName = 'MOIS'
+      end
+      item
+        FieldName = 'DATE_'
+        FieldType = fftDateTime
+      end
+      item
+        FieldName = 'HEURE'
+      end
+      item
+        FieldName = 'MT_REMISE'
+      end
+      item
+        FieldName = 'PRC_REMISE'
+      end
+      item
+        FieldName = 'TOTHT'
+      end
+      item
+        FieldName = 'MT_TTC'
+      end
+      item
+        FieldName = 'MT_HT0'
+      end
+      item
+        FieldName = 'MT_HT1'
+      end
+      item
+        FieldName = 'MT_HT2'
+      end
+      item
+        FieldName = 'MT_HT3'
+      end
+      item
+        FieldName = 'MT_TVA1'
+      end
+      item
+        FieldName = 'MT_TVA2'
+      end
+      item
+        FieldName = 'MT_TVA3'
+      end
+      item
+        FieldName = 'MT_TVA'
+      end
+      item
+        FieldName = 'MARGE'
+      end
+      item
+        FieldName = 'REFERENCE_'
+        FieldType = fftString
+        Size = 15
+      end
+      item
+        FieldName = 'CODREP'
+      end
+      item
+        FieldName = 'NO_SEM'
+      end
+      item
+        FieldName = 'NO_JOUR'
+      end
+      item
+        FieldName = 'CODPAI'
+        FieldType = fftString
+      end
+      item
+        FieldName = 'JRSCRD'
+      end
+      item
+        FieldName = 'FIN_MOIS'
+      end
+      item
+        FieldName = 'LIBREG'
+        FieldType = fftString
+        Size = 50
+      end
+      item
+        FieldName = 'CRD_FORCE'
+      end
+      item
+        FieldName = 'DATE_ECH'
+        FieldType = fftDateTime
+      end
+      item
+        FieldName = 'REGL'
+      end
+      item
+        FieldName = 'CODGEO'
+        FieldType = fftString
+      end
+      item
+        FieldName = 'FLAG_TAX'
+      end
+      item
+        FieldName = 'DER_MODIF'
+      end
+      item
+        FieldName = 'MT_TSOC'
+      end
+      item
+        FieldName = 'MT_HTSOC'
+      end
+      item
+        FieldName = 'TX_TSOC'
+      end
+      item
+        FieldName = 'EXO_CPS'
+      end
+      item
+        FieldName = 'MT_TVAI'
+      end
+      item
+        FieldName = 'MT_HTI'
+      end
+      item
+        FieldName = 'TVA_ILES'
+        FieldType = fftBoolean
+      end
+      item
+        FieldName = 'OBSERV_1'
+        FieldType = fftString
+      end
+      item
+        FieldName = 'CODCLI_1'
+      end
+      item
+        FieldName = 'CPTAUX'
+        FieldType = fftString
+        Size = 13
+      end
+      item
+        FieldName = 'NOM_1'
+        FieldType = fftString
+        Size = 50
+      end
+      item
+        FieldName = 'CODREP_1'
+      end
+      item
+        FieldName = 'PRC_REMISE_1'
+      end
+      item
+        FieldName = 'NOTEL'
+        FieldType = fftString
+        Size = 15
+      end
+      item
+        FieldName = 'NOTAHITI_1'
+        FieldType = fftString
+      end
+      item
+        FieldName = 'NOFAX'
+        FieldType = fftString
+        Size = 15
+      end
+      item
+        FieldName = 'JRSCRD_1'
+      end
+      item
+        FieldName = 'CREDIT'
+      end
+      item
+        FieldName = 'plaf_crd'
+      end
+      item
+        FieldName = 'CODPAI_1'
+        FieldType = fftString
+      end
+      item
+        FieldName = 'FIN_MOIS_1'
+      end
+      item
+        FieldName = 'NB_EX'
+      end
+      item
+        FieldName = 'CAAN'
+      end
+      item
+        FieldName = 'AD1'
+        FieldType = fftString
+        Size = 30
+      end
+      item
+        FieldName = 'AD2'
+        FieldType = fftString
+        Size = 30
+      end
+      item
+        FieldName = 'AD3'
+        FieldType = fftString
+        Size = 30
+      end
+      item
+        FieldName = 'CUM_MVT'
+      end
+      item
+        FieldName = 'MT_CPTA'
+      end
+      item
+        FieldName = 'EXO_TVA_1'
+      end
+      item
+        FieldName = 'BLOQUE'
+      end
+      item
+        FieldName = 'CODGEO_1'
+        FieldType = fftString
+        Size = 20
+      end
+      item
+        FieldName = 'EMAIL'
+        FieldType = fftString
+        Size = 50
+      end
+      item
+        FieldName = 'CODTAR'
+        FieldType = fftString
+      end
+      item
+        FieldName = 'ADM'
+      end
+      item
+        FieldName = 'FLAG_TAX_1'
+      end
+      item
+        FieldName = 'CODFAC_ADM'
+        FieldType = fftString
+        Size = 20
+      end
+      item
+        FieldName = 'FERME'
+      end
+      item
+        FieldName = 'DER_MODIF_1'
+      end
+      item
+        FieldName = 'SPEC_GOUV'
+      end
+      item
+        FieldName = 'NOGSM'
+      end
+      item
+        FieldName = 'PLV'
+      end
+      item
+        FieldName = 'INTIT_BQ'
+        FieldType = fftString
+        Size = 30
+      end
+      item
+        FieldName = 'CODE_BQ'
+        FieldType = fftString
+      end
+      item
+        FieldName = 'CODE_GUI'
+        FieldType = fftString
+      end
+      item
+        FieldName = 'NOCPT'
+        FieldType = fftString
+        Size = 11
+      end
+      item
+        FieldName = 'CLE'
+        FieldType = fftString
+      end
+      item
+        FieldName = 'COEF_MAJ_PR'
+      end
+      item
+        FieldName = 'EXO_CPS_1'
+      end
+      item
+        FieldName = 'PAS_REM'
+      end
+      item
+        FieldName = 'REM_FAM'
+      end
+      item
+        FieldName = 'RELEVE_EMAIL'
+        FieldType = fftBoolean
+      end
+      item
+        FieldName = 'SELECT_'
+        FieldType = fftBoolean
+      end
+      item
+        FieldName = 'APP_TARIFCLI'
+        FieldType = fftBoolean
+      end
+      item
+        FieldName = 'TVA_ILES_1'
+        FieldType = fftBoolean
+      end
+      item
+        FieldName = 'LIBELLE'
+        FieldType = fftString
+      end
+      item
+        FieldName = 'CODFAC_1'
+      end
+      item
+        FieldName = 'CODCLI_2'
+      end
+      item
+        FieldName = 'CODCAI_1'
+        FieldType = fftString
+      end
+      item
+        FieldName = 'CODDEV_1'
+      end
+      item
+        FieldName = 'CODDEP_1'
+      end
+      item
+        FieldName = 'NOENR'
+      end
+      item
+        FieldName = 'ANNEE_1'
+      end
+      item
+        FieldName = 'MOIS_1'
+      end
+      item
+        FieldName = 'CODREP_2'
+      end
+      item
+        FieldName = 'CODFOU'
+        FieldType = fftString
+      end
+      item
+        FieldName = 'CODSSF'
+        FieldType = fftString
+      end
+      item
+        FieldName = 'CODFAM'
+        FieldType = fftString
+      end
+      item
+        FieldName = 'CODDPT'
+        FieldType = fftString
+      end
+      item
+        FieldName = 'TYPE__1'
+        FieldType = fftString
+      end
+      item
+        FieldName = 'CODART'
+        FieldType = fftString
+        Size = 13
+      end
+      item
+        FieldName = 'CODBAR'
+        FieldType = fftString
+        Size = 13
+      end
+      item
+        FieldName = 'QTE'
+      end
+      item
+        FieldName = 'POIDS'
+      end
+      item
+        FieldName = 'CODTAR_1'
+        FieldType = fftString
+      end
+      item
+        FieldName = 'PRIXHT'
+      end
+      item
+        FieldName = 'PRIXTTC'
+      end
+      item
+        FieldName = 'PRIXNET'
+      end
+      item
+        FieldName = 'TOTHT_1'
+      end
+      item
+        FieldName = 'MT_TTC_1'
+      end
+      item
+        FieldName = 'PRC_REMISE_2'
+      end
+      item
+        FieldName = 'MT_REMISE_1'
+      end
+      item
+        FieldName = 'TX_TVA'
+      end
+      item
+        FieldName = 'MT_TVA_1'
+      end
+      item
+        FieldName = 'NO_TVA'
+      end
+      item
+        FieldName = 'PRIXREV'
+      end
+      item
+        FieldName = 'MARGE_1'
+      end
+      item
+        FieldName = 'NO_SEM_1'
+      end
+      item
+        FieldName = 'NO_JOUR_1'
+      end
+      item
+        FieldName = 'DET_PPT'
+      end
+      item
+        FieldName = 'DET_ILE'
+      end
+      item
+        FieldName = 'NOENRF'
+      end
+      item
+        FieldName = 'DER_MODIF_2'
+      end
+      item
+        FieldName = 'IMP_CODE'
+      end
+      item
+        FieldName = 'TX_TSOC_1'
+      end
+      item
+        FieldName = 'MT_TSOC_1'
+      end>
+  end
+  object FDQueryDevis: TFDQuery
+    MasterSource = DSEnt_prof
+    MasterFields = 'CODDEV'
+    Connection = DMGesCloud.ConnexionGesCloud
+    SQL.Strings = (
+      'SELECT '
+      '  -- Donn'#233'es de l'#39'en-t'#234'te (vont se r'#233'p'#233'ter sur chaque ligne SQL)'
+      '*'
+      'FROM ent_prof e'
+      'JOIN Client c ON e.CODCLI = c.CODCLI'
+      'JOIN lig_prof l ON e.CODDEV = l.CODDEV'
+      'WHERE e.CODDEV = :CODDEV'
+      
+        'ORDER BY e.CODDEV ASC, l.NOENRF ASC -- Le tri obligatoire pour l' +
+        'a rupture'
+      '')
+    Left = 168
+    Top = 128
+    ParamData = <
+      item
+        Name = 'CODDEV'
+        ParamType = ptInput
+      end>
+    object FDQueryDevisOBSERV: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'OBSERV'
+      Origin = 'OBSERV'
+      Size = 1000
+    end
+    object FDQueryDevisTYPE_: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'TYPE_'
+      Origin = 'TYPE_'
+      Size = 1
+    end
+    object FDQueryDevisCODDEV: TLargeintField
+      FieldName = 'CODDEV'
+      Origin = 'CODDEV'
+      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
+      Required = True
+    end
+    object FDQueryDevisCODCLI: TIntegerField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODCLI'
+      Origin = 'CODCLI'
+    end
+    object FDQueryDevisCODFAC: TLargeintField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODFAC'
+      Origin = 'CODFAC'
+    end
+    object FDQueryDevisCODCAI: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODCAI'
+      Origin = 'CODCAI'
+      Size = 2
+    end
+    object FDQueryDevisCODDEP: TShortintField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODDEP'
+      Origin = 'CODDEP'
+    end
+    object FDQueryDevisNOM: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'NOM'
+      Origin = 'NOM'
+      Size = 50
+    end
+    object FDQueryDevisNOTAHITI: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'NOTAHITI'
+      Origin = 'NOTAHITI'
+      Size = 10
+    end
+    object FDQueryDevisEXO_TVA: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'EXO_TVA'
+      Origin = 'EXO_TVA'
+    end
+    object FDQueryDevisANNEE: TIntegerField
+      AutoGenerateValue = arDefault
+      FieldName = 'ANNEE'
+      Origin = 'ANNEE'
+    end
+    object FDQueryDevisMOIS: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'MOIS'
+      Origin = 'MOIS'
+    end
+    object FDQueryDevisDATE_: TDateField
+      AutoGenerateValue = arDefault
+      FieldName = 'DATE_'
+      Origin = 'DATE_'
+    end
+    object FDQueryDevisHEURE: TIntegerField
+      AutoGenerateValue = arDefault
+      FieldName = 'HEURE'
+      Origin = 'HEURE'
+    end
+    object FDQueryDevisMT_REMISE: TIntegerField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_REMISE'
+      Origin = 'MT_REMISE'
+    end
+    object FDQueryDevisPRC_REMISE: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'PRC_REMISE'
+      Origin = 'PRC_REMISE'
+      Precision = 5
+      Size = 2
+    end
+    object FDQueryDevisTOTHT: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'TOTHT'
+      Origin = 'TOTHT'
+      Precision = 11
+      Size = 2
+    end
+    object FDQueryDevisMT_TTC: TLargeintField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_TTC'
+      Origin = 'MT_TTC'
+    end
+    object FDQueryDevisMT_HT0: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_HT0'
+      Origin = 'MT_HT0'
+      Precision = 11
+      Size = 2
+    end
+    object FDQueryDevisMT_HT1: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_HT1'
+      Origin = 'MT_HT1'
+      Precision = 11
+      Size = 2
+    end
+    object FDQueryDevisMT_HT2: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_HT2'
+      Origin = 'MT_HT2'
+      Precision = 11
+      Size = 2
+    end
+    object FDQueryDevisMT_HT3: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_HT3'
+      Origin = 'MT_HT3'
+      Precision = 11
+      Size = 2
+    end
+    object FDQueryDevisMT_TVA1: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_TVA1'
+      Origin = 'MT_TVA1'
+      Precision = 9
+      Size = 2
+    end
+    object FDQueryDevisMT_TVA2: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_TVA2'
+      Origin = 'MT_TVA2'
+      Precision = 9
+      Size = 2
+    end
+    object FDQueryDevisMT_TVA3: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_TVA3'
+      Origin = 'MT_TVA3'
+      Precision = 9
+      Size = 2
+    end
+    object FDQueryDevisMT_TVA: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_TVA'
+      Origin = 'MT_TVA'
+      Precision = 9
+      Size = 2
+    end
+    object FDQueryDevisMARGE: TLargeintField
+      AutoGenerateValue = arDefault
+      FieldName = 'MARGE'
+      Origin = 'MARGE'
+    end
+    object FDQueryDevisREFERENCE_: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'REFERENCE_'
+      Origin = 'REFERENCE_'
+      Size = 15
+    end
+    object FDQueryDevisCODREP: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODREP'
+      Origin = 'CODREP'
+    end
+    object FDQueryDevisNO_SEM: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'NO_SEM'
+      Origin = 'NO_SEM'
+    end
+    object FDQueryDevisNO_JOUR: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'NO_JOUR'
+      Origin = 'NO_JOUR'
+    end
+    object FDQueryDevisCODPAI: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODPAI'
+      Origin = 'CODPAI'
+      Size = 5
+    end
+    object FDQueryDevisJRSCRD: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'JRSCRD'
+      Origin = 'JRSCRD'
+    end
+    object FDQueryDevisFIN_MOIS: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'FIN_MOIS'
+      Origin = 'FIN_MOIS'
+    end
+    object FDQueryDevisLIBREG: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'LIBREG'
+      Origin = 'LIBREG'
+      Size = 50
+    end
+    object FDQueryDevisCRD_FORCE: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'CRD_FORCE'
+      Origin = 'CRD_FORCE'
+    end
+    object FDQueryDevisDATE_ECH: TDateField
+      AutoGenerateValue = arDefault
+      FieldName = 'DATE_ECH'
+      Origin = 'DATE_ECH'
+    end
+    object FDQueryDevisREGL: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'REGL'
+      Origin = 'REGL'
+    end
+    object FDQueryDevisCODGEO: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODGEO'
+      Origin = 'CODGEO'
+      Size = 1
+    end
+    object FDQueryDevisFLAG_TAX: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'FLAG_TAX'
+      Origin = 'FLAG_TAX'
+    end
+    object FDQueryDevisDER_MODIF: TSQLTimeStampField
+      AutoGenerateValue = arDefault
+      FieldName = 'DER_MODIF'
+      Origin = 'DER_MODIF'
+    end
+    object FDQueryDevisMT_TSOC: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_TSOC'
+      Origin = 'MT_TSOC'
+      Precision = 9
+      Size = 2
+    end
+    object FDQueryDevisMT_HTSOC: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_HTSOC'
+      Origin = 'MT_HTSOC'
+      Precision = 11
+      Size = 2
+    end
+    object FDQueryDevisTX_TSOC: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'TX_TSOC'
+      Origin = 'TX_TSOC'
+      Precision = 5
+      Size = 2
+    end
+    object FDQueryDevisEXO_CPS: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'EXO_CPS'
+      Origin = 'EXO_CPS'
+    end
+    object FDQueryDevisMT_TVAI: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_TVAI'
+      Origin = 'MT_TVAI'
+      Precision = 9
+      Size = 2
+    end
+    object FDQueryDevisMT_HTI: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_HTI'
+      Origin = 'MT_HTI'
+      Precision = 11
+      Size = 2
+    end
+    object FDQueryDevisTVA_ILES: TBooleanField
+      AutoGenerateValue = arDefault
+      FieldName = 'TVA_ILES'
+      Origin = 'TVA_ILES'
+    end
+    object FDQueryDevisOBSERV_1: TMemoField
+      AutoGenerateValue = arDefault
+      FieldName = 'OBSERV_1'
+      Origin = 'OBSERV'
+      ProviderFlags = []
+      ReadOnly = True
+      BlobType = ftMemo
+    end
+    object FDQueryDevisCODCLI_1: TIntegerField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODCLI_1'
+      Origin = 'CODCLI'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisCPTAUX: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CPTAUX'
+      Origin = 'CPTAUX'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 13
+    end
+    object FDQueryDevisNOM_1: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'NOM_1'
+      Origin = 'NOM'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 50
+    end
+    object FDQueryDevisCODREP_1: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODREP_1'
+      Origin = 'CODREP'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisPRC_REMISE_1: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'PRC_REMISE_1'
+      Origin = 'PRC_REMISE'
+      ProviderFlags = []
+      ReadOnly = True
+      Precision = 5
+      Size = 2
+    end
+    object FDQueryDevisNOTEL: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'NOTEL'
+      Origin = 'NOTEL'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 15
+    end
+    object FDQueryDevisNOTAHITI_1: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'NOTAHITI_1'
+      Origin = 'NOTAHITI'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 10
+    end
+    object FDQueryDevisNOFAX: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'NOFAX'
+      Origin = 'NOFAX'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 15
+    end
+    object FDQueryDevisJRSCRD_1: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'JRSCRD_1'
+      Origin = 'JRSCRD'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisCREDIT: TLargeintField
+      AutoGenerateValue = arDefault
+      FieldName = 'CREDIT'
+      Origin = 'CREDIT'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisplaf_crd: TIntegerField
+      AutoGenerateValue = arDefault
+      FieldName = 'plaf_crd'
+      Origin = 'plaf_crd'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisCODPAI_1: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODPAI_1'
+      Origin = 'CODPAI'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 5
+    end
+    object FDQueryDevisFIN_MOIS_1: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'FIN_MOIS_1'
+      Origin = 'FIN_MOIS'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisNB_EX: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'NB_EX'
+      Origin = 'NB_EX'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisCAAN: TLargeintField
+      AutoGenerateValue = arDefault
+      FieldName = 'CAAN'
+      Origin = 'CAAN'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisAD1: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'AD1'
+      Origin = 'AD1'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 30
+    end
+    object FDQueryDevisAD2: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'AD2'
+      Origin = 'AD2'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 30
+    end
+    object FDQueryDevisAD3: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'AD3'
+      Origin = 'AD3'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 30
+    end
+    object FDQueryDevisCUM_MVT: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'CUM_MVT'
+      Origin = 'CUM_MVT'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisMT_CPTA: TLargeintField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_CPTA'
+      Origin = 'MT_CPTA'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisEXO_TVA_1: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'EXO_TVA_1'
+      Origin = 'EXO_TVA'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisBLOQUE: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'BLOQUE'
+      Origin = 'BLOQUE'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisCODGEO_1: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODGEO_1'
+      Origin = 'CODGEO'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisEMAIL: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'EMAIL'
+      Origin = 'EMAIL'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 50
+    end
+    object FDQueryDevisCODTAR: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODTAR'
+      Origin = 'CODTAR'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 1
+    end
+    object FDQueryDevisADM: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'ADM'
+      Origin = 'ADM'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisFLAG_TAX_1: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'FLAG_TAX_1'
+      Origin = 'FLAG_TAX'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisCODFAC_ADM: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODFAC_ADM'
+      Origin = 'CODFAC_ADM'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisFERME: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'FERME'
+      Origin = 'FERME'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisDER_MODIF_1: TSQLTimeStampField
+      AutoGenerateValue = arDefault
+      FieldName = 'DER_MODIF_1'
+      Origin = 'DER_MODIF'
+    end
+    object FDQueryDevisSPEC_GOUV: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'SPEC_GOUV'
+      Origin = 'SPEC_GOUV'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisNOGSM: TLargeintField
+      AutoGenerateValue = arDefault
+      FieldName = 'NOGSM'
+      Origin = 'NOGSM'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisPLV: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'PLV'
+      Origin = 'PLV'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisINTIT_BQ: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'INTIT_BQ'
+      Origin = 'INTIT_BQ'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 30
+    end
+    object FDQueryDevisCODE_BQ: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODE_BQ'
+      Origin = 'CODE_BQ'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 5
+    end
+    object FDQueryDevisCODE_GUI: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODE_GUI'
+      Origin = 'CODE_GUI'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 5
+    end
+    object FDQueryDevisNOCPT: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'NOCPT'
+      Origin = 'NOCPT'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 11
+    end
+    object FDQueryDevisCLE: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CLE'
+      Origin = 'CLE'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 2
+    end
+    object FDQueryDevisCOEF_MAJ_PR: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'COEF_MAJ_PR'
+      Origin = 'COEF_MAJ_PR'
+      ProviderFlags = []
+      ReadOnly = True
+      Precision = 5
+      Size = 2
+    end
+    object FDQueryDevisEXO_CPS_1: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'EXO_CPS_1'
+      Origin = 'EXO_CPS'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisPAS_REM: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'PAS_REM'
+      Origin = 'PAS_REM'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisREM_FAM: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'REM_FAM'
+      Origin = 'REM_FAM'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisRELEVE_EMAIL: TBooleanField
+      AutoGenerateValue = arDefault
+      FieldName = 'RELEVE_EMAIL'
+      Origin = 'RELEVE_EMAIL'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisSELECT_: TBooleanField
+      AutoGenerateValue = arDefault
+      FieldName = 'SELECT_'
+      Origin = 'SELECT_'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisAPP_TARIFCLI: TBooleanField
+      AutoGenerateValue = arDefault
+      FieldName = 'APP_TARIFCLI'
+      Origin = 'APP_TARIFCLI'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisTVA_ILES_1: TBooleanField
+      AutoGenerateValue = arDefault
+      FieldName = 'TVA_ILES_1'
+      Origin = 'TVA_ILES'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisLIBELLE: TMemoField
+      AutoGenerateValue = arDefault
+      FieldName = 'LIBELLE'
+      Origin = 'LIBELLE'
+      ProviderFlags = []
+      ReadOnly = True
+      BlobType = ftMemo
+    end
+    object FDQueryDevisCODFAC_1: TLargeintField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODFAC_1'
+      Origin = 'CODFAC'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisCODCLI_2: TIntegerField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODCLI_2'
+      Origin = 'CODCLI'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisCODCAI_1: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODCAI_1'
+      Origin = 'CODCAI'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 2
+    end
+    object FDQueryDevisCODDEV_1: TLargeintField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODDEV_1'
+      Origin = 'CODDEV'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisCODDEP_1: TShortintField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODDEP_1'
+      Origin = 'CODDEP'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisNOENR: TIntegerField
+      AutoGenerateValue = arDefault
+      FieldName = 'NOENR'
+      Origin = 'NOENR'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisANNEE_1: TIntegerField
+      AutoGenerateValue = arDefault
+      FieldName = 'ANNEE_1'
+      Origin = 'ANNEE'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisMOIS_1: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'MOIS_1'
+      Origin = 'MOIS'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisCODREP_2: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODREP_2'
+      Origin = 'CODREP'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisCODFOU: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODFOU'
+      Origin = 'CODFOU'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 7
+    end
+    object FDQueryDevisCODSSF: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODSSF'
+      Origin = 'CODSSF'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 4
+    end
+    object FDQueryDevisCODFAM: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODFAM'
+      Origin = 'CODFAM'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 6
+    end
+    object FDQueryDevisCODDPT: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODDPT'
+      Origin = 'CODDPT'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 1
+    end
+    object FDQueryDevisTYPE__1: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'TYPE__1'
+      Origin = 'TYPE_'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 1
+    end
+    object FDQueryDevisCODART: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODART'
+      Origin = 'CODART'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 13
+    end
+    object FDQueryDevisCODBAR: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODBAR'
+      Origin = 'CODBAR'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 13
+    end
+    object FDQueryDevisQTE: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'QTE'
+      Origin = 'QTE'
+      ProviderFlags = []
+      ReadOnly = True
+      Precision = 9
+      Size = 3
+    end
+    object FDQueryDevisPOIDS: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'POIDS'
+      Origin = 'POIDS'
+      ProviderFlags = []
+      ReadOnly = True
+      Precision = 7
+      Size = 3
+    end
+    object FDQueryDevisCODTAR_1: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODTAR_1'
+      Origin = 'CODTAR'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 1
+    end
+    object FDQueryDevisPRIXHT: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'PRIXHT'
+      Origin = 'PRIXHT'
+      ProviderFlags = []
+      ReadOnly = True
+      Precision = 11
+      Size = 2
+    end
+    object FDQueryDevisPRIXTTC: TLargeintField
+      AutoGenerateValue = arDefault
+      FieldName = 'PRIXTTC'
+      Origin = 'PRIXTTC'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisPRIXNET: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'PRIXNET'
+      Origin = 'PRIXNET'
+      ProviderFlags = []
+      ReadOnly = True
+      Precision = 11
+      Size = 2
+    end
+    object FDQueryDevisTOTHT_1: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'TOTHT_1'
+      Origin = 'TOTHT'
+      ProviderFlags = []
+      ReadOnly = True
+      Precision = 11
+      Size = 2
+    end
+    object FDQueryDevisMT_TTC_1: TLargeintField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_TTC_1'
+      Origin = 'MT_TTC'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisPRC_REMISE_2: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'PRC_REMISE_2'
+      Origin = 'PRC_REMISE'
+      ProviderFlags = []
+      ReadOnly = True
+      Precision = 5
+      Size = 2
+    end
+    object FDQueryDevisMT_REMISE_1: TIntegerField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_REMISE_1'
+      Origin = 'MT_REMISE'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisTX_TVA: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'TX_TVA'
+      Origin = 'TX_TVA'
+      ProviderFlags = []
+      ReadOnly = True
+      Precision = 5
+      Size = 2
+    end
+    object FDQueryDevisMT_TVA_1: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_TVA_1'
+      Origin = 'MT_TVA'
+      ProviderFlags = []
+      ReadOnly = True
+      Precision = 9
+      Size = 2
+    end
+    object FDQueryDevisNO_TVA: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'NO_TVA'
+      Origin = 'NO_TVA'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisPRIXREV: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'PRIXREV'
+      Origin = 'PRIXREV'
+      ProviderFlags = []
+      ReadOnly = True
+      Precision = 11
+      Size = 2
+    end
+    object FDQueryDevisMARGE_1: TLargeintField
+      AutoGenerateValue = arDefault
+      FieldName = 'MARGE_1'
+      Origin = 'MARGE'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisNO_SEM_1: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'NO_SEM_1'
+      Origin = 'NO_SEM'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisNO_JOUR_1: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'NO_JOUR_1'
+      Origin = 'NO_JOUR'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisDET_PPT: TLargeintField
+      AutoGenerateValue = arDefault
+      FieldName = 'DET_PPT'
+      Origin = 'DET_PPT'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisDET_ILE: TLargeintField
+      AutoGenerateValue = arDefault
+      FieldName = 'DET_ILE'
+      Origin = 'DET_ILE'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisNOENRF: TIntegerField
+      AutoGenerateValue = arDefault
+      FieldName = 'NOENRF'
+      Origin = 'NOENRF'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisDER_MODIF_2: TSQLTimeStampField
+      AutoGenerateValue = arDefault
+      FieldName = 'DER_MODIF_2'
+      Origin = 'DER_MODIF'
+    end
+    object FDQueryDevisIMP_CODE: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'IMP_CODE'
+      Origin = 'IMP_CODE'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisTX_TSOC_1: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'TX_TSOC_1'
+      Origin = 'TX_TSOC'
+      ProviderFlags = []
+      ReadOnly = True
+      Precision = 5
+      Size = 2
+    end
+    object FDQueryDevisMT_TSOC_1: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_TSOC_1'
+      Origin = 'MT_TSOC'
+      ProviderFlags = []
+      ReadOnly = True
+      Precision = 9
+      Size = 2
+    end
+  end
+  object DSDevis: TDataSource
+    DataSet = FDQueryDevis
+    Left = 240
+    Top = 128
+  end
+  object frxPDFExport1: TfrxPDFExport
+    UseFileCache = True
+    ShowProgress = True
+    OverwritePrompt = False
+    DataOnly = False
+    InteractiveFormsFontSubset = 'A-Z,a-z,0-9,#43-#47 '
+    OpenAfterExport = False
+    PrintOptimized = False
+    Outline = False
+    Background = False
+    Quality = 95
+    Author = 'FastReport'
+    Subject = 'FastReport PDF export'
+    Creator = 'FastReport'
+    ProtectionFlags = [ePrint, eModify, eCopy, eAnnot]
+    HideToolbar = False
+    HideMenubar = False
+    HideWindowUI = False
+    FitWindow = False
+    CenterWindow = False
+    PrintScaling = False
+    PdfA = False
+    PDFStandard = psNone
+    PDFVersion = pv17
+    PDFColorSpace = csDeviceRGB
+    Left = 640
+    Top = 296
   end
 end

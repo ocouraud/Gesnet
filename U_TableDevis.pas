@@ -9,7 +9,9 @@ uses
   Vcl.DBGrids, JvExDBGrids, JvDBGrid, Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls,
   FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param,
   FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf,
-  FireDAC.Stan.Async, FireDAC.DApt, FireDAC.Comp.DataSet, FireDAC.Comp.Client;
+  FireDAC.Stan.Async, FireDAC.DApt, FireDAC.Comp.DataSet, FireDAC.Comp.Client,
+  frxClass, frxDBSet, frCoreClasses, frxExportBaseDialog, frxDesgn,
+  frxExportBaseImageSettingsDialog, frxExportHTML, frxExportPDF, frxExportCSV;
 
 type
   TFrameTableDevis = class(TFrame)
@@ -82,6 +84,149 @@ type
     BtnOublier: TBitBtn;
     BtnOuvrir: TBitBtn;
     FDQueryEnt_profMT_TSOC: TBCDField;
+    EdtCherche_CODFAC: TEdit;
+    BtnDupliquer: TBitBtn;
+    frxReportDevis: TfrxReport;
+    frxDBDataset1: TfrxDBDataset;
+    FDQueryDevis: TFDQuery;
+    DSDevis: TDataSource;
+    FDQueryDevisOBSERV: TStringField;
+    FDQueryDevisTYPE_: TStringField;
+    FDQueryDevisCODDEV: TLargeintField;
+    FDQueryDevisCODCLI: TIntegerField;
+    FDQueryDevisCODFAC: TLargeintField;
+    FDQueryDevisCODCAI: TStringField;
+    FDQueryDevisCODDEP: TShortintField;
+    FDQueryDevisNOM: TStringField;
+    FDQueryDevisNOTAHITI: TStringField;
+    FDQueryDevisEXO_TVA: TSmallintField;
+    FDQueryDevisANNEE: TIntegerField;
+    FDQueryDevisMOIS: TSmallintField;
+    FDQueryDevisDATE_: TDateField;
+    FDQueryDevisHEURE: TIntegerField;
+    FDQueryDevisMT_REMISE: TIntegerField;
+    FDQueryDevisPRC_REMISE: TBCDField;
+    FDQueryDevisTOTHT: TBCDField;
+    FDQueryDevisMT_TTC: TLargeintField;
+    FDQueryDevisMT_HT0: TBCDField;
+    FDQueryDevisMT_HT1: TBCDField;
+    FDQueryDevisMT_HT2: TBCDField;
+    FDQueryDevisMT_HT3: TBCDField;
+    FDQueryDevisMT_TVA1: TBCDField;
+    FDQueryDevisMT_TVA2: TBCDField;
+    FDQueryDevisMT_TVA3: TBCDField;
+    FDQueryDevisMT_TVA: TBCDField;
+    FDQueryDevisMARGE: TLargeintField;
+    FDQueryDevisREFERENCE_: TStringField;
+    FDQueryDevisCODREP: TSmallintField;
+    FDQueryDevisNO_SEM: TSmallintField;
+    FDQueryDevisNO_JOUR: TSmallintField;
+    FDQueryDevisCODPAI: TStringField;
+    FDQueryDevisJRSCRD: TSmallintField;
+    FDQueryDevisFIN_MOIS: TSmallintField;
+    FDQueryDevisLIBREG: TStringField;
+    FDQueryDevisCRD_FORCE: TSmallintField;
+    FDQueryDevisDATE_ECH: TDateField;
+    FDQueryDevisREGL: TSmallintField;
+    FDQueryDevisCODGEO: TStringField;
+    FDQueryDevisFLAG_TAX: TSmallintField;
+    FDQueryDevisDER_MODIF: TSQLTimeStampField;
+    FDQueryDevisMT_TSOC: TBCDField;
+    FDQueryDevisMT_HTSOC: TBCDField;
+    FDQueryDevisTX_TSOC: TBCDField;
+    FDQueryDevisEXO_CPS: TSmallintField;
+    FDQueryDevisMT_TVAI: TBCDField;
+    FDQueryDevisMT_HTI: TBCDField;
+    FDQueryDevisTVA_ILES: TBooleanField;
+    FDQueryDevisOBSERV_1: TMemoField;
+    FDQueryDevisCODCLI_1: TIntegerField;
+    FDQueryDevisCPTAUX: TStringField;
+    FDQueryDevisNOM_1: TStringField;
+    FDQueryDevisCODREP_1: TSmallintField;
+    FDQueryDevisPRC_REMISE_1: TBCDField;
+    FDQueryDevisNOTEL: TStringField;
+    FDQueryDevisNOTAHITI_1: TStringField;
+    FDQueryDevisNOFAX: TStringField;
+    FDQueryDevisJRSCRD_1: TSmallintField;
+    FDQueryDevisCREDIT: TLargeintField;
+    FDQueryDevisplaf_crd: TIntegerField;
+    FDQueryDevisCODPAI_1: TStringField;
+    FDQueryDevisFIN_MOIS_1: TSmallintField;
+    FDQueryDevisNB_EX: TSmallintField;
+    FDQueryDevisCAAN: TLargeintField;
+    FDQueryDevisAD1: TStringField;
+    FDQueryDevisAD2: TStringField;
+    FDQueryDevisAD3: TStringField;
+    FDQueryDevisCUM_MVT: TSmallintField;
+    FDQueryDevisMT_CPTA: TLargeintField;
+    FDQueryDevisEXO_TVA_1: TSmallintField;
+    FDQueryDevisBLOQUE: TSmallintField;
+    FDQueryDevisCODGEO_1: TStringField;
+    FDQueryDevisEMAIL: TStringField;
+    FDQueryDevisCODTAR: TStringField;
+    FDQueryDevisADM: TSmallintField;
+    FDQueryDevisFLAG_TAX_1: TSmallintField;
+    FDQueryDevisCODFAC_ADM: TStringField;
+    FDQueryDevisFERME: TSmallintField;
+    FDQueryDevisDER_MODIF_1: TSQLTimeStampField;
+    FDQueryDevisSPEC_GOUV: TSmallintField;
+    FDQueryDevisNOGSM: TLargeintField;
+    FDQueryDevisPLV: TSmallintField;
+    FDQueryDevisINTIT_BQ: TStringField;
+    FDQueryDevisCODE_BQ: TStringField;
+    FDQueryDevisCODE_GUI: TStringField;
+    FDQueryDevisNOCPT: TStringField;
+    FDQueryDevisCLE: TStringField;
+    FDQueryDevisCOEF_MAJ_PR: TBCDField;
+    FDQueryDevisEXO_CPS_1: TSmallintField;
+    FDQueryDevisPAS_REM: TSmallintField;
+    FDQueryDevisREM_FAM: TSmallintField;
+    FDQueryDevisRELEVE_EMAIL: TBooleanField;
+    FDQueryDevisSELECT_: TBooleanField;
+    FDQueryDevisAPP_TARIFCLI: TBooleanField;
+    FDQueryDevisTVA_ILES_1: TBooleanField;
+    FDQueryDevisLIBELLE: TMemoField;
+    FDQueryDevisCODFAC_1: TLargeintField;
+    FDQueryDevisCODCLI_2: TIntegerField;
+    FDQueryDevisCODCAI_1: TStringField;
+    FDQueryDevisCODDEV_1: TLargeintField;
+    FDQueryDevisCODDEP_1: TShortintField;
+    FDQueryDevisNOENR: TIntegerField;
+    FDQueryDevisANNEE_1: TIntegerField;
+    FDQueryDevisMOIS_1: TSmallintField;
+    FDQueryDevisCODREP_2: TSmallintField;
+    FDQueryDevisCODFOU: TStringField;
+    FDQueryDevisCODSSF: TStringField;
+    FDQueryDevisCODFAM: TStringField;
+    FDQueryDevisCODDPT: TStringField;
+    FDQueryDevisTYPE__1: TStringField;
+    FDQueryDevisCODART: TStringField;
+    FDQueryDevisCODBAR: TStringField;
+    FDQueryDevisQTE: TBCDField;
+    FDQueryDevisPOIDS: TBCDField;
+    FDQueryDevisCODTAR_1: TStringField;
+    FDQueryDevisPRIXHT: TBCDField;
+    FDQueryDevisPRIXTTC: TLargeintField;
+    FDQueryDevisPRIXNET: TBCDField;
+    FDQueryDevisTOTHT_1: TBCDField;
+    FDQueryDevisMT_TTC_1: TLargeintField;
+    FDQueryDevisPRC_REMISE_2: TBCDField;
+    FDQueryDevisMT_REMISE_1: TIntegerField;
+    FDQueryDevisTX_TVA: TBCDField;
+    FDQueryDevisMT_TVA_1: TBCDField;
+    FDQueryDevisNO_TVA: TSmallintField;
+    FDQueryDevisPRIXREV: TBCDField;
+    FDQueryDevisMARGE_1: TLargeintField;
+    FDQueryDevisNO_SEM_1: TSmallintField;
+    FDQueryDevisNO_JOUR_1: TSmallintField;
+    FDQueryDevisDET_PPT: TLargeintField;
+    FDQueryDevisDET_ILE: TLargeintField;
+    FDQueryDevisNOENRF: TIntegerField;
+    FDQueryDevisDER_MODIF_2: TSQLTimeStampField;
+    FDQueryDevisIMP_CODE: TSmallintField;
+    FDQueryDevisTX_TSOC_1: TBCDField;
+    FDQueryDevisMT_TSOC_1: TBCDField;
+    frxPDFExport1: TfrxPDFExport;
     procedure CheckBoxToutesFacturesClick(Sender: TObject);
     procedure JvDBGridEnt_profTitleBtnClick(Sender: TObject; ACol: LongInt;
       Field: TField);
@@ -99,6 +244,8 @@ type
     procedure BtnOublierClick(Sender: TObject);
     procedure BtnSupprimerClick(Sender: TObject);
     procedure BtnTransformerClick(Sender: TObject);
+    procedure BtnDupliquerClick(Sender: TObject);
+    procedure frxReportDevisBeforePrint(Sender: TfrxReportComponent);
   private
     procedure AppliquerFiltreMaitre;
     { Déclarations privées }
@@ -145,6 +292,100 @@ begin
   end;
 end;
 
+procedure TFrameTableDevis.BtnDupliquerClick(Sender: TObject);
+var
+  QryExec: TFDQuery;
+  NouveauCodDev: Integer;
+  AncienCodDev: Integer;
+
+begin
+  AncienCodDev := FDQueryEnt_prof.FieldByName('CODDEV').AsInteger;
+
+  if AncienCodDev = 0 then
+  begin
+    ShowMessage('Veuillez sélectionner un devis dans la liste.');
+    Exit;
+  end;
+
+  if MessageDlg('Dupliquer le devis ' +IntToStr(AncienCodDev)+' ?', mtConfirmation, [mbYes, mbNo], 0) = mrNo then
+      Exit;
+
+
+  QryExec := TFDQuery.Create(nil);
+  try
+    QryExec.Connection := DMGesCloud.ConnexionGesCloud;
+
+    // Étape 1 : Incrémenter le chrono pour obtenir un nouveau CODDEV unique
+    QryExec.SQL.Text := 'UPDATE chrono SET CHRONO = CHRONO + 1 WHERE PREFIX = :PREFIX';
+    QryExec.ParamByName('PREFIX').AsString := 'DEV01'; // Adapte le préfixe selon ton paramétrage
+    QryExec.ExecSQL;
+    QryExec.Close;
+
+    // Récupérer ce nouveau numéro
+    QryExec.SQL.Text := 'SELECT CHRONO FROM chrono WHERE PREFIX = :PREFIX';
+    QryExec.ParamByName('PREFIX').AsString := 'DEV01';
+    QryExec.Open;
+    NouveauCodDev := QryExec.FieldByName('CHRONO').AsInteger;
+    QryExec.Close;
+
+    // Étape 2 : Dupliquer l'en-tête (ent_prof)
+    // On omet CODDEV dans la liste des colonnes insérées pour l'injecter dynamiquement avec NouveauCodDev
+    QryExec.SQL.Text :=
+      'INSERT INTO ent_prof (' +
+      '  OBSERV, TYPE_, CODDEV, CODCLI, CODCAI, CODDEP, NOM, NOTAHITI, ' +
+      '  EXO_TVA, DATE_, HEURE, MT_REMISE, PRC_REMISE, TOTHT, MT_TTC, ' +
+      '  MT_HT0, MT_HT1, MT_HT2, MT_HT3, MT_TVA1, MT_TVA2, MT_TVA3, MT_TVA, MARGE, ' +
+      '  REFERENCE_, CODREP, NO_SEM, NO_JOUR, CODPAI, JRSCRD, FIN_MOIS, LIBREG, ' +
+      '  CRD_FORCE, DATE_ECH, REGL, CODGEO, FLAG_TAX, DER_MODIF, MT_TSOC, MT_HTSOC, ' +
+      '  TX_TSOC, EXO_CPS, MT_TVAI, MT_HTI, TVA_ILES' +
+      ') ' +
+      'SELECT ' +
+      '  OBSERV, ''D'' AS TYPE_, :NOUVEAU_DEV AS CODDEV, CODCLI, :g_CODCAI AS CODCAI, CODDEP, NOM, NOTAHITI, ' +
+      '  EXO_TVA, CURRENT_DATE, CURRENT_TIME, MT_REMISE, PRC_REMISE, TOTHT, MT_TTC, ' +
+      '  MT_HT0, MT_HT1, MT_HT2, MT_HT3, MT_TVA1, MT_TVA2, MT_TVA3, MT_TVA, MARGE, ' +
+      '  REFERENCE_, CODREP, NO_SEM, NO_JOUR, CODPAI, JRSCRD, FIN_MOIS, LIBREG, ' +
+      '  CRD_FORCE, DATE_ECH, REGL, CODGEO, FLAG_TAX, CURRENT_TIMESTAMP, MT_TSOC, MT_HTSOC, ' +
+      '  TX_TSOC, EXO_CPS, MT_TVAI, MT_HTI, TVA_ILES ' +
+      'FROM ent_prof ' +
+      'WHERE CODDEV = :ANCIEN_DEV';
+
+    QryExec.ParamByName('NOUVEAU_DEV').AsInteger := NouveauCodDev;
+    QryExec.ParamByName('ANCIEN_DEV').AsInteger  := AncienCodDev;
+    QryExec.ParamByName('g_CODCAI').AsString := DM_Olivier.gCodCai;
+    QryExec.ExecSQL;
+    QryExec.Close;
+
+    // Étape 3 : Dupliquer toutes les lignes associées (lig_prof)
+    // On omet NOENRF (clé primaire auto-incrémentée) pour qu'un nouvel ID unique soit généré par ligne,
+    // et on associe les lignes au NouveauCodDev.
+    QryExec.SQL.Text :=
+      'INSERT INTO lig_prof (' +
+      '  LIBELLE, CODCLI, CODCAI, CODDEV, CODDEP, CODREP, ' +
+      '  CODFOU, CODSSF, CODFAM, CODDPT, TYPE_, CODART, CODBAR, QTE, POIDS, CODTAR, ' +
+      '  PRIXHT, PRIXTTC, PRIXNET, TOTHT, MT_TTC, PRC_REMISE, MT_REMISE, TX_TVA, ' +
+      '  MT_TVA, NO_TVA, PRIXREV, MARGE, NO_SEM, NO_JOUR, DET_PPT, DET_ILE, ' +
+      '  DER_MODIF, IMP_CODE, TX_TSOC, MT_TSOC' +
+      ') ' +
+      'SELECT ' +
+      '  LIBELLE, CODCLI, :g_CODCAI AS CODCAI, :NOUVEAU_DEV AS CODDEV, CODDEP, CODREP, ' +
+      '  CODFOU, CODSSF, CODFAM, CODDPT, ''D'' AS TYPE_, CODART, CODBAR, QTE, POIDS, CODTAR, ' +
+      '  PRIXHT, PRIXTTC, PRIXNET, TOTHT, MT_TTC, PRC_REMISE, MT_REMISE, TX_TVA, ' +
+      '  MT_TVA, NO_TVA, PRIXREV, MARGE, NO_SEM, NO_JOUR, DET_PPT, DET_ILE, ' +
+      '  CURRENT_TIMESTAMP, IMP_CODE, TX_TSOC, MT_TSOC ' +
+      'FROM lig_prof ' +
+      'WHERE CODDEV = :ANCIEN_DEV';
+
+    QryExec.ParamByName('NOUVEAU_DEV').AsInteger := NouveauCodDev;
+    QryExec.ParamByName('ANCIEN_DEV').AsInteger  := AncienCodDev;
+    QryExec.ParamByName('g_CODCAI').AsString := DM_Olivier.gCodCai;
+    QryExec.ExecSQL;
+
+    ShowMessage('Devis dupliqué avec succès sous le numéro : ' + IntToStr(NouveauCodDev));
+  finally
+    QryExec.Free;
+  end;
+end;
+
 procedure TFrameTableDevis.BtnFermerClick(Sender: TObject);
 var
   OngletParent: TRzTabSheet;
@@ -166,6 +407,72 @@ procedure TFrameTableDevis.BtnImprimerClick(Sender: TObject);
 var
   NumDevisSelectionne: Integer;
 begin
+
+  // 1. Lire vos paramètres globaux (via une requête ou un fichier de config)
+  DM_Olivier.FDQueryCtrstock.open;
+
+  if DM_Olivier.FDQueryCtrstock.IsEmpty then
+    Exit;
+
+     // 2. Charger le modèle d'état externe
+    frxReportDevis.LoadFromFile('Devis.fr3');
+
+  // 2. Vider les variables mémoire pour repartir proprement
+  frxReportDevis.Variables.Clear;
+
+  // 3. CRÉER AUTOMATIQUEMENT la catégorie et les variables
+  // ATTENTION : FastReport impose de créer au moins une catégorie (commençant par un espace)
+  // avant d'y injecter des variables.
+  frxReportDevis.Variables[' ' + 'Globales'] := Null;
+
+  // On ajoute les variables à la catégorie qui vient d'être créée
+  frxReportDevis.Variables.AddVariable('Globales','VarNomEntreprise',
+  ( DM_Olivier.FDQueryCtrstock.FieldByName('Nom').AsString + #13#10 +
+    DM_Olivier.FDQueryCtrstock.FieldByName('Nom2').AsString ));
+  frxReportDevis.Variables.AddVariable('Globales','VarTelephone', QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('Tel').AsString));
+  frxReportDevis.Variables.AddVariable('Globales','VarAdresse', DM_Olivier.FDQueryCtrstock.FieldByName('Adresse').AsString);
+  frxReportDevis.Variables.AddVariable('Globales','VarNoTAHITI', QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('NOTAHITI').AsString));
+  frxReportDevis.Variables.AddVariable('Globales','VarLOGO', QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('LOGO').AsString));
+  frxReportDevis.Variables.AddVariable('Globales','VarEMAIL', QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('EMAIL').AsString));
+  frxReportDevis.Variables.AddVariable('Globales','VarFAX', QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('FAX').AsString));
+  frxReportDevis.Variables.AddVariable('Globales','VarRC', QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('RC').AsString));
+  frxReportDevis.Variables.AddVariable('Globales','VarMEMO_DEV', QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('MEMO_DEV').AsString));
+
+  // 4. Ouvrir le concepteur visuel
+  // Dès qu'il va s'ouvrir, l'onglet "Variables" à droite affichera votre catégorie toute prête !
+  //frxReportDevis.DesignReport;
+
+    // 3. Injecter les données dans les variables FastReport
+    // Utilisez QuotedStr pour le texte, mais pas pour les nombres !
+//    frxReportDevis.Variables['VarNomEntreprise'] := QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('Nom').AsString);
+//    frxReportDevis.Variables['VarTelephone']     := QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('Tel').AsString);
+//    frxReportDevis.Variables['VarAdresse']       := QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('Adresse').AsString);
+//    frxReportDevis.Variables['VarNoTAHITI']       := QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('Adresse').AsString);
+
+    // Exemple pour un paramètre numérique (ex: un taux de TVA global de la config)
+    // frxReport1.Variables['VarTvaParDefaut'] := 20.0; // Pas de QuotedStr pour les nombres
+
+//  DM_Olivier.FDQueryCtrstock.Close;
+
+  // 4. Ouvrir les données de la facture et afficher le rapport
+
+
+
+
+  // 1. Activer la requête SQL contenant les données de la facture
+  //FDQueryDevis.ParamByName('CODDEV').AsInteger := FDQueryEnt_prof.FieldByName('CODDEV').AsInteger;
+  FDQueryDevis.Open;
+
+  // 2. Charger le modèle visuel externe (.fr3)
+  //frxReportDevis.LoadFromFile('Devis.fr3');
+
+  // 3. Afficher l'aperçu avant impression à l'écran
+  frxReportDevis.ShowReport;
+
+  EXIT;
+
+
+
   // 1. On récupère le numéro de la facture sélectionnée dans la grille des factures
   // (Assurez-vous de cibler le bon champ, ici supposé 'CODFAC')
   NumDevisSelectionne := FDQueryEnt_prof.FieldByName('CODDEV').AsInteger;
@@ -541,6 +848,7 @@ begin
       BtnOublier.Caption:='Oublier';
       BtnOublier.Enabled:=False;
       BtnSupprimer.Enabled:=False;
+      BtnTransformer.Enabled:=False;
     end;
     1:
     begin
@@ -548,6 +856,7 @@ begin
       BtnOublier.Caption:='Oublier';
       BtnOublier.Enabled:=True;
       BtnSupprimer.Enabled:=True;
+      BtnTransformer.Enabled:=True;
     end;
     2:
     begin
@@ -555,12 +864,14 @@ begin
       BtnOublier.Caption:='Rappeler';
       BtnOublier.Enabled:=True;
       BtnSupprimer.Enabled:=True;
+      BtnTransformer.Enabled:=False;
     end
   else
     FiltreNature := '(1=1)'; // Par sécurité si rien n'est sélectionné
     BtnOublier.Caption:='Oublier';
     BtnOublier.Enabled:=True;
     BtnSupprimer.Enabled:=True;
+    BtnTransformer.Enabled:=True;
   end;
 
   // 2. Définition du filtre sur la caisse
@@ -621,6 +932,31 @@ begin
   end
   else
     FDQueryEnt_prof.FieldByName('HeureLisible').AsString := '';
+end;
+
+
+procedure TFrameTableDevis.frxReportDevisBeforePrint(
+  Sender: TfrxReportComponent);
+var
+  CheminLogo: string;
+begin
+  // 1. Détecter le moment où l'objet image va être dessiné
+  if Sender.Name = 'LogoEntreprise' then
+  begin
+    // 2. Définir le chemin (Exemple : un dossier "Images" situé à côté de votre exécutable .exe)
+    CheminLogo := DM_Olivier.FDQueryCtrstock.FieldByName('LOGO').AsString;
+
+    // 3. Charger l'image dynamiquement si le fichier existe
+    if FileExists(CheminLogo) then
+    begin
+      TfrxPictureView(Sender).Picture.LoadFromFile(CheminLogo); // Charge l'image
+    end
+    else
+    begin
+      // Sécurité : Si le logo est absent, on peut masquer le bloc pour éviter un carré vide
+      TfrxPictureView(Sender).Visible := False;
+    end;
+  end;
 end;
 
 
