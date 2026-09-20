@@ -438,6 +438,12 @@ begin
   frxReportDevis.Variables.AddVariable('Globales','VarRC', QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('RC').AsString));
   frxReportDevis.Variables.AddVariable('Globales','VarMEMO_DEV', QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('MEMO_DEV').AsString));
 
+  //Lecture representant
+  DM_Olivier.FDQueryRepres.SQL.Text:='select * from repres where codrep=:codrep';
+  DM_Olivier.FDQueryRepres.ParamByName('CODREP').AsInteger:= FDQueryEnt_prof.FieldByName('CODREP').AsInteger;
+  DM_Olivier.FDQueryRepres.Open;
+  frxReportDevis.Variables.AddVariable('Globales','VarRepres', QuotedStr(DM_Olivier.FDQueryRepres.FieldByName('NOM').AsString));
+
   // 4. Ouvrir le concepteur visuel
   // Dès qu'il va s'ouvrir, l'onglet "Variables" à droite affichera votre catégorie toute prête !
   //frxReportDevis.DesignReport;
