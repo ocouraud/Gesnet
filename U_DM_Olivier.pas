@@ -315,8 +315,12 @@ begin
       Qry.Close;
       Qry.SQL.Text := 'INSERT INTO parame (CODE,TYPE_,TAUX,LIBELLE) VALUES (''TVA0'',''V'',0,''Exonéré'')';
       Qry.ExecSQL;
+      //Date d'effet
+      Qry.Close;
+      Qry.SQL.Text := 'INSERT IGNORE INTO par_effet (CODE,TAUX,DATE_DEB,DATE_FIN) VALUES (''TVA0'',0,''2000-01-01'',''2050-12-31'')';
+      Qry.ExecSQL;
     end;
-    gTx_TVA0:=Qry.FieldByName('TAUX').AsInteger;
+    gTx_TVA0:=DM_Olivier.fgTxTaxe(Now,'TVA0'); //Qry.FieldByName('TAUX').AsInteger;
 
     // 1. Vérifier si le code TVA1 existe déjà
     Qry.Close;
@@ -328,8 +332,12 @@ begin
       Qry.Close;
       Qry.SQL.Text := 'INSERT INTO parame (CODE,TYPE_,TAUX,LIBELLE) VALUES (''TVA1'',''V'',5,''TVA à taux réduit'')';
       Qry.ExecSQL;
+      //Date d'effet
+      Qry.Close;
+      Qry.SQL.Text := 'INSERT IGNORE INTO par_effet (CODE,TAUX,DATE_DEB,DATE_FIN) VALUES (''TVA1'',5,''2000-01-01'',''2050-12-31'')';
+      Qry.ExecSQL;
     end;
-    gTx_TVA1:=Qry.FieldByName('TAUX').AsInteger;
+    gTx_TVA1:=DM_Olivier.fgTxTaxe(Now,'TVA1'); //Qry.FieldByName('TAUX').AsInteger;
 
     // 1. Vérifier si le code TVA2 existe déjà
     Qry.Close;
@@ -341,8 +349,12 @@ begin
       Qry.Close;
       Qry.SQL.Text := 'INSERT INTO parame (CODE,TYPE_,TAUX,LIBELLE) VALUES (''TVA2'',''V'',16,''TVA à taux normal'')';
       Qry.ExecSQL;
+      //Date d'effet
+      Qry.Close;
+      Qry.SQL.Text := 'INSERT IGNORE INTO par_effet (CODE,TAUX,DATE_DEB,DATE_FIN) VALUES (''TVA2'',16,''2000-01-01'',''2050-12-31'')';
+      Qry.ExecSQL;
     end;
-    gTx_TVA2:=Qry.FieldByName('TAUX').AsInteger;
+    gTx_TVA2:=DM_Olivier.fgTxTaxe(Now,'TVA2'); //Qry.FieldByName('TAUX').AsInteger;
 
     // 1. Vérifier si le code TVA3 existe déjà
     Qry.Close;
@@ -354,8 +366,12 @@ begin
       Qry.Close;
       Qry.SQL.Text := 'INSERT INTO parame (CODE,TYPE_,TAUX,LIBELLE) VALUES (''TVA3'',''V'',13,''TVA à taux intermédiaire'')';
       Qry.ExecSQL;
+      //Date d'effet
+      Qry.Close;
+      Qry.SQL.Text := 'INSERT IGNORE INTO par_effet (CODE,TAUX,DATE_DEB,DATE_FIN) VALUES (''TVA3'',13,''2000-01-01'',''2050-12-31'')';
+      Qry.ExecSQL;
     end;
-    gTx_TVA3:=Qry.FieldByName('TAUX').AsInteger;
+    gTx_TVA3:=DM_Olivier.fgTxTaxe(Now,'TVA3'); //Qry.FieldByName('TAUX').AsInteger;
 
     // 1. Vérifier si le code TVAI Iles existe déjà
     Qry.Close;

@@ -87,7 +87,7 @@ type
     EdtCherche_CODFAC: TEdit;
     BtnDupliquer: TBitBtn;
     frxReportDevis: TfrxReport;
-    frxDBDataset1: TfrxDBDataset;
+    frxDBDatasetDevis: TfrxDBDataset;
     FDQueryDevis: TFDQuery;
     DSDevis: TDataSource;
     FDQueryDevisOBSERV: TStringField;
@@ -227,6 +227,12 @@ type
     FDQueryDevisTX_TSOC_1: TBCDField;
     FDQueryDevisMT_TSOC_1: TBCDField;
     frxPDFExport1: TfrxPDFExport;
+    FDQueryTVA: TFDQuery;
+    frxDBDatasetTVA: TfrxDBDataset;
+    FDQueryTVANoTVA: TLargeintField;
+    FDQueryTVATaux: TFMTBCDField;
+    FDQueryTVABaseHT: TBCDField;
+    FDQueryTVAMontantTVA: TBCDField;
     procedure CheckBoxToutesFacturesClick(Sender: TObject);
     procedure JvDBGridEnt_profTitleBtnClick(Sender: TObject; ACol: LongInt;
       Field: TField);
@@ -468,6 +474,10 @@ begin
   // 1. Activer la requête SQL contenant les données de la facture
   //FDQueryDevis.ParamByName('CODDEV').AsInteger := FDQueryEnt_prof.FieldByName('CODDEV').AsInteger;
   FDQueryDevis.Open;
+
+  FDQueryTVA.ParamByName('CODDEV').AsInteger := FDQueryEnt_prof.FieldByName('CODDEV').AsInteger;
+  FDQueryTVA.Open;
+
 
   // 2. Charger le modèle visuel externe (.fr3)
   //frxReportDevis.LoadFromFile('Devis.fr3');

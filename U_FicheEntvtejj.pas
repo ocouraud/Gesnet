@@ -1511,6 +1511,7 @@ var
   QryExec: TFDQuery;
   QryArticle: TFDQuery;
   pTVA: String;
+  wDate: TDateTime;
 
   wHT0: Double;
   wHT0r: Double;
@@ -1540,6 +1541,7 @@ begin
   QryExec := nil;
   QryArticle := nil;
   SavedBookmark := nil;
+  wDate := FDMemTableEntvtejj.FieldByName('Date_').AsDateTime;
 
   try
     // Création requêtes temporaires
@@ -1589,11 +1591,12 @@ begin
           pTVA := QryArticle.FieldByName('TVA').AsString;
 
           // Lecture Parametre
-          QryExec.Close;
-          QryExec.SQL.Text := 'SELECT * FROM parame WHERE CODE=:CODE';
-          QryExec.ParamByName('CODE').AsString := pTVA;
-          QryExec.Open;
-          FDMemTableLigvtejj.FieldByName('TX_TVA').AsFloat := QryExec.FieldByName('TAUX').AsFloat;
+//          QryExec.Close;
+//          QryExec.SQL.Text := 'SELECT * FROM parame WHERE CODE=:CODE';
+//          QryExec.ParamByName('CODE').AsString := pTVA;
+//          QryExec.Open;
+//          FDMemTableLigvtejj.FieldByName('TX_TVA').AsFloat := QryExec.FieldByName('TAUX').AsFloat;
+          FDMemTableLigvtejj.FieldByName('TX_TVA').AsFloat := DM_Olivier.fgTxTaxe(wDate,pTVA); ;  //QryExec.FieldByName('TAUX').AsFloat;
 
           // Calcul TVA sur PRIXHT ou PRIXTTC
           if RzDBCheckBoxFlag_Tax.Checked = False then
