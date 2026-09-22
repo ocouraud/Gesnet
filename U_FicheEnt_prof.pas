@@ -1083,6 +1083,7 @@ var
   MONT: Double;
   WTOT_REGLE: Double;
   wDate: TDateTime;
+  AQte: Double;
 
   SavedBookmark: TBookmark;
 begin
@@ -1150,10 +1151,15 @@ begin
 //          QryExec.ParamByName('CODE').AsString := pTVA;
 //          QryExec.Open;
 //          FDMemTableLig_prof.FieldByName('TX_TVA').AsFloat := QryExec.FieldByName('TAUX').AsFloat;
-          FDMemTableLig_prof.FieldByName('TX_TVA').AsFloat := DM_Olivier.fgTxTaxe(wDate,pTVA); ;  //QryExec.FieldByName('TAUX').AsFloat;
+          FDMemTableLig_prof.FieldByName('TX_TVA').AsFloat := DM_Olivier.fgTxTaxe(wDate,pTVA);   //QryExec.FieldByName('TAUX').AsFloat;
+
+          // Sécurité anti-division par zéro sur la quantité
+          AQte := FDMemTableLig_prof.FieldByName('QTE').AsFloat;
+          if AQte = 0 then
+            AQte := 1;
 
           // Calcul TVA sur PRIXHT ou PRIXTTC
-          if RzDBCheckBoxFlag_Tax.Checked = False then
+          if RzDBCheckBoxFlag_Tax.Checked = False  then
           begin
             // Sur TTC
             FDMemTableLig_prof.FieldByName('MT_TTC').AsInteger := Round(FDMemTableLig_prof.FieldByName('PRIXTTC').AsInteger
@@ -1163,7 +1169,9 @@ begin
               / (100 + FDMemTableLig_prof.FieldByName('TX_TVA').AsFloat));
             FDMemTableLig_prof.FieldByName('TOTHT').AsFloat := FDMemTableLig_prof.FieldByName('MT_TTC').AsInteger
               - FDMemTableLig_prof.FieldByName('MT_TVA').AsFloat;
-            FDMemTableLig_prof.FieldByName('PRIXNET').AsFloat := FDMemTableLig_prof.FieldByName('TOTHT').AsFloat / FDMemTableLig_prof.FieldByName('QTE').AsFloat;
+            if FDMemTableLig_prof.FieldByName('QTE').AsFloat<>0 then
+              FDMemTableLig_prof.FieldByName('PRIXNET').AsFloat := RoundTo(FDMemTableLig_prof.FieldByName('TOTHT').AsFloat
+              / AQte,-2);
           end
           else
           begin
@@ -1215,7 +1223,7 @@ begin
           FDMemTableLig_prof.FieldByName('NO_TVA').AsInteger := 4;
           FDMemTableLig_prof.FieldByName('TX_TVA').AsFloat := DM_Olivier.fgTxTaxe(FDMemTableEnt_prof.FieldByName('DATE_').AsDateTime, 'TVAI');
 
-          if RzDBCheckBoxFlag_Tax.Checked = False then
+          if (RzDBCheckBoxFlag_Tax.Checked = False) then
           begin
             FDMemTableLig_prof.FieldByName('MT_TTC').AsInteger := Round(FDMemTableLig_prof.FieldByName('PRIXTTC').AsInteger
               * FDMemTableLig_prof.FieldByName('QTE').AsFloat);
@@ -1224,7 +1232,8 @@ begin
               / (100 + FDMemTableLig_prof.FieldByName('TX_TVA').AsFloat));
             FDMemTableLig_prof.FieldByName('TOTHT').AsFloat := FDMemTableLig_prof.FieldByName('MT_TTC').AsInteger
               - FDMemTableLig_prof.FieldByName('MT_TVA').AsFloat;
-            FDMemTableLig_prof.FieldByName('PRIXNET').AsFloat := FDMemTableLig_prof.FieldByName('TOTHT').AsFloat / FDMemTableLig_prof.FieldByName('QTE').AsFloat;
+            FDMemTableLig_prof.FieldByName('PRIXNET').AsFloat := RoundTo(FDMemTableLig_prof.FieldByName('TOTHT').AsFloat
+              / AQte,-2);
           end
           else
           begin

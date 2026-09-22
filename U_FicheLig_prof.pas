@@ -115,6 +115,7 @@ type
   private
     { Déclarations privées }
     FIsLoading: Boolean;   //Juste pour louverture
+    w_G_Sto: Integer;
     procedure ExecuterAnnulation;
     procedure CalculLigne;
   public
@@ -161,26 +162,26 @@ begin
     AQte := 1;
 
   // Calcul TVA sur PRIXHT ou PRIXTTC
-  if FormEnt_prof.RzDBCheckBoxFlag_Tax.Checked = False then
+  if (FormEnt_prof.RzDBCheckBoxFlag_Tax.Checked = False) then
   begin
     // Sur TTC
-    DBMt_ttc.Field.AsInteger := Round(DBPrixttc.Field.AsInteger * AQte);
+    DBMt_ttc.Field.AsInteger := Round(DBPrixttc.Field.AsInteger * DBQte.Field.AsFloat);
     DBMt_tva.Field.AsFloat := DBMt_ttc.Field.AsInteger * (DBTx_tva.Field.AsFloat / (100 + DBTx_tva.Field.AsFloat));
     DBTotht.Field.AsFloat := DBMt_ttc.Field.AsInteger - DBMt_tva.Field.AsFloat;
-    DBPrixnet.Field.AsFloat := DBTotht.Field.AsFloat / AQte;
+    DBPrixnet.Field.AsFloat := RoundTo(DBTotht.Field.AsFloat / AQte,-2);
   end
   else
   begin
     // Sur HT
     DBPrixnet.Field.AsFloat := DBPrixht.Field.AsFloat - ((DBPrixht.Field.AsFloat / 100) * JvDBSpinPrc_remise.Value);
     DBPrixttc.Field.AsInteger := Round(DM_Olivier.CalculerTTC(DBPrixnet.Field.AsFloat, DBTx_tva.Field.AsFloat));
-    DBTotht.Field.AsFloat := DBPrixnet.Field.AsFloat * AQte;
+    DBTotht.Field.AsFloat := DBPrixnet.Field.AsFloat * DBQte.Field.AsFloat;
     DBMt_tva.Field.AsFloat := (DBTotht.Field.AsFloat / 100) * DBTx_tva.Field.AsFloat;
     DBMt_ttc.Field.AsInteger := Round(DBTotht.Field.AsFloat + DBMt_tva.Field.AsFloat);
   end;
 
-  DBMt_remise.Field.AsFloat := (DBPrixht.Field.AsFloat * AQte) - DBTotht.Field.AsFloat;
-  DSlig_prof.DataSet.FieldByName('MARGE').AsFloat := DBTotht.Field.AsFloat - (DSlig_prof.DataSet.FieldByName('PRIXREV').AsFloat * AQte);
+  DBMt_remise.Field.AsFloat := (DBPrixht.Field.AsFloat * DBQte.Field.AsFloat) - DBTotht.Field.AsFloat;
+  DSlig_prof.DataSet.FieldByName('MARGE').AsFloat := DBTotht.Field.AsFloat - (DSlig_prof.DataSet.FieldByName('PRIXREV').AsFloat * DBQte.Field.AsFloat);
 
   // Arrondis (nettoyage des doublons et uniformisation des accès champs)
   DBPrixnet.Field.AsFloat := RoundTo(DBPrixnet.Field.AsFloat, -2);
@@ -203,6 +204,8 @@ var
   QryExecArticle: TFDQuery;
   QryExecClient: TFDQuery;
   pTVA: String;
+  wDate: TDateTime;
+
 begin
   // Si on est en train d'annuler ou si le champ est vide, on laisse sortir sans bloquer
   if (FormEnt_prof.FDMemTablelig_prof.State = dsBrowse) or (DBCodbar.Text = '') then
@@ -244,16 +247,19 @@ begin
     DBLibelle.Text := FDQueryCodbar.FieldByName('libelle').AsString;
     DBPrixht.Field.AsFloat := FDQueryCodbar.FieldByName('prixvte').AsFloat;
 
-    // Recherche tx TVA
+    // Recherche tx TVA par date d'effet
+    wdate := FormEnt_prof.FDMemTableEnt_prof.FieldByName('DATE_').AsDateTime;
     pTVA := FDQueryCodbar.FieldByName('TVA').AsString;
-    if pTVA = 'TVA0' then
-      DBTx_tva.Field.AsFloat := 0
-    else if pTVA = 'TVA1' then
-      DBTx_tva.Field.AsFloat := DM_Olivier.gTx_TVA1
-    else if pTVA = 'TVA2' then
-      DBTx_tva.Field.AsFloat := DM_Olivier.gTx_TVA2
-    else if pTVA = 'TVA3' then
-      DBTx_tva.Field.AsFloat := DM_Olivier.gTx_TVA3;
+    DBTx_tva.Field.AsFloat := DM_Olivier.fgTxTaxe(wDate,pTVA);
+
+//    if pTVA = 'TVA0' then
+//      DBTx_tva.Field.AsFloat := 0
+//    else if pTVA = 'TVA1' then
+//      DBTx_tva.Field.AsFloat := DM_Olivier.gTx_TVA1
+//    else if pTVA = 'TVA2' then
+//      DBTx_tva.Field.AsFloat := DM_Olivier.gTx_TVA2
+//    else if pTVA = 'TVA3' then
+//      DBTx_tva.Field.AsFloat := DM_Olivier.gTx_TVA3;
 
     if pTVA <> '' then
       DSlig_prof.DataSet.FieldByName('NO_TVA').AsInteger := StrToInt(pTVA[Length(pTVA)]);
@@ -261,7 +267,7 @@ begin
     // Si TVA Îles
     if (FormEnt_prof.RzDBCheckBoxTVA_ILES.Checked) and (FDQueryCodbar.FieldByName('EXCLU_TVA1').AsBoolean = False) then
     begin
-      DBTx_tva.Field.AsFloat := DM_Olivier.gTx_TVAI;
+      DBTx_tva.Field.AsFloat := DM_Olivier.fgTxTaxe(wDate,'TVAI');  //DM_Olivier.gTx_TVAI;
       DSlig_prof.DataSet.FieldByName('NO_TVA').AsInteger := 4;
     end;
 
@@ -481,32 +487,36 @@ end;
 procedure TFormLig_prof.DBQteExit(Sender: TObject);
 var QryStodep: TFDQuery;
 begin
-  //Controle stock
-  QryStodep := nil;
-  QryStodep := TFDQuery.Create(nil);
-  QryStodep.Connection := DMGesCloud.ConnexionGesCloud;
-  QryStodep.SQL.Text := 'SELECT * FROM stodep WHERE CODART = :CODART AND CODDEP = :CODDEP';
-  QryStodep.ParamByName('CODART').AsString := DSlig_prof.DataSet.FieldByName('CODART').AsString;
-  QryStodep.ParamByName('CODDEP').AsInteger := DSlig_prof.DataSet.FieldByName('CODDEP').AsInteger;
-  QryStodep.Open;
-
-  //Si quantite insuffisante
-  if QryStodep.FieldByName('QTE').AsFloat < DBQte.Field.AsFloat then
+  //Si article géré en stock
+  if FDQueryCodbar.FieldByName('G_STO').AsInteger=1 then
   begin
-    //Selon parametrage global
-    if DM_Olivier.gALERT_ASTO='A' then   // On autorise
-      Exit;
+    //Controle stock
+    QryStodep := nil;
+    QryStodep := TFDQuery.Create(nil);
+    QryStodep.Connection := DMGesCloud.ConnexionGesCloud;
+    QryStodep.SQL.Text := 'SELECT * FROM stodep WHERE CODART = :CODART AND CODDEP = :CODDEP';
+    QryStodep.ParamByName('CODART').AsString := DSlig_prof.DataSet.FieldByName('CODART').AsString;
+    QryStodep.ParamByName('CODDEP').AsInteger := DSlig_prof.DataSet.FieldByName('CODDEP').AsInteger;
+    QryStodep.Open;
 
-    if DM_Olivier.gALERT_ASTO='R' then  // On refuse
+    //Si quantite insuffisante
+    if QryStodep.FieldByName('QTE').AsFloat < DBQte.Field.AsFloat then
     begin
-      ShowMessage('Quantité en stock dépôt insuffisante');
-      DBQte.SetFocus;
-      exit;
-    end;
+      //Selon parametrage global
+      if DM_Olivier.gALERT_ASTO='A' then   // On autorise
+        Exit;
 
-    // On demande
-    if MessageDlg('Quantité en stock dépôt insuffisante, forcer l''opération ?', mtConfirmation, [mbYes, mbNo], 0) = mrNo then
-      Exit;
+      if DM_Olivier.gALERT_ASTO='R' then  // On refuse
+      begin
+        ShowMessage('Quantité en stock dépôt insuffisante');
+        DBQte.SetFocus;
+        exit;
+      end;
+
+      // On demande
+      if MessageDlg('Quantité en stock dépôt insuffisante, forcer l''opération ?', mtConfirmation, [mbYes, mbNo], 0) = mrNo then
+        Exit;
+    end;
   end;
 
   CalculLigne;

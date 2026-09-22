@@ -1532,6 +1532,7 @@ var
   WTOT_REGLE: Double;
 
   SavedBookmark: TBookmark;
+
 begin
   // Sorties anticipées si conditions non remplies
   if FIsLoading then Exit;
@@ -1609,7 +1610,9 @@ begin
               / (100 + FDMemTableLigvtejj.FieldByName('TX_TVA').AsFloat));
             FDMemTableLigvtejj.FieldByName('TOTHT').AsFloat := FDMemTableLigvtejj.FieldByName('MT_TTC').AsInteger
               - FDMemTableLigvtejj.FieldByName('MT_TVA').AsFloat;
-            FDMemTableLigvtejj.FieldByName('PRIXNET').AsFloat := FDMemTableLigvtejj.FieldByName('TOTHT').AsFloat / FDMemTableLigvtejj.FieldByName('QTE').AsFloat;
+            if FDMemTableLigvtejj.FieldByName('QTE').AsFloat <> 0 then
+              FDMemTableLigvtejj.FieldByName('PRIXNET').AsFloat := FDMemTableLigvtejj.FieldByName('TOTHT').AsFloat
+                / FDMemTableLigvtejj.FieldByName('QTE').AsFloat;
           end
           else
           begin
@@ -1670,7 +1673,9 @@ begin
               / (100 + FDMemTableLigvtejj.FieldByName('TX_TVA').AsFloat));
             FDMemTableLigvtejj.FieldByName('TOTHT').AsFloat := FDMemTableLigvtejj.FieldByName('MT_TTC').AsInteger
               - FDMemTableLigvtejj.FieldByName('MT_TVA').AsFloat;
-            FDMemTableLigvtejj.FieldByName('PRIXNET').AsFloat := FDMemTableLigvtejj.FieldByName('TOTHT').AsFloat / FDMemTableLigvtejj.FieldByName('QTE').AsFloat;
+            if FDMemTableLigvtejj.FieldByName('QTE').AsFloat <> 0 then
+              FDMemTableLigvtejj.FieldByName('PRIXNET').AsFloat := FDMemTableLigvtejj.FieldByName('TOTHT').AsFloat
+                / FDMemTableLigvtejj.FieldByName('QTE').AsFloat;
           end
           else
           begin

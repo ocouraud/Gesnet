@@ -4,6 +4,7 @@ object FrameTableDevis: TFrameTableDevis
   Width = 821
   Height = 480
   TabOrder = 0
+  OnResize = FrameResize
   object Panel2: TPanel
     Left = 0
     Top = 416
@@ -25,23 +26,21 @@ object FrameTableDevis: TFrameTableDevis
     end
     object BtnFermer: TBitBtn
       Left = 734
-      Top = 0
+      Top = 32
       Width = 87
-      Height = 64
+      Height = 29
       Margins.Left = 6
       Margins.Right = 6
-      Align = alRight
       Caption = '&Fermer'
       ModalResult = 8
       TabOrder = 1
       OnClick = BtnFermerClick
     end
     object BtnAide: TBitBtn
-      Left = 647
+      Left = 734
       Top = 0
       Width = 87
-      Height = 64
-      Align = alRight
+      Height = 29
       Caption = 'Aide'
       TabOrder = 2
       OnClick = BtnAideClick
@@ -803,7 +802,7 @@ object FrameTableDevis: TFrameTableDevis
     PrintOptions.Printer = 'Default'
     PrintOptions.PrintOnSheet = 0
     ReportOptions.CreateDate = 46280.575471794000000000
-    ReportOptions.LastChange = 46285.759304212970000000
+    ReportOptions.LastChange = 46286.725045324080000000
     ScriptLanguage = 'PascalScript'
     ScriptText.Strings = (
       'begin'
@@ -861,6 +860,14 @@ object FrameTableDevis: TFrameTableDevis
       item
         Name = 'VarRepres'
         Value = #39'Commercial'#39
+      end
+      item
+        Name = 'VarRef_Bancaire'
+        Value = ''
+      end
+      item
+        Name = 'VarTotalAlpha'
+        Value = ''
       end>
     Style = <>
     Watermarks = <>
@@ -1063,7 +1070,7 @@ object FrameTableDevis: TFrameTableDevis
           Left = 3.779530000000000000
           Top = 86.929190000000000000
           Width = 336.378170000000000000
-          Height = 41.574830000000000000
+          Height = 68.031540000000000000
           StretchMode = smActualHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
@@ -1086,7 +1093,7 @@ object FrameTableDevis: TFrameTableDevis
         FillGap.Left = 0
         FillGap.Bottom = 0
         FillGap.Right = 0
-        Frame.Typ = []
+        Frame.Typ = [ftLeft, ftRight, ftTop, ftBottom]
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clBlack
         Font.Height = -11
@@ -1098,6 +1105,7 @@ object FrameTableDevis: TFrameTableDevis
         Width = 755.906000000000000000
         DataSet = frxDBDatasetDevis
         DataSetName = 'frxDBDatasetDevis'
+        PrintIfDetailEmpty = True
         RowCount = 0
         Stretched = True
         object MemofrxDBDataset1CODART: TfrxMemoView
@@ -1116,7 +1124,7 @@ object FrameTableDevis: TFrameTableDevis
           Font.Height = -11
           Font.Name = 'Arial'
           Font.Style = []
-          Frame.Typ = [ftLeft, ftBottom]
+          Frame.Typ = []
           Memo.UTF8W = (
             '[frxDBDatasetDevis."CODART"]')
           ParentFont = False
@@ -1139,7 +1147,8 @@ object FrameTableDevis: TFrameTableDevis
           Font.Height = -11
           Font.Name = 'Arial'
           Font.Style = []
-          Frame.Typ = [ftLeft, ftBottom]
+          Frame.Typ = [ftLeft]
+          GapX = 5.000000000000000000
           Memo.UTF8W = (
             '[frxDBDatasetDevis."LIBELLE"]')
           ParentFont = False
@@ -1164,7 +1173,8 @@ object FrameTableDevis: TFrameTableDevis
           Font.Height = -11
           Font.Name = 'Arial'
           Font.Style = []
-          Frame.Typ = [ftLeft, ftBottom]
+          Frame.Typ = [ftLeft]
+          GapX = 5.000000000000000000
           HAlign = haRight
           Memo.UTF8W = (
             '[frxDBDatasetDevis."QTE"]')
@@ -1189,7 +1199,8 @@ object FrameTableDevis: TFrameTableDevis
           Font.Height = -11
           Font.Name = 'Arial'
           Font.Style = []
-          Frame.Typ = [ftLeft, ftBottom]
+          Frame.Typ = [ftLeft]
+          GapX = 5.000000000000000000
           HAlign = haRight
           Memo.UTF8W = (
             '[frxDBDatasetDevis."PRIXHT"]')
@@ -1215,7 +1226,8 @@ object FrameTableDevis: TFrameTableDevis
           Font.Height = -11
           Font.Name = 'Arial'
           Font.Style = []
-          Frame.Typ = [ftLeft, ftBottom]
+          Frame.Typ = [ftLeft]
+          GapX = 5.000000000000000000
           HAlign = haRight
           Memo.UTF8W = (
             '[frxDBDatasetDevis."PRC_REMISE_2"]')
@@ -1240,7 +1252,8 @@ object FrameTableDevis: TFrameTableDevis
           Font.Height = -11
           Font.Name = 'Arial'
           Font.Style = []
-          Frame.Typ = [ftLeft, ftBottom]
+          Frame.Typ = [ftLeft]
+          GapX = 5.000000000000000000
           HAlign = haRight
           Memo.UTF8W = (
             '[frxDBDatasetDevis."PRIXNET"]')
@@ -1265,7 +1278,8 @@ object FrameTableDevis: TFrameTableDevis
           Font.Height = -11
           Font.Name = 'Arial'
           Font.Style = []
-          Frame.Typ = [ftLeft, ftBottom]
+          Frame.Typ = [ftLeft]
+          GapX = 5.000000000000000000
           HAlign = haRight
           Memo.UTF8W = (
             '[frxDBDatasetDevis."TOTHT_1"]')
@@ -1290,7 +1304,8 @@ object FrameTableDevis: TFrameTableDevis
           Font.Height = -11
           Font.Name = 'Arial'
           Font.Style = []
-          Frame.Typ = [ftLeft, ftBottom]
+          Frame.Typ = [ftLeft]
+          GapX = 5.000000000000000000
           HAlign = haRight
           Memo.UTF8W = (
             '[frxDBDatasetDevis."MT_TTC_1"]')
@@ -1300,8 +1315,8 @@ object FrameTableDevis: TFrameTableDevis
         object MemofrxDBDataset1PRIXTTC: TfrxMemoView
           IndexTag = 1
           AllowVectorExport = True
-          Left = 544.252320000000000000
-          Width = 60.472480000000000000
+          Left = 545.007874020000000000
+          Width = 61.228346460000000000
           Height = 18.897650000000000000
           StretchMode = smMaxHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
@@ -1315,7 +1330,8 @@ object FrameTableDevis: TFrameTableDevis
           Font.Height = -11
           Font.Name = 'Arial'
           Font.Style = []
-          Frame.Typ = [ftLeft, ftBottom]
+          Frame.Typ = [ftLeft]
+          GapX = 5.000000000000000000
           HAlign = haRight
           Memo.UTF8W = (
             '[frxDBDatasetDevis."PRIXTTC"]')
@@ -1338,7 +1354,7 @@ object FrameTableDevis: TFrameTableDevis
           Font.Height = -11
           Font.Name = 'Arial'
           Font.Style = []
-          Frame.Typ = [ftLeft, ftRight, ftBottom]
+          Frame.Typ = [ftLeft]
           HAlign = haCenter
           Memo.UTF8W = (
             '[frxDBDatasetDevis."NO_TVA"]')
@@ -1354,15 +1370,15 @@ object FrameTableDevis: TFrameTableDevis
         FillGap.Right = 0
         Frame.Typ = []
         Height = 268.346630000000000000
-        Top = 366.614410000000000000
+        Top = 411.968770000000000000
         Width = 755.906000000000000000
         PrintOnFirstPage = False
         PrintOnSinglePage = True
         object Subreport1: TfrxSubreport
           AllowVectorExport = True
           Left = 3.779530050000000000
-          Top = 3.779521020000000000
-          Width = 298.582866440000000000
+          Top = 26.456701020000000000
+          Width = 362.834876440000000000
           Height = 102.047304040000000000
           Page = frxReportDevis.Page2
           PrintOnParent = True
@@ -1370,16 +1386,325 @@ object FrameTableDevis: TFrameTableDevis
         object VarMEMO_DEV: TfrxMemoView
           IndexTag = 1
           AllowVectorExport = True
-          Left = 7.559060000000000000
-          Top = 234.330860000000000000
-          Width = 374.173470000000000000
-          Height = 18.897650000000000000
-          StretchMode = smMaxHeight
+          Left = 3.779530000000000000
+          Top = 196.535560000000000000
+          Width = 714.331170000000000000
+          Height = 64.252010000000000000
+          StretchMode = smActualHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
           Frame.Typ = []
           Memo.UTF8W = (
             '[VarMEMO_DEV]')
+        end
+        object Memo21: TfrxMemoView
+          AllowVectorExport = True
+          Left = 155.779541450000000000
+          Top = 7.779530230000000000
+          Width = 41.574829780000000000
+          Height = 18.897649770000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftTop, ftBottom]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'Taux')
+          ParentFont = False
+        end
+        object Memo22: TfrxMemoView
+          AllowVectorExport = True
+          Left = 197.354372550000000000
+          Top = 7.779530660000000000
+          Width = 79.370126920000000000
+          Height = 18.897649770000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftTop, ftBottom]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'Montant HT.')
+          ParentFont = False
+        end
+        object Memo23: TfrxMemoView
+          AllowVectorExport = True
+          Left = 276.724499470000000000
+          Top = 7.779530660000000000
+          Width = 90.708720730000000000
+          Height = 18.897649770000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftRight, ftTop, ftBottom]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'Montant TVA')
+          ParentFont = False
+        end
+        object Memo24: TfrxMemoView
+          AllowVectorExport = True
+          Left = 3.779530000000000000
+          Top = 7.779530000000000000
+          Width = 32.125984250000000000
+          Height = 18.897649770000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftTop, ftBottom]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'TVA')
+          ParentFont = False
+        end
+        object Memo25: TfrxMemoView
+          AllowVectorExport = True
+          Left = 36.015781740000000000
+          Top = 7.779530000000000000
+          Width = 120.188976380000000000
+          Height = 18.897649770000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftTop, ftBottom]
+          Memo.UTF8W = (
+            'Libell'#233)
+          ParentFont = False
+        end
+        object MemofrxDBDatasetDevisTOTHT: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 591.165740000000000000
+          Top = 34.354360000000000000
+          Width = 79.370130000000000000
+          Height = 18.897650000000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataField = 'TOTHT'
+          DataSet = frxDBDatasetDevis
+          DataSetName = 'frxDBDatasetDevis'
+          DisplayFormat.FormatStr = '%2.2n'
+          DisplayFormat.Kind = fkNumeric
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = []
+          HAlign = haRight
+          Memo.UTF8W = (
+            '[frxDBDatasetDevis."TOTHT"]')
+          ParentFont = False
+        end
+        object MemofrxDBDatasetDevisPRC_REMISE: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 548.031850000000000000
+          Top = 15.118120000000000000
+          Width = 37.795300000000000000
+          Height = 18.897650000000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataField = 'PRC_REMISE'
+          DataSet = frxDBDatasetDevis
+          DataSetName = 'frxDBDatasetDevis'
+          DisplayFormat.FormatStr = '%2.2n'
+          DisplayFormat.Kind = fkNumeric
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = []
+          HAlign = haRight
+          Memo.UTF8W = (
+            '[frxDBDatasetDevis."PRC_REMISE"]')
+          ParentFont = False
+        end
+        object MemofrxDBDatasetDevisMT_REMISE: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 591.165740000000000000
+          Top = 15.118120000000000000
+          Width = 79.370130000000000000
+          Height = 18.897650000000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataField = 'MT_REMISE'
+          DataSet = frxDBDatasetDevis
+          DataSetName = 'frxDBDatasetDevis'
+          DisplayFormat.FormatStr = '%2.2n'
+          DisplayFormat.Kind = fkNumeric
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = []
+          HAlign = haRight
+          Memo.UTF8W = (
+            '[frxDBDatasetDevis."MT_REMISE"]')
+          ParentFont = False
+        end
+        object MemofrxDBDatasetDevisMT_TVA: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 591.165740000000000000
+          Top = 52.811070000000000000
+          Width = 79.370130000000000000
+          Height = 18.897650000000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataField = 'MT_TVA'
+          DataSet = frxDBDatasetDevis
+          DataSetName = 'frxDBDatasetDevis'
+          DisplayFormat.FormatStr = '%2.2n'
+          DisplayFormat.Kind = fkNumeric
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = []
+          HAlign = haRight
+          Memo.UTF8W = (
+            '[frxDBDatasetDevis."MT_TVA"]')
+          ParentFont = False
+        end
+        object MemofrxDBDatasetDevisMT_TTC: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 560.929500000000000000
+          Top = 72.047310000000000000
+          Width = 109.606370000000000000
+          Height = 18.897650000000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataField = 'MT_TTC'
+          DataSet = frxDBDatasetDevis
+          DataSetName = 'frxDBDatasetDevis'
+          DisplayFormat.FormatStr = '%2.0n'
+          DisplayFormat.Kind = fkNumeric
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -16
+          Font.Name = 'Arial'
+          Font.Style = [fsBold]
+          Frame.Typ = []
+          HAlign = haRight
+          Memo.UTF8W = (
+            '[frxDBDatasetDevis."MT_TTC"]')
+          ParentFont = False
+        end
+        object Memo27: TfrxMemoView
+          AllowVectorExport = True
+          Left = 472.441241020000000000
+          Top = 15.118113540000000000
+          Width = 75.590600730000000000
+          Height = 18.897644040000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Frame.Typ = []
+          Memo.UTF8W = (
+            'Remise %')
+        end
+        object Memo28: TfrxMemoView
+          AllowVectorExport = True
+          Left = 472.441241020000000000
+          Top = 34.354361130000000000
+          Width = 94.488281250000000000
+          Height = 18.897644040000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Frame.Typ = []
+          Memo.UTF8W = (
+            'Total net HT')
+        end
+        object Memo29: TfrxMemoView
+          AllowVectorExport = True
+          Left = 472.441241020000000000
+          Top = 52.811076190000000000
+          Width = 94.488281250000000000
+          Height = 18.897644040000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Frame.Typ = []
+          Memo.UTF8W = (
+            'Total taxes')
+        end
+        object Memo30: TfrxMemoView
+          AllowVectorExport = True
+          Left = 472.441241020000000000
+          Top = 72.047282250000000000
+          Width = 86.929221250000000000
+          Height = 18.897705080000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Frame.Typ = []
+          Memo.UTF8W = (
+            'Total TTC')
+        end
+        object Shape2: TfrxShapeView
+          AllowVectorExport = True
+          Left = 461.102653540000000000
+          Top = 7.559051020000000000
+          Width = 222.992270730000000000
+          Height = 90.708714040000000000
+          Frame.Typ = []
+          Shape = skRoundRectangle
+        end
+        object MemoVarRef_Bancaire: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 3.779530000000000000
+          Top = 166.299320000000000000
+          Width = 449.764070000000000000
+          Height = 18.897650000000000000
+          StretchMode = smActualHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Frame.Typ = []
+          Memo.UTF8W = (
+            '[VarRef_Bancaire]')
+        end
+        object MemoVarTotalAlpha: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 3.779530000000000000
+          Top = 139.842610000000000000
+          Width = 714.331170000000000000
+          Height = 18.897650000000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = [fsBold]
+          Frame.Typ = []
+          Memo.UTF8W = (
+            '[VarTotalAlpha]')
+          ParentFont = False
         end
       end
       object Child1: TfrxChild
@@ -1395,198 +1720,41 @@ object FrameTableDevis: TFrameTableDevis
         Stretched = True
         ToNRows = 0
         ToNRowsMode = rmCount
-        object Memo2: TfrxMemoView
-          AllowVectorExport = True
-          Left = 4.000000050000000000
-          Top = 30.236403210000000000
-          Width = 83.149656440000000000
-          Height = 28.346456690000000000
-          GroupIndex = 1
-          StretchMode = smMaxHeight
-          ContentScaleOptions.Constraints.MaxIterationValue = 0
-          ContentScaleOptions.Constraints.MinIterationValue = 0
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clBlack
-          Font.Height = -13
-          Font.Name = 'Arial'
-          Font.Style = []
-          Frame.Typ = []
-          HAlign = haCenter
-          Memo.UTF8W = (
-            'Code article')
-          ParentFont = False
-          VAlign = vaCenter
-        end
         object Shape1: TfrxShapeView
           AllowVectorExport = True
-          Left = 3.999999500000000000
           Top = 30.236410880000000000
-          Width = 750.236220470000000000
+          Width = 755.905511811023600000
           Height = 30.236218780000000000
-          GroupIndex = 1
           Frame.Typ = []
         end
-        object Memo3: TfrxMemoView
+        object Memo11: TfrxMemoView
           AllowVectorExport = True
-          Left = 87.149653060000000000
-          Top = 30.236403210000000000
-          Width = 230.551330730000000000
+          Left = 739.118602820000000000
+          Top = 30.236240000000000000
+          Width = 16.629921259842520000
           Height = 28.346456690000000000
-          GroupIndex = 1
           StretchMode = smMaxHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
-          Font.Height = -13
+          Font.Height = -9
           Font.Name = 'Arial'
           Font.Style = []
-          Frame.Typ = [ftLeft]
+          Frame.Typ = []
           HAlign = haCenter
           Memo.UTF8W = (
-            'D'#233'signation')
+            'TVA ')
           ParentFont = False
-          VAlign = vaCenter
-        end
-        object Memo4: TfrxMemoView
-          AllowVectorExport = True
-          Left = 374.630169380000000000
-          Top = 30.236414220000000000
-          Width = 64.252010730000000000
-          Height = 28.346456690000000000
-          GroupIndex = 1
-          StretchMode = smMaxHeight
-          ContentScaleOptions.Constraints.MaxIterationValue = 0
-          ContentScaleOptions.Constraints.MinIterationValue = 0
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clBlack
-          Font.Height = -13
-          Font.Name = 'Arial'
-          Font.Style = []
-          Frame.Typ = [ftLeft]
-          HAlign = haCenter
-          Memo.UTF8W = (
-            'Prix HT.')
-          ParentFont = False
-          VAlign = vaCenter
-        end
-        object Memo5: TfrxMemoView
-          AllowVectorExport = True
-          Left = 317.937219380000000000
-          Top = 30.236409160000000000
-          Width = 56.692950730000000000
-          Height = 28.346456690000000000
-          GroupIndex = 1
-          StretchMode = smMaxHeight
-          ContentScaleOptions.Constraints.MaxIterationValue = 0
-          ContentScaleOptions.Constraints.MinIterationValue = 0
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clBlack
-          Font.Height = -13
-          Font.Name = 'Arial'
-          Font.Style = []
-          Frame.Typ = [ftLeft]
-          HAlign = haCenter
-          Memo.UTF8W = (
-            'Qt'#233)
-          ParentFont = False
-          VAlign = vaCenter
-        end
-        object Memo6: TfrxMemoView
-          AllowVectorExport = True
-          Left = 438.882201250000000000
-          Top = 30.236403210000000000
-          Width = 45.354330210000000000
-          Height = 28.346456690000000000
-          GroupIndex = 1
-          StretchMode = smMaxHeight
-          ContentScaleOptions.Constraints.MaxIterationValue = 0
-          ContentScaleOptions.Constraints.MinIterationValue = 0
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clBlack
-          Font.Height = -13
-          Font.Name = 'Arial'
-          Font.Style = []
-          Frame.Typ = [ftLeft]
-          HAlign = haCenter
-          Memo.UTF8W = (
-            '% rem')
-          ParentFont = False
-          VAlign = vaCenter
-        end
-        object Memo7: TfrxMemoView
-          AllowVectorExport = True
-          Left = 484.236521350000000000
-          Top = 30.236411690000000000
-          Width = 60.472511250000000000
-          Height = 28.346456690000000000
-          GroupIndex = 1
-          StretchMode = smMaxHeight
-          ContentScaleOptions.Constraints.MaxIterationValue = 0
-          ContentScaleOptions.Constraints.MinIterationValue = 0
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clBlack
-          Font.Height = -13
-          Font.Name = 'Arial'
-          Font.Style = []
-          Frame.Typ = [ftLeft]
-          HAlign = haCenter
-          Memo.UTF8W = (
-            'Prix net')
-          ParentFont = False
-          VAlign = vaCenter
-        end
-        object Memo8: TfrxMemoView
-          AllowVectorExport = True
-          Left = 606.709050470000000000
-          Top = 30.236400680000000000
-          Width = 64.251980210000000000
-          Height = 28.346456690000000000
-          GroupIndex = 1
-          StretchMode = smMaxHeight
-          ContentScaleOptions.Constraints.MaxIterationValue = 0
-          ContentScaleOptions.Constraints.MinIterationValue = 0
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clBlack
-          Font.Height = -13
-          Font.Name = 'Arial'
-          Font.Style = []
-          Frame.Typ = [ftLeft]
-          HAlign = haCenter
-          Memo.UTF8W = (
-            'Total HT.')
-          ParentFont = False
-          VAlign = vaCenter
-        end
-        object Memo9: TfrxMemoView
-          AllowVectorExport = True
-          Left = 671.094955530000000000
-          Top = 30.236410880000000000
-          Width = 68.031510210000000000
-          Height = 28.346456690000000000
-          GroupIndex = 1
-          StretchMode = smMaxHeight
-          ContentScaleOptions.Constraints.MaxIterationValue = 0
-          ContentScaleOptions.Constraints.MinIterationValue = 0
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clBlack
-          Font.Height = -13
-          Font.Name = 'Arial'
-          Font.Style = []
-          Frame.Typ = [ftLeft, ftRight]
-          HAlign = haCenter
-          Memo.UTF8W = (
-            'Total TTC')
-          ParentFont = False
+          Rotation = 90
           VAlign = vaCenter
         end
         object Memo10: TfrxMemoView
           AllowVectorExport = True
-          Left = 544.472811370000000000
+          Left = 545.007874020000000000
           Top = 30.236406640000000000
-          Width = 60.472450210000000000
+          Width = 61.606299210000000000
           Height = 28.346456690000000000
-          GroupIndex = 1
           StretchMode = smMaxHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
@@ -1602,27 +1770,172 @@ object FrameTableDevis: TFrameTableDevis
           ParentFont = False
           VAlign = vaCenter
         end
-        object Memo11: TfrxMemoView
+        object Memo9: TfrxMemoView
           AllowVectorExport = True
-          Left = 739.118602820000000000
-          Top = 30.236240000000000000
-          Width = 15.118090210000000000
+          Left = 671.094955530000000000
+          Top = 30.236410880000000000
+          Width = 68.031510210000000000
           Height = 28.346456690000000000
-          GroupIndex = 1
           StretchMode = smMaxHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
-          Font.Height = -9
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftRight]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'Total TTC')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object Memo8: TfrxMemoView
+          AllowVectorExport = True
+          Left = 606.709050470000000000
+          Top = 30.236400680000000000
+          Width = 64.251980210000000000
+          Height = 28.346456690000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'Total HT.')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object Memo6: TfrxMemoView
+          AllowVectorExport = True
+          Left = 438.882201250000000000
+          Top = 30.236403210000000000
+          Width = 45.354330210000000000
+          Height = 28.346456690000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            '% rem')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object Memo5: TfrxMemoView
+          AllowVectorExport = True
+          Left = 317.937219380000000000
+          Top = 30.236409160000000000
+          Width = 56.692950730000000000
+          Height = 28.346456690000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'Qt'#233)
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object Memo4: TfrxMemoView
+          AllowVectorExport = True
+          Left = 374.630169380000000000
+          Top = 30.236414220000000000
+          Width = 64.252010730000000000
+          Height = 28.346456690000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'Prix HT.')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object Memo3: TfrxMemoView
+          AllowVectorExport = True
+          Left = 87.149653060000000000
+          Top = 30.236403210000000000
+          Width = 230.551330730000000000
+          Height = 28.346456690000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'D'#233'signation')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object Memo2: TfrxMemoView
+          AllowVectorExport = True
+          Left = 0.220470050000000000
+          Top = 30.236403210000000000
+          Width = 86.929186440000000000
+          Height = 28.346456690000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
           Font.Name = 'Arial'
           Font.Style = []
           Frame.Typ = []
           HAlign = haCenter
           Memo.UTF8W = (
-            'TVA ')
+            'Code article')
           ParentFont = False
-          Rotation = 90
+          VAlign = vaCenter
+        end
+        object Memo7: TfrxMemoView
+          AllowVectorExport = True
+          Left = 484.236521350000000000
+          Top = 30.236411690000000000
+          Width = 60.472511250000000000
+          Height = 28.346456690000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'Prix net')
+          ParentFont = False
           VAlign = vaCenter
         end
         object MemoVarRepres: TfrxMemoView
@@ -1647,6 +1960,74 @@ object FrameTableDevis: TFrameTableDevis
           ParentFont = False
         end
       end
+      object Footer1: TfrxFooter
+        FillType = ftBrush
+        FillGap.Top = 0
+        FillGap.Left = 0
+        FillGap.Bottom = 0
+        FillGap.Right = 0
+        Frame.Typ = []
+        Height = 22.677180000000000000
+        Top = 328.819110000000000000
+        Width = 755.906000000000000000
+        object SysMemo1: TfrxSysMemoView
+          AllowVectorExport = True
+          Left = 606.614173230000000000
+          Top = 0.000002930000000012
+          Width = 64.251968500000000000
+          Height = 18.897644040000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DisplayFormat.FormatStr = '%2.2n'
+          DisplayFormat.Kind = fkNumeric
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftRight, ftTop, ftBottom]
+          GapX = 5.000000000000000000
+          HAlign = haRight
+          Memo.UTF8W = (
+            '[SUM(<frxDBDatasetDevis."TOTHT_1">,MasterData1)]')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object SysMemo2: TfrxSysMemoView
+          AllowVectorExport = True
+          Left = 317.858267720000000000
+          Width = 56.692913390000000000
+          Height = 18.897644040000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DisplayFormat.FormatStr = '%2.2f'
+          DisplayFormat.Kind = fkNumeric
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftRight, ftTop, ftBottom]
+          GapX = 5.000000000000000000
+          HAlign = haRight
+          Memo.UTF8W = (
+            '[SUM(<frxDBDatasetDevis."QTE">,MasterData1)]')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object Memo26: TfrxMemoView
+          AllowVectorExport = True
+          Left = 510.236545180000000000
+          Top = 0.000012309999999988
+          Width = 90.708751250000000000
+          Height = 18.897644040000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Frame.Typ = []
+          Memo.UTF8W = (
+            'Total HT. brut:')
+        end
+      end
     end
     object Page2: TfrxReportPage
       PaperWidth = 210.000000000000000000
@@ -1665,16 +2046,17 @@ object FrameTableDevis: TFrameTableDevis
         FillGap.Bottom = 0
         FillGap.Right = 0
         Frame.Typ = []
-        Height = 22.677180000000000000
+        Height = 18.897650000000000000
         Top = 60.472480000000000000
         Width = 755.906000000000000000
         DataSet = frxDBDatasetTVA
         DataSetName = 'frxDBDatasetTVA'
+        PrintIfDetailEmpty = True
         RowCount = 0
         object MemofrxDBDatasetTVATaux: TfrxMemoView
           IndexTag = 1
           AllowVectorExport = True
-          Left = 32.000000000000000000
+          Left = 152.000000000000000000
           Width = 41.574830000000000000
           Height = 18.897650000000000000
           ContentScaleOptions.Constraints.MaxIterationValue = 0
@@ -1690,15 +2072,17 @@ object FrameTableDevis: TFrameTableDevis
           Font.Name = 'Arial'
           Font.Style = []
           Frame.Typ = [ftLeft, ftBottom]
+          GapX = 5.000000000000000000
           HAlign = haRight
           Memo.UTF8W = (
             '[frxDBDatasetTVA."Taux"]')
           ParentFont = False
+          VAlign = vaCenter
         end
         object MemofrxDBDatasetTVABaseHT: TfrxMemoView
           IndexTag = 1
           AllowVectorExport = True
-          Left = 73.574830000000000000
+          Left = 193.574830000000000000
           Width = 79.370130000000000000
           Height = 18.897650000000000000
           ContentScaleOptions.Constraints.MaxIterationValue = 0
@@ -1719,11 +2103,12 @@ object FrameTableDevis: TFrameTableDevis
           Memo.UTF8W = (
             '[frxDBDatasetTVA."BaseHT"]')
           ParentFont = False
+          VAlign = vaCenter
         end
         object MemofrxDBDatasetTVAMontantTVA: TfrxMemoView
           IndexTag = 1
           AllowVectorExport = True
-          Left = 152.944960000000000000
+          Left = 272.944960000000000000
           Width = 90.708720000000000000
           Height = 18.897650000000000000
           ContentScaleOptions.Constraints.MaxIterationValue = 0
@@ -1744,6 +2129,7 @@ object FrameTableDevis: TFrameTableDevis
           Memo.UTF8W = (
             '[frxDBDatasetTVA."MontantTVA"]')
           ParentFont = False
+          VAlign = vaCenter
         end
         object MemofrxDBDatasetTVANoTVA: TfrxMemoView
           IndexTag = 1
@@ -1760,11 +2146,34 @@ object FrameTableDevis: TFrameTableDevis
           Font.Height = -11
           Font.Name = 'Arial'
           Font.Style = []
-          Frame.Typ = [ftLeft, ftTop, ftBottom]
+          Frame.Typ = [ftLeft, ftBottom]
           HAlign = haCenter
           Memo.UTF8W = (
             '[frxDBDatasetTVA."NoTVA"]')
           ParentFont = False
+          VAlign = vaCenter
+        end
+        object MemofrxDBDatasetTVALibelle: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 32.125984250000000000
+          Width = 120.188976380000000000
+          Height = 18.897650000000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataField = 'Libelle'
+          DataSet = frxDBDatasetTVA
+          DataSetName = 'frxDBDatasetTVA'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftBottom]
+          Memo.UTF8W = (
+            '[frxDBDatasetTVA."Libelle"]')
+          ParentFont = False
+          VAlign = vaCenter
         end
       end
       object Header1: TfrxHeader
@@ -1772,14 +2181,15 @@ object FrameTableDevis: TFrameTableDevis
         FillGap.Top = 0
         FillGap.Left = 0
         FillGap.Bottom = 0
-        FillGap.Right = 0
+        FillGap.Right = 5
         Frame.Typ = []
         Height = 18.897650200000000000
         Top = 18.897650000000000000
+        Visible = False
         Width = 755.906000000000000000
         object Memo12: TfrxMemoView
           AllowVectorExport = True
-          Left = 32.000000100000000000
+          Left = 152.000000100000000000
           Width = 41.574829780000000000
           Height = 18.897649770000000000
           ContentScaleOptions.Constraints.MaxIterationValue = 0
@@ -1797,7 +2207,7 @@ object FrameTableDevis: TFrameTableDevis
         end
         object Memo13: TfrxMemoView
           AllowVectorExport = True
-          Left = 73.574831200000000000
+          Left = 193.574831200000000000
           Top = 0.000000429999999999
           Width = 79.370126920000000000
           Height = 18.897649770000000000
@@ -1816,7 +2226,7 @@ object FrameTableDevis: TFrameTableDevis
         end
         object Memo14: TfrxMemoView
           AllowVectorExport = True
-          Left = 152.944958120000000000
+          Left = 272.944958120000000000
           Top = 0.000000429999999999
           Width = 90.708720730000000000
           Height = 18.897649770000000000
@@ -1837,7 +2247,7 @@ object FrameTableDevis: TFrameTableDevis
           AllowVectorExport = True
           Left = -0.000011350000000000
           Top = -0.000000230000000000
-          Width = 32.125984251968500000
+          Width = 32.125984250000000000
           Height = 18.897649770000000000
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
@@ -1850,6 +2260,24 @@ object FrameTableDevis: TFrameTableDevis
           HAlign = haCenter
           Memo.UTF8W = (
             'TVA')
+          ParentFont = False
+        end
+        object Memo20: TfrxMemoView
+          AllowVectorExport = True
+          Left = 32.236240390000000000
+          Top = -0.000000230000000000
+          Width = 120.188976380000000000
+          Height = 18.897649770000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftTop, ftBottom]
+          Memo.UTF8W = (
+            'Libell'#233)
           ParentFont = False
         end
       end
@@ -3305,11 +3733,6 @@ object FrameTableDevis: TFrameTableDevis
       Size = 2
     end
   end
-  object DSDevis: TDataSource
-    DataSet = FDQueryDevis
-    Left = 152
-    Top = 216
-  end
   object frxPDFExport1: TfrxPDFExport
     UseFileCache = True
     ShowProgress = True
@@ -3347,8 +3770,9 @@ object FrameTableDevis: TFrameTableDevis
         '-- 1. Taux Exon'#233'r'#233' (TVA0) -> On utilise une sous-requ'#234'te * 0 pou' +
         'r forcer le type FMTBcd'
       'SELECT 0 as NoTVA,'
+      '  (SELECT libelle FROM parame WHERE code = '#39'TVA0'#39') AS Libelle,'
       
-        '  (SELECT taux FROM par_effet WHERE code = '#39'TVA1'#39' AND ep.date_ B' +
+        '  (SELECT taux FROM par_effet WHERE code = '#39'TVA0'#39' AND ep.date_ B' +
         'ETWEEN dat_deb AND dat_fin) AS Taux, '
       '  mt_ht0 AS BaseHT, '
       '  0.00 AS MontantTVA '
@@ -3359,6 +3783,7 @@ object FrameTableDevis: TFrameTableDevis
       ''
       '-- 2. Zone 1 (TVA1)'
       'SELECT 1 as NoTVA,'
+      '  (SELECT libelle FROM parame WHERE code = '#39'TVA1'#39') AS Libelle,'
       
         '  (SELECT taux FROM par_effet WHERE code = '#39'TVA1'#39' AND ep.date_ B' +
         'ETWEEN dat_deb AND dat_fin) AS Taux, '
@@ -3371,6 +3796,7 @@ object FrameTableDevis: TFrameTableDevis
       ''
       '-- 3. Zone 2 (TVA2)'
       'SELECT 2 as NoTVA,'
+      '  (SELECT libelle FROM parame WHERE code = '#39'TVA2'#39') AS Libelle,'
       
         '  (SELECT taux FROM par_effet WHERE code = '#39'TVA2'#39' AND ep.date_ B' +
         'ETWEEN dat_deb AND dat_fin) AS Taux, '
@@ -3383,6 +3809,7 @@ object FrameTableDevis: TFrameTableDevis
       ''
       '-- 4. Zone 3 (TVA3)'
       'SELECT 3 as NoTVA,'
+      '  (SELECT libelle FROM parame WHERE code = '#39'TVA3'#39') AS Libelle,'
       
         '  (SELECT taux FROM par_effet WHERE code = '#39'TVA3'#39' AND ep.date_ B' +
         'ETWEEN dat_deb AND dat_fin) AS Taux, '
@@ -3395,6 +3822,7 @@ object FrameTableDevis: TFrameTableDevis
       ''
       '-- 5. Zone Interm'#233'diaire / '#206'les (TVAI)'
       'SELECT 4 as NoTVA, '
+      '  (SELECT libelle FROM parame WHERE code = '#39'TVAI'#39') AS Libelle,'
       
         '  (SELECT taux FROM par_effet WHERE code = '#39'TVAI'#39' AND ep.date_ B' +
         'ETWEEN dat_deb AND dat_fin) AS Taux, '
@@ -3416,6 +3844,10 @@ object FrameTableDevis: TFrameTableDevis
       Origin = 'NoTVA'
       ProviderFlags = []
       ReadOnly = True
+    end
+    object FDQueryTVALibelle: TStringField
+      FieldName = 'Libelle'
+      Size = 30
     end
     object FDQueryTVATaux: TFMTBCDField
       AutoGenerateValue = arDefault
@@ -3456,6 +3888,11 @@ object FrameTableDevis: TFrameTableDevis
     FieldDefs = <
       item
         FieldName = 'NoTVA'
+      end
+      item
+        FieldName = 'Libelle'
+        FieldType = fftString
+        Size = 30
       end
       item
         FieldName = 'Taux'

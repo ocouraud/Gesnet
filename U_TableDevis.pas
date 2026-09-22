@@ -89,7 +89,6 @@ type
     frxReportDevis: TfrxReport;
     frxDBDatasetDevis: TfrxDBDataset;
     FDQueryDevis: TFDQuery;
-    DSDevis: TDataSource;
     FDQueryDevisOBSERV: TStringField;
     FDQueryDevisTYPE_: TStringField;
     FDQueryDevisCODDEV: TLargeintField;
@@ -233,6 +232,7 @@ type
     FDQueryTVATaux: TFMTBCDField;
     FDQueryTVABaseHT: TBCDField;
     FDQueryTVAMontantTVA: TBCDField;
+    FDQueryTVALibelle: TStringField;
     procedure CheckBoxToutesFacturesClick(Sender: TObject);
     procedure JvDBGridEnt_profTitleBtnClick(Sender: TObject; ACol: LongInt;
       Field: TField);
@@ -252,6 +252,7 @@ type
     procedure BtnTransformerClick(Sender: TObject);
     procedure BtnDupliquerClick(Sender: TObject);
     procedure frxReportDevisBeforePrint(Sender: TfrxReportComponent);
+    procedure FrameResize(Sender: TObject);
   private
     procedure AppliquerFiltreMaitre;
     { Déclarations privées }
@@ -443,6 +444,9 @@ begin
   frxReportDevis.Variables.AddVariable('Globales','VarFAX', QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('FAX').AsString));
   frxReportDevis.Variables.AddVariable('Globales','VarRC', QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('RC').AsString));
   frxReportDevis.Variables.AddVariable('Globales','VarMEMO_DEV', QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('MEMO_DEV').AsString));
+  frxReportDevis.Variables.AddVariable('Globales','VarRef_Bancaire', DM_Olivier.FDQueryCtrstock.FieldByName('BANQUE').AsString);
+  frxReportDevis.Variables.AddVariable('Globales','VarTotalAlpha',QuotedStr('Devis arrêté à la somme de : ' +
+    DMGesCloud.MontantenLettres(FDQueryEnt_prof.FieldByName('MT_TTC').AsInteger) + ' Francs CFP.'));
 
   //Lecture representant
   DM_Olivier.FDQueryRepres.SQL.Text:='select * from repres where codrep=:codrep';
@@ -454,24 +458,19 @@ begin
   // Dès qu'il va s'ouvrir, l'onglet "Variables" à droite affichera votre catégorie toute prête !
   //frxReportDevis.DesignReport;
 
-    // 3. Injecter les données dans les variables FastReport
-    // Utilisez QuotedStr pour le texte, mais pas pour les nombres !
-//    frxReportDevis.Variables['VarNomEntreprise'] := QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('Nom').AsString);
-//    frxReportDevis.Variables['VarTelephone']     := QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('Tel').AsString);
-//    frxReportDevis.Variables['VarAdresse']       := QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('Adresse').AsString);
-//    frxReportDevis.Variables['VarNoTAHITI']       := QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('Adresse').AsString);
+  // 3. Injecter les données dans les variables FastReport
+  // Utilisez QuotedStr pour le texte, mais pas pour les nombres !
+  //    frxReportDevis.Variables['VarNomEntreprise'] := QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('Nom').AsString);
+  //    frxReportDevis.Variables['VarTelephone']     := QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('Tel').AsString);
+  //    frxReportDevis.Variables['VarAdresse']       := QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('Adresse').AsString);
+  //    frxReportDevis.Variables['VarNoTAHITI']       := QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('Adresse').AsString);
 
-    // Exemple pour un paramètre numérique (ex: un taux de TVA global de la config)
-    // frxReport1.Variables['VarTvaParDefaut'] := 20.0; // Pas de QuotedStr pour les nombres
+  // Exemple pour un paramètre numérique (ex: un taux de TVA global de la config)
+  // frxReport1.Variables['VarTvaParDefaut'] := 20.0; // Pas de QuotedStr pour les nombres
 
-//  DM_Olivier.FDQueryCtrstock.Close;
+  //  DM_Olivier.FDQueryCtrstock.Close;
 
-  // 4. Ouvrir les données de la facture et afficher le rapport
-
-
-
-
-  // 1. Activer la requête SQL contenant les données de la facture
+  // 1. Activer la requête SQL contenant les données du devis
   //FDQueryDevis.ParamByName('CODDEV').AsInteger := FDQueryEnt_prof.FieldByName('CODDEV').AsInteger;
   FDQueryDevis.Open;
 
@@ -488,7 +487,7 @@ begin
   EXIT;
 
 
-
+  //Format Fortes Report Trop confus
   // 1. On récupère le numéro de la facture sélectionnée dans la grille des factures
   // (Assurez-vous de cibler le bon champ, ici supposé 'CODFAC')
   NumDevisSelectionne := FDQueryEnt_prof.FieldByName('CODDEV').AsInteger;
@@ -520,7 +519,7 @@ begin
   finally
     FormDevisPrint.Free;
   end;
- end;
+end;
 
 
 procedure TFrameTableDevis.BtnOublierClick(Sender: TObject);
@@ -578,7 +577,6 @@ end;
 procedure TFrameTableDevis.BtnOuvrirClick(Sender: TObject);
 var
   NumDevis: Integer;
-  Bookmark: TBookmark; // Variable pour mémoriser la position
 begin
   if FDQueryEnt_prof.IsEmpty then Exit;
 
@@ -590,20 +588,15 @@ begin
 
     if FormEnt_prof.ShowModal = mrOk then
     begin
-      // 1. On mémorise la position actuelle avant le rafraîchissement
-      Bookmark := FDQueryEnt_prof.GetBookmark;
-      try
-        FDQueryEnt_prof.Refresh;
+      // 1. On recharge les données de la table
+      FDQueryEnt_prof.Refresh;
 
-        // 2. On tente de se reposer sur l'enregistrement mémorisé
-        if FDQueryEnt_prof.BookmarkValid(Bookmark) then
-          FDQueryEnt_prof.GotoBookmark(Bookmark);
-      except
-        // Si l'enregistrement a été supprimé entre-temps, on ignore l'erreur
+      // 2. On se repositionne proprement sur le devis modifié grâce à sa clé unique
+      if not FDQueryEnt_prof.Locate('CODDEV', NumDevis, []) then
+      begin
+        // Optionnel : si le devis a changé de filtre ou n'est plus visible,
+        // Locate renvoie false, tu peux gérer un repli si nécessaire.
       end;
-
-      // 3. On libère le signet proprement
-      FDQueryEnt_prof.FreeBookmark(Bookmark);
     end;
   finally
     FormEnt_prof.Free;
@@ -948,6 +941,17 @@ begin
   end
   else
     FDQueryEnt_prof.FieldByName('HeureLisible').AsString := '';
+end;
+
+
+procedure TFrameTableDevis.FrameResize(Sender: TObject);
+begin
+  // On force le bouton Fermer à se caler tout à droite du Panel2
+  // (Largeur du Panel - Largeur du bouton - Marge de 10 pixels)
+  BtnFermer.Left := Panel2.ClientWidth - BtnFermer.Width - 5;
+
+  // On cale le bouton Aide juste à gauche du bouton Fermer
+  BtnAide.Left := Panel2.ClientWidth - BtnAide.Width - 5;
 end;
 
 
