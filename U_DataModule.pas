@@ -297,14 +297,14 @@ var
 
   function ConvertirCentaine(N: Integer): string;
   var
-    Unites, Dizaines, Centaines: Integer;
+    Centaines, ResteDizaineUnite: Integer;
     Res: string;
     TabUnites: array[0..19] of string;
     TabDizaines: array[0..9] of string;
   begin
-    TabUnites[0] := ''; TabUnites[1] := 'un'; TabUnites[2] := 'deux'; TabUnites[3] := 'trois';
-    TabUnites[4] := 'quatre'; TabUnites[5] := 'cinq'; TabUnites[6] := 'six'; TabUnites[7] := 'sept';
-    TabUnites[8] := 'huit'; TabUnites[9] := 'neuf'; TabUnites[10] := 'dix'; TabUnites[11] := 'onze';
+    TabUnites[0]  := ''; TabUnites[1]  := 'un'; TabUnites[2]  := 'deux'; TabUnites[3]  := 'trois';
+    TabUnites[4]  := 'quatre'; TabUnites[5]  := 'cinq'; TabUnites[6]  := 'six'; TabUnites[7]  := 'sept';
+    TabUnites[8]  := 'huit'; TabUnites[9]  := 'neuf'; TabUnites[10] := 'dix'; TabUnites[11] := 'onze';
     TabUnites[12] := 'douze'; TabUnites[13] := 'treize'; TabUnites[14] := 'quatorze';
     TabUnites[15] := 'quinze'; TabUnites[16] := 'seize'; TabUnites[17] := 'dix-sept';
     TabUnites[18] := 'dix-huit'; TabUnites[19] := 'dix-neuf';
@@ -314,10 +314,8 @@ var
     TabDizaines[7] := 'soixante-dix'; TabDizaines[8] := 'quatre-vingt'; TabDizaines[9] := 'quatre-vingt-dix';
 
     Centaines := N div 100;
-    Dizaines  := (N mod 100) div 10;
-    Unites    := N mod 10;
+    ResteDizaineUnite := N mod 100; // Les deux derniers chiffres (0 à 99)
 
-    // CORRECTION ICI : Gestion rigoureuse des centaines uniques et multiples
     Res := '';
     if Centaines > 0 then
     begin
@@ -325,42 +323,55 @@ var
         Res := 'cent'
       else
       begin
-        // Met un "s" à cents si c'est une centaine pile (ex: deux cents)
-        if (Dizaines = 0) and (Unites = 0) then
+        if ResteDizaineUnite = 0 then
           Res := TabUnites[Centaines] + ' cents'
         else
           Res := TabUnites[Centaines] + ' cent';
       end;
     end;
 
-    // Gestion des dizaines et unités
-    if Dizaines in [7, 9] then
+    if ResteDizaineUnite > 0 then
     begin
       if Res <> '' then Res := Res + ' ';
-      Res := Res + TabDizaines[Dizaines - 1];
-      if (Dizaines = 7) and (Unites = 1) then
-        Res := Res + ' et onze'
-      else
-        Res := Res + '-' + TabUnites[Unites + 10];
-    end
-    else
-    begin
-      if (Dizaines > 0) or (Unites > 0) then
-      begin
-        if Res <> '' then Res := Res + ' ';
 
-        if (Dizaines > 0) and (Unites = 0) and (Dizaines = 8) then
+      // CAS 1 : Si le nombre est entre 10 et 19, on pioche direct dans TabUnites (ex: 16 -> seize)
+      if (ResteDizaineUnite >= 10) and (ResteDizaineUnite <= 19) then
+      begin
+        Res := Res + TabUnites[ResteDizaineUnite];
+      end
+      // CAS 2 : Soixante-dix (70-79) et Quatre-vingt-dix (90-99)
+      else if (ResteDizaineUnite >= 70) and (ResteDizaineUnite <= 79) then
+      begin
+        Res := Res + 'soixante';
+        if ResteDizaineUnite = 71 then
+          Res := Res + ' et onze'
+        else
+          Res := Res + '-' + TabUnites[ResteDizaineUnite - 60]; // 72 -> douze, etc.
+      end
+      else if (ResteDizaineUnite >= 90) and (ResteDizaineUnite <= 99) then
+      begin
+        Res := Res + 'quatre-vingt';
+        if ResteDizaineUnite = 91 then
+          Res := Res + ' et onze'
+        else
+          Res := Res + '-' + TabUnites[ResteDizaineUnite - 80]; // 92 -> douze, etc.
+      end
+      // CAS 3 : Dizaines classiques (20 à 60 et 80)
+      else
+      begin
+        var Dizaines := ResteDizaineUnite div 10;
+        var Unites   := ResteDizaineUnite mod 10;
+
+        if (Dizaines = 8) and (Unites = 0) then
           Res := Res + 'quatre-vingts'
-        else if Dizaines > 0 then
+        else
         begin
           Res := Res + TabDizaines[Dizaines];
           if (Unites = 1) and (Dizaines <> 8) then
             Res := Res + ' et un'
           else if Unites > 0 then
             Res := Res + '-' + TabUnites[Unites];
-        end
-        else
-          Res := Res + TabUnites[Unites];
+        end;
       end;
     end;
 
@@ -412,7 +423,7 @@ begin
   begin
     if Result <> '' then Result := Result + ' ';
     if Milliers = 1 then
-      Result := Result + 'mille' // On dit "mille", jamais "un mille"
+      Result := Result + 'mille'
     else
       Result := Result + StrMilliers + ' mille';
   end;
@@ -426,8 +437,6 @@ begin
   if Result <> '' then
     Result := UpperCase(Result[1]) + Copy(Result, 2, MaxInt);
 end;
-
-
 
 //Pour executer une requete dans une VCL (fenetre) HLITRECHERCHE...
 function TDMGesCloud.GetValue(const ASQL: string): Variant;

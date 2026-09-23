@@ -802,7 +802,7 @@ object FrameTableDevis: TFrameTableDevis
     PrintOptions.Printer = 'Default'
     PrintOptions.PrintOnSheet = 0
     ReportOptions.CreateDate = 46280.575471794000000000
-    ReportOptions.LastChange = 46286.725045324080000000
+    ReportOptions.LastChange = 46287.655581354160000000
     ScriptLanguage = 'PascalScript'
     ScriptText.Strings = (
       'begin'
@@ -867,6 +867,10 @@ object FrameTableDevis: TFrameTableDevis
       end
       item
         Name = 'VarTotalAlpha'
+        Value = ''
+      end
+      item
+        Name = 'VarLogo'
         Value = ''
       end>
     Style = <>

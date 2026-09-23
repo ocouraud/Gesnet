@@ -65,7 +65,6 @@ type
     procedure Secteursgographiques1Click(Sender: TObject);
     procedure Dpotsdemarchandises1Click(Sender: TObject);
     procedure Postesachats1Click(Sender: TObject);
-    procedure Catgoriestarifaires1Click(Sender: TObject);
     procedure Nodechronopices1Click(Sender: TObject);
     procedure Tarifsgnraux1Click(Sender: TObject);
     procedure Infoscomplmentaires1Click(Sender: TObject);
@@ -385,12 +384,6 @@ var
 begin
   // Votre méthode qui crée ou ouvre l'onglet/frame
   MonFrame := OuvrirOnglet<TFrameTableEntvteaa>('Historique des Factures', 'shell32_16741');
-end;
-
-
-procedure TFormMenuPrincipal.Catgoriestarifaires1Click(Sender: TObject);
-begin
-  OuvrirOnglet<TFrameTableActivite>('Catégories tarifaires', 'server_configuration');
 end;
 
 
