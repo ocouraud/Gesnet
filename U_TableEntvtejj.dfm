@@ -83,7 +83,7 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
       OnClick = BtnCentralisationClick
     end
     object BtnImprimer: TButton
-      Left = 270
+      Left = 276
       Top = 0
       Width = 99
       Height = 29
@@ -2488,7 +2488,7 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
     PrintOptions.Printer = 'Default'
     PrintOptions.PrintOnSheet = 0
     ReportOptions.CreateDate = 46280.575471794000000000
-    ReportOptions.LastChange = 46287.654491284720000000
+    ReportOptions.LastChange = 46288.443431979170000000
     ScriptLanguage = 'PascalScript'
     ScriptText.Strings = (
       'begin'
@@ -2562,6 +2562,10 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
       item
         Name = 'VarLogo'
         Value = ''
+      end
+      item
+        Name = 'VarLibTypeFacture'
+        Value = ''
       end>
     Style = <>
     Watermarks = <>
@@ -2614,8 +2618,8 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
           Frame.Typ = []
           Memo.UTF8W = (
             
-              'FACTURE No [frxDBDatasetFacture."CODFAC"] du [frxDBDatasetFactur' +
-              'e."DATE_"]')
+              '[VarLibTypeFacture] No [frxDBDatasetFacture."CODFAC"] du [frxDBD' +
+              'atasetFacture."DATE_"]')
           ParentFont = False
           Formats = <
             item
@@ -2635,10 +2639,16 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
           ContentScaleOptions.Constraints.MinIterationValue = 0
           DataSet = frxDBDatasetFacture
           DataSetName = 'frxDBDatasetFacture'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
           Frame.Typ = []
           Memo.UTF8W = (
             'Client: [frxDBDatasetFacture."CODCLI"]'
             'No TAHITI: [frxDBDatasetFacture."NOTAHITI"]')
+          ParentFont = False
           Formats = <
             item
             end

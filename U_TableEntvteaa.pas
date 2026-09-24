@@ -338,6 +338,10 @@ begin
   frxReportFacture.Variables.AddVariable('Globales','VarRef_Bancaire', DM_Olivier.FDQueryCtrstock.FieldByName('BANQUE').AsString);
   frxReportFacture.Variables.AddVariable('Globales','VarTotalAlpha',QuotedStr('Facture arrêtée à la somme de : ' +
     DMGesCloud.MontantenLettres(FDQueryEntvteaa.FieldByName('MT_TTC').AsInteger) + ' Francs CFP.'));
+  if FDQueryEntvteaa.FieldByName('TYPE_').AsString='F' then
+    frxReportFacture.Variables.AddVariable('Globales','VarLibTypeFacture', QuotedStr('FACTURE'))
+  else
+    frxReportFacture.Variables.AddVariable('Globales','VarLibTypeFacture', QuotedStr('AVOIR'));
 
   //Lecture representant
   DM_Olivier.FDQueryRepres.SQL.Text:='select * from repres where codrep=:codrep';

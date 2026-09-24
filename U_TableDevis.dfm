@@ -802,7 +802,7 @@ object FrameTableDevis: TFrameTableDevis
     PrintOptions.Printer = 'Default'
     PrintOptions.PrintOnSheet = 0
     ReportOptions.CreateDate = 46280.575471794000000000
-    ReportOptions.LastChange = 46287.655581354160000000
+    ReportOptions.LastChange = 46288.595777523150000000
     ScriptLanguage = 'PascalScript'
     ScriptText.Strings = (
       'begin'
@@ -817,8 +817,8 @@ object FrameTableDevis: TFrameTableDevis
         DataSetName = 'frxDBDatasetDevis'
       end
       item
-        DataSet = frxDBDatasetTVA
-        DataSetName = 'frxDBDatasetTVA'
+        DataSet = frxDBDatasetTVADevis
+        DataSetName = 'frxDBDatasetTVADevis'
       end>
     Variables = <
       item
@@ -879,7 +879,7 @@ object FrameTableDevis: TFrameTableDevis
       Height = 1000.000000000000000000
       Width = 1000.000000000000000000
     end
-    object Page1: TfrxReportPage
+    object PageDevis: TfrxReportPage
       PaperWidth = 210.000000000000000000
       PaperHeight = 297.000000000000000000
       PaperSize = 9
@@ -1378,13 +1378,13 @@ object FrameTableDevis: TFrameTableDevis
         Width = 755.906000000000000000
         PrintOnFirstPage = False
         PrintOnSinglePage = True
-        object Subreport1: TfrxSubreport
+        object SubreportTVA: TfrxSubreport
           AllowVectorExport = True
           Left = 3.779530050000000000
           Top = 26.456701020000000000
           Width = 362.834876440000000000
           Height = 102.047304040000000000
-          Page = frxReportDevis.Page2
+          Page = frxReportDevis.PageTVA
           PrintOnParent = True
         end
         object VarMEMO_DEV: TfrxMemoView
@@ -2033,7 +2033,7 @@ object FrameTableDevis: TFrameTableDevis
         end
       end
     end
-    object Page2: TfrxReportPage
+    object PageTVA: TfrxReportPage
       PaperWidth = 210.000000000000000000
       PaperHeight = 297.000000000000000000
       PaperSize = 9
@@ -2053,8 +2053,8 @@ object FrameTableDevis: TFrameTableDevis
         Height = 18.897650000000000000
         Top = 60.472480000000000000
         Width = 755.906000000000000000
-        DataSet = frxDBDatasetTVA
-        DataSetName = 'frxDBDatasetTVA'
+        DataSet = frxDBDatasetTVADevis
+        DataSetName = 'frxDBDatasetTVADevis'
         PrintIfDetailEmpty = True
         RowCount = 0
         object MemofrxDBDatasetTVATaux: TfrxMemoView
@@ -2066,8 +2066,8 @@ object FrameTableDevis: TFrameTableDevis
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
           DataField = 'Taux'
-          DataSet = frxDBDatasetTVA
-          DataSetName = 'frxDBDatasetTVA'
+          DataSet = frxDBDatasetTVADevis
+          DataSetName = 'frxDBDatasetTVADevis'
           DisplayFormat.FormatStr = '%2.2n'
           DisplayFormat.Kind = fkNumeric
           Font.Charset = DEFAULT_CHARSET
@@ -2079,7 +2079,7 @@ object FrameTableDevis: TFrameTableDevis
           GapX = 5.000000000000000000
           HAlign = haRight
           Memo.UTF8W = (
-            '[frxDBDatasetTVA."Taux"]')
+            '[frxDBDatasetTVADevis."Taux"]')
           ParentFont = False
           VAlign = vaCenter
         end
@@ -2092,8 +2092,8 @@ object FrameTableDevis: TFrameTableDevis
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
           DataField = 'BaseHT'
-          DataSet = frxDBDatasetTVA
-          DataSetName = 'frxDBDatasetTVA'
+          DataSet = frxDBDatasetTVADevis
+          DataSetName = 'frxDBDatasetTVADevis'
           DisplayFormat.FormatStr = '%2.2n'
           DisplayFormat.Kind = fkNumeric
           Font.Charset = DEFAULT_CHARSET
@@ -2105,7 +2105,7 @@ object FrameTableDevis: TFrameTableDevis
           GapX = 5.000000000000000000
           HAlign = haRight
           Memo.UTF8W = (
-            '[frxDBDatasetTVA."BaseHT"]')
+            '[frxDBDatasetTVADevis."BaseHT"]')
           ParentFont = False
           VAlign = vaCenter
         end
@@ -2118,8 +2118,8 @@ object FrameTableDevis: TFrameTableDevis
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
           DataField = 'MontantTVA'
-          DataSet = frxDBDatasetTVA
-          DataSetName = 'frxDBDatasetTVA'
+          DataSet = frxDBDatasetTVADevis
+          DataSetName = 'frxDBDatasetTVADevis'
           DisplayFormat.FormatStr = '%2.2n'
           DisplayFormat.Kind = fkNumeric
           Font.Charset = DEFAULT_CHARSET
@@ -2131,7 +2131,7 @@ object FrameTableDevis: TFrameTableDevis
           GapX = 5.000000000000000000
           HAlign = haRight
           Memo.UTF8W = (
-            '[frxDBDatasetTVA."MontantTVA"]')
+            '[frxDBDatasetTVADevis."MontantTVA"]')
           ParentFont = False
           VAlign = vaCenter
         end
@@ -2143,8 +2143,8 @@ object FrameTableDevis: TFrameTableDevis
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
           DataField = 'NoTVA'
-          DataSet = frxDBDatasetTVA
-          DataSetName = 'frxDBDatasetTVA'
+          DataSet = frxDBDatasetTVADevis
+          DataSetName = 'frxDBDatasetTVADevis'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
           Font.Height = -11
@@ -2153,7 +2153,7 @@ object FrameTableDevis: TFrameTableDevis
           Frame.Typ = [ftLeft, ftBottom]
           HAlign = haCenter
           Memo.UTF8W = (
-            '[frxDBDatasetTVA."NoTVA"]')
+            '[frxDBDatasetTVADevis."NoTVA"]')
           ParentFont = False
           VAlign = vaCenter
         end
@@ -2166,8 +2166,8 @@ object FrameTableDevis: TFrameTableDevis
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
           DataField = 'Libelle'
-          DataSet = frxDBDatasetTVA
-          DataSetName = 'frxDBDatasetTVA'
+          DataSet = frxDBDatasetTVADevis
+          DataSetName = 'frxDBDatasetTVADevis'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
           Font.Height = -11
@@ -2175,7 +2175,7 @@ object FrameTableDevis: TFrameTableDevis
           Font.Style = []
           Frame.Typ = [ftLeft, ftBottom]
           Memo.UTF8W = (
-            '[frxDBDatasetTVA."Libelle"]')
+            '[frxDBDatasetTVADevis."Libelle"]')
           ParentFont = False
           VAlign = vaCenter
         end
@@ -3881,8 +3881,8 @@ object FrameTableDevis: TFrameTableDevis
       Size = 2
     end
   end
-  object frxDBDatasetTVA: TfrxDBDataset
-    UserName = 'frxDBDatasetTVA'
+  object frxDBDatasetTVADevis: TfrxDBDataset
+    UserName = 'frxDBDatasetTVADevis'
     CloseDataSource = False
     DataSet = FDQueryTVA
     BCDToCurrency = False

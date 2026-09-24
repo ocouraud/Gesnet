@@ -505,9 +505,15 @@ begin
       Writeln(F, 'No TAHITI : ' + DM_Olivier.FDQueryCtrstock.FieldByName('NOTAHITI').AsString +
       ' - Tel. : '+ DM_Olivier.FDQueryCtrstock.FieldByName('TEL').AsString);
       Writeln(F, 'Client : ' + FDQueryEntvtejj.FieldByName('CODCLI').AsString + ' ' + FDQueryEntvtejj.FieldByName('NOM').AsString);
-      Writeln(F, 'Facture : ' + FDQueryEntvtejj.FieldByName('CODFAC').AsString +
-                 '    ' + FormatDateTime('dd/mm/yyyy', FDQueryEntvtejj.FieldByName('DATE_').AsDateTime)); //+
-    //             ' ' + TimeToStr(FDQueryEntvtejj.FieldByName('HEURE').AsDateTime));
+      if FDQueryEntvtejj.FieldByName('TYPE_').AsString='F' then
+        Writeln(F, 'Facture : ' + FDQueryEntvtejj.FieldByName('CODFAC').AsString +
+                 '            ' + FormatDateTime('dd/mm/yyyy', FDQueryEntvtejj.FieldByName('DATE_').AsDateTime) +
+                 ' ' + DM_Olivier.CentièmesVersHeureLisible(FDQueryEntvtejj.FieldByName('HEURE').AsInteger))
+      else
+        Writeln(F, 'Avoir : ' + FDQueryEntvtejj.FieldByName('CODFAC').AsString +
+               '            ' + FormatDateTime('dd/mm/yyyy', FDQueryEntvtejj.FieldByName('DATE_').AsDateTime) +
+               ' ' + DM_Olivier.CentièmesVersHeureLisible(FDQueryEntvtejj.FieldByName('HEURE').AsInteger));
+
       Writeln(F, '-----------------------------------------------');
 
       // En-têtes du tableau
@@ -615,6 +621,10 @@ begin
   frxReportFacture.Variables.AddVariable('Globales','VarRef_Bancaire', DM_Olivier.FDQueryCtrstock.FieldByName('BANQUE').AsString);
   frxReportFacture.Variables.AddVariable('Globales','VarTotalAlpha',QuotedStr('Facture arrêtée à la somme de : ' +
     DMGesCloud.MontantenLettres(FDQueryEntvtejj.FieldByName('MT_TTC').AsInteger) + ' Francs CFP.'));
+  if FDQueryEntvtejj.FieldByName('TYPE_').AsString='F' then
+    frxReportFacture.Variables.AddVariable('Globales','VarLibTypeFacture', QuotedStr('FACTURE'))
+  else
+    frxReportFacture.Variables.AddVariable('Globales','VarLibTypeFacture', QuotedStr('AVOIR'));
 
   //Lecture representant
   DM_Olivier.FDQueryRepres.SQL.Text:='select * from repres where codrep=:codrep';

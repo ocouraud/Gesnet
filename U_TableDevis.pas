@@ -227,7 +227,7 @@ type
     FDQueryDevisMT_TSOC_1: TBCDField;
     frxPDFExport1: TfrxPDFExport;
     FDQueryTVA: TFDQuery;
-    frxDBDatasetTVA: TfrxDBDataset;
+    frxDBDatasetTVADevis: TfrxDBDataset;
     FDQueryTVANoTVA: TLargeintField;
     FDQueryTVATaux: TFMTBCDField;
     FDQueryTVABaseHT: TBCDField;

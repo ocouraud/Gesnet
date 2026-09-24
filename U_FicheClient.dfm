@@ -194,7 +194,7 @@ object FormFicheClient: TFormFicheClient
     Top = 112
     Width = 799
     Height = 406
-    ActivePage = TabSheetDevis
+    ActivePage = TabSheet5
     Align = alCustom
     Anchors = [akLeft, akTop, akRight, akBottom]
     TabOrder = 5
@@ -242,7 +242,7 @@ object FormFicheClient: TFormFicheClient
       end
       object Label10: TLabel
         Left = 3
-        Top = 261
+        Top = 264
         Width = 44
         Height = 15
         Caption = 'No GSM'
@@ -258,7 +258,7 @@ object FormFicheClient: TFormFicheClient
       end
       object Label12: TLabel
         Left = 284
-        Top = 261
+        Top = 264
         Width = 104
         Height = 15
         Caption = 'Zone geographique'
@@ -329,7 +329,7 @@ object FormFicheClient: TFormFicheClient
       end
       object DBEdit11: TDBEdit
         Left = 3
-        Top = 277
+        Top = 280
         Width = 154
         Height = 23
         DataField = 'NOGSM'
@@ -347,7 +347,7 @@ object FormFicheClient: TFormFicheClient
       end
       object DBLookupComboBoxGeo: TDBLookupComboBox
         Left = 284
-        Top = 282
+        Top = 280
         Width = 173
         Height = 23
         DataField = 'CODGEO'
@@ -1122,16 +1122,19 @@ object FormFicheClient: TFormFicheClient
           item
             Expanded = False
             FieldName = 'LIBELLE'
+            Width = 257
             Visible = True
           end
           item
             Expanded = False
             FieldName = 'DEBIT'
+            Width = 77
             Visible = True
           end
           item
             Expanded = False
             FieldName = 'CREDIT'
+            Width = 81
             Visible = True
           end
           item
@@ -1478,12 +1481,12 @@ object FormFicheClient: TFormFicheClient
   end
   object DSTarif: TDataSource
     DataSet = DMGesCloud.ReqTarif
-    Left = 380
-    Top = 456
+    Left = 372
+    Top = 408
   end
   object DSTarifcli: TDataSource
     DataSet = FDQueryTarifcli
-    Left = 312
+    Left = 264
     Top = 460
   end
   object FDQueryTarifcli: TFDQuery
@@ -1556,8 +1559,8 @@ object FormFicheClient: TFormFicheClient
   end
   object DSTresor: TDataSource
     DataSet = FDQueryTresor
-    Left = 644
-    Top = 266
+    Left = 508
+    Top = 354
   end
   object FDQueryStatis: TFDQuery
     MasterSource = DSClients
@@ -1600,7 +1603,7 @@ object FormFicheClient: TFormFicheClient
   end
   object DSCliinfocompl: TDataSource
     DataSet = FDQueryCliinfocompl
-    Left = 436
+    Left = 548
     Top = 458
   end
   object FDQueryEnt_prof: TFDQuery
@@ -1609,8 +1612,8 @@ object FormFicheClient: TFormFicheClient
     Connection = DMGesCloud.ConnexionGesCloud
     SQL.Strings = (
       'select * from ent_prof where codcli=:codcli')
-    Left = 580
-    Top = 266
+    Left = 508
+    Top = 306
     ParamData = <
       item
         Name = 'CODCLI'
@@ -1621,5 +1624,5584 @@ object FormFicheClient: TFormFicheClient
     DataSet = FDQueryEnt_prof
     Left = 420
     Top = 354
+  end
+  object FDQueryTVAFacture: TFDQuery
+    MasterSource = DSEntvteaa
+    MasterFields = 'CODFAC'
+    Connection = DMGesCloud.ConnexionGesCloud
+    SQL.Strings = (
+      
+        '-- 1. Taux Exon'#233'r'#233' (TVA0) -> On utilise une sous-requ'#234'te * 0 pou' +
+        'r forcer le type FMTBcd'
+      'SELECT 0 as NoTVA,'
+      '  (SELECT libelle FROM parame WHERE code = '#39'TVA0'#39') AS Libelle,'
+      
+        '  (SELECT taux FROM par_effet WHERE code = '#39'TVA0'#39' AND ep.date_ B' +
+        'ETWEEN dat_deb AND dat_fin) AS Taux, '
+      '  mt_ht0 AS BaseHT, '
+      '  0.00 AS MontantTVA '
+      'FROM entvteaa ep'
+      'WHERE ep.CODFAC = :CODFAC AND ep.mt_ht0 <> 0'
+      ''
+      'UNION ALL'
+      ''
+      '-- 2. Zone 1 (TVA1)'
+      'SELECT 1 as NoTVA,'
+      '  (SELECT libelle FROM parame WHERE code = '#39'TVA1'#39') AS Libelle,'
+      
+        '  (SELECT taux FROM par_effet WHERE code = '#39'TVA1'#39' AND ep.date_ B' +
+        'ETWEEN dat_deb AND dat_fin) AS Taux, '
+      '  mt_ht1 AS BaseHT, '
+      '  mt_tva1 AS MontantTVA '
+      'FROM entvteaa ep'
+      'WHERE ep.CODFAC = :CODFAC AND ep.mt_ht1 <> 0'
+      ''
+      'UNION ALL'
+      ''
+      '-- 3. Zone 2 (TVA2)'
+      'SELECT 2 as NoTVA,'
+      '  (SELECT libelle FROM parame WHERE code = '#39'TVA2'#39') AS Libelle,'
+      
+        '  (SELECT taux FROM par_effet WHERE code = '#39'TVA2'#39' AND ep.date_ B' +
+        'ETWEEN dat_deb AND dat_fin) AS Taux, '
+      '  mt_ht2 AS BaseHT, '
+      '  mt_tva2 AS MontantTVA '
+      'FROM entvteaa ep'
+      'WHERE ep.CODFAC = :CODFAC AND ep.mt_ht2 <> 0'
+      ''
+      'UNION ALL'
+      ''
+      '-- 4. Zone 3 (TVA3)'
+      'SELECT 3 as NoTVA,'
+      '  (SELECT libelle FROM parame WHERE code = '#39'TVA3'#39') AS Libelle,'
+      
+        '  (SELECT taux FROM par_effet WHERE code = '#39'TVA3'#39' AND ep.date_ B' +
+        'ETWEEN dat_deb AND dat_fin) AS Taux, '
+      '  mt_ht3 AS BaseHT, '
+      '  mt_tva3 AS MontantTVA '
+      'FROM entvteaa ep'
+      'WHERE ep.CODFAC = :CODFAC AND ep.mt_ht3 <> 0'
+      ''
+      'UNION ALL'
+      ''
+      '-- 5. Zone Interm'#233'diaire / '#206'les (TVAI)'
+      'SELECT 4 as NoTVA, '
+      '  (SELECT libelle FROM parame WHERE code = '#39'TVAI'#39') AS Libelle,'
+      
+        '  (SELECT taux FROM par_effet WHERE code = '#39'TVAI'#39' AND ep.date_ B' +
+        'ETWEEN dat_deb AND dat_fin) AS Taux, '
+      '  mt_hti AS BaseHT, '
+      '  mt_tvai AS MontantTVA '
+      'FROM entvteaa ep'
+      'WHERE ep.CODFAC = :CODFAC AND ep.mt_hti <> 0'
+      '')
+    Left = 128
+    Top = 184
+    ParamData = <
+      item
+        Name = 'CODFAC'
+        ParamType = ptInput
+      end>
+    object FDQueryTVAFactureNoTVA: TLargeintField
+      AutoGenerateValue = arDefault
+      FieldName = 'NoTVA'
+      Origin = 'NoTVA'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryTVAFactureLibelle: TStringField
+      FieldName = 'Libelle'
+      Size = 30
+    end
+    object FDQueryTVAFactureTaux: TFMTBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'Taux'
+      Origin = 'Taux'
+      ProviderFlags = []
+      ReadOnly = True
+      Precision = 9
+      Size = 5
+    end
+    object FDQueryTVAFactureBaseHT: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'BaseHT'
+      Origin = 'BaseHT'
+      ProviderFlags = []
+      ReadOnly = True
+      Precision = 11
+      Size = 2
+    end
+    object FDQueryTVAFactureMontantTVA: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'MontantTVA'
+      Origin = 'MontantTVA'
+      ProviderFlags = []
+      ReadOnly = True
+      Precision = 9
+      Size = 2
+    end
+  end
+  object frxPDFExportFacture: TfrxPDFExport
+    UseFileCache = True
+    ShowProgress = True
+    OverwritePrompt = False
+    DataOnly = False
+    InteractiveFormsFontSubset = 'A-Z,a-z,0-9,#43-#47 '
+    OpenAfterExport = False
+    PrintOptimized = False
+    Outline = False
+    Background = False
+    Quality = 95
+    Author = 'FastReport'
+    Subject = 'FastReport PDF export'
+    Creator = 'FastReport'
+    ProtectionFlags = [ePrint, eModify, eCopy, eAnnot]
+    HideToolbar = False
+    HideMenubar = False
+    HideWindowUI = False
+    FitWindow = False
+    CenterWindow = False
+    PrintScaling = False
+    PdfA = False
+    PDFStandard = psNone
+    PDFVersion = pv17
+    PDFColorSpace = csDeviceRGB
+    Left = 368
+    Top = 200
+  end
+  object frxDBDatasetReglements: TfrxDBDataset
+    UserName = 'frxDBDatasetReglements'
+    CloseDataSource = False
+    DataSet = FDQueryReglements
+    BCDToCurrency = False
+    DataSetOptions = []
+    Left = 288
+    Top = 232
+  end
+  object frxDBDatasetTVA: TfrxDBDataset
+    UserName = 'frxDBDatasetTVA'
+    CloseDataSource = False
+    DataSet = FDQueryTVAFacture
+    BCDToCurrency = False
+    DataSetOptions = []
+    Left = 272
+    Top = 176
+  end
+  object frxDBDatasetFacture: TfrxDBDataset
+    UserName = 'frxDBDatasetFacture'
+    CloseDataSource = False
+    DataSet = FDQueryFacture
+    BCDToCurrency = False
+    DataSetOptions = []
+    Left = 208
+    Top = 208
+  end
+  object frxReportFacture: TfrxReport
+    Version = '2024.1.2'
+    DotMatrixReport = False
+    IniFile = '\Software\Fast Reports'
+    PreviewOptions.Buttons = [pbPrint, pbLoad, pbSave, pbExport, pbZoom, pbFind, pbOutline, pbPageSetup, pbTools, pbEdit, pbNavigator, pbExportQuick, pbCopy, pbSelection, pbWatermarks]
+    PreviewOptions.Zoom = 1.000000000000000000
+    PrintOptions.Printer = 'Default'
+    PrintOptions.PrintOnSheet = 0
+    ReportOptions.CreateDate = 46280.575471794000000000
+    ReportOptions.LastChange = 46287.654891192130000000
+    ScriptLanguage = 'PascalScript'
+    ScriptText.Strings = (
+      'begin'
+      ''
+      'end.')
+    Left = 128
+    Top = 256
+    Datasets = <
+      item
+        DataSet = frxDBDatasetTVA
+        DataSetName = 'frxDBDatasetTVA'
+      end
+      item
+        DataSet = frxDBDatasetFacture
+        DataSetName = 'frxDBDatasetFacture'
+      end
+      item
+        DataSet = frxDBDatasetReglements
+        DataSetName = 'frxDBDatasetReglements'
+      end>
+    Variables = <
+      item
+        Name = ' Globales'
+        Value = Null
+      end
+      item
+        Name = 'VarNomEntreprise'
+        Value = #39'Societe'#39
+      end
+      item
+        Name = 'VarTelephone'
+        Value = #39'87777600'#39
+      end
+      item
+        Name = 'VarAdresse'
+        Value = #39'Kauehi'#39
+      end
+      item
+        Name = 'VarNoTAHITI'
+        Value = #39'1234567899'#39
+      end
+      item
+        Name = 'VarFAX'
+        Value = #39'123456789'#39
+      end
+      item
+        Name = 'VarEMAIL'
+        Value = #39'contact@fai.com'#39
+      end
+      item
+        Name = 'VarMEMO_FAC'
+        Value = #39'memo fac'#39
+      end
+      item
+        Name = 'VarRC'
+        Value = #39'1000A'#39
+      end
+      item
+        Name = 'VarRepres'
+        Value = #39'Commercial'#39
+      end
+      item
+        Name = 'VarRef_Bancaire'
+        Value = Null
+      end
+      item
+        Name = 'VarTotalAlpha'
+        Value = Null
+      end
+      item
+        Name = 'VarLogo'
+        Value = ''
+      end>
+    Style = <>
+    Watermarks = <>
+    object Data: TfrxDataPage
+      Height = 1000.000000000000000000
+      Width = 1000.000000000000000000
+    end
+    object PageFacture: TfrxReportPage
+      PaperWidth = 210.000000000000000000
+      PaperHeight = 297.000000000000000000
+      PaperSize = 9
+      LeftMargin = 5.000000000000000000
+      RightMargin = 5.000000000000000000
+      TopMargin = 10.000000000000000000
+      BottomMargin = 10.000000000000000000
+      Frame.Typ = []
+      MirrorMode = []
+      object GroupHeader1: TfrxGroupHeader
+        FillType = ftBrush
+        FillGap.Top = 0
+        FillGap.Left = 0
+        FillGap.Bottom = 0
+        FillGap.Right = 0
+        Frame.Typ = []
+        Height = 162.519606930000000000
+        Top = 18.897650000000000000
+        Width = 755.906000000000000000
+        Child = frxReportFacture.Child1
+        Condition = '<frxDBDatasetFacture."CODFAC">'
+        ResetPageNumbers = True
+        StartNewPage = True
+        Stretched = True
+        object MemofrxDBDataset1CODFAC: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 355.275820000000000000
+          Top = 37.795300000000000000
+          Width = 283.464750000000000000
+          Height = 18.897650000000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = frxDBDatasetFacture
+          DataSetName = 'frxDBDatasetFacture'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -16
+          Font.Name = 'Arial'
+          Font.Style = [fsBold]
+          Frame.Typ = []
+          Memo.UTF8W = (
+            
+              'FACTURE No [frxDBDatasetFacture."CODFAC"] du [frxDBDatasetFactur' +
+              'e."DATE_"]')
+          ParentFont = False
+          Formats = <
+            item
+            end
+            item
+            end>
+        end
+        object MemofrxDBDataset1CODCLI: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 355.275820000000000000
+          Top = 83.149660000000000000
+          Width = 192.756030000000000000
+          Height = 30.236240000000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = frxDBDatasetFacture
+          DataSetName = 'frxDBDatasetFacture'
+          Frame.Typ = []
+          Memo.UTF8W = (
+            'Client: [frxDBDatasetFacture."CODCLI"]'
+            'No TAHITI: [frxDBDatasetFacture."NOTAHITI"]')
+          Formats = <
+            item
+            end
+            item
+            end>
+        end
+        object MemofrxDBDataset1NOM: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 355.275820000000000000
+          Top = 117.165430000000000000
+          Width = 389.291590000000000000
+          Height = 37.795300000000000000
+          StretchMode = smActualHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = frxDBDatasetFacture
+          DataSetName = 'frxDBDatasetFacture'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = [fsBold]
+          Frame.Typ = []
+          Memo.UTF8W = (
+            '[frxDBDatasetFacture."NOM"]')
+          ParentFont = False
+        end
+        object MemoVarNomEntreprise: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 3.779530000000000000
+          Top = 3.779530000000000000
+          Width = 525.354670000000000000
+          Height = 18.897650000000000000
+          StretchMode = smActualHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = frxDBDatasetReglements
+          DataSetName = 'frxDBDatasetReglements'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -16
+          Font.Name = 'Arial'
+          Font.Style = [fsBold]
+          Frame.Typ = []
+          Memo.UTF8W = (
+            '[VarNomEntreprise]')
+          ParentFont = False
+        end
+        object MemoVarAdresse: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 3.779530000000000000
+          Top = 30.236240000000000000
+          Width = 336.378170000000000000
+          Height = 18.897650000000000000
+          StretchMode = smActualHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Frame.Typ = []
+          Memo.UTF8W = (
+            '[VarAdresse]')
+        end
+        object LogoEntreprise: TfrxPictureView
+          AllowVectorExport = True
+          Left = 642.520076410000000000
+          Top = 7.559060390000000000
+          Width = 102.047244090000000000
+          Height = 102.047307860000000000
+          Center = True
+          Frame.Typ = []
+          HightQuality = False
+          Transparent = False
+          TransparentColor = clWhite
+        end
+        object VarEMAIL: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 3.779530000000000000
+          Top = 56.692950000000000000
+          Width = 336.378170000000000000
+          Height = 18.897650000000000000
+          StretchMode = smActualHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Frame.Typ = []
+          Memo.UTF8W = (
+            'email: [VarEMAIL]'
+            'T'#233'l: [VarTelephone]'
+            'Fax: [VarFAX]'
+            'No RC: [VarRC]'
+            'No TAHITI: [VarNoTAHITI]')
+          Formats = <
+            item
+            end
+            item
+            end
+            item
+            end
+            item
+            end
+            item
+            end>
+        end
+        object MemofrxDBDataset1REFERENCE_: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 355.275820000000000000
+          Top = 60.472480000000000000
+          Width = 192.756030000000000000
+          Height = 18.897650000000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = frxDBDatasetFacture
+          DataSetName = 'frxDBDatasetFacture'
+          Frame.Typ = []
+          Memo.UTF8W = (
+            'R'#233'f'#233'rence : [frxDBDatasetFacture."REFERENCE_"]')
+        end
+        object MemofrxDBDataset1OBSERV: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 3.779530000000000000
+          Top = 86.929190000000000000
+          Width = 336.378170000000000000
+          Height = 68.031540000000000000
+          StretchMode = smActualHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = frxDBDatasetFacture
+          DataSetName = 'frxDBDatasetFacture'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftRight, ftTop, ftBottom]
+          Memo.UTF8W = (
+            'Observations: [frxDBDatasetFacture."OBSERV"]')
+          ParentFont = False
+        end
+      end
+      object MasterData1: TfrxMasterData
+        FillType = ftBrush
+        FillGap.Top = 0
+        FillGap.Left = 0
+        FillGap.Bottom = 0
+        FillGap.Right = 0
+        Frame.Typ = [ftLeft, ftRight, ftTop, ftBottom]
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Arial'
+        Font.Style = []
+        Height = 19.653543310000000000
+        ParentFont = False
+        Top = 287.244280000000000000
+        Width = 755.906000000000000000
+        DataSet = frxDBDatasetFacture
+        DataSetName = 'frxDBDatasetFacture'
+        PrintIfDetailEmpty = True
+        RowCount = 0
+        Stretched = True
+        object MemofrxDBDataset1CODART: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 3.779530000000000000
+          Width = 83.149660000000000000
+          Height = 18.897637800000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = frxDBDatasetFacture
+          DataSetName = 'frxDBDatasetFacture'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = []
+          Memo.UTF8W = (
+            '[frxDBDatasetFacture."CODART"]')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object MemofrxDBDataset1LIBELLE: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 86.929190000000000000
+          Width = 230.551330000000000000
+          Height = 18.897650000000000000
+          StretchMode = smActualHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = frxDBDatasetFacture
+          DataSetName = 'frxDBDatasetFacture'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft]
+          GapX = 5.000000000000000000
+          Memo.UTF8W = (
+            '[frxDBDatasetFacture."LIBELLE"]')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object MemofrxDBDataset1QTE: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 317.716760000000000000
+          Width = 56.692950000000000000
+          Height = 18.897650000000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = frxDBDatasetFacture
+          DataSetName = 'frxDBDatasetFacture'
+          DisplayFormat.DecimalSeparator = ','
+          DisplayFormat.FormatStr = '%2.2f'
+          DisplayFormat.Kind = fkNumeric
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft]
+          GapX = 5.000000000000000000
+          HAlign = haRight
+          Memo.UTF8W = (
+            '[frxDBDatasetFacture."QTE"]')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object MemofrxDBDataset1PRIXHT: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 374.409710000000000000
+          Width = 64.252010000000000000
+          Height = 18.897650000000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = frxDBDatasetFacture
+          DataSetName = 'frxDBDatasetFacture'
+          DisplayFormat.FormatStr = '%2.2n'
+          DisplayFormat.Kind = fkNumeric
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft]
+          GapX = 5.000000000000000000
+          HAlign = haRight
+          Memo.UTF8W = (
+            '[frxDBDatasetFacture."PRIXHT"]')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object MemofrxDBDataset1PRC_REMISE_2: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 438.661720000000000000
+          Width = 45.354360000000000000
+          Height = 18.897650000000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = frxDBDatasetFacture
+          DataSetName = 'frxDBDatasetFacture'
+          DisplayFormat.DecimalSeparator = ','
+          DisplayFormat.FormatStr = '%2.2n'
+          DisplayFormat.Kind = fkNumeric
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft]
+          GapX = 5.000000000000000000
+          HAlign = haRight
+          HideZeros = True
+          Memo.UTF8W = (
+            '[frxDBDatasetFacture."PRC_REMISE_2"]')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object MemofrxDBDataset1PRIXNET: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 484.016080000000000000
+          Width = 60.472480000000000000
+          Height = 18.897650000000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = frxDBDatasetFacture
+          DataSetName = 'frxDBDatasetFacture'
+          DisplayFormat.FormatStr = '%2.2n'
+          DisplayFormat.Kind = fkNumeric
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft]
+          GapX = 5.000000000000000000
+          HAlign = haRight
+          Memo.UTF8W = (
+            '[frxDBDatasetFacture."PRIXNET"]')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object MemofrxDBDataset1TOTHT_1: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 606.488560000000000000
+          Width = 64.252010000000000000
+          Height = 18.897650000000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = frxDBDatasetFacture
+          DataSetName = 'frxDBDatasetFacture'
+          DisplayFormat.FormatStr = '%2.2n'
+          DisplayFormat.Kind = fkNumeric
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft]
+          GapX = 5.000000000000000000
+          HAlign = haRight
+          Memo.UTF8W = (
+            '[frxDBDatasetFacture."TOTHT_1"]')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object MemofrxDBDataset1MT_TTC_1: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 670.874460000000000000
+          Width = 68.031540000000000000
+          Height = 18.897650000000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = frxDBDatasetFacture
+          DataSetName = 'frxDBDatasetFacture'
+          DisplayFormat.FormatStr = '%2.0n'
+          DisplayFormat.Kind = fkNumeric
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft]
+          GapX = 5.000000000000000000
+          HAlign = haRight
+          Memo.UTF8W = (
+            '[frxDBDatasetFacture."MT_TTC_1"]')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object MemofrxDBDataset1PRIXTTC: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 545.007874020000000000
+          Width = 61.228346460000000000
+          Height = 18.897650000000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = frxDBDatasetFacture
+          DataSetName = 'frxDBDatasetFacture'
+          DisplayFormat.FormatStr = '%2.0n'
+          DisplayFormat.Kind = fkNumeric
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft]
+          GapX = 5.000000000000000000
+          HAlign = haRight
+          Memo.UTF8W = (
+            '[frxDBDatasetFacture."PRIXTTC"]')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object MemofrxDBDataset1NO_TVA: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 738.897637795276000000
+          Width = 15.118120000000000000
+          Height = 18.897650000000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = frxDBDatasetFacture
+          DataSetName = 'frxDBDatasetFacture'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            '[frxDBDatasetFacture."NO_TVA"]')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+      end
+      object PageFooter1: TfrxPageFooter
+        FillType = ftBrush
+        FillGap.Top = 0
+        FillGap.Left = 0
+        FillGap.Bottom = 0
+        FillGap.Right = 0
+        Frame.Typ = []
+        Height = 236.330868980000000000
+        Top = 411.968770000000000000
+        Width = 755.906000000000000000
+        PrintOnFirstPage = False
+        PrintOnSinglePage = True
+        object SubreportTVA: TfrxSubreport
+          AllowVectorExport = True
+          Left = 3.779530050000000000
+          Top = 22.677180000000000000
+          Width = 362.834876440000000000
+          Height = 30.236234040000000000
+          Page = frxReportFacture.PageTVA
+          PrintOnParent = True
+        end
+        object VarMEMO_DEV: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 3.779530000000000000
+          Top = 194.756038980000000000
+          Width = 748.346940000000000000
+          Height = 34.015770000000000000
+          StretchMode = smActualHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Frame.Typ = []
+          Memo.UTF8W = (
+            '[VarMEMO_FAC]')
+        end
+        object Memo21: TfrxMemoView
+          AllowVectorExport = True
+          Left = 155.779541450000000000
+          Top = 4.000009210000000000
+          Width = 41.574829780000000000
+          Height = 18.897649770000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftTop, ftBottom]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'Taux')
+          ParentFont = False
+        end
+        object Memo22: TfrxMemoView
+          AllowVectorExport = True
+          Left = 197.354372550000000000
+          Top = 4.000009640000000000
+          Width = 79.370126920000000000
+          Height = 18.897649770000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftTop, ftBottom]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'Montant HT.')
+          ParentFont = False
+        end
+        object Memo23: TfrxMemoView
+          AllowVectorExport = True
+          Left = 276.724499470000000000
+          Top = 4.000009640000000000
+          Width = 90.708720730000000000
+          Height = 18.897649770000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftRight, ftTop, ftBottom]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'Montant TVA')
+          ParentFont = False
+        end
+        object Memo24: TfrxMemoView
+          AllowVectorExport = True
+          Left = 3.779530000000000000
+          Top = 4.000008980000000000
+          Width = 32.125984250000000000
+          Height = 18.897649770000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftTop, ftBottom]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'TVA')
+          ParentFont = False
+        end
+        object Memo25: TfrxMemoView
+          AllowVectorExport = True
+          Left = 36.015781740000000000
+          Top = 4.000008980000000000
+          Width = 120.188976380000000000
+          Height = 18.897649770000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftTop, ftBottom]
+          Memo.UTF8W = (
+            'Libell'#233)
+          ParentFont = False
+        end
+        object MemofrxDBDatasetDevisTOTHT: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 591.165740000000000000
+          Top = 30.574838980000000000
+          Width = 79.370130000000000000
+          Height = 18.897650000000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = frxDBDatasetFacture
+          DataSetName = 'frxDBDatasetFacture'
+          DisplayFormat.FormatStr = '%2.2n'
+          DisplayFormat.Kind = fkNumeric
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = []
+          HAlign = haRight
+          Memo.UTF8W = (
+            '[frxDBDatasetFacture."TOTHT"]')
+          ParentFont = False
+        end
+        object MemofrxDBDatasetDevisPRC_REMISE: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 548.031850000000000000
+          Top = 11.338598980000000000
+          Width = 37.795300000000000000
+          Height = 18.897650000000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = frxDBDatasetFacture
+          DataSetName = 'frxDBDatasetFacture'
+          DisplayFormat.FormatStr = '%2.2n'
+          DisplayFormat.Kind = fkNumeric
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = []
+          HAlign = haRight
+          HideZeros = True
+          Memo.UTF8W = (
+            '[frxDBDatasetFacture."PRC_REMISE"]')
+          ParentFont = False
+        end
+        object MemofrxDBDatasetDevisMT_REMISE: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 591.165740000000000000
+          Top = 11.338598980000000000
+          Width = 79.370130000000000000
+          Height = 18.897650000000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = frxDBDatasetFacture
+          DataSetName = 'frxDBDatasetFacture'
+          DisplayFormat.FormatStr = '%2.2n'
+          DisplayFormat.Kind = fkNumeric
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = []
+          HAlign = haRight
+          HideZeros = True
+          Memo.UTF8W = (
+            '[frxDBDatasetFacture."MT_REMISE"]')
+          ParentFont = False
+        end
+        object MemofrxDBDatasetDevisMT_TVA: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 591.165740000000000000
+          Top = 49.031548980000000000
+          Width = 79.370130000000000000
+          Height = 18.897650000000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = frxDBDatasetFacture
+          DataSetName = 'frxDBDatasetFacture'
+          DisplayFormat.FormatStr = '%2.2n'
+          DisplayFormat.Kind = fkNumeric
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = []
+          HAlign = haRight
+          Memo.UTF8W = (
+            '[frxDBDatasetFacture."MT_TVA"]')
+          ParentFont = False
+        end
+        object MemofrxDBDatasetDevisMT_TTC: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 560.929500000000000000
+          Top = 68.267788980000000000
+          Width = 109.606370000000000000
+          Height = 18.897650000000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = frxDBDatasetFacture
+          DataSetName = 'frxDBDatasetFacture'
+          DisplayFormat.FormatStr = '%2.0n'
+          DisplayFormat.Kind = fkNumeric
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -16
+          Font.Name = 'Arial'
+          Font.Style = [fsBold]
+          Frame.Typ = []
+          HAlign = haRight
+          Memo.UTF8W = (
+            '[frxDBDatasetFacture."MT_TTC"]')
+          ParentFont = False
+        end
+        object Memo27: TfrxMemoView
+          AllowVectorExport = True
+          Left = 472.441241020000000000
+          Top = 11.338592520000000000
+          Width = 75.590600730000000000
+          Height = 18.897644040000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Frame.Typ = []
+          Memo.UTF8W = (
+            'Remise %')
+        end
+        object Memo28: TfrxMemoView
+          AllowVectorExport = True
+          Left = 472.441241020000000000
+          Top = 30.574840110000000000
+          Width = 94.488281250000000000
+          Height = 18.897644040000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Frame.Typ = []
+          Memo.UTF8W = (
+            'Total net HT')
+        end
+        object Memo29: TfrxMemoView
+          AllowVectorExport = True
+          Left = 472.441241020000000000
+          Top = 49.031555170000000000
+          Width = 94.488281250000000000
+          Height = 18.897644040000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Frame.Typ = []
+          Memo.UTF8W = (
+            'Total taxes')
+        end
+        object Memo30: TfrxMemoView
+          AllowVectorExport = True
+          Left = 472.441241020000000000
+          Top = 68.267761230000000000
+          Width = 86.929221250000000000
+          Height = 18.897705080000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Frame.Typ = []
+          Memo.UTF8W = (
+            'Total TTC')
+        end
+        object Shape2: TfrxShapeView
+          AllowVectorExport = True
+          Left = 461.102653540000000000
+          Top = 3.779530000000000000
+          Width = 222.992270730000000000
+          Height = 90.708714040000000000
+          Frame.Typ = []
+          Shape = skRoundRectangle
+        end
+        object MemoVarRef_Bancaire: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 3.779530000000000000
+          Top = 164.519798980000000000
+          Width = 449.764070000000000000
+          Height = 18.897650000000000000
+          StretchMode = smActualHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Frame.Typ = []
+          Memo.UTF8W = (
+            '[VarRef_Bancaire]')
+        end
+        object MemoVarTotalAlpha: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 3.779530000000000000
+          Top = 138.063088980000000000
+          Width = 714.331170000000000000
+          Height = 18.897650000000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = [fsBold]
+          Frame.Typ = []
+          Memo.UTF8W = (
+            '[VarTotalAlpha]')
+          ParentFont = False
+        end
+        object SubreportReglements: TfrxSubreport
+          AllowVectorExport = True
+          Left = 3.779530820000000000
+          Top = 94.944980230000000000
+          Width = 298.582870730000000000
+          Height = 34.015764040000000000
+          Page = frxReportFacture.PageReglements
+          PrintOnParent = True
+        end
+        object Memo37: TfrxMemoView
+          AllowVectorExport = True
+          Left = 3.779530000000000000
+          Top = 76.047319210000000000
+          Width = 68.031544550000000000
+          Height = 18.897649770000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftTop, ftBottom]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'Date')
+          ParentFont = False
+        end
+        object Memo38: TfrxMemoView
+          AllowVectorExport = True
+          Left = 71.811073730000000000
+          Top = 76.047319400000000000
+          Width = 151.181200730000000000
+          Height = 18.897649770000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftTop, ftBottom]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'Libell'#233' r'#232'glement')
+          ParentFont = False
+        end
+        object Memo39: TfrxMemoView
+          AllowVectorExport = True
+          Left = 222.992269320000000000
+          Top = 76.047318980000000000
+          Width = 79.370145990000000000
+          Height = 18.897649770000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftRight, ftTop, ftBottom]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'Montant')
+          ParentFont = False
+        end
+      end
+      object Child1: TfrxChild
+        FillType = ftBrush
+        FillGap.Top = 0
+        FillGap.Left = 0
+        FillGap.Bottom = 0
+        FillGap.Right = 0
+        Frame.Typ = []
+        Height = 60.472629660000000000
+        Top = 204.094620000000000000
+        Width = 755.906000000000000000
+        Stretched = True
+        ToNRows = 0
+        ToNRowsMode = rmCount
+        object Shape1: TfrxShapeView
+          AllowVectorExport = True
+          Top = 30.236410880000000000
+          Width = 755.905511811024000000
+          Height = 30.236218780000000000
+          Frame.Typ = []
+        end
+        object Memo11: TfrxMemoView
+          AllowVectorExport = True
+          Left = 739.118602820000000000
+          Top = 30.236240000000000000
+          Width = 16.629921259842500000
+          Height = 28.346456690000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -9
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = []
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'TVA ')
+          ParentFont = False
+          Rotation = 90
+          VAlign = vaCenter
+        end
+        object Memo10: TfrxMemoView
+          AllowVectorExport = True
+          Left = 545.007874020000000000
+          Top = 30.236406640000000000
+          Width = 61.606299210000000000
+          Height = 28.346456690000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'Prix TTC')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object Memo9: TfrxMemoView
+          AllowVectorExport = True
+          Left = 671.094955530000000000
+          Top = 30.236410880000000000
+          Width = 68.031510210000000000
+          Height = 28.346456690000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftRight]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'Total TTC')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object Memo8: TfrxMemoView
+          AllowVectorExport = True
+          Left = 606.709050470000000000
+          Top = 30.236400680000000000
+          Width = 64.251980210000000000
+          Height = 28.346456690000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'Total HT.')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object Memo6: TfrxMemoView
+          AllowVectorExport = True
+          Left = 438.882201250000000000
+          Top = 30.236403210000000000
+          Width = 45.354330210000000000
+          Height = 28.346456690000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            '% rem')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object Memo5: TfrxMemoView
+          AllowVectorExport = True
+          Left = 317.937219380000000000
+          Top = 30.236409160000000000
+          Width = 56.692950730000000000
+          Height = 28.346456690000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'Qt'#233)
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object Memo4: TfrxMemoView
+          AllowVectorExport = True
+          Left = 374.630169380000000000
+          Top = 30.236414220000000000
+          Width = 64.252010730000000000
+          Height = 28.346456690000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'Prix HT.')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object Memo3: TfrxMemoView
+          AllowVectorExport = True
+          Left = 87.149653060000000000
+          Top = 30.236403210000000000
+          Width = 230.551330730000000000
+          Height = 28.346456690000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'D'#233'signation')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object Memo2: TfrxMemoView
+          AllowVectorExport = True
+          Left = 0.220470050000000000
+          Top = 30.236403210000000000
+          Width = 86.929186440000000000
+          Height = 28.346456690000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = []
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'Code article')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object Memo7: TfrxMemoView
+          AllowVectorExport = True
+          Left = 484.236521350000000000
+          Top = 30.236411690000000000
+          Width = 60.472511250000000000
+          Height = 28.346456690000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'Prix net')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object MemoVarRepres: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 377.953000000000000000
+          Top = 3.779530000000000000
+          Width = 366.614410000000000000
+          Height = 18.897650000000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = []
+          HAlign = haRight
+          Memo.UTF8W = (
+            'Repr'#233'sentant: [VarRepres]')
+          ParentFont = False
+        end
+      end
+      object Footer1: TfrxFooter
+        FillType = ftBrush
+        FillGap.Top = 0
+        FillGap.Left = 0
+        FillGap.Bottom = 0
+        FillGap.Right = 0
+        Frame.Typ = []
+        Height = 22.677180000000000000
+        Top = 328.819110000000000000
+        Width = 755.906000000000000000
+        object SysMemo1: TfrxSysMemoView
+          AllowVectorExport = True
+          Left = 606.614173230000000000
+          Top = 0.000002930000000012
+          Width = 64.251968500000000000
+          Height = 18.897644040000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DisplayFormat.FormatStr = '%2.2n'
+          DisplayFormat.Kind = fkNumeric
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftRight, ftTop, ftBottom]
+          GapX = 5.000000000000000000
+          HAlign = haRight
+          Memo.UTF8W = (
+            '[SUM(<frxDBDatasetFacture."TOTHT_1">,MasterData1)]')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object SysMemo2: TfrxSysMemoView
+          AllowVectorExport = True
+          Left = 317.858267720000000000
+          Width = 56.692913390000000000
+          Height = 18.897644040000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DisplayFormat.FormatStr = '%2.2f'
+          DisplayFormat.Kind = fkNumeric
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftRight, ftTop, ftBottom]
+          GapX = 5.000000000000000000
+          HAlign = haRight
+          Memo.UTF8W = (
+            '[SUM(<frxDBDatasetFacture."QTE">,MasterData1)]')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object Memo26: TfrxMemoView
+          AllowVectorExport = True
+          Left = 510.236545180000000000
+          Top = 0.000012309999999988
+          Width = 90.708751250000000000
+          Height = 18.897644040000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Frame.Typ = []
+          Memo.UTF8W = (
+            'Total HT. brut:')
+          VAlign = vaCenter
+        end
+      end
+    end
+    object PageTVA: TfrxReportPage
+      PaperWidth = 210.000000000000000000
+      PaperHeight = 297.000000000000000000
+      PaperSize = 9
+      LeftMargin = 5.000000000000000000
+      RightMargin = 5.000000000000000000
+      TopMargin = 10.000000000000000000
+      BottomMargin = 10.000000000000000000
+      Frame.Typ = []
+      MirrorMode = []
+      object MasterData2: TfrxMasterData
+        FillType = ftBrush
+        FillGap.Top = 0
+        FillGap.Left = 0
+        FillGap.Bottom = 0
+        FillGap.Right = 0
+        Frame.Typ = []
+        Height = 18.897650000000000000
+        Top = 60.472480000000000000
+        Width = 755.906000000000000000
+        DataSet = frxDBDatasetTVA
+        DataSetName = 'frxDBDatasetTVA'
+        PrintIfDetailEmpty = True
+        RowCount = 0
+        object MemofrxDBDatasetTVATaux: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 152.000000000000000000
+          Width = 41.574830000000000000
+          Height = 18.897650000000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = frxDBDatasetTVA
+          DataSetName = 'frxDBDatasetTVA'
+          DisplayFormat.FormatStr = '%2.2n'
+          DisplayFormat.Kind = fkNumeric
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftBottom]
+          GapX = 5.000000000000000000
+          HAlign = haRight
+          Memo.UTF8W = (
+            '[frxDBDatasetTVA."Taux"]')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object MemofrxDBDatasetTVABaseHT: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 193.574830000000000000
+          Width = 79.370130000000000000
+          Height = 18.897650000000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataField = 'BaseHT'
+          DataSet = frxDBDatasetTVA
+          DataSetName = 'frxDBDatasetTVA'
+          DisplayFormat.FormatStr = '%2.2n'
+          DisplayFormat.Kind = fkNumeric
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftBottom]
+          GapX = 5.000000000000000000
+          HAlign = haRight
+          Memo.UTF8W = (
+            '[frxDBDatasetTVA."BaseHT"]')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object MemofrxDBDatasetTVAMontantTVA: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 272.944960000000000000
+          Width = 90.708720000000000000
+          Height = 18.897650000000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataField = 'MontantTVA'
+          DataSet = frxDBDatasetTVA
+          DataSetName = 'frxDBDatasetTVA'
+          DisplayFormat.FormatStr = '%2.2n'
+          DisplayFormat.Kind = fkNumeric
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftRight, ftBottom]
+          GapX = 5.000000000000000000
+          HAlign = haRight
+          Memo.UTF8W = (
+            '[frxDBDatasetTVA."MontantTVA"]')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object MemofrxDBDatasetTVANoTVA: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Width = 32.125984250000000000
+          Height = 18.897650000000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataField = 'NoTVA'
+          DataSet = frxDBDatasetTVA
+          DataSetName = 'frxDBDatasetTVA'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftBottom]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            '[frxDBDatasetTVA."NoTVA"]')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object MemofrxDBDatasetTVALibelle: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 32.125984250000000000
+          Width = 120.188976380000000000
+          Height = 18.897650000000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataField = 'Libelle'
+          DataSet = frxDBDatasetTVA
+          DataSetName = 'frxDBDatasetTVA'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftBottom]
+          Memo.UTF8W = (
+            '[frxDBDatasetTVA."Libelle"]')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+      end
+      object Header1: TfrxHeader
+        FillType = ftBrush
+        FillGap.Top = 0
+        FillGap.Left = 0
+        FillGap.Bottom = 0
+        FillGap.Right = 5
+        Frame.Typ = []
+        Height = 18.897650200000000000
+        Top = 18.897650000000000000
+        Visible = False
+        Width = 755.906000000000000000
+        object Memo12: TfrxMemoView
+          AllowVectorExport = True
+          Left = 152.000000100000000000
+          Width = 41.574829780000000000
+          Height = 18.897649770000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftTop, ftBottom]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'Taux')
+          ParentFont = False
+        end
+        object Memo13: TfrxMemoView
+          AllowVectorExport = True
+          Left = 193.574831200000000000
+          Top = 0.000000429999999999
+          Width = 79.370126920000000000
+          Height = 18.897649770000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftTop, ftBottom]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'Montant HT.')
+          ParentFont = False
+        end
+        object Memo14: TfrxMemoView
+          AllowVectorExport = True
+          Left = 272.944958120000000000
+          Top = 0.000000429999999999
+          Width = 90.708720730000000000
+          Height = 18.897649770000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftRight, ftTop, ftBottom]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'Montant TVA')
+          ParentFont = False
+        end
+        object Memo15: TfrxMemoView
+          AllowVectorExport = True
+          Left = -0.000011350000000000
+          Top = -0.000000230000000000
+          Width = 32.125984250000000000
+          Height = 18.897649770000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftTop, ftBottom]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'TVA')
+          ParentFont = False
+        end
+        object Memo20: TfrxMemoView
+          AllowVectorExport = True
+          Left = 32.236240390000000000
+          Top = -0.000000230000000000
+          Width = 120.188976380000000000
+          Height = 18.897649770000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftTop, ftBottom]
+          Memo.UTF8W = (
+            'Libell'#233)
+          ParentFont = False
+        end
+      end
+    end
+    object PageReglements: TfrxReportPage
+      PaperWidth = 210.000000000000000000
+      PaperHeight = 297.000000000000000000
+      PaperSize = 9
+      LeftMargin = 5.000000000000000000
+      RightMargin = 5.000000000000000000
+      TopMargin = 10.000000000000000000
+      BottomMargin = 10.000000000000000000
+      Frame.Typ = []
+      MirrorMode = []
+      object MasterData3: TfrxMasterData
+        FillType = ftBrush
+        FillGap.Top = 0
+        FillGap.Left = 0
+        FillGap.Bottom = 0
+        FillGap.Right = 0
+        Frame.Typ = []
+        Height = 20.787401574803150000
+        Top = 64.252010000000000000
+        Width = 755.906000000000000000
+        DataSet = frxDBDatasetReglements
+        DataSetName = 'frxDBDatasetReglements'
+        RowCount = 0
+        object Memo31: TfrxMemoView
+          AllowVectorExport = True
+          Left = 0.000001630000000000
+          Top = 0.000000809999999997
+          Width = 68.031540730000000000
+          Height = 18.897651670000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = frxDBDatasetReglements
+          DataSetName = 'frxDBDatasetReglements'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftBottom]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            '[frxDBDatasetReglements."DATE_"]')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object Memo32: TfrxMemoView
+          AllowVectorExport = True
+          Left = 68.031536490000000000
+          Width = 151.181200730000000000
+          Height = 18.897651670000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = frxDBDatasetReglements
+          DataSetName = 'frxDBDatasetReglements'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftBottom]
+          GapX = 5.000000000000000000
+          Memo.UTF8W = (
+            '[frxDBDatasetReglements."LIBELLE"]')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object Memo33: TfrxMemoView
+          AllowVectorExport = True
+          Left = 219.212748150000000000
+          Top = 0.000000809999999997
+          Width = 79.370130730000000000
+          Height = 18.897651670000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = frxDBDatasetReglements
+          DataSetName = 'frxDBDatasetReglements'
+          DisplayFormat.FormatStr = '%2.0n'
+          DisplayFormat.Kind = fkNumeric
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftRight, ftBottom]
+          GapX = 5.000000000000000000
+          HAlign = haRight
+          Memo.UTF8W = (
+            '[frxDBDatasetReglements."MONTANT"]')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+      end
+      object Header2: TfrxHeader
+        FillType = ftBrush
+        FillGap.Top = 0
+        FillGap.Left = 0
+        FillGap.Bottom = 0
+        FillGap.Right = 0
+        Frame.Typ = []
+        Height = 22.677180000000000000
+        Top = 18.897650000000000000
+        Visible = False
+        Width = 755.906000000000000000
+        object Memo34: TfrxMemoView
+          AllowVectorExport = True
+          Left = -0.000000470000000000
+          Width = 68.031544550000000000
+          Height = 18.897649770000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftTop, ftBottom]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'Date')
+          ParentFont = False
+        end
+        object Memo35: TfrxMemoView
+          AllowVectorExport = True
+          Left = 68.031543260000000000
+          Top = 0.000000190000000001
+          Width = 151.181200730000000000
+          Height = 18.897649770000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftTop, ftBottom]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'Libell'#233' r'#232'glement')
+          ParentFont = False
+        end
+        object Memo36: TfrxMemoView
+          AllowVectorExport = True
+          Left = 219.212738850000000000
+          Top = -0.000000230000000000
+          Width = 79.370145990000000000
+          Height = 18.897649770000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftRight, ftTop, ftBottom]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'Montant')
+          ParentFont = False
+        end
+      end
+    end
+  end
+  object FDQueryReglements: TFDQuery
+    MasterSource = DSEntvteaa
+    MasterFields = 'CODFAC'
+    Connection = DMGesCloud.ConnexionGesCloud
+    SQL.Strings = (
+      'select * from reglaa where codfac=:codfac')
+    Left = 40
+    Top = 232
+    ParamData = <
+      item
+        Name = 'CODFAC'
+        ParamType = ptInput
+      end>
+  end
+  object FDQueryFacture: TFDQuery
+    MasterSource = DSEntvteaa
+    MasterFields = 'CODFAC'
+    Connection = DMGesCloud.ConnexionGesCloud
+    SQL.Strings = (
+      'SELECT '
+      '  -- Donn'#233'es de l'#39'en-t'#234'te (vont se r'#233'p'#233'ter sur chaque ligne SQL)'
+      '*'
+      'FROM entvteaa e'
+      'JOIN Client c ON e.CODCLI = c.CODCLI'
+      'JOIN ligvteaa l ON e.CODFAC = l.CODFAC'
+      'WHERE e.CODFAC = :CODFAC'
+      
+        'ORDER BY e.CODFAC ASC, l.NOENRF ASC -- Le tri obligatoire pour l' +
+        'a rupture'
+      '')
+    Left = 32
+    Top = 184
+    ParamData = <
+      item
+        Name = 'CODFAC'
+        ParamType = ptInput
+      end>
+    object FDQueryFactureOBSERV: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'OBSERV'
+      Origin = 'OBSERV'
+      Size = 1000
+    end
+    object FDQueryFactureCODFAC: TLargeintField
+      FieldName = 'CODFAC'
+      Origin = 'CODFAC'
+      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
+      Required = True
+    end
+    object FDQueryFactureCODCLI: TIntegerField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODCLI'
+      Origin = 'CODCLI'
+    end
+    object FDQueryFactureCODCAI: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODCAI'
+      Origin = 'CODCAI'
+      Size = 2
+    end
+    object FDQueryFactureCODDEV: TLargeintField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODDEV'
+      Origin = 'CODDEV'
+    end
+    object FDQueryFactureCODDEP: TShortintField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODDEP'
+      Origin = 'CODDEP'
+    end
+    object FDQueryFactureCODVEN: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODVEN'
+      Origin = 'CODVEN'
+    end
+    object FDQueryFactureNOM: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'NOM'
+      Origin = 'NOM'
+      Size = 50
+    end
+    object FDQueryFactureNOTAHITI: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'NOTAHITI'
+      Origin = 'NOTAHITI'
+      Size = 10
+    end
+    object FDQueryFactureTYPE_: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'TYPE_'
+      Origin = 'TYPE_'
+      Size = 1
+    end
+    object FDQueryFactureEXO_TVA: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'EXO_TVA'
+      Origin = 'EXO_TVA'
+    end
+    object FDQueryFactureANNEE: TIntegerField
+      AutoGenerateValue = arDefault
+      FieldName = 'ANNEE'
+      Origin = 'ANNEE'
+    end
+    object FDQueryFactureMOIS: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'MOIS'
+      Origin = 'MOIS'
+    end
+    object FDQueryFactureDATE_: TDateField
+      AutoGenerateValue = arDefault
+      FieldName = 'DATE_'
+      Origin = 'DATE_'
+    end
+    object FDQueryFactureHEURE: TIntegerField
+      AutoGenerateValue = arDefault
+      FieldName = 'HEURE'
+      Origin = 'HEURE'
+    end
+    object FDQueryFactureMT_REMISE: TIntegerField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_REMISE'
+      Origin = 'MT_REMISE'
+    end
+    object FDQueryFacturePRC_REMISE: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'PRC_REMISE'
+      Origin = 'PRC_REMISE'
+      Precision = 5
+      Size = 2
+    end
+    object FDQueryFactureTOTHT: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'TOTHT'
+      Origin = 'TOTHT'
+      Precision = 11
+      Size = 2
+    end
+    object FDQueryFactureMT_TTC: TLargeintField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_TTC'
+      Origin = 'MT_TTC'
+    end
+    object FDQueryFactureMT_HT0: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_HT0'
+      Origin = 'MT_HT0'
+      Precision = 11
+      Size = 2
+    end
+    object FDQueryFactureMT_HT1: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_HT1'
+      Origin = 'MT_HT1'
+      Precision = 11
+      Size = 2
+    end
+    object FDQueryFactureMT_HT2: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_HT2'
+      Origin = 'MT_HT2'
+      Precision = 11
+      Size = 2
+    end
+    object FDQueryFactureMT_HT3: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_HT3'
+      Origin = 'MT_HT3'
+      Precision = 11
+      Size = 2
+    end
+    object FDQueryFactureMT_TVA1: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_TVA1'
+      Origin = 'MT_TVA1'
+      Precision = 9
+      Size = 2
+    end
+    object FDQueryFactureMT_TVA2: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_TVA2'
+      Origin = 'MT_TVA2'
+      Precision = 9
+      Size = 2
+    end
+    object FDQueryFactureMT_TVA3: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_TVA3'
+      Origin = 'MT_TVA3'
+      Precision = 9
+      Size = 2
+    end
+    object FDQueryFactureMT_TVA: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_TVA'
+      Origin = 'MT_TVA'
+      Precision = 9
+      Size = 2
+    end
+    object FDQueryFactureMARGE: TLargeintField
+      AutoGenerateValue = arDefault
+      FieldName = 'MARGE'
+      Origin = 'MARGE'
+    end
+    object FDQueryFactureREFERENCE_: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'REFERENCE_'
+      Origin = 'REFERENCE_'
+      Size = 15
+    end
+    object FDQueryFactureCODREP: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODREP'
+      Origin = 'CODREP'
+    end
+    object FDQueryFactureNO_SEM: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'NO_SEM'
+      Origin = 'NO_SEM'
+    end
+    object FDQueryFactureNO_JOUR: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'NO_JOUR'
+      Origin = 'NO_JOUR'
+    end
+    object FDQueryFactureCODPAI: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODPAI'
+      Origin = 'CODPAI'
+      Size = 5
+    end
+    object FDQueryFactureJRSCRD: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'JRSCRD'
+      Origin = 'JRSCRD'
+    end
+    object FDQueryFactureFIN_MOIS: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'FIN_MOIS'
+      Origin = 'FIN_MOIS'
+    end
+    object FDQueryFactureLIBREG: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'LIBREG'
+      Origin = 'LIBREG'
+      Size = 50
+    end
+    object FDQueryFactureCRD_FORCE: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'CRD_FORCE'
+      Origin = 'CRD_FORCE'
+    end
+    object FDQueryFactureDATE_ECH: TDateField
+      AutoGenerateValue = arDefault
+      FieldName = 'DATE_ECH'
+      Origin = 'DATE_ECH'
+    end
+    object FDQueryFactureREGL: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'REGL'
+      Origin = 'REGL'
+    end
+    object FDQueryFactureDATE_OPER: TDateField
+      AutoGenerateValue = arDefault
+      FieldName = 'DATE_OPER'
+      Origin = 'DATE_OPER'
+    end
+    object FDQueryFactureDATE_COMPTA: TDateField
+      AutoGenerateValue = arDefault
+      FieldName = 'DATE_COMPTA'
+      Origin = 'DATE_COMPTA'
+    end
+    object FDQueryFactureACOMPTE: TIntegerField
+      AutoGenerateValue = arDefault
+      FieldName = 'ACOMPTE'
+      Origin = 'ACOMPTE'
+    end
+    object FDQueryFactureCODGEO: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODGEO'
+      Origin = 'CODGEO'
+      Size = 1
+    end
+    object FDQueryFactureFLAG_TAX: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'FLAG_TAX'
+      Origin = 'FLAG_TAX'
+    end
+    object FDQueryFactureSELECT_: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'SELECT_'
+      Origin = 'SELECT_'
+    end
+    object FDQueryFactureDER_MODIF: TSQLTimeStampField
+      AutoGenerateValue = arDefault
+      FieldName = 'DER_MODIF'
+      Origin = 'DER_MODIF'
+    end
+    object FDQueryFactureCODADM: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODADM'
+      Origin = 'CODADM'
+    end
+    object FDQueryFactureNOMVEN: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'NOMVEN'
+      Origin = 'NOMVEN'
+      Size = 30
+    end
+    object FDQueryFactureMT_TSOC: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_TSOC'
+      Origin = 'MT_TSOC'
+      Precision = 9
+      Size = 2
+    end
+    object FDQueryFactureMT_HTSOC: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_HTSOC'
+      Origin = 'MT_HTSOC'
+      Precision = 11
+      Size = 2
+    end
+    object FDQueryFactureTX_TSOC: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'TX_TSOC'
+      Origin = 'TX_TSOC'
+      Precision = 5
+      Size = 2
+    end
+    object FDQueryFactureEXO_CPS: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'EXO_CPS'
+      Origin = 'EXO_CPS'
+    end
+    object FDQueryFactureMT_TVAI: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_TVAI'
+      Origin = 'MT_TVAI'
+      Precision = 9
+      Size = 2
+    end
+    object FDQueryFactureMT_HTI: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_HTI'
+      Origin = 'MT_HTI'
+      Precision = 11
+      Size = 2
+    end
+    object FDQueryFactureTVA_ILES: TBooleanField
+      AutoGenerateValue = arDefault
+      FieldName = 'TVA_ILES'
+      Origin = 'TVA_ILES'
+    end
+    object FDQueryFactureOBSERV_1: TMemoField
+      AutoGenerateValue = arDefault
+      FieldName = 'OBSERV_1'
+      Origin = 'OBSERV'
+      ProviderFlags = []
+      ReadOnly = True
+      BlobType = ftMemo
+    end
+    object FDQueryFactureCODCLI_1: TIntegerField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODCLI_1'
+      Origin = 'CODCLI'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFactureCPTAUX: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CPTAUX'
+      Origin = 'CPTAUX'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 13
+    end
+    object FDQueryFactureNOM_1: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'NOM_1'
+      Origin = 'NOM'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 50
+    end
+    object FDQueryFactureCODREP_1: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODREP_1'
+      Origin = 'CODREP'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFacturePRC_REMISE_1: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'PRC_REMISE_1'
+      Origin = 'PRC_REMISE'
+      ProviderFlags = []
+      ReadOnly = True
+      Precision = 5
+      Size = 2
+    end
+    object FDQueryFactureNOTEL: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'NOTEL'
+      Origin = 'NOTEL'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 15
+    end
+    object FDQueryFactureNOTAHITI_1: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'NOTAHITI_1'
+      Origin = 'NOTAHITI'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 10
+    end
+    object FDQueryFactureNOFAX: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'NOFAX'
+      Origin = 'NOFAX'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 15
+    end
+    object FDQueryFactureJRSCRD_1: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'JRSCRD_1'
+      Origin = 'JRSCRD'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFactureCREDIT: TLargeintField
+      AutoGenerateValue = arDefault
+      FieldName = 'CREDIT'
+      Origin = 'CREDIT'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFactureplaf_crd: TIntegerField
+      AutoGenerateValue = arDefault
+      FieldName = 'plaf_crd'
+      Origin = 'plaf_crd'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFactureCODPAI_1: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODPAI_1'
+      Origin = 'CODPAI'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 5
+    end
+    object FDQueryFactureFIN_MOIS_1: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'FIN_MOIS_1'
+      Origin = 'FIN_MOIS'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFactureNB_EX: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'NB_EX'
+      Origin = 'NB_EX'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFactureCAAN: TLargeintField
+      AutoGenerateValue = arDefault
+      FieldName = 'CAAN'
+      Origin = 'CAAN'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFactureAD1: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'AD1'
+      Origin = 'AD1'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 30
+    end
+    object FDQueryFactureAD2: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'AD2'
+      Origin = 'AD2'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 30
+    end
+    object FDQueryFactureAD3: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'AD3'
+      Origin = 'AD3'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 30
+    end
+    object FDQueryFactureCUM_MVT: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'CUM_MVT'
+      Origin = 'CUM_MVT'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFactureMT_CPTA: TLargeintField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_CPTA'
+      Origin = 'MT_CPTA'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFactureEXO_TVA_1: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'EXO_TVA_1'
+      Origin = 'EXO_TVA'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFactureBLOQUE: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'BLOQUE'
+      Origin = 'BLOQUE'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFactureCODGEO_1: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODGEO_1'
+      Origin = 'CODGEO'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFactureEMAIL: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'EMAIL'
+      Origin = 'EMAIL'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 50
+    end
+    object FDQueryFactureCODTAR: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODTAR'
+      Origin = 'CODTAR'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 1
+    end
+    object FDQueryFactureADM: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'ADM'
+      Origin = 'ADM'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFactureFLAG_TAX_1: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'FLAG_TAX_1'
+      Origin = 'FLAG_TAX'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFactureCODFAC_ADM: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODFAC_ADM'
+      Origin = 'CODFAC_ADM'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFactureFERME: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'FERME'
+      Origin = 'FERME'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFactureDER_MODIF_1: TSQLTimeStampField
+      AutoGenerateValue = arDefault
+      FieldName = 'DER_MODIF_1'
+      Origin = 'DER_MODIF'
+    end
+    object FDQueryFactureSPEC_GOUV: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'SPEC_GOUV'
+      Origin = 'SPEC_GOUV'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFactureNOGSM: TLargeintField
+      AutoGenerateValue = arDefault
+      FieldName = 'NOGSM'
+      Origin = 'NOGSM'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFacturePLV: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'PLV'
+      Origin = 'PLV'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFactureINTIT_BQ: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'INTIT_BQ'
+      Origin = 'INTIT_BQ'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 30
+    end
+    object FDQueryFactureCODE_BQ: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODE_BQ'
+      Origin = 'CODE_BQ'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 5
+    end
+    object FDQueryFactureCODE_GUI: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODE_GUI'
+      Origin = 'CODE_GUI'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 5
+    end
+    object FDQueryFactureNOCPT: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'NOCPT'
+      Origin = 'NOCPT'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 11
+    end
+    object FDQueryFactureCLE: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CLE'
+      Origin = 'CLE'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 2
+    end
+    object FDQueryFactureCOEF_MAJ_PR: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'COEF_MAJ_PR'
+      Origin = 'COEF_MAJ_PR'
+      ProviderFlags = []
+      ReadOnly = True
+      Precision = 5
+      Size = 2
+    end
+    object FDQueryFactureEXO_CPS_1: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'EXO_CPS_1'
+      Origin = 'EXO_CPS'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFacturePAS_REM: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'PAS_REM'
+      Origin = 'PAS_REM'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFactureREM_FAM: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'REM_FAM'
+      Origin = 'REM_FAM'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFactureRELEVE_EMAIL: TBooleanField
+      AutoGenerateValue = arDefault
+      FieldName = 'RELEVE_EMAIL'
+      Origin = 'RELEVE_EMAIL'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFactureSELECT__1: TBooleanField
+      AutoGenerateValue = arDefault
+      FieldName = 'SELECT__1'
+      Origin = 'SELECT_'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFactureAPP_TARIFCLI: TBooleanField
+      AutoGenerateValue = arDefault
+      FieldName = 'APP_TARIFCLI'
+      Origin = 'APP_TARIFCLI'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFactureTVA_ILES_1: TBooleanField
+      AutoGenerateValue = arDefault
+      FieldName = 'TVA_ILES_1'
+      Origin = 'TVA_ILES'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFactureLIBELLE: TMemoField
+      AutoGenerateValue = arDefault
+      FieldName = 'LIBELLE'
+      Origin = 'LIBELLE'
+      ProviderFlags = []
+      ReadOnly = True
+      BlobType = ftMemo
+    end
+    object FDQueryFactureCODFAC_1: TLargeintField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODFAC_1'
+      Origin = 'CODFAC'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFactureCODCLI_2: TIntegerField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODCLI_2'
+      Origin = 'CODCLI'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFactureCODCAI_1: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODCAI_1'
+      Origin = 'CODCAI'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 2
+    end
+    object FDQueryFactureCODDEV_1: TLargeintField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODDEV_1'
+      Origin = 'CODDEV'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFactureCODDEP_1: TShortintField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODDEP_1'
+      Origin = 'CODDEP'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFactureCODVEN_1: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODVEN_1'
+      Origin = 'CODVEN'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFactureNOENR: TIntegerField
+      AutoGenerateValue = arDefault
+      FieldName = 'NOENR'
+      Origin = 'NOENR'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFactureANNEE_1: TIntegerField
+      AutoGenerateValue = arDefault
+      FieldName = 'ANNEE_1'
+      Origin = 'ANNEE'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFactureMOIS_1: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'MOIS_1'
+      Origin = 'MOIS'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFactureDATE__1: TDateField
+      AutoGenerateValue = arDefault
+      FieldName = 'DATE__1'
+      Origin = 'DATE_'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFactureHEURE_1: TIntegerField
+      AutoGenerateValue = arDefault
+      FieldName = 'HEURE_1'
+      Origin = 'HEURE'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFactureCODREP_2: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODREP_2'
+      Origin = 'CODREP'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFactureCODFOU: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODFOU'
+      Origin = 'CODFOU'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 7
+    end
+    object FDQueryFactureCODFAM: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODFAM'
+      Origin = 'CODFAM'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 6
+    end
+    object FDQueryFactureCODSSF: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODSSF'
+      Origin = 'CODSSF'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 4
+    end
+    object FDQueryFactureCODDPT: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODDPT'
+      Origin = 'CODDPT'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 1
+    end
+    object FDQueryFactureTYPE__1: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'TYPE__1'
+      Origin = 'TYPE_'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 1
+    end
+    object FDQueryFactureCODART: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODART'
+      Origin = 'CODART'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 13
+    end
+    object FDQueryFactureCODBAR: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODBAR'
+      Origin = 'CODBAR'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 13
+    end
+    object FDQueryFactureQTE: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'QTE'
+      Origin = 'QTE'
+      ProviderFlags = []
+      ReadOnly = True
+      Precision = 9
+      Size = 3
+    end
+    object FDQueryFacturePOIDS: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'POIDS'
+      Origin = 'POIDS'
+      ProviderFlags = []
+      ReadOnly = True
+      Precision = 7
+      Size = 3
+    end
+    object FDQueryFactureCODTAR_1: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODTAR_1'
+      Origin = 'CODTAR'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 1
+    end
+    object FDQueryFacturePRIXHT: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'PRIXHT'
+      Origin = 'PRIXHT'
+      ProviderFlags = []
+      ReadOnly = True
+      Precision = 11
+      Size = 2
+    end
+    object FDQueryFacturePRIXTTC: TLargeintField
+      AutoGenerateValue = arDefault
+      FieldName = 'PRIXTTC'
+      Origin = 'PRIXTTC'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFacturePRIXNET: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'PRIXNET'
+      Origin = 'PRIXNET'
+      ProviderFlags = []
+      ReadOnly = True
+      Precision = 11
+      Size = 2
+    end
+    object FDQueryFactureTOTHT_1: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'TOTHT_1'
+      Origin = 'TOTHT'
+      ProviderFlags = []
+      ReadOnly = True
+      Precision = 11
+      Size = 2
+    end
+    object FDQueryFactureMT_TTC_1: TLargeintField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_TTC_1'
+      Origin = 'MT_TTC'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFacturePRC_REMISE_2: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'PRC_REMISE_2'
+      Origin = 'PRC_REMISE'
+      ProviderFlags = []
+      ReadOnly = True
+      Precision = 5
+      Size = 2
+    end
+    object FDQueryFactureMT_REMISE_1: TIntegerField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_REMISE_1'
+      Origin = 'MT_REMISE'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFactureTX_TVA: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'TX_TVA'
+      Origin = 'TX_TVA'
+      ProviderFlags = []
+      ReadOnly = True
+      Precision = 5
+      Size = 2
+    end
+    object FDQueryFactureMT_TVA_1: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_TVA_1'
+      Origin = 'MT_TVA'
+      ProviderFlags = []
+      ReadOnly = True
+      Precision = 9
+      Size = 2
+    end
+    object FDQueryFactureNO_TVA: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'NO_TVA'
+      Origin = 'NO_TVA'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFacturePRIXREV: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'PRIXREV'
+      Origin = 'PRIXREV'
+      ProviderFlags = []
+      ReadOnly = True
+      Precision = 11
+      Size = 2
+    end
+    object FDQueryFactureMARGE_1: TLargeintField
+      AutoGenerateValue = arDefault
+      FieldName = 'MARGE_1'
+      Origin = 'MARGE'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFactureNO_SEM_1: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'NO_SEM_1'
+      Origin = 'NO_SEM'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFactureNO_JOUR_1: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'NO_JOUR_1'
+      Origin = 'NO_JOUR'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFactureDATE_OPER_1: TDateField
+      AutoGenerateValue = arDefault
+      FieldName = 'DATE_OPER_1'
+      Origin = 'DATE_OPER'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFactureDATE_COMPTA_1: TDateField
+      AutoGenerateValue = arDefault
+      FieldName = 'DATE_COMPTA_1'
+      Origin = 'DATE_COMPTA'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFactureDET_PPT: TLargeintField
+      AutoGenerateValue = arDefault
+      FieldName = 'DET_PPT'
+      Origin = 'DET_PPT'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFactureDET_ILE: TLargeintField
+      AutoGenerateValue = arDefault
+      FieldName = 'DET_ILE'
+      Origin = 'DET_ILE'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFactureSELECT__2: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'SELECT__2'
+      Origin = 'SELECT_'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFactureNOENRF: TIntegerField
+      AutoGenerateValue = arDefault
+      FieldName = 'NOENRF'
+      Origin = 'NOENRF'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFacturePXLVTTC: TLargeintField
+      AutoGenerateValue = arDefault
+      FieldName = 'PXLVTTC'
+      Origin = 'PXLVTTC'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFactureDER_MODIF_2: TSQLTimeStampField
+      AutoGenerateValue = arDefault
+      FieldName = 'DER_MODIF_2'
+      Origin = 'DER_MODIF'
+    end
+    object FDQueryFactureTX_TSOC_1: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'TX_TSOC_1'
+      Origin = 'TX_TSOC'
+      ProviderFlags = []
+      ReadOnly = True
+      Precision = 5
+      Size = 2
+    end
+    object FDQueryFactureMT_TSOC_1: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_TSOC_1'
+      Origin = 'MT_TSOC'
+      ProviderFlags = []
+      ReadOnly = True
+      Precision = 9
+      Size = 2
+    end
+  end
+  object frxDBDatasetTVADevis: TfrxDBDataset
+    UserName = 'frxDBDatasetTVADevis'
+    CloseDataSource = False
+    DataSet = FDQueryTVADevis
+    BCDToCurrency = False
+    DataSetOptions = []
+    Left = 552
+    Top = 216
+  end
+  object frxPDFExportDevis: TfrxPDFExport
+    UseFileCache = True
+    ShowProgress = True
+    OverwritePrompt = False
+    DataOnly = False
+    InteractiveFormsFontSubset = 'A-Z,a-z,0-9,#43-#47 '
+    OpenAfterExport = False
+    PrintOptimized = False
+    Outline = False
+    Background = False
+    Quality = 95
+    Author = 'FastReport'
+    Subject = 'FastReport PDF export'
+    Creator = 'FastReport'
+    ProtectionFlags = [ePrint, eModify, eCopy, eAnnot]
+    HideToolbar = False
+    HideMenubar = False
+    HideWindowUI = False
+    FitWindow = False
+    CenterWindow = False
+    PrintScaling = False
+    PdfA = False
+    PDFStandard = psNone
+    PDFVersion = pv17
+    PDFColorSpace = csDeviceRGB
+    Left = 648
+    Top = 168
+  end
+  object frxDBDatasetDevis: TfrxDBDataset
+    UserName = 'frxDBDatasetDevis'
+    CloseDataSource = False
+    DataSet = FDQueryDevis
+    BCDToCurrency = False
+    DataSetOptions = []
+    Left = 552
+    Top = 152
+  end
+  object frxReportDevis: TfrxReport
+    Version = '2024.1.2'
+    DotMatrixReport = False
+    IniFile = '\Software\Fast Reports'
+    PreviewOptions.Buttons = [pbPrint, pbLoad, pbSave, pbExport, pbZoom, pbFind, pbOutline, pbPageSetup, pbTools, pbEdit, pbNavigator, pbExportQuick, pbCopy, pbSelection, pbWatermarks]
+    PreviewOptions.Zoom = 1.000000000000000000
+    PrintOptions.Printer = 'Default'
+    PrintOptions.PrintOnSheet = 0
+    ReportOptions.CreateDate = 46280.575471794000000000
+    ReportOptions.LastChange = 46288.595777523150000000
+    ScriptLanguage = 'PascalScript'
+    ScriptText.Strings = (
+      'begin'
+      ''
+      'end.')
+    Left = 648
+    Top = 208
+    Datasets = <
+      item
+        DataSet = frxDBDatasetDevis
+        DataSetName = 'frxDBDatasetDevis'
+      end
+      item
+        DataSet = frxDBDatasetTVADevis
+        DataSetName = 'frxDBDatasetTVADevis'
+      end>
+    Variables = <
+      item
+        Name = ' Globales'
+        Value = Null
+      end
+      item
+        Name = 'VarNomEntreprise'
+        Value = #39'Societe'#39
+      end
+      item
+        Name = 'VarTelephone'
+        Value = #39'87777600'#39
+      end
+      item
+        Name = 'VarAdresse'
+        Value = #39'Kauehi'#39
+      end
+      item
+        Name = 'VarNoTAHITI'
+        Value = #39'1234567899'#39
+      end
+      item
+        Name = 'VarFAX'
+        Value = #39'123456789'#39
+      end
+      item
+        Name = 'VarEMAIL'
+        Value = #39'contact@fai.com'#39
+      end
+      item
+        Name = 'VarMEMO_DEV'
+        Value = #39'memo dev'#39
+      end
+      item
+        Name = 'VarRC'
+        Value = #39'1000A'#39
+      end
+      item
+        Name = 'VarRepres'
+        Value = #39'Commercial'#39
+      end
+      item
+        Name = 'VarRef_Bancaire'
+        Value = ''
+      end
+      item
+        Name = 'VarTotalAlpha'
+        Value = ''
+      end
+      item
+        Name = 'VarLogo'
+        Value = ''
+      end>
+    Style = <>
+    Watermarks = <>
+    object Data: TfrxDataPage
+      Height = 1000.000000000000000000
+      Width = 1000.000000000000000000
+    end
+    object PageDevis: TfrxReportPage
+      PaperWidth = 210.000000000000000000
+      PaperHeight = 297.000000000000000000
+      PaperSize = 9
+      LeftMargin = 5.000000000000000000
+      RightMargin = 5.000000000000000000
+      TopMargin = 10.000000000000000000
+      BottomMargin = 10.000000000000000000
+      Frame.Typ = []
+      MirrorMode = []
+      object GroupHeader1: TfrxGroupHeader
+        FillType = ftBrush
+        FillGap.Top = 0
+        FillGap.Left = 0
+        FillGap.Bottom = 0
+        FillGap.Right = 0
+        Frame.Typ = []
+        Height = 162.519606930000000000
+        Top = 18.897650000000000000
+        Width = 755.906000000000000000
+        Child = frxReportDevis.Child1
+        Condition = '<frxDBDatasetDevis."CODDEV">'
+        ResetPageNumbers = True
+        StartNewPage = True
+        Stretched = True
+        object MemofrxDBDataset1CODDEV: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 355.275820000000000000
+          Top = 37.795300000000000000
+          Width = 272.126160000000000000
+          Height = 18.897650000000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = frxDBDatasetDevis
+          DataSetName = 'frxDBDatasetDevis'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -16
+          Font.Name = 'Arial'
+          Font.Style = [fsBold]
+          Frame.Typ = []
+          Memo.UTF8W = (
+            
+              'DEVIS No [frxDBDatasetDevis."CODDEV"] du [frxDBDatasetDevis."DAT' +
+              'E_"]')
+          ParentFont = False
+          Formats = <
+            item
+            end
+            item
+            end>
+        end
+        object MemofrxDBDataset1CODCLI: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 355.275820000000000000
+          Top = 83.149660000000000000
+          Width = 192.756030000000000000
+          Height = 30.236240000000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = frxDBDatasetDevis
+          DataSetName = 'frxDBDatasetDevis'
+          Frame.Typ = []
+          Memo.UTF8W = (
+            'Client: [frxDBDatasetDevis."CODCLI"]'
+            'No TAHITI: [frxDBDatasetDevis."NOTAHITI"]')
+          Formats = <
+            item
+            end
+            item
+            end>
+        end
+        object MemofrxDBDataset1NOM: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 355.275820000000000000
+          Top = 117.165430000000000000
+          Width = 389.291590000000000000
+          Height = 37.795300000000000000
+          StretchMode = smActualHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = frxDBDatasetDevis
+          DataSetName = 'frxDBDatasetDevis'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = [fsBold]
+          Frame.Typ = []
+          Memo.UTF8W = (
+            '[frxDBDatasetDevis."NOM"]')
+          ParentFont = False
+        end
+        object MemoVarNomEntreprise: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 3.779530000000000000
+          Top = 3.779530000000000000
+          Width = 525.354670000000000000
+          Height = 18.897650000000000000
+          StretchMode = smActualHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -16
+          Font.Name = 'Arial'
+          Font.Style = [fsBold]
+          Frame.Typ = []
+          Memo.UTF8W = (
+            '[VarNomEntreprise]')
+          ParentFont = False
+        end
+        object MemoVarAdresse: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 3.779530000000000000
+          Top = 30.236240000000000000
+          Width = 336.378170000000000000
+          Height = 18.897650000000000000
+          StretchMode = smActualHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Frame.Typ = []
+          Memo.UTF8W = (
+            '[VarAdresse]')
+        end
+        object LogoEntreprise: TfrxPictureView
+          AllowVectorExport = True
+          Left = 642.520076410000000000
+          Top = 7.559060390000000000
+          Width = 102.047244090000000000
+          Height = 102.047307860000000000
+          Center = True
+          Frame.Typ = []
+          HightQuality = False
+          Transparent = False
+          TransparentColor = clWhite
+        end
+        object VarEMAIL: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 3.779530000000000000
+          Top = 56.692950000000000000
+          Width = 336.378170000000000000
+          Height = 18.897650000000000000
+          StretchMode = smActualHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Frame.Typ = []
+          Memo.UTF8W = (
+            'email: [VarEMAIL]'
+            'T'#233'l: [VarTelephone]'
+            'Fax: [VarFAX]'
+            'No RC: [VarRC]'
+            'No TAHITI: [VarNoTAHITI]')
+          Formats = <
+            item
+            end
+            item
+            end
+            item
+            end
+            item
+            end
+            item
+            end>
+        end
+        object MemofrxDBDataset1REFERENCE_: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 355.275820000000000000
+          Top = 60.472480000000000000
+          Width = 192.756030000000000000
+          Height = 18.897650000000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = frxDBDatasetDevis
+          DataSetName = 'frxDBDatasetDevis'
+          Frame.Typ = []
+          Memo.UTF8W = (
+            'R'#233'f'#233'rence : [frxDBDatasetDevis."REFERENCE_"]')
+        end
+        object MemofrxDBDataset1OBSERV: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 3.779530000000000000
+          Top = 86.929190000000000000
+          Width = 336.378170000000000000
+          Height = 68.031540000000000000
+          StretchMode = smActualHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = frxDBDatasetDevis
+          DataSetName = 'frxDBDatasetDevis'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftRight, ftTop, ftBottom]
+          Memo.UTF8W = (
+            'Observations: [frxDBDatasetDevis."OBSERV"]')
+          ParentFont = False
+        end
+      end
+      object MasterData1: TfrxMasterData
+        FillType = ftBrush
+        FillGap.Top = 0
+        FillGap.Left = 0
+        FillGap.Bottom = 0
+        FillGap.Right = 0
+        Frame.Typ = [ftLeft, ftRight, ftTop, ftBottom]
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Arial'
+        Font.Style = []
+        Height = 19.653543310000000000
+        ParentFont = False
+        Top = 287.244280000000000000
+        Width = 755.906000000000000000
+        DataSet = frxDBDatasetDevis
+        DataSetName = 'frxDBDatasetDevis'
+        PrintIfDetailEmpty = True
+        RowCount = 0
+        Stretched = True
+        object MemofrxDBDataset1CODART: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 3.779530000000000000
+          Width = 83.149660000000000000
+          Height = 18.897637800000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = frxDBDatasetDevis
+          DataSetName = 'frxDBDatasetDevis'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = []
+          Memo.UTF8W = (
+            '[frxDBDatasetDevis."CODART"]')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object MemofrxDBDataset1LIBELLE: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 86.929190000000000000
+          Width = 230.551330000000000000
+          Height = 18.897650000000000000
+          StretchMode = smActualHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataField = 'LIBELLE'
+          DataSet = frxDBDatasetDevis
+          DataSetName = 'frxDBDatasetDevis'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft]
+          GapX = 5.000000000000000000
+          Memo.UTF8W = (
+            '[frxDBDatasetDevis."LIBELLE"]')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object MemofrxDBDataset1QTE: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 317.716760000000000000
+          Width = 56.692950000000000000
+          Height = 18.897650000000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = frxDBDatasetDevis
+          DataSetName = 'frxDBDatasetDevis'
+          DisplayFormat.DecimalSeparator = ','
+          DisplayFormat.FormatStr = '%2.2f'
+          DisplayFormat.Kind = fkNumeric
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft]
+          GapX = 5.000000000000000000
+          HAlign = haRight
+          Memo.UTF8W = (
+            '[frxDBDatasetDevis."QTE"]')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object MemofrxDBDataset1PRIXHT: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 374.409710000000000000
+          Width = 64.252010000000000000
+          Height = 18.897650000000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = frxDBDatasetDevis
+          DataSetName = 'frxDBDatasetDevis'
+          DisplayFormat.FormatStr = '%2.2n'
+          DisplayFormat.Kind = fkNumeric
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft]
+          GapX = 5.000000000000000000
+          HAlign = haRight
+          Memo.UTF8W = (
+            '[frxDBDatasetDevis."PRIXHT"]')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object MemofrxDBDataset1PRC_REMISE_2: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 438.661720000000000000
+          Width = 45.354360000000000000
+          Height = 18.897650000000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = frxDBDatasetDevis
+          DataSetName = 'frxDBDatasetDevis'
+          DisplayFormat.DecimalSeparator = ','
+          DisplayFormat.FormatStr = '%2.2n'
+          DisplayFormat.Kind = fkNumeric
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft]
+          GapX = 5.000000000000000000
+          HAlign = haRight
+          Memo.UTF8W = (
+            '[frxDBDatasetDevis."PRC_REMISE_2"]')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object MemofrxDBDataset1PRIXNET: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 484.016080000000000000
+          Width = 60.472480000000000000
+          Height = 18.897650000000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = frxDBDatasetDevis
+          DataSetName = 'frxDBDatasetDevis'
+          DisplayFormat.FormatStr = '%2.2n'
+          DisplayFormat.Kind = fkNumeric
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft]
+          GapX = 5.000000000000000000
+          HAlign = haRight
+          Memo.UTF8W = (
+            '[frxDBDatasetDevis."PRIXNET"]')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object MemofrxDBDataset1TOTHT_1: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 606.488560000000000000
+          Width = 64.252010000000000000
+          Height = 18.897650000000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = frxDBDatasetDevis
+          DataSetName = 'frxDBDatasetDevis'
+          DisplayFormat.FormatStr = '%2.2n'
+          DisplayFormat.Kind = fkNumeric
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft]
+          GapX = 5.000000000000000000
+          HAlign = haRight
+          Memo.UTF8W = (
+            '[frxDBDatasetDevis."TOTHT_1"]')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object MemofrxDBDataset1MT_TTC_1: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 670.874460000000000000
+          Width = 68.031540000000000000
+          Height = 18.897650000000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = frxDBDatasetDevis
+          DataSetName = 'frxDBDatasetDevis'
+          DisplayFormat.FormatStr = '%2.0n'
+          DisplayFormat.Kind = fkNumeric
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft]
+          GapX = 5.000000000000000000
+          HAlign = haRight
+          Memo.UTF8W = (
+            '[frxDBDatasetDevis."MT_TTC_1"]')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object MemofrxDBDataset1PRIXTTC: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 545.007874020000000000
+          Width = 61.228346460000000000
+          Height = 18.897650000000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = frxDBDatasetDevis
+          DataSetName = 'frxDBDatasetDevis'
+          DisplayFormat.FormatStr = '%2.0n'
+          DisplayFormat.Kind = fkNumeric
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft]
+          GapX = 5.000000000000000000
+          HAlign = haRight
+          Memo.UTF8W = (
+            '[frxDBDatasetDevis."PRIXTTC"]')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object MemofrxDBDataset1NO_TVA: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 738.897637795276000000
+          Width = 15.118120000000000000
+          Height = 18.897650000000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = frxDBDatasetDevis
+          DataSetName = 'frxDBDatasetDevis'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            '[frxDBDatasetDevis."NO_TVA"]')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+      end
+      object PageFooter1: TfrxPageFooter
+        FillType = ftBrush
+        FillGap.Top = 0
+        FillGap.Left = 0
+        FillGap.Bottom = 0
+        FillGap.Right = 0
+        Frame.Typ = []
+        Height = 268.346630000000000000
+        Top = 411.968770000000000000
+        Width = 755.906000000000000000
+        PrintOnFirstPage = False
+        PrintOnSinglePage = True
+        object SubreportTVA: TfrxSubreport
+          AllowVectorExport = True
+          Left = 3.779530050000000000
+          Top = 26.456701020000000000
+          Width = 362.834876440000000000
+          Height = 102.047304040000000000
+          Page = frxReportDevis.PageTVA
+          PrintOnParent = True
+        end
+        object VarMEMO_DEV: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 3.779530000000000000
+          Top = 196.535560000000000000
+          Width = 714.331170000000000000
+          Height = 64.252010000000000000
+          StretchMode = smActualHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Frame.Typ = []
+          Memo.UTF8W = (
+            '[VarMEMO_DEV]')
+        end
+        object Memo21: TfrxMemoView
+          AllowVectorExport = True
+          Left = 155.779541450000000000
+          Top = 7.779530230000000000
+          Width = 41.574829780000000000
+          Height = 18.897649770000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftTop, ftBottom]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'Taux')
+          ParentFont = False
+        end
+        object Memo22: TfrxMemoView
+          AllowVectorExport = True
+          Left = 197.354372550000000000
+          Top = 7.779530660000000000
+          Width = 79.370126920000000000
+          Height = 18.897649770000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftTop, ftBottom]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'Montant HT.')
+          ParentFont = False
+        end
+        object Memo23: TfrxMemoView
+          AllowVectorExport = True
+          Left = 276.724499470000000000
+          Top = 7.779530660000000000
+          Width = 90.708720730000000000
+          Height = 18.897649770000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftRight, ftTop, ftBottom]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'Montant TVA')
+          ParentFont = False
+        end
+        object Memo24: TfrxMemoView
+          AllowVectorExport = True
+          Left = 3.779530000000000000
+          Top = 7.779530000000000000
+          Width = 32.125984250000000000
+          Height = 18.897649770000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftTop, ftBottom]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'TVA')
+          ParentFont = False
+        end
+        object Memo25: TfrxMemoView
+          AllowVectorExport = True
+          Left = 36.015781740000000000
+          Top = 7.779530000000000000
+          Width = 120.188976380000000000
+          Height = 18.897649770000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftTop, ftBottom]
+          Memo.UTF8W = (
+            'Libell'#233)
+          ParentFont = False
+        end
+        object MemofrxDBDatasetDevisTOTHT: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 591.165740000000000000
+          Top = 34.354360000000000000
+          Width = 79.370130000000000000
+          Height = 18.897650000000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataField = 'TOTHT'
+          DataSet = frxDBDatasetDevis
+          DataSetName = 'frxDBDatasetDevis'
+          DisplayFormat.FormatStr = '%2.2n'
+          DisplayFormat.Kind = fkNumeric
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = []
+          HAlign = haRight
+          Memo.UTF8W = (
+            '[frxDBDatasetDevis."TOTHT"]')
+          ParentFont = False
+        end
+        object MemofrxDBDatasetDevisPRC_REMISE: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 548.031850000000000000
+          Top = 15.118120000000000000
+          Width = 37.795300000000000000
+          Height = 18.897650000000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataField = 'PRC_REMISE'
+          DataSet = frxDBDatasetDevis
+          DataSetName = 'frxDBDatasetDevis'
+          DisplayFormat.FormatStr = '%2.2n'
+          DisplayFormat.Kind = fkNumeric
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = []
+          HAlign = haRight
+          Memo.UTF8W = (
+            '[frxDBDatasetDevis."PRC_REMISE"]')
+          ParentFont = False
+        end
+        object MemofrxDBDatasetDevisMT_REMISE: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 591.165740000000000000
+          Top = 15.118120000000000000
+          Width = 79.370130000000000000
+          Height = 18.897650000000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataField = 'MT_REMISE'
+          DataSet = frxDBDatasetDevis
+          DataSetName = 'frxDBDatasetDevis'
+          DisplayFormat.FormatStr = '%2.2n'
+          DisplayFormat.Kind = fkNumeric
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = []
+          HAlign = haRight
+          Memo.UTF8W = (
+            '[frxDBDatasetDevis."MT_REMISE"]')
+          ParentFont = False
+        end
+        object MemofrxDBDatasetDevisMT_TVA: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 591.165740000000000000
+          Top = 52.811070000000000000
+          Width = 79.370130000000000000
+          Height = 18.897650000000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataField = 'MT_TVA'
+          DataSet = frxDBDatasetDevis
+          DataSetName = 'frxDBDatasetDevis'
+          DisplayFormat.FormatStr = '%2.2n'
+          DisplayFormat.Kind = fkNumeric
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = []
+          HAlign = haRight
+          Memo.UTF8W = (
+            '[frxDBDatasetDevis."MT_TVA"]')
+          ParentFont = False
+        end
+        object MemofrxDBDatasetDevisMT_TTC: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 560.929500000000000000
+          Top = 72.047310000000000000
+          Width = 109.606370000000000000
+          Height = 18.897650000000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataField = 'MT_TTC'
+          DataSet = frxDBDatasetDevis
+          DataSetName = 'frxDBDatasetDevis'
+          DisplayFormat.FormatStr = '%2.0n'
+          DisplayFormat.Kind = fkNumeric
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -16
+          Font.Name = 'Arial'
+          Font.Style = [fsBold]
+          Frame.Typ = []
+          HAlign = haRight
+          Memo.UTF8W = (
+            '[frxDBDatasetDevis."MT_TTC"]')
+          ParentFont = False
+        end
+        object Memo27: TfrxMemoView
+          AllowVectorExport = True
+          Left = 472.441241020000000000
+          Top = 15.118113540000000000
+          Width = 75.590600730000000000
+          Height = 18.897644040000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Frame.Typ = []
+          Memo.UTF8W = (
+            'Remise %')
+        end
+        object Memo28: TfrxMemoView
+          AllowVectorExport = True
+          Left = 472.441241020000000000
+          Top = 34.354361130000000000
+          Width = 94.488281250000000000
+          Height = 18.897644040000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Frame.Typ = []
+          Memo.UTF8W = (
+            'Total net HT')
+        end
+        object Memo29: TfrxMemoView
+          AllowVectorExport = True
+          Left = 472.441241020000000000
+          Top = 52.811076190000000000
+          Width = 94.488281250000000000
+          Height = 18.897644040000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Frame.Typ = []
+          Memo.UTF8W = (
+            'Total taxes')
+        end
+        object Memo30: TfrxMemoView
+          AllowVectorExport = True
+          Left = 472.441241020000000000
+          Top = 72.047282250000000000
+          Width = 86.929221250000000000
+          Height = 18.897705080000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Frame.Typ = []
+          Memo.UTF8W = (
+            'Total TTC')
+        end
+        object Shape2: TfrxShapeView
+          AllowVectorExport = True
+          Left = 461.102653540000000000
+          Top = 7.559051020000000000
+          Width = 222.992270730000000000
+          Height = 90.708714040000000000
+          Frame.Typ = []
+          Shape = skRoundRectangle
+        end
+        object MemoVarRef_Bancaire: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 3.779530000000000000
+          Top = 166.299320000000000000
+          Width = 449.764070000000000000
+          Height = 18.897650000000000000
+          StretchMode = smActualHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Frame.Typ = []
+          Memo.UTF8W = (
+            '[VarRef_Bancaire]')
+        end
+        object MemoVarTotalAlpha: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 3.779530000000000000
+          Top = 139.842610000000000000
+          Width = 714.331170000000000000
+          Height = 18.897650000000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = [fsBold]
+          Frame.Typ = []
+          Memo.UTF8W = (
+            '[VarTotalAlpha]')
+          ParentFont = False
+        end
+      end
+      object Child1: TfrxChild
+        FillType = ftBrush
+        FillGap.Top = 0
+        FillGap.Left = 0
+        FillGap.Bottom = 0
+        FillGap.Right = 0
+        Frame.Typ = []
+        Height = 60.472629660000000000
+        Top = 204.094620000000000000
+        Width = 755.906000000000000000
+        Stretched = True
+        ToNRows = 0
+        ToNRowsMode = rmCount
+        object Shape1: TfrxShapeView
+          AllowVectorExport = True
+          Top = 30.236410880000000000
+          Width = 755.905511811023600000
+          Height = 30.236218780000000000
+          Frame.Typ = []
+        end
+        object Memo11: TfrxMemoView
+          AllowVectorExport = True
+          Left = 739.118602820000000000
+          Top = 30.236240000000000000
+          Width = 16.629921259842520000
+          Height = 28.346456690000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -9
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = []
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'TVA ')
+          ParentFont = False
+          Rotation = 90
+          VAlign = vaCenter
+        end
+        object Memo10: TfrxMemoView
+          AllowVectorExport = True
+          Left = 545.007874020000000000
+          Top = 30.236406640000000000
+          Width = 61.606299210000000000
+          Height = 28.346456690000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'Prix TTC')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object Memo9: TfrxMemoView
+          AllowVectorExport = True
+          Left = 671.094955530000000000
+          Top = 30.236410880000000000
+          Width = 68.031510210000000000
+          Height = 28.346456690000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftRight]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'Total TTC')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object Memo8: TfrxMemoView
+          AllowVectorExport = True
+          Left = 606.709050470000000000
+          Top = 30.236400680000000000
+          Width = 64.251980210000000000
+          Height = 28.346456690000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'Total HT.')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object Memo6: TfrxMemoView
+          AllowVectorExport = True
+          Left = 438.882201250000000000
+          Top = 30.236403210000000000
+          Width = 45.354330210000000000
+          Height = 28.346456690000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            '% rem')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object Memo5: TfrxMemoView
+          AllowVectorExport = True
+          Left = 317.937219380000000000
+          Top = 30.236409160000000000
+          Width = 56.692950730000000000
+          Height = 28.346456690000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'Qt'#233)
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object Memo4: TfrxMemoView
+          AllowVectorExport = True
+          Left = 374.630169380000000000
+          Top = 30.236414220000000000
+          Width = 64.252010730000000000
+          Height = 28.346456690000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'Prix HT.')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object Memo3: TfrxMemoView
+          AllowVectorExport = True
+          Left = 87.149653060000000000
+          Top = 30.236403210000000000
+          Width = 230.551330730000000000
+          Height = 28.346456690000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'D'#233'signation')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object Memo2: TfrxMemoView
+          AllowVectorExport = True
+          Left = 0.220470050000000000
+          Top = 30.236403210000000000
+          Width = 86.929186440000000000
+          Height = 28.346456690000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = []
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'Code article')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object Memo7: TfrxMemoView
+          AllowVectorExport = True
+          Left = 484.236521350000000000
+          Top = 30.236411690000000000
+          Width = 60.472511250000000000
+          Height = 28.346456690000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'Prix net')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object MemoVarRepres: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 377.953000000000000000
+          Top = 3.779530000000000000
+          Width = 366.614410000000000000
+          Height = 18.897650000000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = []
+          HAlign = haRight
+          Memo.UTF8W = (
+            'Repr'#233'sentant: [VarRepres]')
+          ParentFont = False
+        end
+      end
+      object Footer1: TfrxFooter
+        FillType = ftBrush
+        FillGap.Top = 0
+        FillGap.Left = 0
+        FillGap.Bottom = 0
+        FillGap.Right = 0
+        Frame.Typ = []
+        Height = 22.677180000000000000
+        Top = 328.819110000000000000
+        Width = 755.906000000000000000
+        object SysMemo1: TfrxSysMemoView
+          AllowVectorExport = True
+          Left = 606.614173230000000000
+          Top = 0.000002930000000012
+          Width = 64.251968500000000000
+          Height = 18.897644040000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DisplayFormat.FormatStr = '%2.2n'
+          DisplayFormat.Kind = fkNumeric
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftRight, ftTop, ftBottom]
+          GapX = 5.000000000000000000
+          HAlign = haRight
+          Memo.UTF8W = (
+            '[SUM(<frxDBDatasetDevis."TOTHT_1">,MasterData1)]')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object SysMemo2: TfrxSysMemoView
+          AllowVectorExport = True
+          Left = 317.858267720000000000
+          Width = 56.692913390000000000
+          Height = 18.897644040000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DisplayFormat.FormatStr = '%2.2f'
+          DisplayFormat.Kind = fkNumeric
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftRight, ftTop, ftBottom]
+          GapX = 5.000000000000000000
+          HAlign = haRight
+          Memo.UTF8W = (
+            '[SUM(<frxDBDatasetDevis."QTE">,MasterData1)]')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object Memo26: TfrxMemoView
+          AllowVectorExport = True
+          Left = 510.236545180000000000
+          Top = 0.000012309999999988
+          Width = 90.708751250000000000
+          Height = 18.897644040000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Frame.Typ = []
+          Memo.UTF8W = (
+            'Total HT. brut:')
+        end
+      end
+    end
+    object PageTVA: TfrxReportPage
+      PaperWidth = 210.000000000000000000
+      PaperHeight = 297.000000000000000000
+      PaperSize = 9
+      LeftMargin = 5.000000000000000000
+      RightMargin = 5.000000000000000000
+      TopMargin = 10.000000000000000000
+      BottomMargin = 10.000000000000000000
+      Frame.Typ = []
+      MirrorMode = []
+      object MasterData2: TfrxMasterData
+        FillType = ftBrush
+        FillGap.Top = 0
+        FillGap.Left = 0
+        FillGap.Bottom = 0
+        FillGap.Right = 0
+        Frame.Typ = []
+        Height = 18.897650000000000000
+        Top = 60.472480000000000000
+        Width = 755.906000000000000000
+        DataSet = frxDBDatasetTVADevis
+        DataSetName = 'frxDBDatasetTVADevis'
+        PrintIfDetailEmpty = True
+        RowCount = 0
+        object MemofrxDBDatasetTVATaux: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 152.000000000000000000
+          Width = 41.574830000000000000
+          Height = 18.897650000000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataField = 'Taux'
+          DataSet = frxDBDatasetTVADevis
+          DataSetName = 'frxDBDatasetTVADevis'
+          DisplayFormat.FormatStr = '%2.2n'
+          DisplayFormat.Kind = fkNumeric
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftBottom]
+          GapX = 5.000000000000000000
+          HAlign = haRight
+          Memo.UTF8W = (
+            '[frxDBDatasetTVADevis."Taux"]')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object MemofrxDBDatasetTVABaseHT: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 193.574830000000000000
+          Width = 79.370130000000000000
+          Height = 18.897650000000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataField = 'BaseHT'
+          DataSet = frxDBDatasetTVADevis
+          DataSetName = 'frxDBDatasetTVADevis'
+          DisplayFormat.FormatStr = '%2.2n'
+          DisplayFormat.Kind = fkNumeric
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftBottom]
+          GapX = 5.000000000000000000
+          HAlign = haRight
+          Memo.UTF8W = (
+            '[frxDBDatasetTVADevis."BaseHT"]')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object MemofrxDBDatasetTVAMontantTVA: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 272.944960000000000000
+          Width = 90.708720000000000000
+          Height = 18.897650000000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataField = 'MontantTVA'
+          DataSet = frxDBDatasetTVADevis
+          DataSetName = 'frxDBDatasetTVADevis'
+          DisplayFormat.FormatStr = '%2.2n'
+          DisplayFormat.Kind = fkNumeric
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftRight, ftBottom]
+          GapX = 5.000000000000000000
+          HAlign = haRight
+          Memo.UTF8W = (
+            '[frxDBDatasetTVADevis."MontantTVA"]')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object MemofrxDBDatasetTVANoTVA: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Width = 32.125984250000000000
+          Height = 18.897650000000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataField = 'NoTVA'
+          DataSet = frxDBDatasetTVADevis
+          DataSetName = 'frxDBDatasetTVADevis'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftBottom]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            '[frxDBDatasetTVADevis."NoTVA"]')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object MemofrxDBDatasetTVALibelle: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 32.125984250000000000
+          Width = 120.188976380000000000
+          Height = 18.897650000000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataField = 'Libelle'
+          DataSet = frxDBDatasetTVADevis
+          DataSetName = 'frxDBDatasetTVADevis'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftBottom]
+          Memo.UTF8W = (
+            '[frxDBDatasetTVADevis."Libelle"]')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+      end
+      object Header1: TfrxHeader
+        FillType = ftBrush
+        FillGap.Top = 0
+        FillGap.Left = 0
+        FillGap.Bottom = 0
+        FillGap.Right = 5
+        Frame.Typ = []
+        Height = 18.897650200000000000
+        Top = 18.897650000000000000
+        Visible = False
+        Width = 755.906000000000000000
+        object Memo12: TfrxMemoView
+          AllowVectorExport = True
+          Left = 152.000000100000000000
+          Width = 41.574829780000000000
+          Height = 18.897649770000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftTop, ftBottom]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'Taux')
+          ParentFont = False
+        end
+        object Memo13: TfrxMemoView
+          AllowVectorExport = True
+          Left = 193.574831200000000000
+          Top = 0.000000429999999999
+          Width = 79.370126920000000000
+          Height = 18.897649770000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftTop, ftBottom]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'Montant HT.')
+          ParentFont = False
+        end
+        object Memo14: TfrxMemoView
+          AllowVectorExport = True
+          Left = 272.944958120000000000
+          Top = 0.000000429999999999
+          Width = 90.708720730000000000
+          Height = 18.897649770000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftRight, ftTop, ftBottom]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'Montant TVA')
+          ParentFont = False
+        end
+        object Memo15: TfrxMemoView
+          AllowVectorExport = True
+          Left = -0.000011350000000000
+          Top = -0.000000230000000000
+          Width = 32.125984250000000000
+          Height = 18.897649770000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftTop, ftBottom]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'TVA')
+          ParentFont = False
+        end
+        object Memo20: TfrxMemoView
+          AllowVectorExport = True
+          Left = 32.236240390000000000
+          Top = -0.000000230000000000
+          Width = 120.188976380000000000
+          Height = 18.897649770000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftTop, ftBottom]
+          Memo.UTF8W = (
+            'Libell'#233)
+          ParentFont = False
+        end
+      end
+    end
+  end
+  object FDQueryTVADevis: TFDQuery
+    MasterSource = DSEnt_prof
+    MasterFields = 'CODDEV'
+    Connection = DMGesCloud.ConnexionGesCloud
+    SQL.Strings = (
+      
+        '-- 1. Taux Exon'#233'r'#233' (TVA0) -> On utilise une sous-requ'#234'te * 0 pou' +
+        'r forcer le type FMTBcd'
+      'SELECT 0 as NoTVA,'
+      '  (SELECT libelle FROM parame WHERE code = '#39'TVA0'#39') AS Libelle,'
+      
+        '  (SELECT taux FROM par_effet WHERE code = '#39'TVA0'#39' AND ep.date_ B' +
+        'ETWEEN dat_deb AND dat_fin) AS Taux, '
+      '  mt_ht0 AS BaseHT, '
+      '  0.00 AS MontantTVA '
+      'FROM ent_prof ep'
+      'WHERE ep.CODDEV = :CODDEV AND ep.mt_ht0 <> 0'
+      ''
+      'UNION ALL'
+      ''
+      '-- 2. Zone 1 (TVA1)'
+      'SELECT 1 as NoTVA,'
+      '  (SELECT libelle FROM parame WHERE code = '#39'TVA1'#39') AS Libelle,'
+      
+        '  (SELECT taux FROM par_effet WHERE code = '#39'TVA1'#39' AND ep.date_ B' +
+        'ETWEEN dat_deb AND dat_fin) AS Taux, '
+      '  mt_ht1 AS BaseHT, '
+      '  mt_tva1 AS MontantTVA '
+      'FROM ent_prof ep'
+      'WHERE ep.CODDEV = :CODDEV AND ep.mt_ht1 <> 0'
+      ''
+      'UNION ALL'
+      ''
+      '-- 3. Zone 2 (TVA2)'
+      'SELECT 2 as NoTVA,'
+      '  (SELECT libelle FROM parame WHERE code = '#39'TVA2'#39') AS Libelle,'
+      
+        '  (SELECT taux FROM par_effet WHERE code = '#39'TVA2'#39' AND ep.date_ B' +
+        'ETWEEN dat_deb AND dat_fin) AS Taux, '
+      '  mt_ht2 AS BaseHT, '
+      '  mt_tva2 AS MontantTVA '
+      'FROM ent_prof ep'
+      'WHERE ep.CODDEV = :CODDEV AND ep.mt_ht2 <> 0'
+      ''
+      'UNION ALL'
+      ''
+      '-- 4. Zone 3 (TVA3)'
+      'SELECT 3 as NoTVA,'
+      '  (SELECT libelle FROM parame WHERE code = '#39'TVA3'#39') AS Libelle,'
+      
+        '  (SELECT taux FROM par_effet WHERE code = '#39'TVA3'#39' AND ep.date_ B' +
+        'ETWEEN dat_deb AND dat_fin) AS Taux, '
+      '  mt_ht3 AS BaseHT, '
+      '  mt_tva3 AS MontantTVA '
+      'FROM ent_prof ep'
+      'WHERE ep.CODDEV = :CODDEV AND ep.mt_ht3 <> 0'
+      ''
+      'UNION ALL'
+      ''
+      '-- 5. Zone Interm'#233'diaire / '#206'les (TVAI)'
+      'SELECT 4 as NoTVA, '
+      '  (SELECT libelle FROM parame WHERE code = '#39'TVAI'#39') AS Libelle,'
+      
+        '  (SELECT taux FROM par_effet WHERE code = '#39'TVAI'#39' AND ep.date_ B' +
+        'ETWEEN dat_deb AND dat_fin) AS Taux, '
+      '  mt_hti AS BaseHT, '
+      '  mt_tvai AS MontantTVA '
+      'FROM ent_prof ep'
+      'WHERE ep.CODDEV = :CODDEV AND ep.mt_hti <> 0'
+      '')
+    Left = 464
+    Top = 232
+    ParamData = <
+      item
+        Name = 'CODDEV'
+        ParamType = ptInput
+      end>
+    object FDQueryTVADevisNoTVA: TLargeintField
+      AutoGenerateValue = arDefault
+      FieldName = 'NoTVA'
+      Origin = 'NoTVA'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryTVADevisLibelle: TStringField
+      FieldName = 'Libelle'
+      Size = 30
+    end
+    object FDQueryTVADevisTaux: TFMTBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'Taux'
+      Origin = 'Taux'
+      ProviderFlags = []
+      ReadOnly = True
+      Precision = 9
+      Size = 5
+    end
+    object FDQueryTVADevisBaseHT: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'BaseHT'
+      Origin = 'BaseHT'
+      ProviderFlags = []
+      ReadOnly = True
+      Precision = 11
+      Size = 2
+    end
+    object FDQueryTVADevisMontantTVA: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'MontantTVA'
+      Origin = 'MontantTVA'
+      ProviderFlags = []
+      ReadOnly = True
+      Precision = 9
+      Size = 2
+    end
+  end
+  object FDQueryDevis: TFDQuery
+    MasterSource = DSEnt_prof
+    MasterFields = 'CODDEV'
+    Connection = DMGesCloud.ConnexionGesCloud
+    SQL.Strings = (
+      'SELECT '
+      '  -- Donn'#233'es de l'#39'en-t'#234'te (vont se r'#233'p'#233'ter sur chaque ligne SQL)'
+      '*'
+      'FROM ent_prof e'
+      'JOIN Client c ON e.CODCLI = c.CODCLI'
+      'JOIN lig_prof l ON e.CODDEV = l.CODDEV'
+      'WHERE e.CODDEV = :CODDEV'
+      
+        'ORDER BY e.CODDEV ASC, l.NOENRF ASC -- Le tri obligatoire pour l' +
+        'a rupture'
+      '')
+    Left = 464
+    Top = 184
+    ParamData = <
+      item
+        Name = 'CODDEV'
+        ParamType = ptInput
+      end>
+    object FDQueryDevisOBSERV: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'OBSERV'
+      Origin = 'OBSERV'
+      Size = 1000
+    end
+    object FDQueryDevisTYPE_: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'TYPE_'
+      Origin = 'TYPE_'
+      Size = 1
+    end
+    object FDQueryDevisCODDEV: TLargeintField
+      FieldName = 'CODDEV'
+      Origin = 'CODDEV'
+      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
+      Required = True
+    end
+    object FDQueryDevisCODCLI: TIntegerField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODCLI'
+      Origin = 'CODCLI'
+    end
+    object FDQueryDevisCODFAC: TLargeintField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODFAC'
+      Origin = 'CODFAC'
+    end
+    object FDQueryDevisCODCAI: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODCAI'
+      Origin = 'CODCAI'
+      Size = 2
+    end
+    object FDQueryDevisCODDEP: TShortintField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODDEP'
+      Origin = 'CODDEP'
+    end
+    object FDQueryDevisNOM: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'NOM'
+      Origin = 'NOM'
+      Size = 50
+    end
+    object FDQueryDevisNOTAHITI: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'NOTAHITI'
+      Origin = 'NOTAHITI'
+      Size = 10
+    end
+    object FDQueryDevisEXO_TVA: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'EXO_TVA'
+      Origin = 'EXO_TVA'
+    end
+    object FDQueryDevisANNEE: TIntegerField
+      AutoGenerateValue = arDefault
+      FieldName = 'ANNEE'
+      Origin = 'ANNEE'
+    end
+    object FDQueryDevisMOIS: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'MOIS'
+      Origin = 'MOIS'
+    end
+    object FDQueryDevisDATE_: TDateField
+      AutoGenerateValue = arDefault
+      FieldName = 'DATE_'
+      Origin = 'DATE_'
+    end
+    object FDQueryDevisHEURE: TIntegerField
+      AutoGenerateValue = arDefault
+      FieldName = 'HEURE'
+      Origin = 'HEURE'
+    end
+    object FDQueryDevisMT_REMISE: TIntegerField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_REMISE'
+      Origin = 'MT_REMISE'
+    end
+    object FDQueryDevisPRC_REMISE: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'PRC_REMISE'
+      Origin = 'PRC_REMISE'
+      Precision = 5
+      Size = 2
+    end
+    object FDQueryDevisTOTHT: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'TOTHT'
+      Origin = 'TOTHT'
+      Precision = 11
+      Size = 2
+    end
+    object FDQueryDevisMT_TTC: TLargeintField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_TTC'
+      Origin = 'MT_TTC'
+    end
+    object FDQueryDevisMT_HT0: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_HT0'
+      Origin = 'MT_HT0'
+      Precision = 11
+      Size = 2
+    end
+    object FDQueryDevisMT_HT1: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_HT1'
+      Origin = 'MT_HT1'
+      Precision = 11
+      Size = 2
+    end
+    object FDQueryDevisMT_HT2: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_HT2'
+      Origin = 'MT_HT2'
+      Precision = 11
+      Size = 2
+    end
+    object FDQueryDevisMT_HT3: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_HT3'
+      Origin = 'MT_HT3'
+      Precision = 11
+      Size = 2
+    end
+    object FDQueryDevisMT_TVA1: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_TVA1'
+      Origin = 'MT_TVA1'
+      Precision = 9
+      Size = 2
+    end
+    object FDQueryDevisMT_TVA2: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_TVA2'
+      Origin = 'MT_TVA2'
+      Precision = 9
+      Size = 2
+    end
+    object FDQueryDevisMT_TVA3: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_TVA3'
+      Origin = 'MT_TVA3'
+      Precision = 9
+      Size = 2
+    end
+    object FDQueryDevisMT_TVA: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_TVA'
+      Origin = 'MT_TVA'
+      Precision = 9
+      Size = 2
+    end
+    object FDQueryDevisMARGE: TLargeintField
+      AutoGenerateValue = arDefault
+      FieldName = 'MARGE'
+      Origin = 'MARGE'
+    end
+    object FDQueryDevisREFERENCE_: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'REFERENCE_'
+      Origin = 'REFERENCE_'
+      Size = 15
+    end
+    object FDQueryDevisCODREP: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODREP'
+      Origin = 'CODREP'
+    end
+    object FDQueryDevisNO_SEM: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'NO_SEM'
+      Origin = 'NO_SEM'
+    end
+    object FDQueryDevisNO_JOUR: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'NO_JOUR'
+      Origin = 'NO_JOUR'
+    end
+    object FDQueryDevisCODPAI: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODPAI'
+      Origin = 'CODPAI'
+      Size = 5
+    end
+    object FDQueryDevisJRSCRD: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'JRSCRD'
+      Origin = 'JRSCRD'
+    end
+    object FDQueryDevisFIN_MOIS: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'FIN_MOIS'
+      Origin = 'FIN_MOIS'
+    end
+    object FDQueryDevisLIBREG: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'LIBREG'
+      Origin = 'LIBREG'
+      Size = 50
+    end
+    object FDQueryDevisCRD_FORCE: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'CRD_FORCE'
+      Origin = 'CRD_FORCE'
+    end
+    object FDQueryDevisDATE_ECH: TDateField
+      AutoGenerateValue = arDefault
+      FieldName = 'DATE_ECH'
+      Origin = 'DATE_ECH'
+    end
+    object FDQueryDevisREGL: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'REGL'
+      Origin = 'REGL'
+    end
+    object FDQueryDevisCODGEO: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODGEO'
+      Origin = 'CODGEO'
+      Size = 1
+    end
+    object FDQueryDevisFLAG_TAX: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'FLAG_TAX'
+      Origin = 'FLAG_TAX'
+    end
+    object FDQueryDevisDER_MODIF: TSQLTimeStampField
+      AutoGenerateValue = arDefault
+      FieldName = 'DER_MODIF'
+      Origin = 'DER_MODIF'
+    end
+    object FDQueryDevisMT_TSOC: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_TSOC'
+      Origin = 'MT_TSOC'
+      Precision = 9
+      Size = 2
+    end
+    object FDQueryDevisMT_HTSOC: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_HTSOC'
+      Origin = 'MT_HTSOC'
+      Precision = 11
+      Size = 2
+    end
+    object FDQueryDevisTX_TSOC: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'TX_TSOC'
+      Origin = 'TX_TSOC'
+      Precision = 5
+      Size = 2
+    end
+    object FDQueryDevisEXO_CPS: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'EXO_CPS'
+      Origin = 'EXO_CPS'
+    end
+    object FDQueryDevisMT_TVAI: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_TVAI'
+      Origin = 'MT_TVAI'
+      Precision = 9
+      Size = 2
+    end
+    object FDQueryDevisMT_HTI: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_HTI'
+      Origin = 'MT_HTI'
+      Precision = 11
+      Size = 2
+    end
+    object FDQueryDevisTVA_ILES: TBooleanField
+      AutoGenerateValue = arDefault
+      FieldName = 'TVA_ILES'
+      Origin = 'TVA_ILES'
+    end
+    object FDQueryDevisOBSERV_1: TMemoField
+      AutoGenerateValue = arDefault
+      FieldName = 'OBSERV_1'
+      Origin = 'OBSERV'
+      ProviderFlags = []
+      ReadOnly = True
+      BlobType = ftMemo
+    end
+    object FDQueryDevisCODCLI_1: TIntegerField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODCLI_1'
+      Origin = 'CODCLI'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisCPTAUX: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CPTAUX'
+      Origin = 'CPTAUX'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 13
+    end
+    object FDQueryDevisNOM_1: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'NOM_1'
+      Origin = 'NOM'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 50
+    end
+    object FDQueryDevisCODREP_1: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODREP_1'
+      Origin = 'CODREP'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisPRC_REMISE_1: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'PRC_REMISE_1'
+      Origin = 'PRC_REMISE'
+      ProviderFlags = []
+      ReadOnly = True
+      Precision = 5
+      Size = 2
+    end
+    object FDQueryDevisNOTEL: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'NOTEL'
+      Origin = 'NOTEL'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 15
+    end
+    object FDQueryDevisNOTAHITI_1: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'NOTAHITI_1'
+      Origin = 'NOTAHITI'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 10
+    end
+    object FDQueryDevisNOFAX: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'NOFAX'
+      Origin = 'NOFAX'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 15
+    end
+    object FDQueryDevisJRSCRD_1: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'JRSCRD_1'
+      Origin = 'JRSCRD'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisCREDIT: TLargeintField
+      AutoGenerateValue = arDefault
+      FieldName = 'CREDIT'
+      Origin = 'CREDIT'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisplaf_crd: TIntegerField
+      AutoGenerateValue = arDefault
+      FieldName = 'plaf_crd'
+      Origin = 'plaf_crd'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisCODPAI_1: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODPAI_1'
+      Origin = 'CODPAI'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 5
+    end
+    object FDQueryDevisFIN_MOIS_1: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'FIN_MOIS_1'
+      Origin = 'FIN_MOIS'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisNB_EX: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'NB_EX'
+      Origin = 'NB_EX'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisCAAN: TLargeintField
+      AutoGenerateValue = arDefault
+      FieldName = 'CAAN'
+      Origin = 'CAAN'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisAD1: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'AD1'
+      Origin = 'AD1'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 30
+    end
+    object FDQueryDevisAD2: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'AD2'
+      Origin = 'AD2'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 30
+    end
+    object FDQueryDevisAD3: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'AD3'
+      Origin = 'AD3'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 30
+    end
+    object FDQueryDevisCUM_MVT: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'CUM_MVT'
+      Origin = 'CUM_MVT'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisMT_CPTA: TLargeintField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_CPTA'
+      Origin = 'MT_CPTA'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisEXO_TVA_1: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'EXO_TVA_1'
+      Origin = 'EXO_TVA'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisBLOQUE: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'BLOQUE'
+      Origin = 'BLOQUE'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisCODGEO_1: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODGEO_1'
+      Origin = 'CODGEO'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisEMAIL: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'EMAIL'
+      Origin = 'EMAIL'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 50
+    end
+    object FDQueryDevisCODTAR: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODTAR'
+      Origin = 'CODTAR'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 1
+    end
+    object FDQueryDevisADM: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'ADM'
+      Origin = 'ADM'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisFLAG_TAX_1: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'FLAG_TAX_1'
+      Origin = 'FLAG_TAX'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisCODFAC_ADM: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODFAC_ADM'
+      Origin = 'CODFAC_ADM'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisFERME: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'FERME'
+      Origin = 'FERME'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisDER_MODIF_1: TSQLTimeStampField
+      AutoGenerateValue = arDefault
+      FieldName = 'DER_MODIF_1'
+      Origin = 'DER_MODIF'
+    end
+    object FDQueryDevisSPEC_GOUV: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'SPEC_GOUV'
+      Origin = 'SPEC_GOUV'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisNOGSM: TLargeintField
+      AutoGenerateValue = arDefault
+      FieldName = 'NOGSM'
+      Origin = 'NOGSM'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisPLV: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'PLV'
+      Origin = 'PLV'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisINTIT_BQ: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'INTIT_BQ'
+      Origin = 'INTIT_BQ'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 30
+    end
+    object FDQueryDevisCODE_BQ: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODE_BQ'
+      Origin = 'CODE_BQ'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 5
+    end
+    object FDQueryDevisCODE_GUI: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODE_GUI'
+      Origin = 'CODE_GUI'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 5
+    end
+    object FDQueryDevisNOCPT: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'NOCPT'
+      Origin = 'NOCPT'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 11
+    end
+    object FDQueryDevisCLE: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CLE'
+      Origin = 'CLE'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 2
+    end
+    object FDQueryDevisCOEF_MAJ_PR: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'COEF_MAJ_PR'
+      Origin = 'COEF_MAJ_PR'
+      ProviderFlags = []
+      ReadOnly = True
+      Precision = 5
+      Size = 2
+    end
+    object FDQueryDevisEXO_CPS_1: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'EXO_CPS_1'
+      Origin = 'EXO_CPS'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisPAS_REM: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'PAS_REM'
+      Origin = 'PAS_REM'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisREM_FAM: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'REM_FAM'
+      Origin = 'REM_FAM'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisRELEVE_EMAIL: TBooleanField
+      AutoGenerateValue = arDefault
+      FieldName = 'RELEVE_EMAIL'
+      Origin = 'RELEVE_EMAIL'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisSELECT_: TBooleanField
+      AutoGenerateValue = arDefault
+      FieldName = 'SELECT_'
+      Origin = 'SELECT_'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisAPP_TARIFCLI: TBooleanField
+      AutoGenerateValue = arDefault
+      FieldName = 'APP_TARIFCLI'
+      Origin = 'APP_TARIFCLI'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisTVA_ILES_1: TBooleanField
+      AutoGenerateValue = arDefault
+      FieldName = 'TVA_ILES_1'
+      Origin = 'TVA_ILES'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisLIBELLE: TMemoField
+      AutoGenerateValue = arDefault
+      FieldName = 'LIBELLE'
+      Origin = 'LIBELLE'
+      ProviderFlags = []
+      ReadOnly = True
+      BlobType = ftMemo
+    end
+    object FDQueryDevisCODFAC_1: TLargeintField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODFAC_1'
+      Origin = 'CODFAC'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisCODCLI_2: TIntegerField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODCLI_2'
+      Origin = 'CODCLI'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisCODCAI_1: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODCAI_1'
+      Origin = 'CODCAI'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 2
+    end
+    object FDQueryDevisCODDEV_1: TLargeintField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODDEV_1'
+      Origin = 'CODDEV'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisCODDEP_1: TShortintField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODDEP_1'
+      Origin = 'CODDEP'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisNOENR: TIntegerField
+      AutoGenerateValue = arDefault
+      FieldName = 'NOENR'
+      Origin = 'NOENR'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisANNEE_1: TIntegerField
+      AutoGenerateValue = arDefault
+      FieldName = 'ANNEE_1'
+      Origin = 'ANNEE'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisMOIS_1: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'MOIS_1'
+      Origin = 'MOIS'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisCODREP_2: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODREP_2'
+      Origin = 'CODREP'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisCODFOU: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODFOU'
+      Origin = 'CODFOU'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 7
+    end
+    object FDQueryDevisCODSSF: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODSSF'
+      Origin = 'CODSSF'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 4
+    end
+    object FDQueryDevisCODFAM: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODFAM'
+      Origin = 'CODFAM'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 6
+    end
+    object FDQueryDevisCODDPT: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODDPT'
+      Origin = 'CODDPT'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 1
+    end
+    object FDQueryDevisTYPE__1: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'TYPE__1'
+      Origin = 'TYPE_'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 1
+    end
+    object FDQueryDevisCODART: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODART'
+      Origin = 'CODART'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 13
+    end
+    object FDQueryDevisCODBAR: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODBAR'
+      Origin = 'CODBAR'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 13
+    end
+    object FDQueryDevisQTE: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'QTE'
+      Origin = 'QTE'
+      ProviderFlags = []
+      ReadOnly = True
+      Precision = 9
+      Size = 3
+    end
+    object FDQueryDevisPOIDS: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'POIDS'
+      Origin = 'POIDS'
+      ProviderFlags = []
+      ReadOnly = True
+      Precision = 7
+      Size = 3
+    end
+    object FDQueryDevisCODTAR_1: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODTAR_1'
+      Origin = 'CODTAR'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 1
+    end
+    object FDQueryDevisPRIXHT: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'PRIXHT'
+      Origin = 'PRIXHT'
+      ProviderFlags = []
+      ReadOnly = True
+      Precision = 11
+      Size = 2
+    end
+    object FDQueryDevisPRIXTTC: TLargeintField
+      AutoGenerateValue = arDefault
+      FieldName = 'PRIXTTC'
+      Origin = 'PRIXTTC'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisPRIXNET: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'PRIXNET'
+      Origin = 'PRIXNET'
+      ProviderFlags = []
+      ReadOnly = True
+      Precision = 11
+      Size = 2
+    end
+    object FDQueryDevisTOTHT_1: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'TOTHT_1'
+      Origin = 'TOTHT'
+      ProviderFlags = []
+      ReadOnly = True
+      Precision = 11
+      Size = 2
+    end
+    object FDQueryDevisMT_TTC_1: TLargeintField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_TTC_1'
+      Origin = 'MT_TTC'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisPRC_REMISE_2: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'PRC_REMISE_2'
+      Origin = 'PRC_REMISE'
+      ProviderFlags = []
+      ReadOnly = True
+      Precision = 5
+      Size = 2
+    end
+    object FDQueryDevisMT_REMISE_1: TIntegerField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_REMISE_1'
+      Origin = 'MT_REMISE'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisTX_TVA: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'TX_TVA'
+      Origin = 'TX_TVA'
+      ProviderFlags = []
+      ReadOnly = True
+      Precision = 5
+      Size = 2
+    end
+    object FDQueryDevisMT_TVA_1: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_TVA_1'
+      Origin = 'MT_TVA'
+      ProviderFlags = []
+      ReadOnly = True
+      Precision = 9
+      Size = 2
+    end
+    object FDQueryDevisNO_TVA: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'NO_TVA'
+      Origin = 'NO_TVA'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisPRIXREV: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'PRIXREV'
+      Origin = 'PRIXREV'
+      ProviderFlags = []
+      ReadOnly = True
+      Precision = 11
+      Size = 2
+    end
+    object FDQueryDevisMARGE_1: TLargeintField
+      AutoGenerateValue = arDefault
+      FieldName = 'MARGE_1'
+      Origin = 'MARGE'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisNO_SEM_1: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'NO_SEM_1'
+      Origin = 'NO_SEM'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisNO_JOUR_1: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'NO_JOUR_1'
+      Origin = 'NO_JOUR'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisDET_PPT: TLargeintField
+      AutoGenerateValue = arDefault
+      FieldName = 'DET_PPT'
+      Origin = 'DET_PPT'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisDET_ILE: TLargeintField
+      AutoGenerateValue = arDefault
+      FieldName = 'DET_ILE'
+      Origin = 'DET_ILE'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisNOENRF: TIntegerField
+      AutoGenerateValue = arDefault
+      FieldName = 'NOENRF'
+      Origin = 'NOENRF'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisDER_MODIF_2: TSQLTimeStampField
+      AutoGenerateValue = arDefault
+      FieldName = 'DER_MODIF_2'
+      Origin = 'DER_MODIF'
+    end
+    object FDQueryDevisIMP_CODE: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'IMP_CODE'
+      Origin = 'IMP_CODE'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryDevisTX_TSOC_1: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'TX_TSOC_1'
+      Origin = 'TX_TSOC'
+      ProviderFlags = []
+      ReadOnly = True
+      Precision = 5
+      Size = 2
+    end
+    object FDQueryDevisMT_TSOC_1: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_TSOC_1'
+      Origin = 'MT_TSOC'
+      ProviderFlags = []
+      ReadOnly = True
+      Precision = 9
+      Size = 2
+    end
   end
 end

@@ -80,6 +80,7 @@ type
     procedure TravauxFinJournee(Sender: TObject);
     procedure HistoriqueFacturesClick(Sender: TObject);
     procedure TravauxDevisClick(Sender: TObject);
+    procedure TresorerieClientsClick(Sender: TObject);
   private
     function ChercherEtActiverOnglet(const ACaption: string): Boolean;
     function OuvrirOnglet<T: TControl>(const ACaption: string; const AImageName: string = ''; AOnCreate: TProc<T> = nil): T;
@@ -101,7 +102,7 @@ uses
   U_TableRepres, U_TableGeo, U_TableDepots, U_TablePostesAchats, U_TableActivite,
   U_TableSousfam, U_TableDepart, U_TableChrono, U_TableTarif, U_TableInfoscompl,
   U_FicheCtrstock, U_FicheCaisse, U_FormGestionDroits, U_TableArticles, U_TableEntvtejj,
-  U_TableEntvteaa, U_FormCentraVentes, U_TableDevis;
+  U_TableEntvteaa, U_FormCentraVentes, U_TableDevis, U_FrameEcrituresClients;
 
 procedure TFormMenuPrincipal.FormCreate(Sender: TObject);
 begin
@@ -373,7 +374,7 @@ var
   MonFrame: TFrameTableDevis;
 begin
   // Votre méthode qui crée ou ouvre l'onglet/frame
-  MonFrame := OuvrirOnglet<TFrameTableDevis>('Historique des devis', 'shell32_16741');
+  MonFrame := OuvrirOnglet<TFrameTableDevis>('Devis-Proforma', 'shell32_51380');
 end;
 
 
@@ -384,6 +385,15 @@ var
 begin
   // Votre méthode qui crée ou ouvre l'onglet/frame
   MonFrame := OuvrirOnglet<TFrameTableEntvteaa>('Historique des Factures', 'shell32_16741');
+end;
+
+
+procedure TFormMenuPrincipal.TresorerieClientsClick(Sender: TObject);
+var
+  MonFrame: TFrameEcrituresClients;
+begin
+  // Votre méthode qui crée ou ouvre l'onglet/frame
+  MonFrame := OuvrirOnglet<TFrameEcrituresClients>('Ecritures clients', 'client_account_template');
 end;
 
 
