@@ -760,6 +760,7 @@ begin
           QryTresor.FieldByName('top_').AsString := 'Z';
           QryTresor.FieldByName('type_').AsString := 'V';
           QryTresor.FieldByName('origin').AsString := 'V';
+          QryTresor.FieldByName('codjal').AsString := DMGesCloud.FDQueryCtrstock.FieldByName('JAL_VTE').AsString;
 
           if QryVentesValidees.FieldByName('reference_').AsString = '' then
             QryTresor.FieldByName('reference_').AsString := IntToStr(QryVentesValidees.FieldByName('codfac').AsInteger)
@@ -853,6 +854,7 @@ begin
                 QryTresor.FieldByName('top_').AsString := 'Z';
                 QryTresor.FieldByName('type_').AsString := 'R';
                 QryTresor.FieldByName('origin').AsString := 'V';
+                QryTresor.FieldByName('codjal').AsString := QryPaiement.FieldByName('CODJAL').AsString;
 
                 if QryVentesValidees.FieldByName('reference_').AsString = '' then
                   QryTresor.FieldByName('reference_').AsString := IntToStr(QryVentesValidees.FieldByName('codfac').AsInteger)

@@ -44,6 +44,7 @@ type
     Modifmotdepasseutilisateur1: TMenuItem;
     PopupMenuFinJournee: TPopupMenu;
     Centralisationdesventes1: TMenuItem;
+    Journauxcomptables1: TMenuItem;
 
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -81,6 +82,7 @@ type
     procedure HistoriqueFacturesClick(Sender: TObject);
     procedure TravauxDevisClick(Sender: TObject);
     procedure TresorerieClientsClick(Sender: TObject);
+    procedure Journauxcomptables1Click(Sender: TObject);
   private
     function ChercherEtActiverOnglet(const ACaption: string): Boolean;
     function OuvrirOnglet<T: TControl>(const ACaption: string; const AImageName: string = ''; AOnCreate: TProc<T> = nil): T;
@@ -102,7 +104,8 @@ uses
   U_TableRepres, U_TableGeo, U_TableDepots, U_TablePostesAchats, U_TableActivite,
   U_TableSousfam, U_TableDepart, U_TableChrono, U_TableTarif, U_TableInfoscompl,
   U_FicheCtrstock, U_FicheCaisse, U_FormGestionDroits, U_TableArticles, U_TableEntvtejj,
-  U_TableEntvteaa, U_FormCentraVentes, U_TableDevis, U_FrameEcrituresClients;
+  U_TableEntvteaa, U_FormCentraVentes, U_TableDevis, U_FrameEcrituresClients,
+  U_TableJournal;
 
 procedure TFormMenuPrincipal.FormCreate(Sender: TObject);
 begin
@@ -454,6 +457,11 @@ begin
     begin
       Fiche.ChargerArbreInfocompl;
     end);
+end;
+
+procedure TFormMenuPrincipal.Journauxcomptables1Click(Sender: TObject);
+begin
+  OuvrirOnglet<TFrameTableJournaux>('Journaux comptables', 'server_configuration');
 end;
 
 procedure TFormMenuPrincipal.Paramtressocit1Click(Sender: TObject);

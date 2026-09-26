@@ -36,6 +36,7 @@ type
     FDQueryReglJJ: TFDQuery;
     FDQueryPrixgeo: TFDQuery;
     FDQueryLig_prof: TFDQuery;
+    FDQueryJournal: TFDQuery;
     procedure FDQueryParameDeviseNewRecord(DataSet: TDataSet);
     procedure UpperCaseSetText(Sender: TField; const Text: string);
     procedure FDQueryDepotNewRecord(DataSet: TDataSet);
@@ -51,6 +52,7 @@ type
     procedure ChargerParametresTVA;
     procedure ChargerParametresCtrstock;
     procedure VerifierOuCreerCaisse(ANumeroPoste: Integer);
+    procedure ChargerNouveauxFichiers;
 
   public
     { Déclarations publiques }
@@ -111,6 +113,7 @@ begin
   ChargerParametresStock;
   ChargerParametresTVA;
   ChargerParametresCtrstock;
+  ChargerNouveauxFichiers;
 end;
 
 
@@ -298,6 +301,47 @@ begin
   gPass_modif_fac:=FDQueryCtrstock.FieldByName('pass_modif_fac').AsString;
 end;
 
+procedure TDM_Olivier.ChargerNouveauxFichiers;
+var
+  Qry: TFDQuery;
+  TableExiste: Boolean;
+begin
+  Qry := CreerRequeteTemp;
+  try
+    // 1. On tente d'ouvrir la table pour voir si elle existe
+    TableExiste := True;
+    Qry.Close;
+    try
+      Qry.Open('SELECT * FROM journal WHERE 1 = 0');
+    except
+      TableExiste := False;
+    end;
+
+    // 2. Si elle n'existe pas, on la crée
+    if not TableExiste then
+    begin
+      Qry.Close;
+      Qry.SQL.Text := 'CREATE TABLE `journal` (' +
+                      '`CODJAL` varchar(5) NOT NULL,' +
+                      '`LIBELLE` varchar(30) DEFAULT NULL,' +
+                      '`NOCPT` varchar(13) DEFAULT NULL,' +
+                      '`TYPE_` varchar(1) DEFAULT NULL,' +
+                      '`MT_CPTA` decimal(9,0) DEFAULT NULL,' +
+                      '`DER_MODIF` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,' +
+                      'PRIMARY KEY (`CODJAL`)' +
+                      ') ENGINE=InnoDB DEFAULT CHARSET=latin1';
+      Qry.ExecSQL;
+
+      //Modif structure tresor pour ajour codjal
+      Qry.SQL.Text :='ALTER TABLE `tresor` ADD COLUMN `CODJAL` VARCHAR(5) NULL AFTER `DER_MODIF`';
+      Qry.ExecSQL;
+    end;
+
+  finally
+    LibererRequeteTemp(Qry);
+  end;
+end;
+
 
 procedure TDM_Olivier.ChargerParametresTVA;
 var
@@ -310,16 +354,16 @@ begin
     Qry.SQL.Text := 'SELECT * FROM parame WHERE CODE = ''TVA0''';
     Qry.Open;
       // 2. Si la TVA n'existe pas, on l'insère
-    if Qry.IsEmpty then
-    begin
+//    if Qry.IsEmpty then
+//    begin
       Qry.Close;
-      Qry.SQL.Text := 'INSERT INTO parame (CODE,TYPE_,TAUX,LIBELLE) VALUES (''TVA0'',''V'',0,''Exonéré'')';
+      Qry.SQL.Text := 'INSERT IGNORE INTO parame (CODE,TYPE_,TAUX,LIBELLE) VALUES (''TVA0'',''V'',0,''Exonéré'')';
       Qry.ExecSQL;
       //Date d'effet
       Qry.Close;
-      Qry.SQL.Text := 'INSERT IGNORE INTO par_effet (CODE,TAUX,DATE_DEB,DATE_FIN) VALUES (''TVA0'',0,''2000-01-01'',''2050-12-31'')';
+      Qry.SQL.Text := 'INSERT IGNORE INTO par_effet (CODE,TAUX,DAT_DEB,DAT_FIN) VALUES (''TVA0'',0,''1998-01-01'',''2050-12-31'')';
       Qry.ExecSQL;
-    end;
+//    end;
     gTx_TVA0:=DM_Olivier.fgTxTaxe(Now,'TVA0'); //Qry.FieldByName('TAUX').AsInteger;
 
     // 1. Vérifier si le code TVA1 existe déjà
@@ -327,16 +371,16 @@ begin
     Qry.SQL.Text := 'SELECT * FROM parame WHERE CODE = ''TVA1''';
     Qry.Open;
       // 2. Si la TVA n'existe pas, on l'insère
-    if Qry.IsEmpty then
-    begin
+//    if Qry.IsEmpty then
+//    begin
       Qry.Close;
-      Qry.SQL.Text := 'INSERT INTO parame (CODE,TYPE_,TAUX,LIBELLE) VALUES (''TVA1'',''V'',5,''TVA à taux réduit'')';
+      Qry.SQL.Text := 'INSERT IGNORE INTO parame (CODE,TYPE_,TAUX,LIBELLE) VALUES (''TVA1'',''V'',5,''TVA à taux réduit'')';
       Qry.ExecSQL;
       //Date d'effet
       Qry.Close;
-      Qry.SQL.Text := 'INSERT IGNORE INTO par_effet (CODE,TAUX,DATE_DEB,DATE_FIN) VALUES (''TVA1'',5,''2000-01-01'',''2050-12-31'')';
+      Qry.SQL.Text := 'INSERT IGNORE INTO par_effet (CODE,TAUX,DAT_DEB,DAT_FIN) VALUES (''TVA1'',5,''1998-01-01'',''2050-12-31'')';
       Qry.ExecSQL;
-    end;
+//    end;
     gTx_TVA1:=DM_Olivier.fgTxTaxe(Now,'TVA1'); //Qry.FieldByName('TAUX').AsInteger;
 
     // 1. Vérifier si le code TVA2 existe déjà
@@ -344,16 +388,16 @@ begin
     Qry.SQL.Text := 'SELECT * FROM parame WHERE CODE = ''TVA2''';
     Qry.Open;
     // 2. Si la TVA n'existe pas, on l'insère
-    if Qry.IsEmpty then
-    begin
+//    if Qry.IsEmpty then
+//    begin
       Qry.Close;
-      Qry.SQL.Text := 'INSERT INTO parame (CODE,TYPE_,TAUX,LIBELLE) VALUES (''TVA2'',''V'',16,''TVA à taux normal'')';
+      Qry.SQL.Text := 'INSERT IGNORE INTO parame (CODE,TYPE_,TAUX,LIBELLE) VALUES (''TVA2'',''V'',16,''TVA à taux normal'')';
       Qry.ExecSQL;
       //Date d'effet
       Qry.Close;
-      Qry.SQL.Text := 'INSERT IGNORE INTO par_effet (CODE,TAUX,DATE_DEB,DATE_FIN) VALUES (''TVA2'',16,''2000-01-01'',''2050-12-31'')';
+      Qry.SQL.Text := 'INSERT IGNORE INTO par_effet (CODE,TAUX,DAT_DEB,DAT_FIN) VALUES (''TVA2'',16,''1998-01-01'',''2050-12-31'')';
       Qry.ExecSQL;
-    end;
+//    end;
     gTx_TVA2:=DM_Olivier.fgTxTaxe(Now,'TVA2'); //Qry.FieldByName('TAUX').AsInteger;
 
     // 1. Vérifier si le code TVA3 existe déjà
@@ -361,16 +405,18 @@ begin
     Qry.SQL.Text := 'SELECT * FROM parame WHERE CODE = ''TVA3''';
     Qry.Open;
     // 2. Si la TVA n'existe pas, on l'insère
-    if Qry.IsEmpty then
-    begin
+//    if Qry.IsEmpty then
+//    begin
       Qry.Close;
-      Qry.SQL.Text := 'INSERT INTO parame (CODE,TYPE_,TAUX,LIBELLE) VALUES (''TVA3'',''V'',13,''TVA à taux intermédiaire'')';
+      Qry.SQL.Text := 'INSERT IGNORE INTO parame (CODE,TYPE_,TAUX,LIBELLE) VALUES (''TVA3'',''V'',13,''TVA à taux intermédiaire'')';
       Qry.ExecSQL;
       //Date d'effet
       Qry.Close;
-      Qry.SQL.Text := 'INSERT IGNORE INTO par_effet (CODE,TAUX,DATE_DEB,DATE_FIN) VALUES (''TVA3'',13,''2000-01-01'',''2050-12-31'')';
+      Qry.SQL.Text := 'INSERT IGNORE INTO par_effet (CODE,TAUX,DAT_DEB,DAT_FIN) VALUES (''TVA3'',10,''1998-01-01'',''2009-12-31'')';
       Qry.ExecSQL;
-    end;
+      Qry.SQL.Text := 'INSERT IGNORE INTO par_effet (CODE,TAUX,DAT_DEB,DAT_FIN) VALUES (''TVA3'',13,''2010-01-01'',''2050-12-31'')';
+      Qry.ExecSQL;
+//    end;
     gTx_TVA3:=DM_Olivier.fgTxTaxe(Now,'TVA3'); //Qry.FieldByName('TAUX').AsInteger;
 
     // 1. Vérifier si le code TVAI Iles existe déjà
@@ -378,16 +424,16 @@ begin
     Qry.SQL.Text := 'SELECT * FROM parame WHERE CODE = ''TVAI''';
     Qry.Open;
     // 2. Si la TVA n'existe pas, on l'insère
-    if Qry.IsEmpty then
-    begin
+//    if Qry.IsEmpty then
+//    begin
       Qry.Close;
-      Qry.SQL.Text := 'INSERT INTO parame (CODE,TYPE_,TAUX,LIBELLE,DATE_EFF) VALUES (''TVAI'',''V'',1,''TVA Iles'',''2026-07-01'')';
+      Qry.SQL.Text := 'INSERT IGNORE INTO parame (CODE,TYPE_,TAUX,LIBELLE,DATE_EFF) VALUES (''TVAI'',''V'',1,''TVA Iles'',''2026-07-01'')';
       Qry.ExecSQL;
       //Date d'effet TVA iles
       Qry.Close;
-      Qry.SQL.Text := 'INSERT IGNORE INTO par_effet (CODE,TAUX,DATE_DEB,DATE_FIN) VALUES (''TVAI'',1,''2026-07-01'',''2050-12-31'')';
+      Qry.SQL.Text := 'INSERT IGNORE INTO par_effet (CODE,TAUX,DAT_DEB,DAT_FIN) VALUES (''TVAI'',1,''2026-07-01'',''2050-12-31'')';
       Qry.ExecSQL;
-    end;
+//    end;
     //TVA ILES par date d'effet
     gTx_TVAI:=DM_Olivier.fgTxTaxe(Now,'TVAI')
 

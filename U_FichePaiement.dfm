@@ -47,7 +47,6 @@ object FormFichePaiement: TFormFichePaiement
     Width = 54
     Height = 15
     Caption = 'Code jrnal'
-    FocusControl = DBEdit4
   end
   object Label8: TLabel
     Left = 27
@@ -84,16 +83,6 @@ object FormFichePaiement: TFormFichePaiement
     DataSource = DSPaiement
     TabOrder = 2
   end
-  object DBEdit4: TDBEdit
-    Left = 109
-    Top = 77
-    Width = 49
-    Height = 23
-    CharCase = ecUpperCase
-    DataField = 'CODJAL'
-    DataSource = DSPaiement
-    TabOrder = 3
-  end
   object DBCheckBoxActif: TDBCheckBox
     Left = 359
     Top = 83
@@ -102,7 +91,7 @@ object FormFichePaiement: TFormFichePaiement
     Caption = 'Actif'
     DataField = 'ACTIF'
     DataSource = DSPaiement
-    TabOrder = 6
+    TabOrder = 5
     ValueChecked = '1'
     ValueUnchecked = '0'
   end
@@ -114,7 +103,7 @@ object FormFichePaiement: TFormFichePaiement
     Caption = 'Edition ch'#232'que'
     DataField = 'EDIT_CHQ'
     DataSource = DSPaiement
-    TabOrder = 7
+    TabOrder = 6
     ValueChecked = '1'
     ValueUnchecked = '0'
   end
@@ -135,10 +124,10 @@ object FormFichePaiement: TFormFichePaiement
       'T')
     OnChange = RzDBRadioGroupType_Change
     Caption = 'Nature'
-    Color = 15590617
+    Color = 15658734
     Columns = 2
     HorizontalSpacing = 15
-    TabOrder = 5
+    TabOrder = 4
   end
   object DBCheckBoxArrondi: TDBCheckBox
     Left = 359
@@ -148,7 +137,7 @@ object FormFichePaiement: TFormFichePaiement
     Caption = 'Affectation de l'#39'arrondi '
     DataField = 'ARRONDI'
     DataSource = DSPaiement
-    TabOrder = 8
+    TabOrder = 7
     ValueChecked = '1'
     ValueUnchecked = '0'
   end
@@ -162,7 +151,7 @@ object FormFichePaiement: TFormFichePaiement
     KeyField = 'CODE'
     ListFieldIndex = 1
     ListSource = DSParame
-    TabOrder = 4
+    TabOrder = 3
   end
   object Panel1: TPanel
     Left = 525
@@ -171,7 +160,7 @@ object FormFichePaiement: TFormFichePaiement
     Height = 81
     Anchors = [akTop, akRight]
     BevelOuter = bvNone
-    TabOrder = 9
+    TabOrder = 8
     object BtnValider: TBitBtn
       Left = 0
       Top = 0
@@ -183,6 +172,7 @@ object FormFichePaiement: TFormFichePaiement
       Default = True
       TabOrder = 0
       OnClick = BtnValiderClick
+      ExplicitLeft = 1
     end
     object BtnAnnuler: TBitBtn
       Left = 0
@@ -194,6 +184,7 @@ object FormFichePaiement: TFormFichePaiement
       Caption = '&Annuler'
       ModalResult = 2
       TabOrder = 1
+      ExplicitLeft = 1
     end
     object BtnAide: TBitBtn
       Left = 0
@@ -205,25 +196,42 @@ object FormFichePaiement: TFormFichePaiement
       Caption = 'Aide'
       TabOrder = 2
       OnClick = BtnAideClick
+      ExplicitLeft = 1
     end
+  end
+  object DBLookupComboBoxJournal: TDBLookupComboBox
+    Left = 109
+    Top = 77
+    Width = 68
+    Height = 23
+    DataField = 'CODJAL'
+    DataSource = DSPaiement
+    KeyField = 'CODJAL'
+    ListSource = DSJournal
+    TabOrder = 9
   end
   object DSPaiement: TDataSource
     DataSet = DM_Olivier.FDQueryPaiement
     OnDataChange = DSPaiementDataChange
-    Left = 224
-    Top = 72
+    Left = 208
+    Top = 112
   end
   object FDQueryParameDevise: TFDQuery
     MasterFields = 'DEVISE'
     Connection = DMGesCloud.ConnexionGesCloud
     SQL.Strings = (
       'select * from parame where type_='#39'D'#39)
-    Left = 280
-    Top = 104
+    Left = 488
+    Top = 80
   end
   object DSParame: TDataSource
     DataSet = FDQueryParameDevise
-    Left = 184
-    Top = 120
+    Left = 552
+    Top = 96
+  end
+  object DSJournal: TDataSource
+    DataSet = DM_Olivier.FDQueryJournal
+    Left = 288
+    Top = 112
   end
 end

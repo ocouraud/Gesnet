@@ -62,6 +62,7 @@ object FrameTablePaiement: TFrameTablePaiement
       Caption = '&Ouvrir'
       Default = True
       TabOrder = 1
+      OnClick = JvDBGridPaiementDblClick
     end
     object BtnSupprimer: TBitBtn
       Left = 174
@@ -139,13 +140,6 @@ object FrameTablePaiement: TFrameTablePaiement
         FieldName = 'LIBELLE'
         Title.Caption = 'Libell'#233
         Width = 258
-        Visible = True
-      end
-      item
-        Expanded = False
-        FieldName = 'NOCPT'
-        Title.Caption = 'Cpte Compta'
-        Width = 79
         Visible = True
       end
       item

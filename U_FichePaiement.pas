@@ -21,7 +21,6 @@ type
     Label3: TLabel;
     DBEdit3: TDBEdit;
     Label4: TLabel;
-    DBEdit4: TDBEdit;
     Label8: TLabel;
     DBCheckBoxActif: TDBCheckBox;
     DBCheckBoxCheque: TDBCheckBox;
@@ -34,6 +33,8 @@ type
     BtnValider: TBitBtn;
     BtnAnnuler: TBitBtn;
     BtnAide: TBitBtn;
+    DBLookupComboBoxJournal: TDBLookupComboBox;
+    DSJournal: TDataSource;
     procedure FormShow(Sender: TObject);
     procedure RzDBRadioGroupType_Change(Sender: TObject);
     procedure DSPaiementDataChange(Sender: TObject; Field: TField);
@@ -91,7 +92,7 @@ begin
   Label3.Visible := EstVisible;
   Label4.Visible := EstVisible;
   DBEdit3.Visible := EstVisible;
-  DBEdit4.Visible := EstVisible;
+  //DBEdit4.Visible := EstVisible;
 
   // 4. On rend visible Impression cheque uniquement si la valeur est 'C' (COMPTANT)
   DBCheckBoxCheque.Visible := false;
@@ -209,10 +210,12 @@ begin
 
   DBEdit2.SetFocus;
 
-  // On force le rafraîchissement de la liste des paiements à l'ouverture de la fiche
+  // On force le rafraîchissement des listes
   FDQueryParameDevise.Close;
   FDQueryParameDevise.Open;
 
+  DM_Olivier.FDQueryJournal.Close;
+  DM_Olivier.FDQueryJournal.Open;
   // ... le reste de votre code existant au démarrage ...
 
     //On appelle explicitement la méthode MettreAJourVisibiliteType_

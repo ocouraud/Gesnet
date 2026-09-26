@@ -1145,6 +1145,13 @@ object FormFicheClient: TFormFicheClient
           end
           item
             Expanded = False
+            FieldName = 'CODJAL'
+            Title.Caption = 'JNAL'
+            Width = 39
+            Visible = True
+          end
+          item
+            Expanded = False
             FieldName = 'REFERENCE_'
             Title.Caption = 'REFERENCE'
             Visible = True

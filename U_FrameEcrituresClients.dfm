@@ -6,9 +6,9 @@ object FrameEcrituresClients: TFrameEcrituresClients
   TabOrder = 0
   object JvDBGridClients: TJvDBGrid
     Left = 0
-    Top = 41
+    Top = 73
     Width = 521
-    Height = 508
+    Height = 423
     HelpType = htKeyword
     Align = alLeft
     DataSource = DSClients
@@ -55,7 +55,7 @@ object FrameEcrituresClients: TFrameEcrituresClients
         Visible = True
       end
       item
-        Alignment = taCenter
+        Alignment = taRightJustify
         Expanded = False
         FieldName = 'CREDIT'
         Title.Caption = 'Solde'
@@ -79,16 +79,13 @@ object FrameEcrituresClients: TFrameEcrituresClients
     Left = 0
     Top = 0
     Width = 1000
-    Height = 41
+    Height = 73
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitLeft = 6
-    ExplicitTop = 8
-    ExplicitWidth = 794
     object EdtCherche_CODCLI: TEdit
       Left = 90
-      Top = 12
+      Top = 41
       Width = 65
       Height = 23
       TabOrder = 0
@@ -97,7 +94,7 @@ object FrameEcrituresClients: TFrameEcrituresClients
     end
     object EdtCherche_NOM: TEdit
       Left = 154
-      Top = 12
+      Top = 41
       Width = 193
       Height = 23
       TabOrder = 1
@@ -106,7 +103,7 @@ object FrameEcrituresClients: TFrameEcrituresClients
     end
     object CheckBoxFermes: TCheckBox
       Left = 351
-      Top = 13
+      Top = 42
       Width = 104
       Height = 17
       Caption = 'Clients ferm'#233's'
@@ -114,37 +111,31 @@ object FrameEcrituresClients: TFrameEcrituresClients
     end
     object EdtCherche_CPTAUX: TEdit
       Left = 14
-      Top = 12
+      Top = 41
       Width = 77
       Height = 23
       TabOrder = 3
       TextHint = 'Filtrer par code...'
       OnChange = EdtCherche_CPTAUXChange
     end
-  end
-  object Panel2: TPanel
-    Left = 0
-    Top = 549
-    Width = 1000
-    Height = 29
-    Align = alBottom
-    BevelOuter = bvNone
-    TabOrder = 2
-    ExplicitTop = 12
-    ExplicitWidth = 800
-    object BtnOuvrir: TBitBtn
-      Left = 0
-      Top = 0
-      Width = 87
-      Height = 29
-      Margins.Left = 6
-      Margins.Right = 6
-      Align = alLeft
-      Caption = '&Ouvrir'
-      Default = True
-      TabOrder = 0
-      OnClick = BtnOuvrirClick
-      ExplicitLeft = 87
+    object rgFiltreEcritures: TRzRadioGroup
+      Left = 522
+      Top = 19
+      Width = 334
+      Height = 48
+      Caption = ''
+      Color = 15658734
+      Columns = 4
+      HorizontalSpacing = 20
+      ItemIndex = 3
+      Items.Strings = (
+        'Toutes'
+        'Non sold'#233'es'
+        'Sold'#233'es'
+        'Aucune')
+      TabOrder = 4
+      Transparent = True
+      OnClick = rgFiltreEcrituresClick
     end
     object BtnFermer: TBitBtn
       Left = 913
@@ -153,38 +144,222 @@ object FrameEcrituresClients: TFrameEcrituresClients
       Height = 29
       Margins.Left = 6
       Margins.Right = 6
-      Align = alRight
       Caption = '&Fermer'
       ModalResult = 8
-      TabOrder = 1
+      TabOrder = 5
       OnClick = BtnFermerClick
-      ExplicitLeft = 713
     end
     object BtnAide: TBitBtn
-      Left = 826
+      Left = 913
+      Top = 35
+      Width = 87
+      Height = 29
+      Caption = 'Aide'
+      TabOrder = 6
+      OnClick = BtnAideClick
+    end
+  end
+  object Panel2: TPanel
+    Left = 0
+    Top = 496
+    Width = 1000
+    Height = 82
+    Align = alBottom
+    BevelOuter = bvNone
+    TabOrder = 2
+    DesignSize = (
+      1000
+      82)
+    object LblTotalCredit: TLabel
+      Left = 904
+      Top = 6
+      Width = 73
+      Height = 15
+      Alignment = taRightJustify
+      Caption = 'LblTotalCredit'
+    end
+    object LblTotalDebit: TLabel
+      Left = 829
+      Top = 6
+      Width = 69
+      Height = 15
+      Alignment = taRightJustify
+      Caption = 'LblTotalDebit'
+    end
+    object TLabelSolde: TLabel
+      Left = 829
+      Top = 27
+      Width = 7
+      Height = 15
+      Anchors = [akLeft, akBottom]
+      Caption = '0'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -12
+      Font.Name = 'Segoe UI'
+      Font.Style = [fsBold]
+      ParentFont = False
+    end
+    object Label26: TLabel
+      Left = 788
+      Top = 27
+      Width = 35
+      Height = 15
+      Anchors = [akLeft, akBottom]
+      Caption = 'Solde :'
+    end
+    object LettrageCR: TLabel
+      Left = 656
+      Top = 6
+      Width = 73
+      Height = 15
+      Alignment = taRightJustify
+      Caption = 'LblTotalCredit'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clCrimson
+      Font.Height = -12
+      Font.Name = 'Segoe UI'
+      Font.Style = []
+      ParentFont = False
+      StyleElements = [seClient, seBorder]
+    end
+    object LettrageDB: TLabel
+      Left = 581
+      Top = 6
+      Width = 69
+      Height = 15
+      Alignment = taRightJustify
+      Caption = 'LblTotalDebit'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clCrimson
+      Font.Height = -12
+      Font.Name = 'Segoe UI'
+      Font.Style = []
+      ParentFont = False
+      StyleElements = [seClient, seBorder]
+    end
+    object Label1: TLabel
+      Left = 521
+      Top = 27
+      Width = 35
+      Height = 15
+      Anchors = [akLeft, akBottom]
+      Caption = 'Solde :'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clCrimson
+      Font.Height = -12
+      Font.Name = 'Segoe UI'
+      Font.Style = []
+      ParentFont = False
+      StyleElements = [seClient, seBorder]
+    end
+    object LettrageSolde: TLabel
+      Left = 562
+      Top = 27
+      Width = 7
+      Height = 15
+      Anchors = [akLeft, akBottom]
+      Caption = '0'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clCrimson
+      Font.Height = -12
+      Font.Name = 'Segoe UI'
+      Font.Style = [fsBold]
+      ParentFont = False
+      StyleElements = [seClient, seBorder]
+    end
+    object Label2: TLabel
+      Left = 521
+      Top = 6
+      Width = 54
+      Height = 15
+      Anchors = [akLeft, akBottom]
+      Caption = 'S'#233'lection :'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clCrimson
+      Font.Height = -12
+      Font.Name = 'Segoe UI'
+      Font.Style = []
+      ParentFont = False
+      StyleElements = [seClient, seBorder]
+    end
+    object Label3: TLabel
+      Left = 785
+      Top = 6
+      Width = 38
+      Height = 15
+      Anchors = [akLeft, akBottom]
+      Caption = 'Totaux:'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -12
+      Font.Name = 'Segoe UI'
+      Font.Style = []
+      ParentFont = False
+    end
+    object BtnOuvrir: TBitBtn
+      Left = 0
       Top = 0
       Width = 87
       Height = 29
-      Align = alRight
-      Caption = 'Aide'
+      Margins.Left = 6
+      Margins.Right = 6
+      Caption = '&Ouvrir'
+      Default = True
+      TabOrder = 0
+      OnClick = BtnOuvrirClick
+    end
+    object BtnSupprimer: TBitBtn
+      Left = 707
+      Top = 48
+      Width = 87
+      Height = 29
+      Margins.Left = 6
+      Margins.Right = 6
+      Caption = '&Supprimer'
+      TabOrder = 1
+    end
+    object BtnModifier: TBitBtn
+      Left = 614
+      Top = 48
+      Width = 87
+      Height = 29
+      Margins.Left = 6
+      Margins.Right = 6
+      Caption = '&Modifier'
       TabOrder = 2
-      OnClick = BtnAideClick
-      ExplicitLeft = 626
+      OnClick = BtnModifierClick
+    end
+    object BtnAjouter: TBitBtn
+      Left = 522
+      Top = 48
+      Width = 87
+      Height = 29
+      Margins.Left = 6
+      Margins.Right = 6
+      Caption = '&Ajouter'
+      TabOrder = 3
+      OnClick = BtnAjouterClick
     end
   end
   object JvDBGridTresor: TJvDBGrid
-    Left = 530
-    Top = 41
-    Width = 470
-    Height = 508
-    Align = alRight
+    Left = 521
+    Top = 73
+    Width = 479
+    Height = 423
+    Align = alClient
     DataSource = DSTresor
+    Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit, dgMultiSelect, dgTitleClick, dgTitleHotTrack]
     TabOrder = 3
     TitleFont.Charset = DEFAULT_CHARSET
     TitleFont.Color = clWindowText
     TitleFont.Height = -12
     TitleFont.Name = 'Segoe UI'
     TitleFont.Style = []
+    OnCellClick = JvDBGridTresorCellClick
+    OnKeyUp = JvDBGridTresorKeyUp
+    AutoAppend = False
+    MultiSelect = True
     TitleButtons = True
     OnTitleBtnClick = JvDBGridTresorTitleBtnClick
     AlternateRowColor = clInfoBk
@@ -192,6 +367,7 @@ object FrameEcrituresClients: TFrameEcrituresClients
     SelectColumnsDialogStrings.Caption = 'Select columns'
     SelectColumnsDialogStrings.OK = '&OK'
     SelectColumnsDialogStrings.NoSelectionWarning = 'At least one column must be visible!'
+    CanDelete = False
     EditControls = <>
     RowsHeight = 19
     TitleRowHeight = 19
@@ -199,16 +375,20 @@ object FrameEcrituresClients: TFrameEcrituresClients
       item
         Expanded = False
         FieldName = 'DATE_'
+        Title.Caption = 'Date'
         Visible = True
       end
       item
         Expanded = False
         FieldName = 'TOP_'
+        Width = 35
         Visible = True
       end
       item
         Expanded = False
         FieldName = 'LIBELLE'
+        Title.Caption = 'Libell'#233
+        Width = 146
         Visible = True
       end
       item
@@ -225,22 +405,20 @@ object FrameEcrituresClients: TFrameEcrituresClients
       end
       item
         Expanded = False
-        FieldName = 'ANNEE'
-        Visible = True
-      end
-      item
-        Expanded = False
-        FieldName = 'MOIS'
+        FieldName = 'CODJAL'
+        Title.Caption = 'Journal'
         Visible = True
       end
       item
         Expanded = False
         FieldName = 'DATE_ECH'
+        Title.Caption = 'Ech'#233'ance'
         Visible = True
       end
       item
         Expanded = False
         FieldName = 'CODPAI'
+        Title.Caption = 'Paiement'
         Visible = True
       end
       item
@@ -251,16 +429,6 @@ object FrameEcrituresClients: TFrameEcrituresClients
       item
         Expanded = False
         FieldName = 'SELECT_'
-        Visible = True
-      end
-      item
-        Expanded = False
-        FieldName = 'DATE_OPER'
-        Visible = True
-      end
-      item
-        Expanded = False
-        FieldName = 'DATE_COMPTA'
         Visible = True
       end
       item
@@ -324,71 +492,6 @@ object FrameEcrituresClients: TFrameEcrituresClients
         Name = 'CODCLI'
         ParamType = ptInput
       end>
-    object FDQueryTresorCODCLI: TIntegerField
-      AutoGenerateValue = arDefault
-      FieldName = 'CODCLI'
-      Origin = 'CODCLI'
-    end
-    object FDQueryTresorDATE_: TDateField
-      AutoGenerateValue = arDefault
-      FieldName = 'DATE_'
-      Origin = 'DATE_'
-    end
-    object FDQueryTresorTOP_: TStringField
-      AutoGenerateValue = arDefault
-      FieldName = 'TOP_'
-      Origin = 'TOP_'
-      Size = 1
-    end
-    object FDQueryTresorLIBELLE: TStringField
-      AutoGenerateValue = arDefault
-      FieldName = 'LIBELLE'
-      Origin = 'LIBELLE'
-      Size = 30
-    end
-    object FDQueryTresorDEBIT: TLargeintField
-      AutoGenerateValue = arDefault
-      FieldName = 'DEBIT'
-      Origin = 'DEBIT'
-    end
-    object FDQueryTresorCREDIT: TLargeintField
-      AutoGenerateValue = arDefault
-      FieldName = 'CREDIT'
-      Origin = 'CREDIT'
-    end
-    object FDQueryTresorDATE_ECH: TDateField
-      AutoGenerateValue = arDefault
-      FieldName = 'DATE_ECH'
-      Origin = 'DATE_ECH'
-    end
-    object FDQueryTresorSOLDE: TSmallintField
-      AutoGenerateValue = arDefault
-      FieldName = 'SOLDE'
-      Origin = 'SOLDE'
-    end
-    object FDQueryTresorSELECT_: TSmallintField
-      AutoGenerateValue = arDefault
-      FieldName = 'SELECT_'
-      Origin = 'SELECT_'
-    end
-    object FDQueryTresorREFERENCE_: TStringField
-      AutoGenerateValue = arDefault
-      FieldName = 'REFERENCE_'
-      Origin = 'REFERENCE_'
-      Size = 15
-    end
-    object FDQueryTresorLETTRE: TStringField
-      AutoGenerateValue = arDefault
-      FieldName = 'LETTRE'
-      Origin = 'LETTRE'
-      Size = 2
-    end
-    object FDQueryTresorNOENR: TFDAutoIncField
-      FieldName = 'NOENR'
-      Origin = 'NOENR'
-      ProviderFlags = [pfInWhere, pfInKey]
-      ReadOnly = False
-    end
   end
   object DSTresor: TDataSource
     DataSet = FDQueryTresor
