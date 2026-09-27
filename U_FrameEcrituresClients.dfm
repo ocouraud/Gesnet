@@ -331,7 +331,7 @@ object FrameEcrituresClients: TFrameEcrituresClients
       OnClick = BtnModifierClick
     end
     object BtnAjouter: TBitBtn
-      Left = 522
+      Left = 515
       Top = 48
       Width = 87
       Height = 29

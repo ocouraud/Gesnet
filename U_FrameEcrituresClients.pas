@@ -91,7 +91,7 @@ var
 begin
   FormFicheTresor := TFormFicheTresor.Create(Self);
   try
-    FormFicheTresor.FDQueryTresor.ParamByName('CODCLI').AsInteger := FDQueryClients.FieldByName('CODCLI').AsInteger;
+//    FormFicheTresor.FDQueryTresor.ParamByName('CODCLI').AsInteger := FDQueryClients.FieldByName('CODCLI').AsInteger;
     FormFicheTresor.FDQueryTresor.ParamByName('NOENR').AsInteger := 0;
     FormFicheTresor.TresorModeSaisie := msCreer;
     FormFicheTresor.Caption := 'Créer une nouvelle écriture';
@@ -104,6 +104,10 @@ begin
     FormFicheTresor.FDQueryTresor.FieldByName('CODCLI').AsInteger := FDQueryClients.FieldByName('CODCLI').AsInteger;
     FormFicheTresor.FDQueryTresor.FieldByName('Date_').AsDateTime := Now;
     FormFicheTresor.FDQueryTresor.FieldByName('Date_ech').AsDateTime := Now;
+    FormFicheTresor.FDQueryTresor.FieldByName('ORIGIN').AsString := 'T';
+    FormFicheTresor.FDQueryTresor.FieldByName('DEBIT').AsInteger := 0;
+    FormFicheTresor.FDQueryTresor.FieldByName('CREDIT').AsInteger := 0;
+    FormFicheTresor.FDQueryTresor.FieldByName('SOLDE').AsInteger := 0;
 
 //    QryPaiement := TFDQuery.Create(nil);
 //    QryPaiement.Connection := DMGesCloud.ConnexionGesCloud;
@@ -117,6 +121,7 @@ begin
       BM := FDQueryTresor.GetBookmark;
       try
         FDQueryTresor.Refresh;
+        CalculerSolde;
         if FDQueryTresor.BookmarkValid(BM) then
           FDQueryTresor.GotoBookmark(BM);
       finally
@@ -152,14 +157,21 @@ var
 begin
   if FDQueryTresor.IsEmpty then Exit;
 
+  if FDQueryTresor.FieldByName('ORIGIN').AsString='V' then
+  begin
+    ShowMessage('Modification interdite sur écriture de vente');
+    exit;
+  end;
+
   NumEnr := FDQueryTresor.FieldByName('NOENR').AsInteger;
+
 
   // 1. Il faut d'abord créer la fiche en mémoire !
   FormFicheTresor := TFormFicheTresor.Create(Self);
   try
     // On passe le NOENR en paramètre à la requête de la fiche
     FormFicheTresor.FDQueryTresor.ParamByName('NOENR').AsInteger := NumEnr;
-    FormFicheTresor.FDQueryTresor.ParamByName('CODCLI').AsInteger := FDQueryClients.FieldByName('CODCLI').AsInteger;
+//    FormFicheTresor.FDQueryTresor.ParamByName('CODCLI').AsInteger := FDQueryClients.FieldByName('CODCLI').AsInteger;
     FormFicheTresor.TresorModeSaisie := msModif;
     FormFicheTresor.Caption := 'Modifier l''écriture';
     FormFicheTresor.FDQueryTresor.Open;

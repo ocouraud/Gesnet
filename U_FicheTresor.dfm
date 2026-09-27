@@ -26,7 +26,7 @@ object FormFicheTresor: TFormFicheTresor
     Width = 34
     Height = 15
     Caption = 'Libell'#233
-    FocusControl = DBEdit2
+    FocusControl = DBEditLibelle
   end
   object Label3: TLabel
     Left = 268
@@ -34,7 +34,7 @@ object FormFicheTresor: TFormFicheTresor
     Width = 30
     Height = 15
     Caption = 'DEBIT'
-    FocusControl = DBEdit3
+    FocusControl = DBEditDEBIT
   end
   object Label4: TLabel
     Left = 368
@@ -42,7 +42,7 @@ object FormFicheTresor: TFormFicheTresor
     Width = 38
     Height = 15
     Caption = 'CREDIT'
-    FocusControl = DBEdit4
+    FocusControl = DBEditCREDIT
   end
   object Label6: TLabel
     Left = 8
@@ -66,7 +66,7 @@ object FormFicheTresor: TFormFicheTresor
     Height = 15
     Caption = 'Code journal'
   end
-  object DBEdit2: TDBEdit
+  object DBEditLibelle: TDBEdit
     Left = 8
     Top = 85
     Width = 454
@@ -75,7 +75,7 @@ object FormFicheTresor: TFormFicheTresor
     DataSource = DSTresor
     TabOrder = 0
   end
-  object DBEdit3: TDBEdit
+  object DBEditDEBIT: TDBEdit
     Left = 268
     Top = 194
     Width = 94
@@ -84,7 +84,7 @@ object FormFicheTresor: TFormFicheTresor
     DataSource = DSTresor
     TabOrder = 1
   end
-  object DBEdit4: TDBEdit
+  object DBEditCREDIT: TDBEdit
     Left = 368
     Top = 194
     Width = 94
@@ -120,6 +120,7 @@ object FormFicheTresor: TFormFicheTresor
     Caption = '&Valider'
     Default = True
     TabOrder = 5
+    OnClick = BtnValiderClick
   end
   object DBLookupComboBoxJournal: TDBLookupComboBox
     Left = 124
@@ -162,16 +163,12 @@ object FormFicheTresor: TFormFicheTresor
   object FDQueryTresor: TFDQuery
     Connection = DMGesCloud.ConnexionGesCloud
     SQL.Strings = (
-      'select * from tresor where noenr=:noenr and codcli=:codcli')
+      'select * from tresor where noenr=:noenr')
     Left = 368
     Top = 16
     ParamData = <
       item
         Name = 'NOENR'
-        ParamType = ptInput
-      end
-      item
-        Name = 'CODCLI'
         ParamType = ptInput
       end>
     object FDQueryTresorCODCLI: TIntegerField

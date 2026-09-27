@@ -39,11 +39,11 @@ type
     FDQueryTresorDER_MODIF: TSQLTimeStampField;
     Label1: TLabel;
     Label2: TLabel;
-    DBEdit2: TDBEdit;
+    DBEditLibelle: TDBEdit;
     Label3: TLabel;
-    DBEdit3: TDBEdit;
+    DBEditDEBIT: TDBEdit;
     Label4: TLabel;
-    DBEdit4: TDBEdit;
+    DBEditCREDIT: TDBEdit;
     Label6: TLabel;
     Label7: TLabel;
     DBEdit7: TDBEdit;
@@ -57,6 +57,7 @@ type
     JvDBDateEditDate_: TJvDBDateEdit;
     JvDBDateEditDate_ech: TJvDBDateEdit;
     procedure FormCreate(Sender: TObject);
+    procedure BtnValiderClick(Sender: TObject);
   private
     { Déclarations privées }
   public
@@ -71,6 +72,59 @@ implementation
 
 {$R *.dfm}
 uses U_FrameEcrituresClients, U_DM_Olivier, U_DataModule, U_FormAide;
+
+procedure TFormFicheTresor.BtnValiderClick(Sender: TObject);
+var
+  ReqVerification: TFDQuery;
+begin
+  // ==========================================
+  // 1. CONTRÔLES COMMUNS (AJOUT ET MODIFICATION)
+  // ==========================================
+
+  if Trim(DBEditLibelle.Text) = '' then
+  begin
+    ShowMessage('Veuillez saisir un code libellé.');
+    if DBEditLibelle.CanFocus then
+      DBEditLibelle.SetFocus;
+    Exit;
+  end;
+
+  if Trim(DBLookupComboBoxJournal.Text) = '' then
+  begin
+    ShowMessage('Veuillez saisir un code journal.');
+    if DBLookupComboBoxJournal.CanFocus then
+     DBLookupComboBoxJournal.SetFocus;
+    Exit;
+  end;
+
+  if DSTresor.DataSet.FieldByName('DEBIT').AsInteger +
+   DSTresor.DataSet.FieldByName('CREDIT').AsInteger = 0 then
+  begin
+    ShowMessage('Veuillez saisir un débit ou un crédit.');
+    if DBEditDEBIT.CanFocus then
+     DBEditDEBIT.SetFocus;
+    Exit;
+  end;
+
+  // --- 2. LA TENTATIVE D'ENREGISTREMENT SÉCURISÉE ---
+  try
+    DSTresor.DataSet.FieldByName('TYPE_').AsString:=FDQueryJournal.FieldByName('TYPE_').AsString;
+    // On force l'enregistrement dans le Dataset (ce qui va déclencher le BeforePost du DataModule)
+    FDQueryTresor.Post;
+
+    // SI TOUT S'EST BIEN PASSÉ :
+    // On ferme la fiche par code en renvoyant mrOk à la fenêtre parente
+    Self.ModalResult := mrOk;
+
+  except
+    on E: Exception do
+    begin
+      // SI LE BEFOREPOST (OU LA BDD) LEVE UNE ERREUR :
+      MessageDlg('Validation impossible :'#13#10 + E.Message, mtError, [mbOK], 0);
+    end;
+
+  end;
+end;
 
 procedure TFormFicheTresor.FormCreate(Sender: TObject);
 begin
