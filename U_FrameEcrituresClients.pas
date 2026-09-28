@@ -42,6 +42,7 @@ type
     BtnSupprimer: TBitBtn;
     BtnModifier: TBitBtn;
     BtnAjouter: TBitBtn;
+    BtnContrePartie: TBitBtn;
     constructor Create(AOwner: TComponent); override;
     procedure EdtCherche_CODCLIChange(Sender: TObject);
     procedure EdtCherche_NOMChange(Sender: TObject);
@@ -60,6 +61,7 @@ type
       Shift: TShiftState);
     procedure BtnAjouterClick(Sender: TObject);
     procedure BtnModifierClick(Sender: TObject);
+    procedure BtnContrePartieClick(Sender: TObject);
   private
     procedure AppliquerFiltreMaitre;
     procedure CalculerSolde;
@@ -134,6 +136,91 @@ begin
     FormFicheTresor.Free;
   end;
 end;
+
+procedure TFrameEcrituresClients.BtnContrePartieClick(Sender: TObject);
+var
+  BM: TBookmark;
+  i: Integer;
+  TotalDebit, TotalCredit, Solde: Integer;
+begin
+  TotalDebit := 0;
+  TotalCredit := 0;
+
+  // On vérifie s'il y a des lignes sélectionnées
+  if JvDBGridTresor.SelectedRows.Count > 0 then
+  begin
+    // Désactiver temporairement les contrôles visuels pour accélérer le traitement
+    FDQueryTresor.DisableControls;
+    try
+      for i := 0 to JvDBGridTresor.SelectedRows.Count - 1 do
+      begin
+        // On positionne le dataset en passant directement le signet de la grille
+        FDQueryTresor.GotoBookmark(TBookmark(JvDBGridTresor.SelectedRows.Items[i]));
+
+        // On cumule les valeurs
+        TotalDebit := TotalDebit + FDQueryTresor.FieldByName('DEBIT').AsInteger;
+        TotalCredit := TotalCredit + FDQueryTresor.FieldByName('CREDIT').AsInteger;
+      end;
+    finally
+      FDQueryTresor.EnableControls;
+    end;
+  end;
+
+  //Initialisation fiche tresor
+  FormFicheTresor := TFormFicheTresor.Create(Self);
+  try
+//    FormFicheTresor.FDQueryTresor.ParamByName('CODCLI').AsInteger := FDQueryClients.FieldByName('CODCLI').AsInteger;
+    FormFicheTresor.FDQueryTresor.ParamByName('NOENR').AsInteger := 0;
+    FormFicheTresor.TresorModeSaisie := msCreer;
+    FormFicheTresor.Caption := 'Créer une nouvelle écriture';
+    FormFicheTresor.FDQueryTresor.Open;
+
+    // 1. On crée d'abord la ligne vide
+    FormFicheTresor.FDQueryTresor.Insert;
+
+    // 2. On injecte le code client dans le champ de la table de trésorerie pour qu'il ne soit pas vide
+    FormFicheTresor.FDQueryTresor.FieldByName('CODCLI').AsInteger := FDQueryClients.FieldByName('CODCLI').AsInteger;
+    FormFicheTresor.FDQueryTresor.FieldByName('Date_').AsDateTime := Now;
+    FormFicheTresor.FDQueryTresor.FieldByName('Date_ech').AsDateTime := Now;
+    FormFicheTresor.FDQueryTresor.FieldByName('ORIGIN').AsString := 'T';
+    FormFicheTresor.FDQueryTresor.FieldByName('SOLDE').AsInteger := 0;
+    if TotalCredit-TotalDebit>0 then
+    begin
+      FormFicheTresor.FDQueryTresor.FieldByName('DEBIT').AsInteger := TotalCredit-TotalDebit;
+      FormFicheTresor.FDQueryTresor.FieldByName('CREDIT').AsInteger := 0;
+    end
+    else
+    begin
+      FormFicheTresor.FDQueryTresor.FieldByName('DEBIT').AsInteger := 0;
+      FormFicheTresor.FDQueryTresor.FieldByName('CREDIT').AsInteger := TotalDebit-TotalCredit;
+    end;
+
+//    QryPaiement := TFDQuery.Create(nil);
+//    QryPaiement.Connection := DMGesCloud.ConnexionGesCloud;
+//    QryPaiement.SQL.Text := 'SELECT * from paiement where codpai=:codpai';
+//    QryPaiement.ParamByName('codpai').AsString := FDQueryClients.FieldByName('codpai').AsString;
+//    QryPaiement.Open;
+//    FormFicheTresor.FDQueryTresor.FieldByName('codjal').AsString := QryPaiement.FieldByName('codjal').AsString;
+
+    if FormFicheTresor.ShowModal = mrOk then
+    begin
+      BM := FDQueryTresor.GetBookmark;
+      try
+        FDQueryTresor.Refresh;
+        CalculerSolde;
+        if FDQueryTresor.BookmarkValid(BM) then
+          FDQueryTresor.GotoBookmark(BM);
+      finally
+        FDQueryTresor.FreeBookmark(BM);
+      end;
+    end
+    else
+      FDQueryTresor.Cancel;
+  finally
+    FormFicheTresor.Free;
+  end;
+end;
+
 
 procedure TFrameEcrituresClients.BtnFermerClick(Sender: TObject);
 var
@@ -239,6 +326,7 @@ begin
   BtnAjouter.Enabled:=False;
   BtnModifier.Enabled:=False;
   BtnSupprimer.Enabled:=False;
+  BtnContrePartie.Enabled:=False;
 
 end;
 
@@ -302,6 +390,7 @@ begin
 
   rgFiltreEcritures.Enabled:=True;
   rgFiltreEcrituresClick(nil);
+  BtnContrePartie.Enabled:=False;
 end;
 
 procedure TFrameEcrituresClients.JvDBGridClientsTitleBtnClick(Sender: TObject;
@@ -428,7 +517,7 @@ begin
      LettrageDB.Caption:='0';
      LettrageSolde.Caption:='0';
 
-
+     CalculerSelection;
 
   finally
     if FDQueryTresor.BookmarkValid(bm) then
@@ -473,14 +562,18 @@ begin
   LettrageDB.Caption  := FormatFloat('#,##0', TotalDebit) + ' DB';
   LettrageCR.Caption := FormatFloat('#,##0', TotalCredit) + ' CR';
   //TLabelSolde.Caption       := Format('%.2f', [Solde]);
+  BtnContrePartie.Enabled:=True;
 
-     if TotalDebit - TotalCredit>0 then
-       LettrageSolde.Caption := FormatFloat('#,##0 DB', TotalDebit - TotalCredit)
-     else
-       LettrageSolde.Caption := FormatFloat('#,##0 CR', TotalCredit - TotalDebit);
+  if TotalDebit - TotalCredit>0 then
+    LettrageSolde.Caption := FormatFloat('#,##0 DB', TotalDebit - TotalCredit)
+  else
+    LettrageSolde.Caption := FormatFloat('#,##0 CR', TotalCredit - TotalDebit);
 
-     if TotalDebit - TotalCredit=0 then
-       LettrageSolde.Caption := '0';
+  if TotalDebit - TotalCredit=0 then
+    begin
+      LettrageSolde.Caption := '0';
+      BtnContrePartie.Enabled:=False;
+  end;
 end;
 
 end.

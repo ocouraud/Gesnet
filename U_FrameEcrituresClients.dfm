@@ -310,7 +310,7 @@ object FrameEcrituresClients: TFrameEcrituresClients
       OnClick = BtnOuvrirClick
     end
     object BtnSupprimer: TBitBtn
-      Left = 707
+      Left = 689
       Top = 48
       Width = 87
       Height = 29
@@ -320,7 +320,7 @@ object FrameEcrituresClients: TFrameEcrituresClients
       TabOrder = 1
     end
     object BtnModifier: TBitBtn
-      Left = 614
+      Left = 602
       Top = 48
       Width = 87
       Height = 29
@@ -340,6 +340,17 @@ object FrameEcrituresClients: TFrameEcrituresClients
       Caption = '&Ajouter'
       TabOrder = 3
       OnClick = BtnAjouterClick
+    end
+    object BtnContrePartie: TBitBtn
+      Left = 776
+      Top = 48
+      Width = 87
+      Height = 29
+      Margins.Left = 6
+      Margins.Right = 6
+      Caption = '&Contre-partie'
+      TabOrder = 4
+      OnClick = BtnContrePartieClick
     end
   end
   object JvDBGridTresor: TJvDBGrid
