@@ -6,9 +6,9 @@ object FrameEcrituresClients: TFrameEcrituresClients
   TabOrder = 0
   object JvDBGridClients: TJvDBGrid
     Left = 0
-    Top = 73
+    Top = 97
     Width = 521
-    Height = 423
+    Height = 399
     HelpType = htKeyword
     Align = alLeft
     DataSource = DSClients
@@ -79,22 +79,22 @@ object FrameEcrituresClients: TFrameEcrituresClients
     Left = 0
     Top = 0
     Width = 1000
-    Height = 73
+    Height = 97
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 1
     object EdtCherche_CODCLI: TEdit
       Left = 90
-      Top = 41
+      Top = 68
       Width = 65
       Height = 23
       TabOrder = 0
-      TextHint = 'Filtrer par code...'
+      TextHint = 'Par no client...'
       OnChange = EdtCherche_CODCLIChange
     end
     object EdtCherche_NOM: TEdit
       Left = 154
-      Top = 41
+      Top = 68
       Width = 193
       Height = 23
       TabOrder = 1
@@ -103,19 +103,20 @@ object FrameEcrituresClients: TFrameEcrituresClients
     end
     object CheckBoxFermes: TCheckBox
       Left = 351
-      Top = 42
+      Top = 69
       Width = 104
       Height = 17
       Caption = 'Clients ferm'#233's'
       TabOrder = 2
+      OnClick = CheckBoxFermesClick
     end
     object EdtCherche_CPTAUX: TEdit
       Left = 14
-      Top = 41
+      Top = 68
       Width = 77
       Height = 23
       TabOrder = 3
-      TextHint = 'Filtrer par code...'
+      TextHint = 'Par no cpte...'
       OnChange = EdtCherche_CPTAUXChange
     end
     object rgFiltreEcritures: TRzRadioGroup
@@ -157,6 +158,33 @@ object FrameEcrituresClients: TFrameEcrituresClients
       Caption = 'Aide'
       TabOrder = 6
       OnClick = BtnAideClick
+    end
+    object EdtCherche_LIBELLE: TEdit
+      Left = 602
+      Top = 68
+      Width = 207
+      Height = 23
+      TabOrder = 7
+      TextHint = 'Filtrer par libell'#233'...'
+      OnChange = EdtCherche_LIBELLEChange
+    end
+    object EdtCherche_DATE_: TEdit
+      Left = 537
+      Top = 68
+      Width = 65
+      Height = 23
+      TabOrder = 8
+      TextHint = 'Par date...'
+      OnChange = EdtCherche_DATE_Change
+    end
+    object EdtCherche_CODJAL: TEdit
+      Left = 956
+      Top = 68
+      Width = 65
+      Height = 23
+      TabOrder = 9
+      TextHint = 'Par journal...'
+      OnChange = EdtCherche_CODJALChange
     end
   end
   object Panel2: TPanel
@@ -304,7 +332,7 @@ object FrameEcrituresClients: TFrameEcrituresClients
       Height = 29
       Margins.Left = 6
       Margins.Right = 6
-      Caption = '&Ouvrir'
+      Caption = '&Fiche client'
       Default = True
       TabOrder = 0
       OnClick = BtnOuvrirClick
@@ -318,6 +346,7 @@ object FrameEcrituresClients: TFrameEcrituresClients
       Margins.Right = 6
       Caption = '&Supprimer'
       TabOrder = 1
+      OnClick = BtnSupprimerClick
     end
     object BtnModifier: TBitBtn
       Left = 602
@@ -352,12 +381,34 @@ object FrameEcrituresClients: TFrameEcrituresClients
       TabOrder = 4
       OnClick = BtnContrePartieClick
     end
+    object BtnLettrage: TBitBtn
+      Left = 863
+      Top = 48
+      Width = 87
+      Height = 29
+      Margins.Left = 6
+      Margins.Right = 6
+      Caption = '&Lettrage'
+      TabOrder = 5
+      OnClick = BtnLettrageClick
+    end
+    object BtnReleves: TBitBtn
+      Left = 90
+      Top = 0
+      Width = 87
+      Height = 29
+      Margins.Left = 6
+      Margins.Right = 6
+      Caption = '&Relev'#233's'
+      TabOrder = 6
+      OnClick = BtnRelevesClick
+    end
   end
   object JvDBGridTresor: TJvDBGrid
     Left = 521
-    Top = 73
+    Top = 97
     Width = 479
-    Height = 423
+    Height = 399
     Align = alClient
     DataSource = DSTresor
     Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit, dgMultiSelect, dgTitleClick, dgTitleHotTrack]
@@ -392,14 +443,14 @@ object FrameEcrituresClients: TFrameEcrituresClients
       item
         Expanded = False
         FieldName = 'TOP_'
-        Width = 35
-        Visible = True
+        Width = -1
+        Visible = False
       end
       item
         Expanded = False
         FieldName = 'LIBELLE'
         Title.Caption = 'Libell'#233
-        Width = 146
+        Width = 203
         Visible = True
       end
       item
@@ -418,6 +469,7 @@ object FrameEcrituresClients: TFrameEcrituresClients
         Expanded = False
         FieldName = 'CODJAL'
         Title.Caption = 'Journal'
+        Width = 45
         Visible = True
       end
       item
@@ -435,46 +487,55 @@ object FrameEcrituresClients: TFrameEcrituresClients
       item
         Expanded = False
         FieldName = 'SOLDE'
+        Title.Caption = 'Solde'
+        Width = 35
         Visible = True
       end
       item
         Expanded = False
         FieldName = 'SELECT_'
-        Visible = True
+        Visible = False
       end
       item
         Expanded = False
         FieldName = 'REFERENCE_'
+        Title.Caption = 'R'#233'f'#233'rence'
         Visible = True
       end
       item
         Expanded = False
         FieldName = 'TYPE_'
+        Title.Caption = 'Type'
         Visible = True
       end
       item
         Expanded = False
         FieldName = 'CODREP'
-        Visible = True
+        Visible = False
       end
       item
         Expanded = False
         FieldName = 'ORIGIN'
+        Title.Caption = 'Origine'
         Visible = True
       end
       item
         Expanded = False
         FieldName = 'LETTRE'
+        Title.Caption = 'Lettre'
+        Width = 37
         Visible = True
       end
       item
         Expanded = False
         FieldName = 'NOENR'
+        Title.Caption = 'No rang'
         Visible = True
       end
       item
         Expanded = False
         FieldName = 'DER_MODIF'
+        Title.Caption = 'Date modif.'
         Visible = True
       end>
   end
@@ -486,7 +547,7 @@ object FrameEcrituresClients: TFrameEcrituresClients
   object FDQueryClients: TFDQuery
     Connection = DMGesCloud.ConnexionGesCloud
     SQL.Strings = (
-      'select * from client where ferme<>1 order by nom')
+      'select * from client order by nom')
     Left = 96
     Top = 176
   end

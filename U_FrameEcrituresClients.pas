@@ -43,6 +43,11 @@ type
     BtnModifier: TBitBtn;
     BtnAjouter: TBitBtn;
     BtnContrePartie: TBitBtn;
+    BtnLettrage: TBitBtn;
+    EdtCherche_LIBELLE: TEdit;
+    EdtCherche_DATE_: TEdit;
+    EdtCherche_CODJAL: TEdit;
+    BtnReleves: TBitBtn;
     constructor Create(AOwner: TComponent); override;
     procedure EdtCherche_CODCLIChange(Sender: TObject);
     procedure EdtCherche_NOMChange(Sender: TObject);
@@ -62,10 +67,18 @@ type
     procedure BtnAjouterClick(Sender: TObject);
     procedure BtnModifierClick(Sender: TObject);
     procedure BtnContrePartieClick(Sender: TObject);
+    procedure BtnLettrageClick(Sender: TObject);
+    procedure BtnSupprimerClick(Sender: TObject);
+    procedure EdtCherche_DATE_Change(Sender: TObject);
+    procedure EdtCherche_LIBELLEChange(Sender: TObject);
+    procedure EdtCherche_CODJALChange(Sender: TObject);
+    procedure CheckBoxFermesClick(Sender: TObject);
+    procedure BtnRelevesClick(Sender: TObject);
   private
     procedure AppliquerFiltreMaitre;
     procedure CalculerSolde;
     procedure CalculerSelection;
+    procedure LancementLettrage;
     { Déclarations privées }
   public
     { Déclarations publiques }
@@ -74,7 +87,26 @@ type
 implementation
 
 {$R *.dfm}
-uses U_DataModule, U_DM_Olivier, U_FicheClient, U_OutilsGrille, U_FormAide, U_FicheTresor;
+uses U_DataModule, U_DM_Olivier, U_FicheClient, U_OutilsGrille, U_FormAide, U_FicheTresor,
+U_FormParametresRelevesClients;
+
+procedure TFrameEcrituresClients.BtnRelevesClick(Sender: TObject);
+begin
+  // Vérifie qu'un client est bien sélectionné
+  if FDQueryClients.IsEmpty then Exit;
+
+  FormParametresRelevesClients := TFormParametresRelevesClients.Create(Self);
+  try
+    FormParametresRelevesClients.Caption := 'Paramètres relevés clients';
+
+  if FormParametresRelevesClients.ShowModal = mrOk then
+    DM_Olivier.RefreshDataSetWithBookmark(FDQueryClients)
+  else
+    FDQueryClients.Cancel;
+  finally
+    FormParametresRelevesClients.Free;
+  end;
+end;
 
 procedure TFrameEcrituresClients.BtnAideClick(Sender: TObject);
 begin
@@ -141,7 +173,7 @@ procedure TFrameEcrituresClients.BtnContrePartieClick(Sender: TObject);
 var
   BM: TBookmark;
   i: Integer;
-  TotalDebit, TotalCredit, Solde: Integer;
+  TotalDebit, TotalCredit, NumEnrCree, Solde: Integer;
 begin
   TotalDebit := 0;
   TotalCredit := 0;
@@ -204,20 +236,112 @@ begin
 
     if FormFicheTresor.ShowModal = mrOk then
     begin
-      BM := FDQueryTresor.GetBookmark;
-      try
-        FDQueryTresor.Refresh;
-        CalculerSolde;
-        if FDQueryTresor.BookmarkValid(BM) then
-          FDQueryTresor.GotoBookmark(BM);
-      finally
-        FDQueryTresor.FreeBookmark(BM);
+      // 1. On récupère le NOENR de la nouvelle écriture qui vient d'être enregistrée
+      // (En supposant que ton autoincrement ou dataset renvoie le dernier ID généré,
+      // ou qu'il est accessible via FieldByName('NOENR'). AsInteger)
+      NumEnrCree := FormFicheTresor.FDQueryTresor.FieldByName('NOENR').AsInteger;
+
+      // 2. On rafraîchit la grille principale du frame
+      FDQueryTresor.Refresh;
+      CalculerSolde;
+
+      // 3. On se positionne directement sur la nouvelle ligne grâce à sa clé unique
+      if FDQueryTresor.Locate('NOENR', NumEnrCree, []) then
+      begin
+        // 4. On l'ajoute à la sélection multiple existante de la grille
+        if not JvDBGridTresor.SelectedRows.CurrentRowSelected then
+          JvDBGridTresor.SelectedRows.CurrentRowSelected := True;
       end;
+
+      // 5. On actualise les totaux de la sélection globale
+      CalculerSelection;
+
+      //Demande de lettrage
+      LancementLettrage;
+      CalculerSolde;
+
     end
     else
       FDQueryTresor.Cancel;
   finally
     FormFicheTresor.Free;
+  end;
+end;
+
+
+procedure TFrameEcrituresClients.LancementLettrage;
+var
+  Reponse: string;
+  i: Integer;
+  BM: TBookmark;
+begin
+  Reponse := '';
+
+  // Affiche une boîte de dialogue demandant la saisie
+  if InputQuery('Lettrage du jeu d''écritures ?', 'Entrez le lettrage (2 caractères max)', Reponse) then
+  begin
+    // Nettoyage des espaces superflus
+    Reponse := UpperCase(Trim(Reponse));
+
+    // 1. Vérification de la longueur (maximum 2 caractères)
+    if Length(Reponse) > 2 then
+    begin
+      ShowMessage('Erreur : Le lettrage ne doit pas dépasser 2 caractères.');
+      Exit; // Arrêt du traitement
+    end;
+
+    // 2. Gestion du caractère optionnel (si l'utilisateur laisse vide)
+    if Reponse = '' then
+    begin
+      //Exit;
+    end
+    else
+    begin
+      // 3. Test du contenu pour décider de poursuivre ou pas
+      if (Reponse = 'NON') or (Reponse = 'STOP') then
+      begin
+        ShowMessage('Traitement interrompu selon le code saisi.');
+        Exit;
+      end;
+    end;
+
+    // --- Poursuite du traitement principal si tout est OK ---
+    if JvDBGridTresor.SelectedRows.Count > 0 then
+    begin
+      FDQueryTresor.DisableControls;
+      try
+        for i := 0 to JvDBGridTresor.SelectedRows.Count - 1 do
+        begin
+          BM := TBookmark(JvDBGridTresor.SelectedRows.Items[i]);
+
+          // Sécurité indispensable : On vérifie que le signet est valide avant de l'utiliser
+          if FDQueryTresor.BookmarkValid(BM) then
+          begin
+            FDQueryTresor.GotoBookmark(BM);
+
+            FDQueryTresor.Edit;
+            try
+              FDQueryTresor.FieldByName('SOLDE').AsInteger := 1;
+              FDQueryTresor.FieldByName('LETTRE').AsString := Reponse;
+              FDQueryTresor.Post;
+            except
+              FDQueryTresor.Cancel;
+              raise;
+            end;
+          end;
+        end;
+      finally
+        FDQueryTresor.EnableControls;
+
+        // Actualiser la grille et les totaux après les modifications en masse
+        FDQueryTresor.Refresh;
+        CalculerSolde;
+      end;
+    end;
+  end
+  else
+  begin
+    Exit;
   end;
 end;
 
@@ -236,6 +360,11 @@ begin
       OngletParent.Free;
     end);
   end;
+end;
+
+procedure TFrameEcrituresClients.BtnLettrageClick(Sender: TObject);
+begin
+  LancementLettrage;
 end;
 
 procedure TFrameEcrituresClients.BtnModifierClick(Sender: TObject);
@@ -313,6 +442,35 @@ begin
 end;
 
 
+procedure TFrameEcrituresClients.BtnSupprimerClick(Sender: TObject);
+begin
+  // 1. On vérifie d'abord si la table n'est pas vide
+  if FDQueryTresor.IsEmpty then
+  begin
+    ShowMessage('Il n''y a aucune écriture à supprimer.');
+    Exit;
+  end;
+
+  // 2. On demande une confirmation claire à l'utilisateur
+  if MessageDlg('Voulez-vous vraiment supprimer l''écriture selectionnée ?' +
+                FDQueryTresor.FieldByName('CODPAI').AsString + ' ?',
+                mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+  begin
+    FDQueryTresor.DisableControls; // On évite les clignotements visuels
+    try
+      // 3. On procède à la suppression dans MySQL
+      FDQueryTresor.Delete;
+
+      // 4. On rafraîchit pour que la grille soit à jour avec le serveur
+      FDQueryTresor.Refresh;
+    finally
+      FDQueryTresor.EnableControls; // On réactive l'affichage
+      CalculerSolde;
+    end;
+  end;
+end;
+
+
 constructor TFrameEcrituresClients.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner); // <--- TRÈS IMPORTANT : appelle l'initialisation de Delphi
@@ -327,7 +485,7 @@ begin
   BtnModifier.Enabled:=False;
   BtnSupprimer.Enabled:=False;
   BtnContrePartie.Enabled:=False;
-
+  BtnLettrage.Enabled:=False;
 end;
 
 
@@ -365,12 +523,36 @@ begin
   AppliquerFiltresCumules(Panel1, FDQueryClients);
 end;
 
+procedure TFrameEcrituresClients.EdtCherche_CODJALChange(Sender: TObject);
+begin
+  // Si la Frame est en train d'être détruite, on quitte immédiatement !
+  if (csDestroying in ComponentState) then Exit;
+
+  AppliquerFiltresCumules(Panel1, FDQueryTresor);
+end;
+
 procedure TFrameEcrituresClients.EdtCherche_CPTAUXChange(Sender: TObject);
 begin
   // Si la Frame est en train d'être détruite, on quitte immédiatement !
   if (csDestroying in ComponentState) then Exit;
 
   AppliquerFiltresCumules(Panel1, FDQueryClients);
+end;
+
+procedure TFrameEcrituresClients.EdtCherche_DATE_Change(Sender: TObject);
+begin
+  // Si la Frame est en train d'être détruite, on quitte immédiatement !
+  if (csDestroying in ComponentState) then Exit;
+
+  AppliquerFiltresCumules(Panel1, FDQueryTresor);
+end;
+
+procedure TFrameEcrituresClients.EdtCherche_LIBELLEChange(Sender: TObject);
+begin
+  // Si la Frame est en train d'être détruite, on quitte immédiatement !
+  if (csDestroying in ComponentState) then Exit;
+
+  AppliquerFiltresCumules(Panel1, FDQueryTresor);
 end;
 
 procedure TFrameEcrituresClients.EdtCherche_NOMChange(Sender: TObject);
@@ -430,66 +612,82 @@ begin
   end;
 end;
 
-procedure TFrameEcrituresClients.rgFiltreEcrituresClick(Sender: TObject);
-begin
 
-  FDQueryTresor.DisableControls; // Évite les clignotements à l'écran
+procedure TFrameEcrituresClients.rgFiltreEcrituresClick(Sender: TObject);
+var
+  IdCourant: Integer;
+begin
+  // On vide la sélection de la grille car le filtre change
+  JvDBGridTresor.SelectedRows.Clear;
+
+  IdCourant := 0;
+  if not FDQueryTresor.IsEmpty then
+    IdCourant := FDQueryTresor.FieldByName('NOENR').AsInteger;
+
+  FDQueryTresor.DisableControls;
   try
     case rgFiltreEcritures.ItemIndex of
       0: // Toutes
         begin
           FDQueryTresor.Filter := '';
           FDQueryTresor.Filtered := False;
-          BtnAjouter.Enabled:=False;
-          BtnModifier.Enabled:=False;
-          BtnSupprimer.Enabled:=False;
+          BtnAjouter.Enabled := False;
+          BtnModifier.Enabled := False;
+          BtnSupprimer.Enabled := False;
         end;
 
-      1: // Non soldées (Exemple: DEBIT <> CREDIT ou champ SOLDE <> 0)
+      1: // Non soldées
         begin
-          FDQueryTresor.Filter := 'SOLDE=0'; // Adaptez selon le champ de votre table
+          FDQueryTresor.Filter := 'SOLDE=0';
           FDQueryTresor.Filtered := True;
-          BtnAjouter.Enabled:=True;
-          BtnModifier.Enabled:=True;
-          BtnSupprimer.Enabled:=True;
+          BtnAjouter.Enabled := True;
+          BtnModifier.Enabled := True;
+          BtnSupprimer.Enabled := True;
         end;
 
       2: // Soldées
         begin
-          FDQueryTresor.Filter := 'SOLDE=1'; // Adaptez selon la logique de lettrage/solde
+          FDQueryTresor.Filter := 'SOLDE=1';
           FDQueryTresor.Filtered := True;
-          BtnAjouter.Enabled:=False;
-          BtnModifier.Enabled:=False;
-          BtnSupprimer.Enabled:=False;
+          BtnAjouter.Enabled := False;
+          BtnModifier.Enabled := False;
+          BtnSupprimer.Enabled := False;
         end;
 
       3: // Aucune
         begin
-          FDQueryTresor.Filter := '1 = 0'; // Masque toutes les lignes
+          FDQueryTresor.Filter := '1 = 0';
           FDQueryTresor.Filtered := True;
-          BtnAjouter.Enabled:=False;
-          BtnModifier.Enabled:=False;
-          BtnSupprimer.Enabled:=False;
+          BtnAjouter.Enabled := False;
+          BtnModifier.Enabled := False;
+          BtnSupprimer.Enabled := False;
         end;
     end;
   finally
     FDQueryTresor.EnableControls;
   end;
 
-  CalculerSolde;
+  if (IdCourant > 0) and (not FDQueryTresor.Locate('NOENR', IdCourant, [])) then
+    FDQueryTresor.First;
 
+  CalculerSolde;
 end;
+
 
 procedure TFrameEcrituresClients.CalculerSolde;
 var
   TotalDebit, TotalCredit: Currency;
-  bm: TBookmark;
+  IdCourant: Integer;
 begin
   TotalDebit := 0;
   TotalCredit := 0;
 
   FDQueryTresor.DisableControls;
-  bm := FDQueryTresor.GetBookmark; // Sauvegarde la position courante
+
+  IdCourant := 0;
+  if not FDQueryTresor.IsEmpty then
+    IdCourant := FDQueryTresor.FieldByName('NOENR').AsInteger;
+
   try
     FDQueryTresor.First;
     while not FDQueryTresor.Eof do
@@ -503,34 +701,40 @@ begin
     LblTotalDebit.Caption := FormatFloat('#,##0 DB', TotalDebit);
     LblTotalCredit.Caption := FormatFloat('#,##0 CR', TotalCredit);
 
-    // Affichage dans un Edit ou Label dédié au Solde
-    // Affichage dans le Label dédié au Solde
-     if TotalDebit - TotalCredit>0 then
-       TLabelSolde.Caption := FormatFloat('#,##0 DB', TotalDebit - TotalCredit)
-     else
-       TLabelSolde.Caption := FormatFloat('#,##0 CR', TotalCredit - TotalDebit);
+    if TotalDebit - TotalCredit > 0 then
+      TLabelSolde.Caption := FormatFloat('#,##0 DB', TotalDebit - TotalCredit)
+    else
+      TLabelSolde.Caption := FormatFloat('#,##0 CR', TotalCredit - TotalDebit);
 
-     if TotalDebit - TotalCredit=0 then
-       TLabelSolde.Caption := '0';
+    if TotalDebit - TotalCredit = 0 then
+      TLabelSolde.Caption := '0';
 
-     LettrageCR.Caption:='0';
-     LettrageDB.Caption:='0';
-     LettrageSolde.Caption:='0';
+    LettrageCR.Caption := '0';
+    LettrageDB.Caption := '0';
+    LettrageSolde.Caption := '0';
 
-     CalculerSelection;
+    CalculerSelection;
 
   finally
-    if FDQueryTresor.BookmarkValid(bm) then
-      FDQueryTresor.GotoBookmark(bm);
-    FDQueryTresor.FreeBookmark(bm);
+    // Restitution de la position de manière sécurisée
+    if (IdCourant > 0) and (not FDQueryTresor.Locate('NOENR', IdCourant, [])) then
+      FDQueryTresor.First;
+
     FDQueryTresor.EnableControls;
   end;
+end;
+
+
+procedure TFrameEcrituresClients.CheckBoxFermesClick(Sender: TObject);
+begin
+ AppliquerFiltreMaitre;
 end;
 
 procedure TFrameEcrituresClients.CalculerSelection;
 var
   i: Integer;
-  TotalDebit, TotalCredit, Solde: Double;
+  TotalDebit, TotalCredit: Double;
+  BM: TBookmark;
 begin
   TotalDebit := 0;
   TotalCredit := 0;
@@ -538,42 +742,74 @@ begin
   // On vérifie s'il y a des lignes sélectionnées
   if JvDBGridTresor.SelectedRows.Count > 0 then
   begin
-    // Désactiver temporairement les contrôles visuels pour accélérer le traitement
     FDQueryTresor.DisableControls;
     try
       for i := 0 to JvDBGridTresor.SelectedRows.Count - 1 do
       begin
-        // On positionne le dataset en passant directement le signet de la grille
-        FDQueryTresor.GotoBookmark(TBookmark(JvDBGridTresor.SelectedRows.Items[i]));
+        BM := TBookmark(JvDBGridTresor.SelectedRows.Items[i]);
 
-        // On cumule les valeurs
-        TotalDebit := TotalDebit + FDQueryTresor.FieldByName('DEBIT').AsFloat;
-        TotalCredit := TotalCredit + FDQueryTresor.FieldByName('CREDIT').AsFloat;
+        // On vérifie scrupuleusement si le signet est toujours valide pour cette requête
+        try
+          if FDQueryTresor.BookmarkValid(BM) then
+          begin
+            FDQueryTresor.GotoBookmark(BM);
+            TotalDebit := TotalDebit + FDQueryTresor.FieldByName('DEBIT').AsFloat;
+            TotalCredit := TotalCredit + FDQueryTresor.FieldByName('CREDIT').AsFloat;
+          end;
+        except
+          // En cas de signet corrompu ou obsolète, on l'ignore silencieusement
+        end;
       end;
     finally
       FDQueryTresor.EnableControls;
     end;
   end;
 
-  // Calcul du solde
-  //Solde := TotalCredit - TotalDebit;
-
-  // Affichage dans tes labels (adapte les noms si besoin)
+  // Affichage des résultats et des boutons
   LettrageDB.Caption  := FormatFloat('#,##0', TotalDebit) + ' DB';
   LettrageCR.Caption := FormatFloat('#,##0', TotalCredit) + ' CR';
-  //TLabelSolde.Caption       := Format('%.2f', [Solde]);
-  BtnContrePartie.Enabled:=True;
+  BtnContrePartie.Enabled := True;
+  BtnLettrage.Enabled := False;
 
-  if TotalDebit - TotalCredit>0 then
+  if TotalDebit - TotalCredit > 0 then
     LettrageSolde.Caption := FormatFloat('#,##0 DB', TotalDebit - TotalCredit)
   else
     LettrageSolde.Caption := FormatFloat('#,##0 CR', TotalCredit - TotalDebit);
 
-  if TotalDebit - TotalCredit=0 then
-    begin
-      LettrageSolde.Caption := '0';
-      BtnContrePartie.Enabled:=False;
+  if TotalDebit - TotalCredit = 0 then
+  begin
+    LettrageSolde.Caption := '0';
+    BtnContrePartie.Enabled := False;
+    if TotalDebit + TotalCredit<>0 then
+      BtnLettrage.Enabled := True;
   end;
+
+  //Selon la nature des ecritures
+    case rgFiltreEcritures.ItemIndex of
+      0: // Toutes
+        begin
+          BtnLettrage.Enabled := False;
+          BtnContrePartie.Enabled := False;
+        end;
+
+      1: // Non soldées
+        begin
+
+        end;
+
+      2: // Soldées
+        begin
+          BtnLettrage.Enabled := False;
+          BtnContrePartie.Enabled := False;
+        end;
+
+      3: // Aucune
+        begin
+          BtnLettrage.Enabled := False;
+          BtnContrePartie.Enabled := False;
+        end;
+    end;
+
 end;
 
 end.

@@ -9,7 +9,8 @@ uses
   FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS,
   FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt,
   FireDAC.Comp.DataSet, FireDAC.Comp.Client, Vcl.StdCtrls, Vcl.Mask,
-  Vcl.ExtCtrls, Vcl.DBCtrls, Vcl.Buttons, JvExMask, JvToolEdit, JvDBControls;
+  Vcl.ExtCtrls, Vcl.DBCtrls, Vcl.Buttons, JvExMask, JvToolEdit, JvDBControls,
+  JvBaseEdits;
 
 type
   TTresorModeSaisie = (msCreer, msModif); // Type nommé global à l'unité
@@ -41,12 +42,10 @@ type
     Label2: TLabel;
     DBEditLibelle: TDBEdit;
     Label3: TLabel;
-    DBEditDEBIT: TDBEdit;
     Label4: TLabel;
-    DBEditCREDIT: TDBEdit;
     Label6: TLabel;
     Label7: TLabel;
-    DBEdit7: TDBEdit;
+    DBEditReference: TDBEdit;
     BtnAnnuler: TBitBtn;
     BtnValider: TBitBtn;
     FDQueryTresorCODJAL: TStringField;
@@ -56,8 +55,13 @@ type
     FDQueryJournal: TFDQuery;
     JvDBDateEditDate_: TJvDBDateEdit;
     JvDBDateEditDate_ech: TJvDBDateEdit;
+    JvDBCalcEditDEBIT: TJvDBCalcEdit;
+    JvDBCalcEditCREDIT: TJvDBCalcEdit;
     procedure FormCreate(Sender: TObject);
     procedure BtnValiderClick(Sender: TObject);
+    procedure DBLookupComboBoxJournalClick(Sender: TObject);
+    procedure JvDBCalcEditDEBITExit(Sender: TObject);
+    procedure JvDBCalcEditCREDITExit(Sender: TObject);
   private
     { Déclarations privées }
   public
@@ -97,12 +101,11 @@ begin
     Exit;
   end;
 
-  if DSTresor.DataSet.FieldByName('DEBIT').AsInteger +
-   DSTresor.DataSet.FieldByName('CREDIT').AsInteger = 0 then
+  if JvDBCalcEditDEBIT.Value + JvDBCalcEditCREDIT.Value = 0 then
   begin
     ShowMessage('Veuillez saisir un débit ou un crédit.');
-    if DBEditDEBIT.CanFocus then
-     DBEditDEBIT.SetFocus;
+    if JvDBCalcEditDEBIT.CanFocus then
+     JvDBCalcEditDEBIT.SetFocus;
     Exit;
   end;
 
@@ -126,10 +129,31 @@ begin
   end;
 end;
 
+procedure TFormFicheTresor.DBLookupComboBoxJournalClick(Sender: TObject);
+begin
+  DBEditLibelle.Text:= DBLookupComboBoxJournal.text;
+end;
+
 procedure TFormFicheTresor.FormCreate(Sender: TObject);
 begin
   FDQueryJournal.Close;
   FDQueryJournal.Open;
+end;
+
+procedure TFormFicheTresor.JvDBCalcEditCREDITExit(Sender: TObject);
+begin
+  if JvDBCalcEditCREDIT.Value>0 then
+    JvDBCalcEditDEBIT.Value:=0;
+  if JvDBCalcEditCREDIT.Value<0 then
+    JvDBCalcEditCREDIT.SetFocus;
+end;
+
+procedure TFormFicheTresor.JvDBCalcEditDEBITExit(Sender: TObject);
+begin
+  if JvDBCalcEditDEBIT.Value>0 then
+    JvDBCalcEditCREDIT.Value:=0;
+  if JvDBCalcEditDEBIT.Value<0 then
+    JvDBCalcEditDEBIT.SetFocus;
 end;
 
 end.

@@ -29,12 +29,11 @@ object FormFicheTresor: TFormFicheTresor
     FocusControl = DBEditLibelle
   end
   object Label3: TLabel
-    Left = 268
+    Left = 231
     Top = 173
     Width = 30
     Height = 15
     Caption = 'DEBIT'
-    FocusControl = DBEditDEBIT
   end
   object Label4: TLabel
     Left = 368
@@ -42,7 +41,6 @@ object FormFicheTresor: TFormFicheTresor
     Width = 38
     Height = 15
     Caption = 'CREDIT'
-    FocusControl = DBEditCREDIT
   end
   object Label6: TLabel
     Left = 8
@@ -57,7 +55,7 @@ object FormFicheTresor: TFormFicheTresor
     Width = 52
     Height = 15
     Caption = 'R'#233'f'#233'rence'
-    FocusControl = DBEdit7
+    FocusControl = DBEditReference
   end
   object Label5: TLabel
     Left = 126
@@ -73,27 +71,9 @@ object FormFicheTresor: TFormFicheTresor
     Height = 23
     DataField = 'LIBELLE'
     DataSource = DSTresor
-    TabOrder = 0
-  end
-  object DBEditDEBIT: TDBEdit
-    Left = 268
-    Top = 194
-    Width = 94
-    Height = 23
-    DataField = 'DEBIT'
-    DataSource = DSTresor
-    TabOrder = 1
-  end
-  object DBEditCREDIT: TDBEdit
-    Left = 368
-    Top = 194
-    Width = 94
-    Height = 23
-    DataField = 'CREDIT'
-    DataSource = DSTresor
     TabOrder = 2
   end
-  object DBEdit7: TDBEdit
+  object DBEditReference: TDBEdit
     Left = 8
     Top = 141
     Width = 154
@@ -110,7 +90,7 @@ object FormFicheTresor: TFormFicheTresor
     Cancel = True
     Caption = '&Annuler'
     ModalResult = 2
-    TabOrder = 4
+    TabOrder = 6
   end
   object BtnValider: TBitBtn
     Left = 511
@@ -119,7 +99,7 @@ object FormFicheTresor: TFormFicheTresor
     Height = 28
     Caption = '&Valider'
     Default = True
-    TabOrder = 5
+    TabOrder = 7
     OnClick = BtnValiderClick
   end
   object DBLookupComboBoxJournal: TDBLookupComboBox
@@ -133,7 +113,8 @@ object FormFicheTresor: TFormFicheTresor
     ListField = 'CODJAL;LIBELLE'
     ListFieldIndex = 1
     ListSource = DSJournal
-    TabOrder = 6
+    TabOrder = 1
+    OnClick = DBLookupComboBoxJournalClick
   end
   object JvDBDateEditDate_: TJvDBDateEdit
     Left = 8
@@ -143,7 +124,7 @@ object FormFicheTresor: TFormFicheTresor
     DataField = 'DATE_'
     DataSource = DSTresor
     ShowNullDate = False
-    TabOrder = 7
+    TabOrder = 0
   end
   object JvDBDateEditDate_ech: TJvDBDateEdit
     Left = 8
@@ -154,6 +135,28 @@ object FormFicheTresor: TFormFicheTresor
     DataSource = DSTresor
     ShowNullDate = False
     TabOrder = 8
+  end
+  object JvDBCalcEditDEBIT: TJvDBCalcEdit
+    Left = 231
+    Top = 194
+    Width = 105
+    Height = 23
+    TabOrder = 4
+    DecimalPlacesAlwaysShown = False
+    OnExit = JvDBCalcEditDEBITExit
+    DataField = 'DEBIT'
+    DataSource = DSTresor
+  end
+  object JvDBCalcEditCREDIT: TJvDBCalcEdit
+    Left = 368
+    Top = 194
+    Width = 105
+    Height = 23
+    TabOrder = 5
+    DecimalPlacesAlwaysShown = False
+    OnExit = JvDBCalcEditCREDITExit
+    DataField = 'CREDIT'
+    DataSource = DSTresor
   end
   object DSTresor: TDataSource
     DataSet = FDQueryTresor
