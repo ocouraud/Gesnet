@@ -38,20 +38,21 @@ object FrameEcrituresClients: TFrameEcrituresClients
         Expanded = False
         FieldName = 'CPTAUX'
         Title.Caption = 'No compte'
-        Width = 74
+        Width = 67
         Visible = True
       end
       item
         Expanded = False
         FieldName = 'CODCLI'
         Title.Caption = 'No client'
+        Width = 57
         Visible = True
       end
       item
         Expanded = False
         FieldName = 'NOM'
         Title.Caption = 'Nom client'
-        Width = 290
+        Width = 279
         Visible = True
       end
       item
@@ -443,7 +444,6 @@ object FrameEcrituresClients: TFrameEcrituresClients
       item
         Expanded = False
         FieldName = 'TOP_'
-        Width = -1
         Visible = False
       end
       item

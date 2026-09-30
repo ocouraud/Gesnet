@@ -98,6 +98,10 @@ begin
   FormParametresRelevesClients := TFormParametresRelevesClients.Create(Self);
   try
     FormParametresRelevesClients.Caption := 'Paramètres relevés clients';
+    FormParametresRelevesClients.DBLookupComboBoxClientDu.KeyValue:=
+    FDQueryClients.FieldByName('CODCLI').AsInteger;
+    FormParametresRelevesClients.DBLookupComboBoxClientAu.KeyValue:=
+    FDQueryClients.FieldByName('CODCLI').AsInteger;
 
   if FormParametresRelevesClients.ShowModal = mrOk then
     DM_Olivier.RefreshDataSetWithBookmark(FDQueryClients)
@@ -106,6 +110,7 @@ begin
   finally
     FormParametresRelevesClients.Free;
   end;
+
 end;
 
 procedure TFrameEcrituresClients.BtnAideClick(Sender: TObject);

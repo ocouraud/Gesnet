@@ -3660,67 +3660,76 @@ object FormFicheArticle: TFormFicheArticle
       
         '-- 1. Taux Exon'#233'r'#233' (TVA0) -> On utilise une sous-requ'#234'te * 0 pou' +
         'r forcer le type FMTBcd'
-      'SELECT 0 as NoTVA,'
-      '  (SELECT libelle FROM parame WHERE code = '#39'TVA0'#39') AS Libelle,'
-      
-        '  (SELECT taux FROM par_effet WHERE code = '#39'TVA0'#39' AND ep.date_ B' +
-        'ETWEEN dat_deb AND dat_fin) AS Taux, '
-      '  mt_ht0 AS BaseHT, '
+      'SELECT '
+      '  0 as NoTVA,'
+      '  p_ame.libelle AS Libelle,'
+      '  p_eff.taux AS Taux, '
+      '  ep.mt_ht0 AS BaseHT, '
       '  0.00 AS MontantTVA '
       'FROM entvteaa ep'
+      'LEFT JOIN parame p_ame ON p_ame.code = '#39'TVA0'#39
+      
+        'LEFT JOIN par_effet p_eff ON p_eff.code = '#39'TVA0'#39' AND ep.date_ BE' +
+        'TWEEN p_eff.dat_deb AND p_eff.dat_fin'
       'WHERE ep.CODFAC = :CODFAC AND ep.mt_ht0 <> 0'
-      ''
       'UNION ALL'
       ''
       '-- 2. Zone 1 (TVA1)'
       'SELECT 1 as NoTVA,'
-      '  (SELECT libelle FROM parame WHERE code = '#39'TVA1'#39') AS Libelle,'
-      
-        '  (SELECT taux FROM par_effet WHERE code = '#39'TVA1'#39' AND ep.date_ B' +
-        'ETWEEN dat_deb AND dat_fin) AS Taux, '
-      '  mt_ht1 AS BaseHT, '
+      '  p_ame.libelle AS Libelle,'
+      '  p_eff.taux AS Taux, '
+      '  ep.mt_ht1 AS BaseHT, '
       '  mt_tva1 AS MontantTVA '
       'FROM entvteaa ep'
+      'LEFT JOIN parame p_ame ON p_ame.code = '#39'TVA1'#39
+      
+        'LEFT JOIN par_effet p_eff ON p_eff.code = '#39'TVA1'#39' AND ep.date_ BE' +
+        'TWEEN p_eff.dat_deb AND p_eff.dat_fin'
       'WHERE ep.CODFAC = :CODFAC AND ep.mt_ht1 <> 0'
-      ''
       'UNION ALL'
       ''
       '-- 3. Zone 2 (TVA2)'
       'SELECT 2 as NoTVA,'
-      '  (SELECT libelle FROM parame WHERE code = '#39'TVA2'#39') AS Libelle,'
-      
-        '  (SELECT taux FROM par_effet WHERE code = '#39'TVA2'#39' AND ep.date_ B' +
-        'ETWEEN dat_deb AND dat_fin) AS Taux, '
-      '  mt_ht2 AS BaseHT, '
+      '  p_ame.libelle AS Libelle,'
+      '  p_eff.taux AS Taux, '
+      '  ep.mt_ht2 AS BaseHT, '
       '  mt_tva2 AS MontantTVA '
       'FROM entvteaa ep'
+      'LEFT JOIN parame p_ame ON p_ame.code = '#39'TVA2'#39
+      
+        'LEFT JOIN par_effet p_eff ON p_eff.code = '#39'TVA2'#39' AND ep.date_ BE' +
+        'TWEEN p_eff.dat_deb AND p_eff.dat_fin'
       'WHERE ep.CODFAC = :CODFAC AND ep.mt_ht2 <> 0'
       ''
       'UNION ALL'
       ''
       '-- 4. Zone 3 (TVA3)'
       'SELECT 3 as NoTVA,'
-      '  (SELECT libelle FROM parame WHERE code = '#39'TVA3'#39') AS Libelle,'
-      
-        '  (SELECT taux FROM par_effet WHERE code = '#39'TVA3'#39' AND ep.date_ B' +
-        'ETWEEN dat_deb AND dat_fin) AS Taux, '
-      '  mt_ht3 AS BaseHT, '
+      '  p_ame.libelle AS Libelle,'
+      '  p_eff.taux AS Taux, '
+      '  ep.mt_ht3 AS BaseHT, '
       '  mt_tva3 AS MontantTVA '
       'FROM entvteaa ep'
+      'LEFT JOIN parame p_ame ON p_ame.code = '#39'TVA3'#39
+      
+        'LEFT JOIN par_effet p_eff ON p_eff.code = '#39'TVA3'#39' AND ep.date_ BE' +
+        'TWEEN p_eff.dat_deb AND p_eff.dat_fin'
       'WHERE ep.CODFAC = :CODFAC AND ep.mt_ht3 <> 0'
       ''
       'UNION ALL'
       ''
       '-- 5. Zone Interm'#233'diaire / '#206'les (TVAI)'
       'SELECT 4 as NoTVA, '
-      '  (SELECT libelle FROM parame WHERE code = '#39'TVAI'#39') AS Libelle,'
-      
-        '  (SELECT taux FROM par_effet WHERE code = '#39'TVAI'#39' AND ep.date_ B' +
-        'ETWEEN dat_deb AND dat_fin) AS Taux, '
-      '  mt_hti AS BaseHT, '
+      '  p_ame.libelle AS Libelle,'
+      '  p_eff.taux AS Taux, '
+      '  ep.mt_hti AS BaseHT, '
       '  mt_tvai AS MontantTVA '
       'FROM entvteaa ep'
-      'WHERE ep.CODFAC = :CODFAC AND ep.mt_hti <> 0'
+      'LEFT JOIN parame p_ame ON p_ame.code = '#39'TVAI'#39
+      
+        'LEFT JOIN par_effet p_eff ON p_eff.code = '#39'TVAI'#39' AND ep.date_ BE' +
+        'TWEEN p_eff.dat_deb AND p_eff.dat_fin'
+      'WHERE ep.CODFAC = :CODFAC AND ep.mt_htI <> 0'
       '')
     Left = 280
     Top = 176
@@ -5513,526 +5522,6 @@ object FormFicheArticle: TFormFicheArticle
     DataSetOptions = []
     Left = 504
     Top = 192
-    FieldDefs = <
-      item
-        FieldName = 'OBSERV'
-        FieldType = fftString
-        Size = 1000
-      end
-      item
-        FieldName = 'CODFAC'
-      end
-      item
-        FieldName = 'CODCLI'
-      end
-      item
-        FieldName = 'CODCAI'
-        FieldType = fftString
-      end
-      item
-        FieldName = 'CODDEV'
-      end
-      item
-        FieldName = 'CODDEP'
-      end
-      item
-        FieldName = 'CODVEN'
-      end
-      item
-        FieldName = 'NOM'
-        FieldType = fftString
-        Size = 50
-      end
-      item
-        FieldName = 'NOTAHITI'
-        FieldType = fftString
-      end
-      item
-        FieldName = 'TYPE_'
-        FieldType = fftString
-      end
-      item
-        FieldName = 'EXO_TVA'
-      end
-      item
-        FieldName = 'ANNEE'
-      end
-      item
-        FieldName = 'MOIS'
-      end
-      item
-        FieldName = 'DATE_'
-        FieldType = fftDateTime
-      end
-      item
-        FieldName = 'HEURE'
-      end
-      item
-        FieldName = 'MT_REMISE'
-      end
-      item
-        FieldName = 'PRC_REMISE'
-      end
-      item
-        FieldName = 'TOTHT'
-      end
-      item
-        FieldName = 'MT_TTC'
-      end
-      item
-        FieldName = 'MT_HT0'
-      end
-      item
-        FieldName = 'MT_HT1'
-      end
-      item
-        FieldName = 'MT_HT2'
-      end
-      item
-        FieldName = 'MT_HT3'
-      end
-      item
-        FieldName = 'MT_TVA1'
-      end
-      item
-        FieldName = 'MT_TVA2'
-      end
-      item
-        FieldName = 'MT_TVA3'
-      end
-      item
-        FieldName = 'MT_TVA'
-      end
-      item
-        FieldName = 'MARGE'
-      end
-      item
-        FieldName = 'REFERENCE_'
-        FieldType = fftString
-        Size = 15
-      end
-      item
-        FieldName = 'CODREP'
-      end
-      item
-        FieldName = 'NO_SEM'
-      end
-      item
-        FieldName = 'NO_JOUR'
-      end
-      item
-        FieldName = 'CODPAI'
-        FieldType = fftString
-      end
-      item
-        FieldName = 'JRSCRD'
-      end
-      item
-        FieldName = 'FIN_MOIS'
-      end
-      item
-        FieldName = 'LIBREG'
-        FieldType = fftString
-        Size = 50
-      end
-      item
-        FieldName = 'CRD_FORCE'
-      end
-      item
-        FieldName = 'DATE_ECH'
-        FieldType = fftDateTime
-      end
-      item
-        FieldName = 'REGL'
-      end
-      item
-        FieldName = 'DATE_OPER'
-        FieldType = fftDateTime
-      end
-      item
-        FieldName = 'DATE_COMPTA'
-        FieldType = fftDateTime
-      end
-      item
-        FieldName = 'ACOMPTE'
-      end
-      item
-        FieldName = 'CODGEO'
-        FieldType = fftString
-      end
-      item
-        FieldName = 'FLAG_TAX'
-      end
-      item
-        FieldName = 'SELECT_'
-      end
-      item
-        FieldName = 'DER_MODIF'
-      end
-      item
-        FieldName = 'CODADM'
-        FieldType = fftString
-        Size = 20
-      end
-      item
-        FieldName = 'NOMVEN'
-        FieldType = fftString
-        Size = 30
-      end
-      item
-        FieldName = 'MT_TSOC'
-      end
-      item
-        FieldName = 'MT_HTSOC'
-      end
-      item
-        FieldName = 'TX_TSOC'
-      end
-      item
-        FieldName = 'EXO_CPS'
-      end
-      item
-        FieldName = 'MT_TVAI'
-      end
-      item
-        FieldName = 'MT_HTI'
-      end
-      item
-        FieldName = 'TVA_ILES'
-        FieldType = fftBoolean
-      end
-      item
-        FieldName = 'OBSERV_1'
-        FieldType = fftString
-      end
-      item
-        FieldName = 'CODCLI_1'
-      end
-      item
-        FieldName = 'CPTAUX'
-        FieldType = fftString
-        Size = 13
-      end
-      item
-        FieldName = 'NOM_1'
-        FieldType = fftString
-        Size = 50
-      end
-      item
-        FieldName = 'CODREP_1'
-      end
-      item
-        FieldName = 'PRC_REMISE_1'
-      end
-      item
-        FieldName = 'NOTEL'
-        FieldType = fftString
-        Size = 15
-      end
-      item
-        FieldName = 'NOTAHITI_1'
-        FieldType = fftString
-      end
-      item
-        FieldName = 'NOFAX'
-        FieldType = fftString
-        Size = 15
-      end
-      item
-        FieldName = 'JRSCRD_1'
-      end
-      item
-        FieldName = 'CREDIT'
-      end
-      item
-        FieldName = 'plaf_crd'
-      end
-      item
-        FieldName = 'CODPAI_1'
-        FieldType = fftString
-      end
-      item
-        FieldName = 'FIN_MOIS_1'
-      end
-      item
-        FieldName = 'NB_EX'
-      end
-      item
-        FieldName = 'CAAN'
-      end
-      item
-        FieldName = 'AD1'
-        FieldType = fftString
-        Size = 30
-      end
-      item
-        FieldName = 'AD2'
-        FieldType = fftString
-        Size = 30
-      end
-      item
-        FieldName = 'AD3'
-        FieldType = fftString
-        Size = 30
-      end
-      item
-        FieldName = 'CUM_MVT'
-      end
-      item
-        FieldName = 'MT_CPTA'
-      end
-      item
-        FieldName = 'EXO_TVA_1'
-      end
-      item
-        FieldName = 'BLOQUE'
-      end
-      item
-        FieldName = 'CODGEO_1'
-        FieldType = fftString
-        Size = 20
-      end
-      item
-        FieldName = 'EMAIL'
-        FieldType = fftString
-        Size = 50
-      end
-      item
-        FieldName = 'CODTAR'
-        FieldType = fftString
-      end
-      item
-        FieldName = 'ADM'
-      end
-      item
-        FieldName = 'FLAG_TAX_1'
-      end
-      item
-        FieldName = 'CODFAC_ADM'
-        FieldType = fftString
-        Size = 20
-      end
-      item
-        FieldName = 'FERME'
-      end
-      item
-        FieldName = 'DER_MODIF_1'
-      end
-      item
-        FieldName = 'SPEC_GOUV'
-      end
-      item
-        FieldName = 'NOGSM'
-      end
-      item
-        FieldName = 'PLV'
-      end
-      item
-        FieldName = 'INTIT_BQ'
-        FieldType = fftString
-        Size = 30
-      end
-      item
-        FieldName = 'CODE_BQ'
-        FieldType = fftString
-      end
-      item
-        FieldName = 'CODE_GUI'
-        FieldType = fftString
-      end
-      item
-        FieldName = 'NOCPT'
-        FieldType = fftString
-        Size = 11
-      end
-      item
-        FieldName = 'CLE'
-        FieldType = fftString
-      end
-      item
-        FieldName = 'COEF_MAJ_PR'
-      end
-      item
-        FieldName = 'EXO_CPS_1'
-      end
-      item
-        FieldName = 'PAS_REM'
-      end
-      item
-        FieldName = 'REM_FAM'
-      end
-      item
-        FieldName = 'RELEVE_EMAIL'
-        FieldType = fftBoolean
-      end
-      item
-        FieldName = 'SELECT__1'
-        FieldType = fftBoolean
-      end
-      item
-        FieldName = 'APP_TARIFCLI'
-        FieldType = fftBoolean
-      end
-      item
-        FieldName = 'TVA_ILES_1'
-        FieldType = fftBoolean
-      end
-      item
-        FieldName = 'LIBELLE'
-        FieldType = fftString
-      end
-      item
-        FieldName = 'CODFAC_1'
-      end
-      item
-        FieldName = 'CODCLI_2'
-      end
-      item
-        FieldName = 'CODCAI_1'
-        FieldType = fftString
-      end
-      item
-        FieldName = 'CODDEV_1'
-      end
-      item
-        FieldName = 'CODDEP_1'
-      end
-      item
-        FieldName = 'CODVEN_1'
-      end
-      item
-        FieldName = 'NOENR'
-      end
-      item
-        FieldName = 'ANNEE_1'
-      end
-      item
-        FieldName = 'MOIS_1'
-      end
-      item
-        FieldName = 'DATE__1'
-        FieldType = fftDateTime
-      end
-      item
-        FieldName = 'HEURE_1'
-      end
-      item
-        FieldName = 'CODREP_2'
-      end
-      item
-        FieldName = 'CODFOU'
-        FieldType = fftString
-      end
-      item
-        FieldName = 'CODFAM'
-        FieldType = fftString
-      end
-      item
-        FieldName = 'CODSSF'
-        FieldType = fftString
-      end
-      item
-        FieldName = 'CODDPT'
-        FieldType = fftString
-      end
-      item
-        FieldName = 'TYPE__1'
-        FieldType = fftString
-      end
-      item
-        FieldName = 'CODART'
-        FieldType = fftString
-        Size = 13
-      end
-      item
-        FieldName = 'CODBAR'
-        FieldType = fftString
-        Size = 13
-      end
-      item
-        FieldName = 'QTE'
-      end
-      item
-        FieldName = 'POIDS'
-      end
-      item
-        FieldName = 'CODTAR_1'
-        FieldType = fftString
-      end
-      item
-        FieldName = 'PRIXHT'
-      end
-      item
-        FieldName = 'PRIXTTC'
-      end
-      item
-        FieldName = 'PRIXNET'
-      end
-      item
-        FieldName = 'TOTHT_1'
-      end
-      item
-        FieldName = 'MT_TTC_1'
-      end
-      item
-        FieldName = 'PRC_REMISE_2'
-      end
-      item
-        FieldName = 'MT_REMISE_1'
-      end
-      item
-        FieldName = 'TX_TVA'
-      end
-      item
-        FieldName = 'MT_TVA_1'
-      end
-      item
-        FieldName = 'NO_TVA'
-      end
-      item
-        FieldName = 'PRIXREV'
-      end
-      item
-        FieldName = 'MARGE_1'
-      end
-      item
-        FieldName = 'NO_SEM_1'
-      end
-      item
-        FieldName = 'NO_JOUR_1'
-      end
-      item
-        FieldName = 'DATE_OPER_1'
-        FieldType = fftDateTime
-      end
-      item
-        FieldName = 'DATE_COMPTA_1'
-        FieldType = fftDateTime
-      end
-      item
-        FieldName = 'DET_PPT'
-      end
-      item
-        FieldName = 'DET_ILE'
-      end
-      item
-        FieldName = 'SELECT__2'
-      end
-      item
-        FieldName = 'NOENRF'
-      end
-      item
-        FieldName = 'PXLVTTC'
-      end
-      item
-        FieldName = 'DER_MODIF_2'
-      end
-      item
-        FieldName = 'TX_TSOC_1'
-      end
-      item
-        FieldName = 'MT_TSOC_1'
-      end>
   end
   object frxPDFExportFacture: TfrxPDFExport
     UseFileCache = True
@@ -6070,24 +5559,6 @@ object FormFicheArticle: TFormFicheArticle
     DataSetOptions = []
     Left = 552
     Top = 216
-    FieldDefs = <
-      item
-        FieldName = 'NoTVA'
-      end
-      item
-        FieldName = 'Libelle'
-        FieldType = fftString
-        Size = 30
-      end
-      item
-        FieldName = 'Taux'
-      end
-      item
-        FieldName = 'BaseHT'
-      end
-      item
-        FieldName = 'MontantTVA'
-      end>
   end
   object frxDBDatasetReglements: TfrxDBDataset
     UserName = 'frxDBDatasetReglements'

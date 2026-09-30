@@ -1640,67 +1640,76 @@ object FormFicheClient: TFormFicheClient
       
         '-- 1. Taux Exon'#233'r'#233' (TVA0) -> On utilise une sous-requ'#234'te * 0 pou' +
         'r forcer le type FMTBcd'
-      'SELECT 0 as NoTVA,'
-      '  (SELECT libelle FROM parame WHERE code = '#39'TVA0'#39') AS Libelle,'
-      
-        '  (SELECT taux FROM par_effet WHERE code = '#39'TVA0'#39' AND ep.date_ B' +
-        'ETWEEN dat_deb AND dat_fin) AS Taux, '
-      '  mt_ht0 AS BaseHT, '
+      'SELECT '
+      '  0 as NoTVA,'
+      '  p_ame.libelle AS Libelle,'
+      '  p_eff.taux AS Taux, '
+      '  ep.mt_ht0 AS BaseHT, '
       '  0.00 AS MontantTVA '
       'FROM entvteaa ep'
+      'LEFT JOIN parame p_ame ON p_ame.code = '#39'TVA0'#39
+      
+        'LEFT JOIN par_effet p_eff ON p_eff.code = '#39'TVA0'#39' AND ep.date_ BE' +
+        'TWEEN p_eff.dat_deb AND p_eff.dat_fin'
       'WHERE ep.CODFAC = :CODFAC AND ep.mt_ht0 <> 0'
-      ''
       'UNION ALL'
       ''
       '-- 2. Zone 1 (TVA1)'
       'SELECT 1 as NoTVA,'
-      '  (SELECT libelle FROM parame WHERE code = '#39'TVA1'#39') AS Libelle,'
-      
-        '  (SELECT taux FROM par_effet WHERE code = '#39'TVA1'#39' AND ep.date_ B' +
-        'ETWEEN dat_deb AND dat_fin) AS Taux, '
-      '  mt_ht1 AS BaseHT, '
+      '  p_ame.libelle AS Libelle,'
+      '  p_eff.taux AS Taux, '
+      '  ep.mt_ht1 AS BaseHT, '
       '  mt_tva1 AS MontantTVA '
       'FROM entvteaa ep'
+      'LEFT JOIN parame p_ame ON p_ame.code = '#39'TVA1'#39
+      
+        'LEFT JOIN par_effet p_eff ON p_eff.code = '#39'TVA1'#39' AND ep.date_ BE' +
+        'TWEEN p_eff.dat_deb AND p_eff.dat_fin'
       'WHERE ep.CODFAC = :CODFAC AND ep.mt_ht1 <> 0'
-      ''
       'UNION ALL'
       ''
       '-- 3. Zone 2 (TVA2)'
       'SELECT 2 as NoTVA,'
-      '  (SELECT libelle FROM parame WHERE code = '#39'TVA2'#39') AS Libelle,'
-      
-        '  (SELECT taux FROM par_effet WHERE code = '#39'TVA2'#39' AND ep.date_ B' +
-        'ETWEEN dat_deb AND dat_fin) AS Taux, '
-      '  mt_ht2 AS BaseHT, '
+      '  p_ame.libelle AS Libelle,'
+      '  p_eff.taux AS Taux, '
+      '  ep.mt_ht2 AS BaseHT, '
       '  mt_tva2 AS MontantTVA '
       'FROM entvteaa ep'
+      'LEFT JOIN parame p_ame ON p_ame.code = '#39'TVA2'#39
+      
+        'LEFT JOIN par_effet p_eff ON p_eff.code = '#39'TVA2'#39' AND ep.date_ BE' +
+        'TWEEN p_eff.dat_deb AND p_eff.dat_fin'
       'WHERE ep.CODFAC = :CODFAC AND ep.mt_ht2 <> 0'
       ''
       'UNION ALL'
       ''
       '-- 4. Zone 3 (TVA3)'
       'SELECT 3 as NoTVA,'
-      '  (SELECT libelle FROM parame WHERE code = '#39'TVA3'#39') AS Libelle,'
-      
-        '  (SELECT taux FROM par_effet WHERE code = '#39'TVA3'#39' AND ep.date_ B' +
-        'ETWEEN dat_deb AND dat_fin) AS Taux, '
-      '  mt_ht3 AS BaseHT, '
+      '  p_ame.libelle AS Libelle,'
+      '  p_eff.taux AS Taux, '
+      '  ep.mt_ht3 AS BaseHT, '
       '  mt_tva3 AS MontantTVA '
       'FROM entvteaa ep'
+      'LEFT JOIN parame p_ame ON p_ame.code = '#39'TVA3'#39
+      
+        'LEFT JOIN par_effet p_eff ON p_eff.code = '#39'TVA3'#39' AND ep.date_ BE' +
+        'TWEEN p_eff.dat_deb AND p_eff.dat_fin'
       'WHERE ep.CODFAC = :CODFAC AND ep.mt_ht3 <> 0'
       ''
       'UNION ALL'
       ''
       '-- 5. Zone Interm'#233'diaire / '#206'les (TVAI)'
       'SELECT 4 as NoTVA, '
-      '  (SELECT libelle FROM parame WHERE code = '#39'TVAI'#39') AS Libelle,'
-      
-        '  (SELECT taux FROM par_effet WHERE code = '#39'TVAI'#39' AND ep.date_ B' +
-        'ETWEEN dat_deb AND dat_fin) AS Taux, '
-      '  mt_hti AS BaseHT, '
+      '  p_ame.libelle AS Libelle,'
+      '  p_eff.taux AS Taux, '
+      '  ep.mt_hti AS BaseHT, '
       '  mt_tvai AS MontantTVA '
       'FROM entvteaa ep'
-      'WHERE ep.CODFAC = :CODFAC AND ep.mt_hti <> 0'
+      'LEFT JOIN parame p_ame ON p_ame.code = '#39'TVAI'#39
+      
+        'LEFT JOIN par_effet p_eff ON p_eff.code = '#39'TVAI'#39' AND ep.date_ BE' +
+        'TWEEN p_eff.dat_deb AND p_eff.dat_fin'
+      'WHERE ep.CODFAC = :CODFAC AND ep.mt_htI <> 0'
       '')
     Left = 128
     Top = 184
@@ -6134,67 +6143,76 @@ object FormFicheClient: TFormFicheClient
       
         '-- 1. Taux Exon'#233'r'#233' (TVA0) -> On utilise une sous-requ'#234'te * 0 pou' +
         'r forcer le type FMTBcd'
-      'SELECT 0 as NoTVA,'
-      '  (SELECT libelle FROM parame WHERE code = '#39'TVA0'#39') AS Libelle,'
-      
-        '  (SELECT taux FROM par_effet WHERE code = '#39'TVA0'#39' AND ep.date_ B' +
-        'ETWEEN dat_deb AND dat_fin) AS Taux, '
-      '  mt_ht0 AS BaseHT, '
+      'SELECT '
+      '  0 as NoTVA,'
+      '  p_ame.libelle AS Libelle,'
+      '  p_eff.taux AS Taux, '
+      '  ep.mt_ht0 AS BaseHT, '
       '  0.00 AS MontantTVA '
       'FROM ent_prof ep'
+      'LEFT JOIN parame p_ame ON p_ame.code = '#39'TVA0'#39
+      
+        'LEFT JOIN par_effet p_eff ON p_eff.code = '#39'TVA0'#39' AND ep.date_ BE' +
+        'TWEEN p_eff.dat_deb AND p_eff.dat_fin'
       'WHERE ep.CODDEV = :CODDEV AND ep.mt_ht0 <> 0'
-      ''
       'UNION ALL'
       ''
       '-- 2. Zone 1 (TVA1)'
       'SELECT 1 as NoTVA,'
-      '  (SELECT libelle FROM parame WHERE code = '#39'TVA1'#39') AS Libelle,'
-      
-        '  (SELECT taux FROM par_effet WHERE code = '#39'TVA1'#39' AND ep.date_ B' +
-        'ETWEEN dat_deb AND dat_fin) AS Taux, '
-      '  mt_ht1 AS BaseHT, '
+      '  p_ame.libelle AS Libelle,'
+      '  p_eff.taux AS Taux, '
+      '  ep.mt_ht1 AS BaseHT, '
       '  mt_tva1 AS MontantTVA '
       'FROM ent_prof ep'
+      'LEFT JOIN parame p_ame ON p_ame.code = '#39'TVA1'#39
+      
+        'LEFT JOIN par_effet p_eff ON p_eff.code = '#39'TVA1'#39' AND ep.date_ BE' +
+        'TWEEN p_eff.dat_deb AND p_eff.dat_fin'
       'WHERE ep.CODDEV = :CODDEV AND ep.mt_ht1 <> 0'
-      ''
       'UNION ALL'
       ''
       '-- 3. Zone 2 (TVA2)'
       'SELECT 2 as NoTVA,'
-      '  (SELECT libelle FROM parame WHERE code = '#39'TVA2'#39') AS Libelle,'
-      
-        '  (SELECT taux FROM par_effet WHERE code = '#39'TVA2'#39' AND ep.date_ B' +
-        'ETWEEN dat_deb AND dat_fin) AS Taux, '
-      '  mt_ht2 AS BaseHT, '
+      '  p_ame.libelle AS Libelle,'
+      '  p_eff.taux AS Taux, '
+      '  ep.mt_ht2 AS BaseHT, '
       '  mt_tva2 AS MontantTVA '
       'FROM ent_prof ep'
+      'LEFT JOIN parame p_ame ON p_ame.code = '#39'TVA2'#39
+      
+        'LEFT JOIN par_effet p_eff ON p_eff.code = '#39'TVA2'#39' AND ep.date_ BE' +
+        'TWEEN p_eff.dat_deb AND p_eff.dat_fin'
       'WHERE ep.CODDEV = :CODDEV AND ep.mt_ht2 <> 0'
       ''
       'UNION ALL'
       ''
       '-- 4. Zone 3 (TVA3)'
       'SELECT 3 as NoTVA,'
-      '  (SELECT libelle FROM parame WHERE code = '#39'TVA3'#39') AS Libelle,'
-      
-        '  (SELECT taux FROM par_effet WHERE code = '#39'TVA3'#39' AND ep.date_ B' +
-        'ETWEEN dat_deb AND dat_fin) AS Taux, '
-      '  mt_ht3 AS BaseHT, '
+      '  p_ame.libelle AS Libelle,'
+      '  p_eff.taux AS Taux, '
+      '  ep.mt_ht3 AS BaseHT, '
       '  mt_tva3 AS MontantTVA '
       'FROM ent_prof ep'
+      'LEFT JOIN parame p_ame ON p_ame.code = '#39'TVA3'#39
+      
+        'LEFT JOIN par_effet p_eff ON p_eff.code = '#39'TVA3'#39' AND ep.date_ BE' +
+        'TWEEN p_eff.dat_deb AND p_eff.dat_fin'
       'WHERE ep.CODDEV = :CODDEV AND ep.mt_ht3 <> 0'
       ''
       'UNION ALL'
       ''
       '-- 5. Zone Interm'#233'diaire / '#206'les (TVAI)'
       'SELECT 4 as NoTVA, '
-      '  (SELECT libelle FROM parame WHERE code = '#39'TVAI'#39') AS Libelle,'
-      
-        '  (SELECT taux FROM par_effet WHERE code = '#39'TVAI'#39' AND ep.date_ B' +
-        'ETWEEN dat_deb AND dat_fin) AS Taux, '
-      '  mt_hti AS BaseHT, '
+      '  p_ame.libelle AS Libelle,'
+      '  p_eff.taux AS Taux, '
+      '  ep.mt_hti AS BaseHT, '
       '  mt_tvai AS MontantTVA '
       'FROM ent_prof ep'
-      'WHERE ep.CODDEV = :CODDEV AND ep.mt_hti <> 0'
+      'LEFT JOIN parame p_ame ON p_ame.code = '#39'TVAI'#39
+      
+        'LEFT JOIN par_effet p_eff ON p_eff.code = '#39'TVAI'#39' AND ep.date_ BE' +
+        'TWEEN p_eff.dat_deb AND p_eff.dat_fin'
+      'WHERE ep.CODDEV = :CODDEV AND ep.mt_htI <> 0'
       '')
     Left = 464
     Top = 232
