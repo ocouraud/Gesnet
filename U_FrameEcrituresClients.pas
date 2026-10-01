@@ -9,7 +9,8 @@ uses
   FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param, RzTabs,
   FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf,
   FireDAC.Stan.Async, FireDAC.DApt, FireDAC.Comp.DataSet, FireDAC.Comp.Client,
-  RzPanel, RzRadGrp, System.UITypes;
+  RzPanel, RzRadGrp, System.UITypes, frxClass, frxExportBaseDialog,
+  frxExportPDF, frCoreClasses, frxDBSet;
 
 type
   TFrameEcrituresClients = class(TFrame)
@@ -48,6 +49,170 @@ type
     EdtCherche_DATE_: TEdit;
     EdtCherche_CODJAL: TEdit;
     BtnReleves: TBitBtn;
+    FDQueryReglements: TFDQuery;
+    FDQueryFacture: TFDQuery;
+    FDQueryFactureOBSERV: TStringField;
+    FDQueryFactureCODFAC: TLargeintField;
+    FDQueryFactureCODCLI: TIntegerField;
+    FDQueryFactureCODCAI: TStringField;
+    FDQueryFactureCODDEV: TLargeintField;
+    FDQueryFactureCODDEP: TShortintField;
+    FDQueryFactureCODVEN: TSmallintField;
+    FDQueryFactureNOM: TStringField;
+    FDQueryFactureNOTAHITI: TStringField;
+    FDQueryFactureTYPE_: TStringField;
+    FDQueryFactureEXO_TVA: TSmallintField;
+    FDQueryFactureANNEE: TIntegerField;
+    FDQueryFactureMOIS: TSmallintField;
+    FDQueryFactureDATE_: TDateField;
+    FDQueryFactureHEURE: TIntegerField;
+    FDQueryFactureMT_REMISE: TIntegerField;
+    FDQueryFacturePRC_REMISE: TBCDField;
+    FDQueryFactureTOTHT: TBCDField;
+    FDQueryFactureMT_TTC: TLargeintField;
+    FDQueryFactureMT_HT0: TBCDField;
+    FDQueryFactureMT_HT1: TBCDField;
+    FDQueryFactureMT_HT2: TBCDField;
+    FDQueryFactureMT_HT3: TBCDField;
+    FDQueryFactureMT_TVA1: TBCDField;
+    FDQueryFactureMT_TVA2: TBCDField;
+    FDQueryFactureMT_TVA3: TBCDField;
+    FDQueryFactureMT_TVA: TBCDField;
+    FDQueryFactureMARGE: TLargeintField;
+    FDQueryFactureREFERENCE_: TStringField;
+    FDQueryFactureCODREP: TSmallintField;
+    FDQueryFactureNO_SEM: TSmallintField;
+    FDQueryFactureNO_JOUR: TSmallintField;
+    FDQueryFactureCODPAI: TStringField;
+    FDQueryFactureJRSCRD: TSmallintField;
+    FDQueryFactureFIN_MOIS: TSmallintField;
+    FDQueryFactureLIBREG: TStringField;
+    FDQueryFactureCRD_FORCE: TSmallintField;
+    FDQueryFactureDATE_ECH: TDateField;
+    FDQueryFactureREGL: TSmallintField;
+    FDQueryFactureDATE_OPER: TDateField;
+    FDQueryFactureDATE_COMPTA: TDateField;
+    FDQueryFactureACOMPTE: TIntegerField;
+    FDQueryFactureCODGEO: TStringField;
+    FDQueryFactureFLAG_TAX: TSmallintField;
+    FDQueryFactureSELECT_: TSmallintField;
+    FDQueryFactureDER_MODIF: TSQLTimeStampField;
+    FDQueryFactureCODADM: TStringField;
+    FDQueryFactureNOMVEN: TStringField;
+    FDQueryFactureMT_TSOC: TBCDField;
+    FDQueryFactureMT_HTSOC: TBCDField;
+    FDQueryFactureTX_TSOC: TBCDField;
+    FDQueryFactureEXO_CPS: TSmallintField;
+    FDQueryFactureMT_TVAI: TBCDField;
+    FDQueryFactureMT_HTI: TBCDField;
+    FDQueryFactureTVA_ILES: TBooleanField;
+    FDQueryFactureOBSERV_1: TMemoField;
+    FDQueryFactureCODCLI_1: TIntegerField;
+    FDQueryFactureCPTAUX: TStringField;
+    FDQueryFactureNOM_1: TStringField;
+    FDQueryFactureCODREP_1: TSmallintField;
+    FDQueryFacturePRC_REMISE_1: TBCDField;
+    FDQueryFactureNOTEL: TStringField;
+    FDQueryFactureNOTAHITI_1: TStringField;
+    FDQueryFactureNOFAX: TStringField;
+    FDQueryFactureJRSCRD_1: TSmallintField;
+    FDQueryFactureCREDIT: TLargeintField;
+    FDQueryFactureplaf_crd: TIntegerField;
+    FDQueryFactureCODPAI_1: TStringField;
+    FDQueryFactureFIN_MOIS_1: TSmallintField;
+    FDQueryFactureNB_EX: TSmallintField;
+    FDQueryFactureCAAN: TLargeintField;
+    FDQueryFactureAD1: TStringField;
+    FDQueryFactureAD2: TStringField;
+    FDQueryFactureAD3: TStringField;
+    FDQueryFactureCUM_MVT: TSmallintField;
+    FDQueryFactureMT_CPTA: TLargeintField;
+    FDQueryFactureEXO_TVA_1: TSmallintField;
+    FDQueryFactureBLOQUE: TSmallintField;
+    FDQueryFactureCODGEO_1: TStringField;
+    FDQueryFactureEMAIL: TStringField;
+    FDQueryFactureCODTAR: TStringField;
+    FDQueryFactureADM: TSmallintField;
+    FDQueryFactureFLAG_TAX_1: TSmallintField;
+    FDQueryFactureCODFAC_ADM: TStringField;
+    FDQueryFactureFERME: TSmallintField;
+    FDQueryFactureDER_MODIF_1: TSQLTimeStampField;
+    FDQueryFactureSPEC_GOUV: TSmallintField;
+    FDQueryFactureNOGSM: TLargeintField;
+    FDQueryFacturePLV: TSmallintField;
+    FDQueryFactureINTIT_BQ: TStringField;
+    FDQueryFactureCODE_BQ: TStringField;
+    FDQueryFactureCODE_GUI: TStringField;
+    FDQueryFactureNOCPT: TStringField;
+    FDQueryFactureCLE: TStringField;
+    FDQueryFactureCOEF_MAJ_PR: TBCDField;
+    FDQueryFactureEXO_CPS_1: TSmallintField;
+    FDQueryFacturePAS_REM: TSmallintField;
+    FDQueryFactureREM_FAM: TSmallintField;
+    FDQueryFactureRELEVE_EMAIL: TBooleanField;
+    FDQueryFactureSELECT__1: TBooleanField;
+    FDQueryFactureAPP_TARIFCLI: TBooleanField;
+    FDQueryFactureTVA_ILES_1: TBooleanField;
+    FDQueryFactureLIBELLE: TMemoField;
+    FDQueryFactureCODFAC_1: TLargeintField;
+    FDQueryFactureCODCLI_2: TIntegerField;
+    FDQueryFactureCODCAI_1: TStringField;
+    FDQueryFactureCODDEV_1: TLargeintField;
+    FDQueryFactureCODDEP_1: TShortintField;
+    FDQueryFactureCODVEN_1: TSmallintField;
+    FDQueryFactureNOENR: TIntegerField;
+    FDQueryFactureANNEE_1: TIntegerField;
+    FDQueryFactureMOIS_1: TSmallintField;
+    FDQueryFactureDATE__1: TDateField;
+    FDQueryFactureHEURE_1: TIntegerField;
+    FDQueryFactureCODREP_2: TSmallintField;
+    FDQueryFactureCODFOU: TStringField;
+    FDQueryFactureCODFAM: TStringField;
+    FDQueryFactureCODSSF: TStringField;
+    FDQueryFactureCODDPT: TStringField;
+    FDQueryFactureTYPE__1: TStringField;
+    FDQueryFactureCODART: TStringField;
+    FDQueryFactureCODBAR: TStringField;
+    FDQueryFactureQTE: TBCDField;
+    FDQueryFacturePOIDS: TBCDField;
+    FDQueryFactureCODTAR_1: TStringField;
+    FDQueryFacturePRIXHT: TBCDField;
+    FDQueryFacturePRIXTTC: TLargeintField;
+    FDQueryFacturePRIXNET: TBCDField;
+    FDQueryFactureTOTHT_1: TBCDField;
+    FDQueryFactureMT_TTC_1: TLargeintField;
+    FDQueryFacturePRC_REMISE_2: TBCDField;
+    FDQueryFactureMT_REMISE_1: TIntegerField;
+    FDQueryFactureTX_TVA: TBCDField;
+    FDQueryFactureMT_TVA_1: TBCDField;
+    FDQueryFactureNO_TVA: TSmallintField;
+    FDQueryFacturePRIXREV: TBCDField;
+    FDQueryFactureMARGE_1: TLargeintField;
+    FDQueryFactureNO_SEM_1: TSmallintField;
+    FDQueryFactureNO_JOUR_1: TSmallintField;
+    FDQueryFactureDATE_OPER_1: TDateField;
+    FDQueryFactureDATE_COMPTA_1: TDateField;
+    FDQueryFactureDET_PPT: TLargeintField;
+    FDQueryFactureDET_ILE: TLargeintField;
+    FDQueryFactureSELECT__2: TSmallintField;
+    FDQueryFactureNOENRF: TIntegerField;
+    FDQueryFacturePXLVTTC: TLargeintField;
+    FDQueryFactureDER_MODIF_2: TSQLTimeStampField;
+    FDQueryFactureTX_TSOC_1: TBCDField;
+    FDQueryFactureMT_TSOC_1: TBCDField;
+    FDQueryTVA: TFDQuery;
+    FDQueryTVANoTVA: TLargeintField;
+    FDQueryTVALibelle: TStringField;
+    FDQueryTVATaux: TFMTBCDField;
+    FDQueryTVABaseHT: TBCDField;
+    FDQueryTVAMontantTVA: TBCDField;
+    frxDBDatasetReglements: TfrxDBDataset;
+    frxDBDatasetTVA: TfrxDBDataset;
+    frxPDFExportFacture: TfrxPDFExport;
+    frxDBDatasetFacture: TfrxDBDataset;
+    frxReportFacture: TfrxReport;
+    BtnImprimerFacture: TButton;
+    BtnGrandLivre: TBitBtn;
     constructor Create(AOwner: TComponent); override;
     procedure EdtCherche_CODCLIChange(Sender: TObject);
     procedure EdtCherche_NOMChange(Sender: TObject);
@@ -74,6 +239,8 @@ type
     procedure EdtCherche_CODJALChange(Sender: TObject);
     procedure CheckBoxFermesClick(Sender: TObject);
     procedure BtnRelevesClick(Sender: TObject);
+    procedure BtnImprimerFactureClick(Sender: TObject);
+    procedure BtnGrandLivreClick(Sender: TObject);
   private
     procedure AppliquerFiltreMaitre;
     procedure CalculerSolde;
@@ -88,7 +255,7 @@ implementation
 
 {$R *.dfm}
 uses U_DataModule, U_DM_Olivier, U_FicheClient, U_OutilsGrille, U_FormAide, U_FicheTresor,
-U_FormParametresRelevesClients;
+U_FormParametresRelevesClients, U_ReportFactureMem;
 
 procedure TFrameEcrituresClients.BtnRelevesClick(Sender: TObject);
 begin
@@ -99,9 +266,9 @@ begin
   try
     FormParametresRelevesClients.Caption := 'Paramètres relevés clients';
     FormParametresRelevesClients.DBLookupComboBoxClientDu.KeyValue:=
-    FDQueryClients.FieldByName('CODCLI').AsInteger;
+    FDQueryClients.FieldByName('NOM').AsString;
     FormParametresRelevesClients.DBLookupComboBoxClientAu.KeyValue:=
-    FDQueryClients.FieldByName('CODCLI').AsInteger;
+    FDQueryClients.FieldByName('NOM').AsString;
 
   if FormParametresRelevesClients.ShowModal = mrOk then
     DM_Olivier.RefreshDataSetWithBookmark(FDQueryClients)
@@ -367,6 +534,126 @@ begin
   end;
 end;
 
+procedure TFrameEcrituresClients.BtnGrandLivreClick(Sender: TObject);
+begin
+  // Vérifie qu'un client est bien sélectionné
+  if FDQueryClients.IsEmpty then Exit;
+
+  FormParametresRelevesClients := TFormParametresRelevesClients.Create(Self);
+  try
+    FormParametresRelevesClients.Caption := 'Paramètres Grand Livre clients';
+    FormParametresRelevesClients.DBLookupComboBoxClientDu.KeyValue:=
+    FDQueryClients.FieldByName('NOM').AsString;
+    FormParametresRelevesClients.DBLookupComboBoxClientAu.KeyValue:=
+    FDQueryClients.FieldByName('NOM').AsString;
+
+  if FormParametresRelevesClients.ShowModal = mrOk then
+    DM_Olivier.RefreshDataSetWithBookmark(FDQueryClients)
+  else
+    FDQueryClients.Cancel;
+  finally
+    FormParametresRelevesClients.Free;
+  end;
+end;
+
+procedure TFrameEcrituresClients.BtnImprimerFactureClick(Sender: TObject);
+var
+  FormFactureMemPrint: TFormFactureMemPrint;
+  QryEnt, QryLig, QryReg: TFDQuery;
+  ACodFac: Integer;
+  sLibelle: string;
+begin
+
+  //Controle si facture
+  sLibelle := FDQueryTresor.FieldByName('LIBELLE').AsString;
+  if (Pos('Facture No', sLibelle) <> 1) and (Pos('Avoir No', sLibelle) <> 1) then
+    Exit;
+
+
+  // On récupère le code de la facture actuellement sélectionnée dans la grille
+  // Extrait ce qui se trouve après 'Facture No'
+  if (Pos('Facture No', sLibelle) = 1) then
+    ACodFac := StrToInt(Trim(Copy(sLibelle, Length('Facture No') + 1, MaxInt)));
+  // Extrait ce qui se trouve après 'Avoir No'
+  if (Pos('Avoir No', sLibelle) = 1) then
+    ACodFac := StrToInt(Trim(Copy(sLibelle, Length('Avoir No') + 1, MaxInt)));
+
+  //Lecture entvteaa
+  // On crée des requêtes dédiées et isolées pour l'impression de cette facture
+  QryEnt := TFDQuery.Create(nil);
+  try
+    QryEnt.Connection := DMGesCloud.ConnexionGesCloud;
+
+    // On sélectionne uniquement l'en-tête, les lignes et les règlements de CE code facture
+    QryEnt.SQL.Text := 'SELECT * FROM entvteaa WHERE codfac = :CodFac';
+    QryEnt.ParamByName('CodFac').AsInteger := ACodFac;
+    QryEnt.Open;
+    if QryEnt.Eof then
+      Exit;
+
+    // Lire les paramètres globaux (via une requête ou un fichier de config)
+    DM_Olivier.FDQueryCtrstock.open;
+
+    if DM_Olivier.FDQueryCtrstock.IsEmpty then
+      Exit;
+
+       // 2. Charger le modèle d'état externe
+      frxReportFacture.LoadFromFile('Facture.fr3');
+
+    // 2. Vider les variables mémoire pour repartir proprement
+    frxReportFacture.Variables.Clear;
+
+    // 3. CRÉER AUTOMATIQUEMENT la catégorie et les variables
+    // ATTENTION : FastReport impose de créer au moins une catégorie (commençant par un espace)
+    // avant d'y injecter des variables.
+    frxReportFacture.Variables[' ' + 'Globales'] := Null;
+
+    // On ajoute les variables à la catégorie qui vient d'être créée
+    frxReportFacture.Variables.AddVariable('Globales','VarNomEntreprise',
+    ( DM_Olivier.FDQueryCtrstock.FieldByName('Nom').AsString + #13#10 +
+      DM_Olivier.FDQueryCtrstock.FieldByName('Nom2').AsString ));
+    frxReportFacture.Variables.AddVariable('Globales','VarTelephone', QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('Tel').AsString));
+    frxReportFacture.Variables.AddVariable('Globales','VarAdresse', DM_Olivier.FDQueryCtrstock.FieldByName('Adresse').AsString);
+    frxReportFacture.Variables.AddVariable('Globales','VarNoTAHITI', QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('NOTAHITI').AsString));
+    frxReportFacture.Variables.AddVariable('Globales','VarLOGO', QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('LOGO').AsString));
+    frxReportFacture.Variables.AddVariable('Globales','VarEMAIL', QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('EMAIL').AsString));
+    frxReportFacture.Variables.AddVariable('Globales','VarFAX', QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('FAX').AsString));
+    frxReportFacture.Variables.AddVariable('Globales','VarRC', QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('RC').AsString));
+    frxReportFacture.Variables.AddVariable('Globales','VarMEMO_FAC', QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('MEMO_FAC').AsString));
+    frxReportFacture.Variables.AddVariable('Globales','VarRef_Bancaire', DM_Olivier.FDQueryCtrstock.FieldByName('BANQUE').AsString);
+    frxReportFacture.Variables.AddVariable('Globales','VarTotalAlpha',QuotedStr('Facture arrêtée à la somme de : ' +
+      DMGesCloud.MontantenLettres(QryEnt.FieldByName('MT_TTC').AsInteger) + ' Francs CFP.'));
+    if QryEnt.FieldByName('TYPE_').AsString='F' then
+      frxReportFacture.Variables.AddVariable('Globales','VarLibTypeFacture', QuotedStr('FACTURE'))
+    else
+      frxReportFacture.Variables.AddVariable('Globales','VarLibTypeFacture', QuotedStr('AVOIR'));
+
+    //Lecture representant
+    DM_Olivier.FDQueryRepres.SQL.Text:='select * from repres where codrep=:codrep';
+    DM_Olivier.FDQueryRepres.ParamByName('CODREP').AsInteger:= QryEnt.FieldByName('CODREP').AsInteger;
+    DM_Olivier.FDQueryRepres.Open;
+    frxReportFacture.Variables.AddVariable('Globales','VarRepres', QuotedStr(DM_Olivier.FDQueryRepres.FieldByName('NOM').AsString));
+
+    // 1. Activer la requête SQL contenant les données de la facture
+    FDQueryFacture.ParamByName('CODFAC').AsInteger := QryEnt.FieldByName('CODFAC').AsInteger;
+    FDQueryFacture.Open;
+
+    FDQueryTVA.ParamByName('CODFAC').AsInteger := QryEnt.FieldByName('CODFAC').AsInteger;
+    FDQueryTVA.Open;
+
+    FDQueryReglements.ParamByName('CODFAC').AsInteger := QryEnt.FieldByName('CODFAC').AsInteger;
+    FDQueryReglements.Open;
+
+    // 2. Charger le modèle visuel externe (.fr3)
+    //frxReportFacture.LoadFromFile('Facture.fr3');
+
+    // 3. Afficher l'aperçu avant impression à l'écran
+    frxReportFacture.ShowReport;
+  finally
+    QryEnt.Free;
+  end;
+end;
+
 procedure TFrameEcrituresClients.BtnLettrageClick(Sender: TObject);
 begin
   LancementLettrage;
@@ -491,6 +778,8 @@ begin
   BtnSupprimer.Enabled:=False;
   BtnContrePartie.Enabled:=False;
   BtnLettrage.Enabled:=False;
+
+  AppliquerFiltreMaitre;
 end;
 
 
@@ -503,6 +792,7 @@ begin
 
   //On raffraichit la requete si modifiee entre temps
   FDQueryClients.Refresh;
+  BtnImprimerFacture.Enabled:=False;
 
   if not CheckBoxFermes.Checked then FiltreSQL := 'ferme = 0' else FiltreSQL := 'ferme = 1';
 
@@ -578,6 +868,7 @@ begin
   rgFiltreEcritures.Enabled:=True;
   rgFiltreEcrituresClick(nil);
   BtnContrePartie.Enabled:=False;
+  BtnImprimerFacture.Enabled:=False
 end;
 
 procedure TFrameEcrituresClients.JvDBGridClientsTitleBtnClick(Sender: TObject;
@@ -594,14 +885,30 @@ begin
 end;
 
 procedure TFrameEcrituresClients.JvDBGridTresorCellClick(Column: TColumn);
+var
+  sLibelle: String;
 begin
   CalculerSelection;
+   //Controle si facture
+  sLibelle := FDQueryTresor.FieldByName('LIBELLE').AsString;
+  if (Pos('Facture No', sLibelle) <> 1) and (Pos('Avoir No', sLibelle) <> 1) then
+    BtnImprimerFacture.Enabled:=False
+  else
+    BtnImprimerFacture.Enabled:=True;
 end;
 
 procedure TFrameEcrituresClients.JvDBGridTresorKeyUp(Sender: TObject;
   var Key: Word; Shift: TShiftState);
+var
+  sLibelle: String;
 begin
   CalculerSelection;
+   //Controle si facture
+  sLibelle := FDQueryTresor.FieldByName('LIBELLE').AsString;
+  if (Pos('Facture No', sLibelle) <> 1) and (Pos('Avoir No', sLibelle) <> 1) then
+    BtnImprimerFacture.Enabled:=False
+  else
+    BtnImprimerFacture.Enabled:=True;
 end;
 
 procedure TFrameEcrituresClients.JvDBGridTresorTitleBtnClick(Sender: TObject;

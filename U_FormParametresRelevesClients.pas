@@ -53,6 +53,8 @@ type
     FDQueryRelevesad1: TStringField;
     FDQueryRelevesad2: TStringField;
     FDQueryRelevesad3: TStringField;
+    frxReportGrandLivreClients: TfrxReport;
+    FDQueryRelevesnotel: TStringField;
     procedure FormShow(Sender: TObject);
     procedure BtnImprimerClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -74,82 +76,151 @@ implementation
 
 
 procedure TFormParametresRelevesClients.BtnImprimerClick(Sender: TObject);
+var
+  sLibelle: string;
 begin
 
-  // 1. Lire vos paramètres globaux (via une requête ou un fichier de config)
+  // Lire vos paramètres globaux (via une requête ou un fichier de config)
   DM_Olivier.FDQueryCtrstock.open;
 
   if DM_Olivier.FDQueryCtrstock.IsEmpty then
     Exit;
 
-     // 2. Charger le modèle d'état externe
-    frxReportReleves.LoadFromFile('RelevesClients.fr3');
-
-  // 2. Vider les variables mémoire pour repartir proprement
-  frxReportReleves.Variables.Clear;
-
-  // 3. CRÉER AUTOMATIQUEMENT la catégorie et les variables
-  // ATTENTION : FastReport impose de créer au moins une catégorie (commençant par un espace)
-  // avant d'y injecter des variables.
-  frxReportReleves.Variables[' ' + 'Globales'] := Null;
-
-  // On ajoute les variables à la catégorie qui vient d'être créée
-  frxReportReleves.Variables.AddVariable('Globales','VarNomEntreprise',
-  ( DM_Olivier.FDQueryCtrstock.FieldByName('Nom').AsString + #13#10 +
-    DM_Olivier.FDQueryCtrstock.FieldByName('Nom2').AsString ));
-  frxReportReleves.Variables.AddVariable('Globales','VarTelephone', QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('Tel').AsString));
-  frxReportReleves.Variables.AddVariable('Globales','VarAdresse', DM_Olivier.FDQueryCtrstock.FieldByName('Adresse').AsString);
-  frxReportReleves.Variables.AddVariable('Globales','VarNoTAHITI', QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('NOTAHITI').AsString));
-  frxReportReleves.Variables.AddVariable('Globales','VarLOGO', QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('LOGO').AsString));
-  frxReportReleves.Variables.AddVariable('Globales','VarEMAIL', QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('EMAIL').AsString));
-  frxReportReleves.Variables.AddVariable('Globales','VarFAX', QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('FAX').AsString));
-  frxReportReleves.Variables.AddVariable('Globales','VarRC', QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('RC').AsString));
-  frxReportReleves.Variables.AddVariable('Globales','VarRef_Bancaire', DM_Olivier.FDQueryCtrstock.FieldByName('BANQUE').AsString);
-  frxReportReleves.Variables.AddVariable('Globales','VarDate1', JvDateEditDu.Date);
-  frxReportReleves.Variables.AddVariable('Globales','VarDate2', JvDateEditAu.Date);
-
-//  //Lecture representant
-//  DM_Olivier.FDQueryRepres.SQL.Text:='select * from repres where codrep=:codrep';
-//  DM_Olivier.FDQueryRepres.ParamByName('CODREP').AsInteger:= FDQueryReleves.FieldByName('CODREP').AsInteger;
-//  DM_Olivier.FDQueryRepres.Open;
-//  frxReportReleves.Variables.AddVariable('Globales','VarRepres', QuotedStr(DM_Olivier.FDQueryRepres.FieldByName('NOM').AsString));
-
-  // 1. Activer la requête SQL contenant les données du devis
-  FDQueryReleves.ParamByName('CODCLI1').AsInteger := DBLookupComboBoxClientDu.KeyValue;
-  FDQueryReleves.ParamByName('CODCLI2').AsInteger := DBLookupComboBoxClientAu.KeyValue;
-  FDQueryReleves.ParamByName('DATE1').AsDateTime := JvDateEditDu.Date;
-  FDQueryReleves.ParamByName('DATE2').AsDateTime := JvDateEditAu.Date;
-
-  // 2. Gestion des cases à cocher pour le solde
-  if CheckBoxSoldees.Checked and CheckBoxNonSoldees.Checked then
-  begin
-    // Les deux sont cochées : on désactive le filtre sur le solde (:tout = 1)
-    FDQueryReleves.ParamByName('tout').AsInteger := 1;
-    FDQueryReleves.ParamByName('valeur_solde').AsInteger := 0; // Valeur neutre
-  end
-  else if CheckBoxSoldees.Checked then
-  begin
-    // Uniquement les soldées (solde = 1)
-    FDQueryReleves.ParamByName('tout').AsInteger := 0;
-    FDQueryReleves.ParamByName('valeur_solde').AsInteger := 1;
-  end
-  else if CheckBoxNonSoldees.Checked then
+  if Pos('relevés', FormParametresRelevesClients.Caption) > 1 then
     begin
-    // Uniquement les non soldées (solde = 0)
-    FDQueryReleves.ParamByName('tout').AsInteger := 0;
-    FDQueryReleves.ParamByName('valeur_solde').AsInteger := 0;
-  end
-  else
-  begin
-    // Aucune n'est cochée : on bloque tout (on force une condition fausse)
-    FDQueryReleves.ParamByName('tout').AsInteger := 0;
-    FDQueryReleves.ParamByName('valeur_solde').AsInteger := -999; // Valeur impossible
-  end;
+       // Charger le modèle d'état externe
+      frxReportReleves.LoadFromFile('RelevesClients.fr3');
 
-  // 3. Ouverture de la requête
-  FDQueryReleves.Open;
-  // 3. Afficher l'aperçu avant impression à l'écran
-  frxReportReleves.ShowReport;
+      // Vider les variables mémoire pour repartir proprement
+      frxReportReleves.Variables.Clear;
+
+      // CRÉER AUTOMATIQUEMENT la catégorie et les variables
+      // ATTENTION : FastReport impose de créer au moins une catégorie (commençant par un espace)
+      // avant d'y injecter des variables.
+      frxReportReleves.Variables[' ' + 'Globales'] := Null;
+
+      // On ajoute les variables à la catégorie qui vient d'être créée
+      frxReportReleves.Variables.AddVariable('Globales','VarNomEntreprise',
+      ( DM_Olivier.FDQueryCtrstock.FieldByName('Nom').AsString + #13#10 +
+        DM_Olivier.FDQueryCtrstock.FieldByName('Nom2').AsString ));
+      frxReportReleves.Variables.AddVariable('Globales','VarTelephone', QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('Tel').AsString));
+      frxReportReleves.Variables.AddVariable('Globales','VarAdresse', DM_Olivier.FDQueryCtrstock.FieldByName('Adresse').AsString);
+      frxReportReleves.Variables.AddVariable('Globales','VarNoTAHITI', QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('NOTAHITI').AsString));
+      frxReportReleves.Variables.AddVariable('Globales','VarLOGO', QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('LOGO').AsString));
+      frxReportReleves.Variables.AddVariable('Globales','VarEMAIL', QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('EMAIL').AsString));
+      frxReportReleves.Variables.AddVariable('Globales','VarFAX', QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('FAX').AsString));
+      frxReportReleves.Variables.AddVariable('Globales','VarRC', QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('RC').AsString));
+      frxReportReleves.Variables.AddVariable('Globales','VarRef_Bancaire', DM_Olivier.FDQueryCtrstock.FieldByName('BANQUE').AsString);
+      frxReportReleves.Variables.AddVariable('Globales','VarDate1', JvDateEditDu.Date);
+      frxReportReleves.Variables.AddVariable('Globales','VarDate2', JvDateEditAu.Date);
+
+      // Activer la requête SQL contenant les données du devis
+      FDQueryReleves.close;
+      FDQueryReleves.ParamByName('NOM1').AsString := DBLookupComboBoxClientDu.KeyValue;
+      FDQueryReleves.ParamByName('NOM2').AsString := DBLookupComboBoxClientAu.KeyValue;
+      FDQueryReleves.ParamByName('DATE1').AsDateTime := JvDateEditDu.Date;
+      FDQueryReleves.ParamByName('DATE2').AsDateTime := JvDateEditAu.Date;
+
+      // 2. Gestion des cases à cocher pour le solde
+      if CheckBoxSoldees.Checked and CheckBoxNonSoldees.Checked then
+      begin
+        // Les deux sont cochées : on désactive le filtre sur le solde (:tout = 1)
+        FDQueryReleves.ParamByName('tout').AsInteger := 1;
+        FDQueryReleves.ParamByName('valeur_solde').AsInteger := 0; // Valeur neutre
+      end
+      else if CheckBoxSoldees.Checked then
+      begin
+        // Uniquement les soldées (solde = 1)
+        FDQueryReleves.ParamByName('tout').AsInteger := 0;
+        FDQueryReleves.ParamByName('valeur_solde').AsInteger := 1;
+      end
+      else if CheckBoxNonSoldees.Checked then
+        begin
+        // Uniquement les non soldées (solde = 0)
+        FDQueryReleves.ParamByName('tout').AsInteger := 0;
+        FDQueryReleves.ParamByName('valeur_solde').AsInteger := 0;
+      end
+      else
+      begin
+        // Aucune n'est cochée : on bloque tout (on force une condition fausse)
+        FDQueryReleves.ParamByName('tout').AsInteger := 0;
+        FDQueryReleves.ParamByName('valeur_solde').AsInteger := -999; // Valeur impossible
+      end;
+
+      // 3. Ouverture de la requête
+      FDQueryReleves.Open;
+      // 3. Afficher l'aperçu avant impression à l'écran
+      frxReportReleves.EngineOptions.DoublePass := True;
+      frxReportReleves.ShowReport;
+    end
+    else
+    //Grand Livre clients
+    begin
+       // Charger le modèle d'état externe
+      frxReportGrandLivreClients.LoadFromFile('GrandLivreClients.fr3');
+
+      // Vider les variables mémoire pour repartir proprement
+      frxReportGrandLivreClients.Variables.Clear;
+
+      // CRÉER AUTOMATIQUEMENT la catégorie et les variables
+      // ATTENTION : FastReport impose de créer au moins une catégorie (commençant par un espace)
+      // avant d'y injecter des variables.
+      frxReportGrandLivreClients.Variables[' ' + 'Globales'] := Null;
+
+      // On ajoute les variables à la catégorie qui vient d'être créée
+      frxReportGrandLivreClients.Variables.AddVariable('Globales','VarNomEntreprise',
+      ( DM_Olivier.FDQueryCtrstock.FieldByName('Nom').AsString + #13#10 +
+        DM_Olivier.FDQueryCtrstock.FieldByName('Nom2').AsString ));
+      frxReportGrandLivreClients.Variables.AddVariable('Globales','VarTelephone', QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('Tel').AsString));
+      frxReportGrandLivreClients.Variables.AddVariable('Globales','VarAdresse', DM_Olivier.FDQueryCtrstock.FieldByName('Adresse').AsString);
+      frxReportGrandLivreClients.Variables.AddVariable('Globales','VarNoTAHITI', QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('NOTAHITI').AsString));
+      frxReportGrandLivreClients.Variables.AddVariable('Globales','VarLOGO', QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('LOGO').AsString));
+      frxReportGrandLivreClients.Variables.AddVariable('Globales','VarEMAIL', QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('EMAIL').AsString));
+      frxReportGrandLivreClients.Variables.AddVariable('Globales','VarFAX', QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('FAX').AsString));
+      frxReportGrandLivreClients.Variables.AddVariable('Globales','VarRC', QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('RC').AsString));
+      frxReportGrandLivreClients.Variables.AddVariable('Globales','VarRef_Bancaire', DM_Olivier.FDQueryCtrstock.FieldByName('BANQUE').AsString);
+      frxReportGrandLivreClients.Variables.AddVariable('Globales','VarDate1', JvDateEditDu.Date);
+      frxReportGrandLivreClients.Variables.AddVariable('Globales','VarDate2', JvDateEditAu.Date);
+
+      // Activer la requête SQL contenant les données du devis
+      FDQueryReleves.close;
+      FDQueryReleves.ParamByName('NOM1').AsString := DBLookupComboBoxClientDu.KeyValue;
+      FDQueryReleves.ParamByName('NOM2').AsString := DBLookupComboBoxClientAu.KeyValue;
+      FDQueryReleves.ParamByName('DATE1').AsDateTime := JvDateEditDu.Date;
+      FDQueryReleves.ParamByName('DATE2').AsDateTime := JvDateEditAu.Date;
+
+      // 2. Gestion des cases à cocher pour le solde
+      if CheckBoxSoldees.Checked and CheckBoxNonSoldees.Checked then
+      begin
+        // Les deux sont cochées : on désactive le filtre sur le solde (:tout = 1)
+        FDQueryReleves.ParamByName('tout').AsInteger := 1;
+        FDQueryReleves.ParamByName('valeur_solde').AsInteger := 0; // Valeur neutre
+      end
+      else if CheckBoxSoldees.Checked then
+      begin
+        // Uniquement les soldées (solde = 1)
+        FDQueryReleves.ParamByName('tout').AsInteger := 0;
+        FDQueryReleves.ParamByName('valeur_solde').AsInteger := 1;
+      end
+      else if CheckBoxNonSoldees.Checked then
+        begin
+        // Uniquement les non soldées (solde = 0)
+        FDQueryReleves.ParamByName('tout').AsInteger := 0;
+        FDQueryReleves.ParamByName('valeur_solde').AsInteger := 0;
+      end
+      else
+      begin
+        // Aucune n'est cochée : on bloque tout (on force une condition fausse)
+        FDQueryReleves.ParamByName('tout').AsInteger := 0;
+        FDQueryReleves.ParamByName('valeur_solde').AsInteger := -999; // Valeur impossible
+      end;
+
+      // 3. Ouverture de la requête
+      FDQueryReleves.Open;
+      // 3. Afficher l'aperçu avant impression à l'écran
+      frxReportGrandLivreClients.EngineOptions.DoublePass := True;
+      frxReportGrandLivreClients.ShowReport;
+    end;
 
 end;
 

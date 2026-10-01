@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<TfrxReport Version="2024.1.2" DotMatrixReport="False" IniFile="\Software\Fast Reports" PreviewOptions.Buttons="692223" PreviewOptions.Zoom="1" PrintOptions.Printer="Default" PrintOptions.PrintOnSheet="0" ReportOptions.CreateDate="46280,575471794" ReportOptions.Description.Text="" ReportOptions.LastChange="46295,7232020718" ScriptLanguage="PascalScript" ScriptText.Text="begin&#13;&#10;&#13;&#10;end.">
+  <Datasets>
+    <item DataSet="frxDBDatasetReleves" DataSetName="frxDBDatasetReleves"/>
+  </Datasets>
+  <Variables>
+    <item Name=" Globales"/>
+    <item Name="VarNomEntreprise" Value="&#39;Societe&#39;"/>
+    <item Name="VarTelephone" Value="&#39;87777600&#39;"/>
+    <item Name="VarAdresse" Value="&#39;Kauehi&#39;"/>
+    <item Name="VarNoTAHITI" Value="&#39;1234567899&#39;"/>
+    <item Name="VarFAX" Value="&#39;123456789&#39;"/>
+    <item Name="VarEMAIL" Value="&#39;contact@fai.com&#39;"/>
+    <item Name="VarRC" Value="&#39;1000A&#39;"/>
+    <item Name="VarRepres" Value="&#39;Commercial&#39;"/>
+    <item Name="VarRef_Bancaire"/>
+    <item Name="VarTotalAlpha"/>
+    <item Name="VarLogo"/>
+    <item Name="VarLibTypeFacture"/>
+    <item Name="VarDate1"/>
+    <item Name="VarDate2"/>
+  </Variables>
+  <TfrxDataPage Name="Data" HGuides.Text="" VGuides.Text="" Height="1000" Left="0" Top="0" Width="1000"/>
+  <TfrxReportPage Name="PageFacture" HGuides.Text="" VGuides.Text="" PaperWidth="210" PaperHeight="297" PaperSize="9" LeftMargin="5" RightMargin="5" TopMargin="10" BottomMargin="10" ColumnWidth="0" ColumnPositions.Text="" Frame.Typ="0" MirrorMode="0">
+    <TfrxGroupHeader Name="GroupHeader1" FillType="ftBrush" FillGap.Top="0" FillGap.Left="0" FillGap.Bottom="0" FillGap.Right="0" Frame.Typ="0" Height="68,03154" Left="0" Top="170,07885" Width="755,906" Condition="frxDBDatasetReleves.&#34;nom&#34;" ReprintOnNewPage="True" Stretched="True">
+      <TfrxShapeView Name="Shape1" AllowVectorExport="True" Left="0" Top="34,01594088" Width="755,90551181" Height="30,23621878" Frame.Typ="0"/>
+      <TfrxMemoView Name="Memo10" AllowVectorExport="True" Left="614,17322835" Top="34,01593664" Width="75,59055118" Height="28,34645669" StretchMode="smMaxHeight" ContentScaleOptions.Constraints.MaxIterationValue="0" ContentScaleOptions.Constraints.MinIterationValue="0" Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="0" Frame.Typ="1" HAlign="haCenter" ParentFont="False" VAlign="vaCenter" Text="Crédit"/>
+      <TfrxMemoView Name="Memo8" AllowVectorExport="True" Left="453,52785047" Top="34,01593068" Width="83,1496063" Height="28,34645669" StretchMode="smMaxHeight" ContentScaleOptions.Constraints.MaxIterationValue="0" ContentScaleOptions.Constraints.MinIterationValue="0" Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="0" Frame.Typ="1" HAlign="haCenter" ParentFont="False" VAlign="vaCenter" Text="Echéance"/>
+      <TfrxMemoView Name="Memo5" AllowVectorExport="True" Left="317,93721938" Top="34,01593916" Width="136,06308073" Height="28,34645669" StretchMode="smMaxHeight" ContentScaleOptions.Constraints.MaxIterationValue="0" ContentScaleOptions.Constraints.MinIterationValue="0" Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="0" Frame.Typ="1" HAlign="haCenter" ParentFont="False" VAlign="vaCenter" Text="Référence"/>
+      <TfrxMemoView Name="Memo3" AllowVectorExport="True" Left="87,14965306" Top="34,01593321" Width="230,55133073" Height="28,34645669" StretchMode="smMaxHeight" ContentScaleOptions.Constraints.MaxIterationValue="0" ContentScaleOptions.Constraints.MinIterationValue="0" Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="0" Frame.Typ="1" HAlign="haCenter" ParentFont="False" VAlign="vaCenter" Text="Libellé"/>
+      <TfrxMemoView Name="Memo2" AllowVectorExport="True" Left="0,22047005" Top="34,01593321" Width="86,92918644" Height="28,34645669" StretchMode="smMaxHeight" ContentScaleOptions.Constraints.MaxIterationValue="0" ContentScaleOptions.Constraints.MinIterationValue="0" Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="0" Frame.Typ="0" HAlign="haCenter" ParentFont="False" VAlign="vaCenter" Text="Date"/>
+      <TfrxMemoView Name="Memo7" AllowVectorExport="True" Left="537,14994135" Top="34,01594169" Width="75,59055118" Height="28,34645669" StretchMode="smMaxHeight" ContentScaleOptions.Constraints.MaxIterationValue="0" ContentScaleOptions.Constraints.MinIterationValue="0" Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="0" Frame.Typ="1" HAlign="haCenter" ParentFont="False" VAlign="vaCenter" Text="Débit"/>
+      <TfrxMemoView Name="Memo11" AllowVectorExport="True" Left="690,65399" Top="34,01577" Width="64,25196118" Height="28,34645669" StretchMode="smMaxHeight" ContentScaleOptions.Constraints.MaxIterationValue="0" ContentScaleOptions.Constraints.MinIterationValue="0" Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="0" Frame.Typ="1" HAlign="haCenter" ParentFont="False" VAlign="vaCenter" Text="Lettrage"/>
+      <TfrxMemoView Name="MemofrxDBDataset1CODCLI" IndexTag="1" AllowVectorExport="True" Left="0" Top="11,33859" Width="79,37013" Height="18,89765" StretchMode="smMaxHeight" ContentScaleOptions.Constraints.MaxIterationValue="0" ContentScaleOptions.Constraints.MinIterationValue="0" DataSet="WinControlForm_1.FrameTableEntvteaa.frxDBDatasetFacture" DataSetName="frxDBDatasetFacture" Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="0" Frame.Typ="0" ParentFont="False" Text="Client: [frxDBDatasetReleves.&#34;CODCLI&#34;]">
+        <Formats>
+          <item/>
+          <item/>
+        </Formats>
+      </TfrxMemoView>
+      <TfrxMemoView Name="MemofrxDBDataset1NOM" IndexTag="1" AllowVectorExport="True" Left="83,14966" Top="11,33859" Width="551,81138" Height="18,89765" StretchMode="smActualHeight" ContentScaleOptions.Constraints.MaxIterationValue="0" ContentScaleOptions.Constraints.MinIterationValue="0" DataSet="WinControlForm_1.FrameTableEntvteaa.frxDBDatasetFacture" DataSetName="frxDBDatasetFacture" Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="1" Frame.Typ="0" ParentFont="False" Text="[frxDBDatasetReleves.&#34;nom&#34;] / Tel : [frxDBDatasetReleves.&#34;notel&#34;]">
+        <Formats>
+          <item/>
+          <item/>
+        </Formats>
+      </TfrxMemoView>
+    </TfrxGroupHeader>
+    <TfrxMasterData Name="MasterData1" FillType="ftBrush" FillGap.Top="0" FillGap.Left="0" FillGap.Bottom="0" FillGap.Right="0" Frame.Typ="15" Font.Charset="1" Font.Color="0" Font.Height="-11" Font.Name="Arial" Font.Style="0" Height="19,65354331" Left="0" ParentFont="False" Top="260,78757" Width="755,906" ColumnWidth="0" ColumnGap="0" DataSet="frxDBDatasetReleves" DataSetName="frxDBDatasetReleves" PrintIfDetailEmpty="True" RowCount="0" Stretched="True">
+      <TfrxMemoView Name="MemofrxDBDataset1CODART" IndexTag="1" AllowVectorExport="True" Left="3,77953" Top="0" Width="83,14966" Height="18,8976378" StretchMode="smMaxHeight" ContentScaleOptions.Constraints.MaxIterationValue="0" ContentScaleOptions.Constraints.MinIterationValue="0" DataSet="frxDBDatasetReleves" DataSetName="frxDBDatasetReleves" DisplayFormat.FormatStr="dd/mm/yyyy" DisplayFormat.Kind="fkDateTime" Font.Charset="1" Font.Color="0" Font.Height="-11" Font.Name="Arial" Font.Style="0" Frame.Typ="0" HAlign="haCenter" ParentFont="False" VAlign="vaCenter" Text="[frxDBDatasetReleves.&#34;DATE_&#34;]"/>
+      <TfrxMemoView Name="MemofrxDBDataset1LIBELLE" IndexTag="1" AllowVectorExport="True" Left="86,92919" Top="0" Width="230,55133" Height="18,89765" StretchMode="smActualHeight" ContentScaleOptions.Constraints.MaxIterationValue="0" ContentScaleOptions.Constraints.MinIterationValue="0" DataSet="WinControlForm_1.FrameTableEntvteaa.frxDBDatasetFacture" DataSetName="frxDBDatasetFacture" Font.Charset="1" Font.Color="0" Font.Height="-11" Font.Name="Arial" Font.Style="0" Frame.Typ="1" GapX="5" ParentFont="False" VAlign="vaCenter" Text="[frxDBDatasetReleves.&#34;LIBELLE&#34;]"/>
+      <TfrxMemoView Name="MemofrxDBDataset1QTE" IndexTag="1" AllowVectorExport="True" Left="317,71676" Top="0" Width="136,06308" Height="18,89765" StretchMode="smMaxHeight" ContentScaleOptions.Constraints.MaxIterationValue="0" ContentScaleOptions.Constraints.MinIterationValue="0" DataSet="WinControlForm_1.FrameTableEntvteaa.frxDBDatasetFacture" DataSetName="frxDBDatasetFacture" Font.Charset="1" Font.Color="0" Font.Height="-11" Font.Name="Arial" Font.Style="0" Frame.Typ="1" GapX="5" ParentFont="False" VAlign="vaCenter" Text="[frxDBDatasetReleves.&#34;REFERENCE_&#34;]"/>
+      <TfrxMemoView Name="MemofrxDBDataset1PRIXNET" IndexTag="1" AllowVectorExport="True" Left="536,9295" Top="0" Width="75,59055118" Height="18,89765" StretchMode="smMaxHeight" ContentScaleOptions.Constraints.MaxIterationValue="0" ContentScaleOptions.Constraints.MinIterationValue="0" DataSet="WinControlForm_1.FrameTableEntvteaa.frxDBDatasetFacture" DataSetName="frxDBDatasetFacture" DisplayFormat.FormatStr="%2.0n" DisplayFormat.Kind="fkNumeric" Font.Charset="1" Font.Color="0" Font.Height="-11" Font.Name="Arial" Font.Style="0" Frame.Typ="1" GapX="5" HAlign="haRight" ParentFont="False" VAlign="vaCenter" Text="[frxDBDatasetReleves.&#34;DEBIT&#34;]"/>
+      <TfrxMemoView Name="MemofrxDBDataset1TOTHT_1" IndexTag="1" AllowVectorExport="True" Left="453,54330709" Top="0" Width="83,1496063" Height="18,89765" StretchMode="smMaxHeight" ContentScaleOptions.Constraints.MaxIterationValue="0" ContentScaleOptions.Constraints.MinIterationValue="0" DataSet="WinControlForm_1.FrameTableEntvteaa.frxDBDatasetFacture" DataSetName="frxDBDatasetFacture" DisplayFormat.FormatStr="dd/mm/yyyy" DisplayFormat.Kind="fkDateTime" Font.Charset="1" Font.Color="0" Font.Height="-11" Font.Name="Arial" Font.Style="0" Frame.Typ="1" GapX="5" HAlign="haCenter" ParentFont="False" VAlign="vaCenter" Text="[frxDBDatasetReleves.&#34;DATE_ECH&#34;]"/>
+      <TfrxMemoView Name="MemofrxDBDataset1PRIXTTC" IndexTag="1" AllowVectorExport="True" Left="614,17322835" Top="0" Width="75,59055118" Height="18,89765" StretchMode="smMaxHeight" ContentScaleOptions.Constraints.MaxIterationValue="0" ContentScaleOptions.Constraints.MinIterationValue="0" DataSet="WinControlForm_1.FrameTableEntvteaa.frxDBDatasetFacture" DataSetName="frxDBDatasetFacture" DisplayFormat.FormatStr="%2.0n" DisplayFormat.Kind="fkNumeric" Font.Charset="1" Font.Color="0" Font.Height="-11" Font.Name="Arial" Font.Style="0" Frame.Typ="1" GapX="5" HAlign="haRight" ParentFont="False" VAlign="vaCenter" Text="[frxDBDatasetReleves.&#34;CREDIT&#34;]"/>
+      <TfrxMemoView Name="Memo12" AllowVectorExport="True" Left="690,51968504" Top="-3,6800000000059E-6" Width="64,251968503937" Height="18,8976593" ContentScaleOptions.Constraints.MaxIterationValue="0" ContentScaleOptions.Constraints.MinIterationValue="0" Font.Charset="1" Font.Color="0" Font.Height="-11" Font.Name="Arial" Font.Style="0" Frame.Typ="1" HAlign="haCenter" ParentFont="False" VAlign="vaCenter" Text="[frxDBDatasetReleves.&#34;LETTRE&#34;]"/>
+    </TfrxMasterData>
+    <TfrxPageFooter Name="PageFooter1" FillType="ftBrush" FillGap.Top="0" FillGap.Left="0" FillGap.Bottom="0" FillGap.Right="0" Frame.Typ="0" Height="36,01577898" Left="0" Top="385,51206" Width="755,906" PrintOnSinglePage="True">
+      <TfrxMemoView Name="Memo9" AllowVectorExport="True" Left="642,52012463" Top="7,55907125" Width="109,60634021" Height="18,89764404" ContentScaleOptions.Constraints.MaxIterationValue="0" ContentScaleOptions.Constraints.MinIterationValue="0" DataSet="frxDBDatasetReleves" DataSetName="frxDBDatasetReleves" Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="0" Frame.Typ="0" HAlign="haRight" ParentFont="False" Text="[Page]/[TotalPages]">
+        <Formats>
+          <item/>
+          <item/>
+        </Formats>
+      </TfrxMemoView>
+    </TfrxPageFooter>
+    <TfrxGroupFooter Name="GroupFooter1" FillType="ftBrush" FillGap.Top="0" FillGap.Left="0" FillGap.Bottom="0" FillGap.Right="0" Frame.Typ="0" Height="22,67718" Left="0" Top="302,3624" Width="755,906">
+      <TfrxSysMemoView Name="SysMemo2" AllowVectorExport="True" Left="537,07100772" Top="0" Width="75,59055118" Height="18,89764404" ContentScaleOptions.Constraints.MaxIterationValue="0" ContentScaleOptions.Constraints.MinIterationValue="0" DisplayFormat.FormatStr="%2.0n" DisplayFormat.Kind="fkNumeric" Font.Charset="1" Font.Color="0" Font.Height="-11" Font.Name="Arial" Font.Style="0" Frame.Typ="13" GapX="5" HAlign="haRight" ParentFont="False" VAlign="vaCenter" Text="[SUM(&#60;frxDBDatasetReleves.&#34;DEBIT&#34;&#62;,MasterData1)]"/>
+      <TfrxSysMemoView Name="SysMemo1" AllowVectorExport="True" Left="614,27560031" Top="2,93000000001209E-6" Width="75,59055118" Height="18,89764404" ContentScaleOptions.Constraints.MaxIterationValue="0" ContentScaleOptions.Constraints.MinIterationValue="0" DisplayFormat.FormatStr="%2.0n" DisplayFormat.Kind="fkNumeric" Font.Charset="1" Font.Color="0" Font.Height="-11" Font.Name="Arial" Font.Style="0" Frame.Typ="15" GapX="5" HAlign="haRight" ParentFont="False" VAlign="vaCenter" Text="[SUM(&#60;frxDBDatasetReleves.&#34;CREDIT&#34;&#62;,MasterData1)]"/>
+    </TfrxGroupFooter>
+    <TfrxPageHeader Name="PageHeader1" FillType="ftBrush" FillGap.Top="0" FillGap.Left="0" FillGap.Bottom="0" FillGap.Right="0" Frame.Typ="0" Height="90,70872" Left="0" Top="18,89765" Width="755,906">
+      <TfrxMemoView Name="MemoVarNomEntreprise" IndexTag="1" AllowVectorExport="True" Left="0" Top="0" Width="525,35467" Height="18,89765" StretchMode="smActualHeight" ContentScaleOptions.Constraints.MaxIterationValue="0" ContentScaleOptions.Constraints.MinIterationValue="0" DataSet="WinControlForm_1.FrameTableEntvteaa.frxDBDatasetReglements" DataSetName="frxDBDatasetReglements" Font.Charset="1" Font.Color="0" Font.Height="-16" Font.Name="Arial" Font.Style="1" Frame.Typ="0" ParentFont="False" Text="[VarNomEntreprise]"/>
+      <TfrxMemoView Name="MemofrxDBDataset1CODFAC" IndexTag="1" AllowVectorExport="True" Left="0" Top="26,45671" Width="752,12647" Height="30,23624" StretchMode="smMaxHeight" ContentScaleOptions.Constraints.MaxIterationValue="0" ContentScaleOptions.Constraints.MinIterationValue="0" DataSet="WinControlForm_1.FrameTableEntvteaa.frxDBDatasetFacture" DataSetName="frxDBDatasetFacture" Font.Charset="1" Font.Color="0" Font.Height="-16" Font.Name="Arial" Font.Style="5" Frame.Typ="0" HAlign="haCenter" ParentFont="False" Text="GRAND LIVRE CLIENTS du [VarDate1] au [VarDate2]">
+        <Formats>
+          <item/>
+          <item/>
+        </Formats>
+      </TfrxMemoView>
+      <TfrxMemoView Name="Memo13" AllowVectorExport="True" Left="566,92952463" Top="-2,30000000000369E-7" Width="185,19694021" Height="18,89764977" ContentScaleOptions.Constraints.MaxIterationValue="0" ContentScaleOptions.Constraints.MinIterationValue="0" Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="0" Frame.Typ="0" HAlign="haRight" ParentFont="False" Text="Edité le [Date] à [Time]">
+        <Formats>
+          <item/>
+          <item/>
+        </Formats>
+      </TfrxMemoView>
+    </TfrxPageHeader>
+  </TfrxReportPage>
+</TfrxReport>

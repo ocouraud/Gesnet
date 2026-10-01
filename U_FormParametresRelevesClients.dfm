@@ -19,7 +19,7 @@ object FormParametresRelevesClients: TFormParametresRelevesClients
     Top = 31
     Width = 426
     Height = 23
-    KeyField = 'CODCLI'
+    KeyField = 'NOM'
     ListField = 'CODCLI;NOM'
     ListFieldIndex = 1
     ListSource = DSClientDu
@@ -31,7 +31,7 @@ object FormParametresRelevesClients: TFormParametresRelevesClients
     Top = 60
     Width = 426
     Height = 23
-    KeyField = 'CODCLI'
+    KeyField = 'NOM'
     ListField = 'CODCLI;NOM'
     ListFieldIndex = 1
     ListSource = DSClientAu
@@ -91,7 +91,7 @@ object FormParametresRelevesClients: TFormParametresRelevesClients
   object FDQueryClientsDu: TFDQuery
     Connection = DMGesCloud.ConnexionGesCloud
     SQL.Strings = (
-      'select * from client where ferme<>1')
+      'select * from client where ferme<>1  ORDER BY nom')
     Left = 24
     Top = 65533
   end
@@ -108,7 +108,7 @@ object FormParametresRelevesClients: TFormParametresRelevesClients
   object FDQueryClientsAu: TFDQuery
     Connection = DMGesCloud.ConnexionGesCloud
     SQL.Strings = (
-      'select * from client where ferme<>1')
+      'select * from client where ferme<>1 ORDER BY nom')
     Left = 472
     Top = 98
   end
@@ -121,7 +121,7 @@ object FormParametresRelevesClients: TFormParametresRelevesClients
     PrintOptions.Printer = 'Default'
     PrintOptions.PrintOnSheet = 0
     ReportOptions.CreateDate = 46280.575471794000000000
-    ReportOptions.LastChange = 46294.770670162030000000
+    ReportOptions.LastChange = 46295.449556562500000000
     ScriptLanguage = 'PascalScript'
     ScriptText.Strings = (
       'begin'
@@ -218,11 +218,12 @@ object FormParametresRelevesClients: TFormParametresRelevesClients
         FillGap.Bottom = 0
         FillGap.Right = 0
         Frame.Typ = []
-        Height = 162.519606930000000000
+        Height = 166.299320000000000000
         Top = 18.897650000000000000
         Width = 755.906000000000000000
         Child = frxReportReleves.Child1
-        Condition = 'frxDBDatasetReleves."CODCLI"'
+        Condition = 'frxDBDatasetReleves."nom"'
+        ReprintOnNewPage = True
         ResetPageNumbers = True
         StartNewPage = True
         Stretched = True
@@ -236,6 +237,7 @@ object FormParametresRelevesClients: TFormParametresRelevesClients
           StretchMode = smMaxHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = FrameTableEntvteaa.frxDBDatasetFacture
           DataSetName = 'frxDBDatasetFacture'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
@@ -264,6 +266,7 @@ object FormParametresRelevesClients: TFormParametresRelevesClients
           StretchMode = smMaxHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = FrameTableEntvteaa.frxDBDatasetFacture
           DataSetName = 'frxDBDatasetFacture'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
@@ -290,6 +293,7 @@ object FormParametresRelevesClients: TFormParametresRelevesClients
           StretchMode = smActualHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = FrameTableEntvteaa.frxDBDatasetFacture
           DataSetName = 'frxDBDatasetFacture'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
@@ -319,6 +323,7 @@ object FormParametresRelevesClients: TFormParametresRelevesClients
           StretchMode = smActualHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = FrameTableEntvteaa.frxDBDatasetReglements
           DataSetName = 'frxDBDatasetReglements'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
@@ -401,7 +406,7 @@ object FormParametresRelevesClients: TFormParametresRelevesClients
         Font.Style = []
         Height = 19.653543310000000000
         ParentFont = False
-        Top = 275.905690000000000000
+        Top = 279.685220000000000000
         Width = 755.906000000000000000
         DataSet = frxDBDatasetReleves
         DataSetName = 'frxDBDatasetReleves'
@@ -417,6 +422,7 @@ object FormParametresRelevesClients: TFormParametresRelevesClients
           StretchMode = smMaxHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = FrameTableEntvteaa.frxDBDatasetFacture
           DataSetName = 'frxDBDatasetFacture'
           DisplayFormat.FormatStr = 'dd mmm yyyy'
           DisplayFormat.Kind = fkDateTime
@@ -440,6 +446,7 @@ object FormParametresRelevesClients: TFormParametresRelevesClients
           StretchMode = smActualHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = FrameTableEntvteaa.frxDBDatasetFacture
           DataSetName = 'frxDBDatasetFacture'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
@@ -462,6 +469,7 @@ object FormParametresRelevesClients: TFormParametresRelevesClients
           StretchMode = smMaxHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = FrameTableEntvteaa.frxDBDatasetFacture
           DataSetName = 'frxDBDatasetFacture'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
@@ -484,6 +492,7 @@ object FormParametresRelevesClients: TFormParametresRelevesClients
           StretchMode = smMaxHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = FrameTableEntvteaa.frxDBDatasetFacture
           DataSetName = 'frxDBDatasetFacture'
           DisplayFormat.FormatStr = '%2.0n'
           DisplayFormat.Kind = fkNumeric
@@ -509,6 +518,7 @@ object FormParametresRelevesClients: TFormParametresRelevesClients
           StretchMode = smMaxHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = FrameTableEntvteaa.frxDBDatasetFacture
           DataSetName = 'frxDBDatasetFacture'
           DisplayFormat.FormatStr = 'dd mmm yyyy'
           DisplayFormat.Kind = fkDateTime
@@ -534,6 +544,7 @@ object FormParametresRelevesClients: TFormParametresRelevesClients
           StretchMode = smMaxHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = FrameTableEntvteaa.frxDBDatasetFacture
           DataSetName = 'frxDBDatasetFacture'
           DisplayFormat.FormatStr = '%2.0n'
           DisplayFormat.Kind = fkNumeric
@@ -559,9 +570,8 @@ object FormParametresRelevesClients: TFormParametresRelevesClients
         FillGap.Right = 0
         Frame.Typ = []
         Height = 138.063088980000000000
-        Top = 400.630180000000000000
+        Top = 404.409710000000000000
         Width = 755.906000000000000000
-        PrintOnFirstPage = False
         PrintOnSinglePage = True
         object Shape2: TfrxShapeView
           AllowVectorExport = True
@@ -601,6 +611,32 @@ object FormParametresRelevesClients: TFormParametresRelevesClients
               'e ce relev'#233', nous vous prions de ne pas tenir compte de ce pr'#233'se' +
               'nt avis.')
         end
+        object Memo9: TfrxMemoView
+          AllowVectorExport = True
+          Left = 642.520124630000000000
+          Top = 105.826851250000000000
+          Width = 109.606340210000000000
+          Height = 18.897644040000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = frxDBDatasetReleves
+          DataSetName = 'frxDBDatasetReleves'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = []
+          HAlign = haRight
+          Memo.UTF8W = (
+            '[Page]/[TotalPages]')
+          ParentFont = False
+          Formats = <
+            item
+            end
+            item
+            end>
+        end
       end
       object Child1: TfrxChild
         FillType = ftBrush
@@ -610,7 +646,7 @@ object FormParametresRelevesClients: TFormParametresRelevesClients
         FillGap.Right = 0
         Frame.Typ = []
         Height = 49.134039660000000000
-        Top = 204.094620000000000000
+        Top = 207.874150000000000000
         Width = 755.906000000000000000
         Stretched = True
         ToNRows = 0
@@ -749,7 +785,7 @@ object FormParametresRelevesClients: TFormParametresRelevesClients
           VAlign = vaCenter
         end
       end
-      object Footer1: TfrxFooter
+      object GroupFooter1: TfrxGroupFooter
         FillType = ftBrush
         FillGap.Top = 0
         FillGap.Left = 0
@@ -757,8 +793,30 @@ object FormParametresRelevesClients: TFormParametresRelevesClients
         FillGap.Right = 0
         Frame.Typ = []
         Height = 22.677180000000000000
-        Top = 317.480520000000000000
+        Top = 321.260050000000000000
         Width = 755.906000000000000000
+        object SysMemo2: TfrxSysMemoView
+          AllowVectorExport = True
+          Left = 537.071007720000000000
+          Width = 105.826803390000000000
+          Height = 18.897644040000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DisplayFormat.FormatStr = '%2.0n'
+          DisplayFormat.Kind = fkNumeric
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftRight, ftTop, ftBottom]
+          GapX = 5.000000000000000000
+          HAlign = haRight
+          Memo.UTF8W = (
+            '[SUM(<frxDBDatasetReleves."DEBIT">,MasterData1)]')
+          ParentFont = False
+          VAlign = vaCenter
+        end
         object SysMemo1: TfrxSysMemoView
           AllowVectorExport = True
           Left = 643.275600310000000000
@@ -782,49 +840,30 @@ object FormParametresRelevesClients: TFormParametresRelevesClients
           ParentFont = False
           VAlign = vaCenter
         end
-        object SysMemo2: TfrxSysMemoView
-          AllowVectorExport = True
-          Left = 537.071007720000000000
-          Width = 105.826803390000000000
-          Height = 18.897644040000000000
-          ContentScaleOptions.Constraints.MaxIterationValue = 0
-          ContentScaleOptions.Constraints.MinIterationValue = 0
-          DisplayFormat.FormatStr = '%2.0f'
-          DisplayFormat.Kind = fkNumeric
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clBlack
-          Font.Height = -11
-          Font.Name = 'Arial'
-          Font.Style = []
-          Frame.Typ = [ftLeft, ftRight, ftTop, ftBottom]
-          GapX = 5.000000000000000000
-          HAlign = haRight
-          Memo.UTF8W = (
-            '[SUM(<frxDBDatasetReleves."DEBIT">,MasterData1)]')
-          ParentFont = False
-          VAlign = vaCenter
-        end
       end
     end
   end
   object FDQueryReleves: TFDQuery
     Connection = DMGesCloud.ConnexionGesCloud
     SQL.Strings = (
-      'select t.*, c.nom, c.ad1, c.ad2, c.ad3 from tresor t, client c'
+      
+        'select t.*, c.nom, c.ad1, c.ad2, c.ad3, c.notel from tresor t, c' +
+        'lient c'
       'where (t.codcli=c.codcli) '
-      '  and (t.codcli between :codcli1 and :codcli2) '
+      '  and (c.nom between :nom1 and :nom2) '
       '  and (t.date_ between :date1 and :date2) '
       '  and ( (:tout = 1) or (solde = :valeur_solde) ) '
-      'order by t.codcli, t.date_, t.noenr')
+      '  and (ferme<>1)'
+      'order by c.nom, t.date_, t.noenr')
     Left = 152
     Top = 88
     ParamData = <
       item
-        Name = 'CODCLI1'
+        Name = 'NOM1'
         ParamType = ptInput
       end
       item
-        Name = 'CODCLI2'
+        Name = 'NOM2'
         ParamType = ptInput
       end
       item
@@ -994,6 +1033,10 @@ object FormParametresRelevesClients: TFormParametresRelevesClients
       ReadOnly = True
       Size = 30
     end
+    object FDQueryRelevesnotel: TStringField
+      FieldName = 'notel'
+      Size = 15
+    end
   end
   object frxDBDatasetReleves: TfrxDBDataset
     UserName = 'frxDBDatasetReleves'
@@ -1103,6 +1146,702 @@ object FormParametresRelevesClients: TFormParametresRelevesClients
         FieldName = 'ad3'
         FieldType = fftString
         Size = 30
+      end
+      item
+        FieldName = 'notel'
+        FieldType = fftString
+        Size = 15
       end>
+  end
+  object frxReportGrandLivreClients: TfrxReport
+    Version = '2024.1.2'
+    DotMatrixReport = False
+    IniFile = '\Software\Fast Reports'
+    PreviewOptions.Buttons = [pbPrint, pbLoad, pbSave, pbExport, pbZoom, pbFind, pbOutline, pbPageSetup, pbTools, pbEdit, pbNavigator, pbExportQuick, pbCopy, pbSelection, pbWatermarks]
+    PreviewOptions.Zoom = 1.000000000000000000
+    PrintOptions.Printer = 'Default'
+    PrintOptions.PrintOnSheet = 0
+    ReportOptions.CreateDate = 46280.575471794000000000
+    ReportOptions.LastChange = 46295.723202071760000000
+    ScriptLanguage = 'PascalScript'
+    ScriptText.Strings = (
+      'begin'
+      ''
+      'end.')
+    Left = 352
+    Top = 88
+    Datasets = <
+      item
+        DataSet = frxDBDatasetReleves
+        DataSetName = 'frxDBDatasetReleves'
+      end>
+    Variables = <
+      item
+        Name = ' Globales'
+        Value = Null
+      end
+      item
+        Name = 'VarNomEntreprise'
+        Value = #39'Societe'#39
+      end
+      item
+        Name = 'VarTelephone'
+        Value = #39'87777600'#39
+      end
+      item
+        Name = 'VarAdresse'
+        Value = #39'Kauehi'#39
+      end
+      item
+        Name = 'VarNoTAHITI'
+        Value = #39'1234567899'#39
+      end
+      item
+        Name = 'VarFAX'
+        Value = #39'123456789'#39
+      end
+      item
+        Name = 'VarEMAIL'
+        Value = #39'contact@fai.com'#39
+      end
+      item
+        Name = 'VarRC'
+        Value = #39'1000A'#39
+      end
+      item
+        Name = 'VarRepres'
+        Value = #39'Commercial'#39
+      end
+      item
+        Name = 'VarRef_Bancaire'
+        Value = Null
+      end
+      item
+        Name = 'VarTotalAlpha'
+        Value = Null
+      end
+      item
+        Name = 'VarLogo'
+        Value = Null
+      end
+      item
+        Name = 'VarLibTypeFacture'
+        Value = Null
+      end
+      item
+        Name = 'VarDate1'
+        Value = Null
+      end
+      item
+        Name = 'VarDate2'
+        Value = Null
+      end>
+    Style = <>
+    Watermarks = <>
+    object Data: TfrxDataPage
+      Height = 1000.000000000000000000
+      Width = 1000.000000000000000000
+    end
+    object PageFacture: TfrxReportPage
+      PaperWidth = 210.000000000000000000
+      PaperHeight = 297.000000000000000000
+      PaperSize = 9
+      LeftMargin = 5.000000000000000000
+      RightMargin = 5.000000000000000000
+      TopMargin = 10.000000000000000000
+      BottomMargin = 10.000000000000000000
+      Frame.Typ = []
+      MirrorMode = []
+      object GroupHeader1: TfrxGroupHeader
+        FillType = ftBrush
+        FillGap.Top = 0
+        FillGap.Left = 0
+        FillGap.Bottom = 0
+        FillGap.Right = 0
+        Frame.Typ = []
+        Height = 68.031540000000000000
+        Top = 170.078850000000000000
+        Width = 755.906000000000000000
+        Condition = 'frxDBDatasetReleves."nom"'
+        ReprintOnNewPage = True
+        Stretched = True
+        object Shape1: TfrxShapeView
+          AllowVectorExport = True
+          Top = 34.015940880000000000
+          Width = 755.905511810000000000
+          Height = 30.236218780000000000
+          Frame.Typ = []
+        end
+        object Memo10: TfrxMemoView
+          AllowVectorExport = True
+          Left = 614.173228350000000000
+          Top = 34.015936640000000000
+          Width = 75.590551180000000000
+          Height = 28.346456690000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'Cr'#233'dit')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object Memo8: TfrxMemoView
+          AllowVectorExport = True
+          Left = 453.527850470000000000
+          Top = 34.015930680000000000
+          Width = 83.149606300000000000
+          Height = 28.346456690000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'Ech'#233'ance')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object Memo5: TfrxMemoView
+          AllowVectorExport = True
+          Left = 317.937219380000000000
+          Top = 34.015939160000000000
+          Width = 136.063080730000000000
+          Height = 28.346456690000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'R'#233'f'#233'rence')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object Memo3: TfrxMemoView
+          AllowVectorExport = True
+          Left = 87.149653060000000000
+          Top = 34.015933210000000000
+          Width = 230.551330730000000000
+          Height = 28.346456690000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'Libell'#233)
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object Memo2: TfrxMemoView
+          AllowVectorExport = True
+          Left = 0.220470050000000000
+          Top = 34.015933210000000000
+          Width = 86.929186440000000000
+          Height = 28.346456690000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = []
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'Date')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object Memo7: TfrxMemoView
+          AllowVectorExport = True
+          Left = 537.149941350000000000
+          Top = 34.015941690000000000
+          Width = 75.590551180000000000
+          Height = 28.346456690000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'D'#233'bit')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object Memo11: TfrxMemoView
+          AllowVectorExport = True
+          Left = 690.653990000000000000
+          Top = 34.015770000000000000
+          Width = 64.251961180000000000
+          Height = 28.346456690000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'Lettrage')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object MemofrxDBDataset1CODCLI: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Top = 11.338590000000000000
+          Width = 79.370130000000000000
+          Height = 18.897650000000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = FrameTableEntvteaa.frxDBDatasetFacture
+          DataSetName = 'frxDBDatasetFacture'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = []
+          Memo.UTF8W = (
+            'Client: [frxDBDatasetReleves."CODCLI"]')
+          ParentFont = False
+          Formats = <
+            item
+            end
+            item
+            end>
+        end
+        object MemofrxDBDataset1NOM: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 83.149660000000000000
+          Top = 11.338590000000000000
+          Width = 551.811380000000000000
+          Height = 18.897650000000000000
+          StretchMode = smActualHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = FrameTableEntvteaa.frxDBDatasetFacture
+          DataSetName = 'frxDBDatasetFacture'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = [fsBold]
+          Frame.Typ = []
+          Memo.UTF8W = (
+            
+              '[frxDBDatasetReleves."nom"] / Tel : [frxDBDatasetReleves."notel"' +
+              ']')
+          ParentFont = False
+          Formats = <
+            item
+            end
+            item
+            end>
+        end
+      end
+      object MasterData1: TfrxMasterData
+        FillType = ftBrush
+        FillGap.Top = 0
+        FillGap.Left = 0
+        FillGap.Bottom = 0
+        FillGap.Right = 0
+        Frame.Typ = [ftLeft, ftRight, ftTop, ftBottom]
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Arial'
+        Font.Style = []
+        Height = 19.653543310000000000
+        ParentFont = False
+        Top = 260.787570000000000000
+        Width = 755.906000000000000000
+        DataSet = frxDBDatasetReleves
+        DataSetName = 'frxDBDatasetReleves'
+        PrintIfDetailEmpty = True
+        RowCount = 0
+        Stretched = True
+        object MemofrxDBDataset1CODART: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 3.779530000000000000
+          Width = 83.149660000000000000
+          Height = 18.897637800000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = frxDBDatasetReleves
+          DataSetName = 'frxDBDatasetReleves'
+          DisplayFormat.FormatStr = 'dd/mm/yyyy'
+          DisplayFormat.Kind = fkDateTime
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = []
+          HAlign = haCenter
+          Memo.UTF8W = (
+            '[frxDBDatasetReleves."DATE_"]')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object MemofrxDBDataset1LIBELLE: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 86.929190000000000000
+          Width = 230.551330000000000000
+          Height = 18.897650000000000000
+          StretchMode = smActualHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = FrameTableEntvteaa.frxDBDatasetFacture
+          DataSetName = 'frxDBDatasetFacture'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft]
+          GapX = 5.000000000000000000
+          Memo.UTF8W = (
+            '[frxDBDatasetReleves."LIBELLE"]')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object MemofrxDBDataset1QTE: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 317.716760000000000000
+          Width = 136.063080000000000000
+          Height = 18.897650000000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = FrameTableEntvteaa.frxDBDatasetFacture
+          DataSetName = 'frxDBDatasetFacture'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft]
+          GapX = 5.000000000000000000
+          Memo.UTF8W = (
+            '[frxDBDatasetReleves."REFERENCE_"]')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object MemofrxDBDataset1PRIXNET: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 536.929500000000000000
+          Width = 75.590551180000000000
+          Height = 18.897650000000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = FrameTableEntvteaa.frxDBDatasetFacture
+          DataSetName = 'frxDBDatasetFacture'
+          DisplayFormat.FormatStr = '%2.0n'
+          DisplayFormat.Kind = fkNumeric
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft]
+          GapX = 5.000000000000000000
+          HAlign = haRight
+          Memo.UTF8W = (
+            '[frxDBDatasetReleves."DEBIT"]')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object MemofrxDBDataset1TOTHT_1: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 453.543307090000000000
+          Width = 83.149606300000000000
+          Height = 18.897650000000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = FrameTableEntvteaa.frxDBDatasetFacture
+          DataSetName = 'frxDBDatasetFacture'
+          DisplayFormat.FormatStr = 'dd/mm/yyyy'
+          DisplayFormat.Kind = fkDateTime
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft]
+          GapX = 5.000000000000000000
+          HAlign = haCenter
+          Memo.UTF8W = (
+            '[frxDBDatasetReleves."DATE_ECH"]')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object MemofrxDBDataset1PRIXTTC: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 614.173228350000000000
+          Width = 75.590551180000000000
+          Height = 18.897650000000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = FrameTableEntvteaa.frxDBDatasetFacture
+          DataSetName = 'frxDBDatasetFacture'
+          DisplayFormat.FormatStr = '%2.0n'
+          DisplayFormat.Kind = fkNumeric
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft]
+          GapX = 5.000000000000000000
+          HAlign = haRight
+          Memo.UTF8W = (
+            '[frxDBDatasetReleves."CREDIT"]')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object Memo12: TfrxMemoView
+          AllowVectorExport = True
+          Left = 690.519685040000000000
+          Top = -0.000003680000000006
+          Width = 64.251968503937000000
+          Height = 18.897659300000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            '[frxDBDatasetReleves."LETTRE"]')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+      end
+      object PageFooter1: TfrxPageFooter
+        FillType = ftBrush
+        FillGap.Top = 0
+        FillGap.Left = 0
+        FillGap.Bottom = 0
+        FillGap.Right = 0
+        Frame.Typ = []
+        Height = 36.015778980000000000
+        Top = 385.512060000000000000
+        Width = 755.906000000000000000
+        PrintOnSinglePage = True
+        object Memo9: TfrxMemoView
+          AllowVectorExport = True
+          Left = 642.520124630000000000
+          Top = 7.559071250000000000
+          Width = 109.606340210000000000
+          Height = 18.897644040000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = frxDBDatasetReleves
+          DataSetName = 'frxDBDatasetReleves'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = []
+          HAlign = haRight
+          Memo.UTF8W = (
+            '[Page]/[TotalPages]')
+          ParentFont = False
+          Formats = <
+            item
+            end
+            item
+            end>
+        end
+      end
+      object GroupFooter1: TfrxGroupFooter
+        FillType = ftBrush
+        FillGap.Top = 0
+        FillGap.Left = 0
+        FillGap.Bottom = 0
+        FillGap.Right = 0
+        Frame.Typ = []
+        Height = 22.677180000000000000
+        Top = 302.362400000000000000
+        Width = 755.906000000000000000
+        object SysMemo2: TfrxSysMemoView
+          AllowVectorExport = True
+          Left = 537.071007720000000000
+          Width = 75.590551180000000000
+          Height = 18.897644040000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DisplayFormat.FormatStr = '%2.0n'
+          DisplayFormat.Kind = fkNumeric
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftTop, ftBottom]
+          GapX = 5.000000000000000000
+          HAlign = haRight
+          Memo.UTF8W = (
+            '[SUM(<frxDBDatasetReleves."DEBIT">,MasterData1)]')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object SysMemo1: TfrxSysMemoView
+          AllowVectorExport = True
+          Left = 614.275600310000000000
+          Top = 0.000002930000000012
+          Width = 75.590551180000000000
+          Height = 18.897644040000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DisplayFormat.FormatStr = '%2.0n'
+          DisplayFormat.Kind = fkNumeric
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftRight, ftTop, ftBottom]
+          GapX = 5.000000000000000000
+          HAlign = haRight
+          Memo.UTF8W = (
+            '[SUM(<frxDBDatasetReleves."CREDIT">,MasterData1)]')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+      end
+      object PageHeader1: TfrxPageHeader
+        FillType = ftBrush
+        FillGap.Top = 0
+        FillGap.Left = 0
+        FillGap.Bottom = 0
+        FillGap.Right = 0
+        Frame.Typ = []
+        Height = 90.708720000000000000
+        Top = 18.897650000000000000
+        Width = 755.906000000000000000
+        object MemoVarNomEntreprise: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Width = 525.354670000000000000
+          Height = 18.897650000000000000
+          StretchMode = smActualHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = FrameTableEntvteaa.frxDBDatasetReglements
+          DataSetName = 'frxDBDatasetReglements'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -16
+          Font.Name = 'Arial'
+          Font.Style = [fsBold]
+          Frame.Typ = []
+          Memo.UTF8W = (
+            '[VarNomEntreprise]')
+          ParentFont = False
+        end
+        object MemofrxDBDataset1CODFAC: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Top = 26.456710000000000000
+          Width = 752.126470000000000000
+          Height = 30.236240000000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = FrameTableEntvteaa.frxDBDatasetFacture
+          DataSetName = 'frxDBDatasetFacture'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -16
+          Font.Name = 'Arial'
+          Font.Style = [fsBold, fsUnderline]
+          Frame.Typ = []
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'GRAND LIVRE CLIENTS du [VarDate1] au [VarDate2]')
+          ParentFont = False
+          Formats = <
+            item
+            end
+            item
+            end>
+        end
+        object Memo13: TfrxMemoView
+          AllowVectorExport = True
+          Left = 566.929524630000000000
+          Top = -0.000000230000000000
+          Width = 185.196940210000000000
+          Height = 18.897649770000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = []
+          HAlign = haRight
+          Memo.UTF8W = (
+            'Edit'#233' le [Date] '#224' [Time]')
+          ParentFont = False
+          Formats = <
+            item
+            end
+            item
+            end>
+        end
+      end
+    end
   end
 end
