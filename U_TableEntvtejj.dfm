@@ -73,32 +73,32 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
       TabOrder = 4
       OnClick = BtnAideClick
     end
-    object BtnCentralisation: TButton
-      Left = 472
-      Top = 0
-      Width = 169
-      Height = 29
-      Caption = 'Centralisation des ventes'
-      TabOrder = 5
-      OnClick = BtnCentralisationClick
-    end
     object BtnImprimer: TButton
       Left = 276
       Top = 0
       Width = 99
       Height = 29
-      Caption = 'Imprimer A4'
-      TabOrder = 6
+      Caption = 'Imprimer A4 '#55357#56744#65039
+      TabOrder = 5
       OnClick = BtnImprimerClick
     end
     object BtnTicket: TButton
       Left = 375
       Top = 0
-      Width = 82
+      Width = 91
       Height = 29
-      Caption = 'Imp. Ticket'
-      TabOrder = 7
+      Caption = 'Imp. Ticket '#55357#56744#65039
+      TabOrder = 6
       OnClick = BtnTicketClick
+    end
+    object BtnBL: TButton
+      Left = 466
+      Top = 0
+      Width = 99
+      Height = 29
+      Caption = 'Bon livraison '#55357#56744#65039
+      TabOrder = 7
+      OnClick = BtnBLClick
     end
   end
   object JvDBGridEntvtejj: TJvDBGrid
@@ -485,13 +485,26 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
       TextHint = 'Filtrer par no poste'
       OnChange = EdtCherche_CODFACChange
     end
+    object BtnCentralisation: TButton
+      Left = 505
+      Top = 0
+      Width = 169
+      Height = 29
+      Caption = 'Centralisation des ventes'
+      TabOrder = 7
+      Visible = False
+      OnClick = BtnCentralisationClick
+    end
   end
   object FDQueryEntvtejj: TFDQuery
     AfterScroll = FDQueryEntvtejjAfterScroll
     OnCalcFields = FDQueryEntvtejjCalcFields
     Connection = DMGesCloud.ConnexionGesCloud
     SQL.Strings = (
-      'select * from entvtejj')
+      'SELECT f.*, l.NOCOULEUR '
+      'FROM entvtejj f'
+      'LEFT JOIN lot_eva_det d ON d.CODFAC_DER_GEN = f.codfac'
+      'LEFT JOIN lot_eva l ON l.nolot = d.nolot')
     Left = 48
     Top = 336
     object FDQueryEntvtejjOBSERV: TStringField
@@ -806,6 +819,9 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
       FieldName = 'HeureLisible'
       Size = 12
       Calculated = True
+    end
+    object FDQueryEntvtejjNOCOULEUR: TIntegerField
+      FieldName = 'NOCOULEUR'
     end
   end
   object DSEntvtejj: TDataSource
@@ -1942,24 +1958,6 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
     DataSetOptions = []
     Left = 552
     Top = 216
-    FieldDefs = <
-      item
-        FieldName = 'NoTVA'
-      end
-      item
-        FieldName = 'Libelle'
-        FieldType = fftString
-        Size = 30
-      end
-      item
-        FieldName = 'Taux'
-      end
-      item
-        FieldName = 'BaseHT'
-      end
-      item
-        FieldName = 'MontantTVA'
-      end>
   end
   object frxPDFExportFacture: TfrxPDFExport
     UseFileCache = True
@@ -1997,496 +1995,6 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
     DataSetOptions = []
     Left = 552
     Top = 152
-    FieldDefs = <
-      item
-        FieldName = 'OBSERV'
-        FieldType = fftString
-        Size = 1000
-      end
-      item
-        FieldName = 'CODFAC'
-      end
-      item
-        FieldName = 'TOP_'
-        FieldType = fftString
-      end
-      item
-        FieldName = 'CODCLI'
-      end
-      item
-        FieldName = 'CODCAI'
-        FieldType = fftString
-      end
-      item
-        FieldName = 'CODDEV'
-      end
-      item
-        FieldName = 'CODDEP'
-      end
-      item
-        FieldName = 'CODVEN'
-      end
-      item
-        FieldName = 'NOM'
-        FieldType = fftString
-        Size = 50
-      end
-      item
-        FieldName = 'NOTAHITI'
-        FieldType = fftString
-      end
-      item
-        FieldName = 'TYPE_'
-        FieldType = fftString
-      end
-      item
-        FieldName = 'EXO_TVA'
-      end
-      item
-        FieldName = 'ANNEE'
-      end
-      item
-        FieldName = 'MOIS'
-      end
-      item
-        FieldName = 'DATE_'
-        FieldType = fftDateTime
-      end
-      item
-        FieldName = 'HEURE'
-      end
-      item
-        FieldName = 'PRC_REMISE'
-      end
-      item
-        FieldName = 'MT_REMISE'
-      end
-      item
-        FieldName = 'TOTHT'
-      end
-      item
-        FieldName = 'MT_TTC'
-      end
-      item
-        FieldName = 'MT_HT0'
-      end
-      item
-        FieldName = 'MT_HT1'
-      end
-      item
-        FieldName = 'MT_HT2'
-      end
-      item
-        FieldName = 'MT_HT3'
-      end
-      item
-        FieldName = 'MT_TVA1'
-      end
-      item
-        FieldName = 'MT_TVA2'
-      end
-      item
-        FieldName = 'MT_TVA3'
-      end
-      item
-        FieldName = 'MT_TVA'
-      end
-      item
-        FieldName = 'MARGE'
-      end
-      item
-        FieldName = 'REFERENCE_'
-        FieldType = fftString
-        Size = 15
-      end
-      item
-        FieldName = 'CODREP'
-      end
-      item
-        FieldName = 'NO_SEM'
-      end
-      item
-        FieldName = 'NO_JOUR'
-      end
-      item
-        FieldName = 'REGL'
-      end
-      item
-        FieldName = 'CODPAI'
-        FieldType = fftString
-      end
-      item
-        FieldName = 'JRSCRD'
-      end
-      item
-        FieldName = 'FIN_MOIS'
-      end
-      item
-        FieldName = 'LIBREG'
-        FieldType = fftString
-        Size = 50
-      end
-      item
-        FieldName = 'CRD_FORCE'
-      end
-      item
-        FieldName = 'date_ech'
-        FieldType = fftDateTime
-      end
-      item
-        FieldName = 'ACOMPTE'
-      end
-      item
-        FieldName = 'CODGEO'
-        FieldType = fftString
-      end
-      item
-        FieldName = 'FLAG_TAX'
-      end
-      item
-        FieldName = 'SEL'
-      end
-      item
-        FieldName = 'DER_MODIF'
-      end
-      item
-        FieldName = 'NOMVEN'
-        FieldType = fftString
-        Size = 30
-      end
-      item
-        FieldName = 'MT_TSOC'
-      end
-      item
-        FieldName = 'MT_HTSOC'
-      end
-      item
-        FieldName = 'TX_TSOC'
-      end
-      item
-        FieldName = 'EXO_CPS'
-      end
-      item
-        FieldName = 'MT_TVAI'
-      end
-      item
-        FieldName = 'MT_HTI'
-      end
-      item
-        FieldName = 'TVA_ILES'
-        FieldType = fftBoolean
-      end
-      item
-        FieldName = 'OBSERV_1'
-        FieldType = fftString
-      end
-      item
-        FieldName = 'CODCLI_1'
-      end
-      item
-        FieldName = 'CPTAUX'
-        FieldType = fftString
-        Size = 13
-      end
-      item
-        FieldName = 'NOM_1'
-        FieldType = fftString
-        Size = 50
-      end
-      item
-        FieldName = 'CODREP_1'
-      end
-      item
-        FieldName = 'PRC_REMISE_1'
-      end
-      item
-        FieldName = 'NOTEL'
-        FieldType = fftString
-        Size = 15
-      end
-      item
-        FieldName = 'NOTAHITI_1'
-        FieldType = fftString
-      end
-      item
-        FieldName = 'NOFAX'
-        FieldType = fftString
-        Size = 15
-      end
-      item
-        FieldName = 'JRSCRD_1'
-      end
-      item
-        FieldName = 'CREDIT'
-      end
-      item
-        FieldName = 'plaf_crd'
-      end
-      item
-        FieldName = 'CODPAI_1'
-        FieldType = fftString
-      end
-      item
-        FieldName = 'FIN_MOIS_1'
-      end
-      item
-        FieldName = 'NB_EX'
-      end
-      item
-        FieldName = 'CAAN'
-      end
-      item
-        FieldName = 'AD1'
-        FieldType = fftString
-        Size = 30
-      end
-      item
-        FieldName = 'AD2'
-        FieldType = fftString
-        Size = 30
-      end
-      item
-        FieldName = 'AD3'
-        FieldType = fftString
-        Size = 30
-      end
-      item
-        FieldName = 'CUM_MVT'
-      end
-      item
-        FieldName = 'MT_CPTA'
-      end
-      item
-        FieldName = 'EXO_TVA_1'
-      end
-      item
-        FieldName = 'BLOQUE'
-      end
-      item
-        FieldName = 'CODGEO_1'
-        FieldType = fftString
-        Size = 20
-      end
-      item
-        FieldName = 'EMAIL'
-        FieldType = fftString
-        Size = 50
-      end
-      item
-        FieldName = 'CODTAR'
-        FieldType = fftString
-      end
-      item
-        FieldName = 'ADM'
-      end
-      item
-        FieldName = 'FLAG_TAX_1'
-      end
-      item
-        FieldName = 'CODFAC_ADM'
-        FieldType = fftString
-        Size = 20
-      end
-      item
-        FieldName = 'FERME'
-      end
-      item
-        FieldName = 'DER_MODIF_1'
-      end
-      item
-        FieldName = 'SPEC_GOUV'
-      end
-      item
-        FieldName = 'NOGSM'
-      end
-      item
-        FieldName = 'PLV'
-      end
-      item
-        FieldName = 'INTIT_BQ'
-        FieldType = fftString
-        Size = 30
-      end
-      item
-        FieldName = 'CODE_BQ'
-        FieldType = fftString
-      end
-      item
-        FieldName = 'CODE_GUI'
-        FieldType = fftString
-      end
-      item
-        FieldName = 'NOCPT'
-        FieldType = fftString
-        Size = 11
-      end
-      item
-        FieldName = 'CLE'
-        FieldType = fftString
-      end
-      item
-        FieldName = 'COEF_MAJ_PR'
-      end
-      item
-        FieldName = 'EXO_CPS_1'
-      end
-      item
-        FieldName = 'PAS_REM'
-      end
-      item
-        FieldName = 'REM_FAM'
-      end
-      item
-        FieldName = 'RELEVE_EMAIL'
-        FieldType = fftBoolean
-      end
-      item
-        FieldName = 'SELECT_'
-        FieldType = fftBoolean
-      end
-      item
-        FieldName = 'APP_TARIFCLI'
-        FieldType = fftBoolean
-      end
-      item
-        FieldName = 'TVA_ILES_1'
-        FieldType = fftBoolean
-      end
-      item
-        FieldName = 'LIBELLE'
-        FieldType = fftString
-      end
-      item
-        FieldName = 'CODFAC_1'
-      end
-      item
-        FieldName = 'CODCLI_2'
-      end
-      item
-        FieldName = 'CODCAI_1'
-        FieldType = fftString
-      end
-      item
-        FieldName = 'CODDEV_1'
-      end
-      item
-        FieldName = 'CODDEP_1'
-      end
-      item
-        FieldName = 'NOENR'
-      end
-      item
-        FieldName = 'ANNEE_1'
-      end
-      item
-        FieldName = 'MOIS_1'
-      end
-      item
-        FieldName = 'CODREP_2'
-      end
-      item
-        FieldName = 'CODFOU'
-        FieldType = fftString
-      end
-      item
-        FieldName = 'CODSSF'
-        FieldType = fftString
-      end
-      item
-        FieldName = 'CODFAM'
-        FieldType = fftString
-      end
-      item
-        FieldName = 'CODDPT'
-        FieldType = fftString
-      end
-      item
-        FieldName = 'TYPE__1'
-        FieldType = fftString
-      end
-      item
-        FieldName = 'CODART'
-        FieldType = fftString
-        Size = 13
-      end
-      item
-        FieldName = 'CODBAR'
-        FieldType = fftString
-        Size = 13
-      end
-      item
-        FieldName = 'QTE'
-      end
-      item
-        FieldName = 'POIDS'
-      end
-      item
-        FieldName = 'CODTAR_1'
-        FieldType = fftString
-      end
-      item
-        FieldName = 'PRIXHT'
-      end
-      item
-        FieldName = 'PRIXTTC'
-      end
-      item
-        FieldName = 'PRIXNET'
-      end
-      item
-        FieldName = 'TOTHT_1'
-      end
-      item
-        FieldName = 'MT_TTC_1'
-      end
-      item
-        FieldName = 'PRC_REMISE_2'
-      end
-      item
-        FieldName = 'MT_REMISE_1'
-      end
-      item
-        FieldName = 'TX_TVA'
-      end
-      item
-        FieldName = 'MT_TVA_1'
-      end
-      item
-        FieldName = 'NO_TVA'
-      end
-      item
-        FieldName = 'PRIXREV'
-      end
-      item
-        FieldName = 'MARGE_1'
-      end
-      item
-        FieldName = 'NO_SEM_1'
-      end
-      item
-        FieldName = 'NO_JOUR_1'
-      end
-      item
-        FieldName = 'DET_PPT'
-      end
-      item
-        FieldName = 'DET_ILE'
-      end
-      item
-        FieldName = 'NOENRF'
-      end
-      item
-        FieldName = 'PXLVTTC'
-      end
-      item
-        FieldName = 'DER_MODIF_2'
-      end
-      item
-        FieldName = 'TX_TSOC_1'
-      end
-      item
-        FieldName = 'MT_TSOC_1'
-      end>
   end
   object frxReportFacture: TfrxReport
     Version = '2024.1.2'
@@ -2497,7 +2005,7 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
     PrintOptions.Printer = 'Default'
     PrintOptions.PrintOnSheet = 0
     ReportOptions.CreateDate = 46280.575471794000000000
-    ReportOptions.LastChange = 46288.443431979170000000
+    ReportOptions.LastChange = 46296.617577291670000000
     ScriptLanguage = 'PascalScript'
     ScriptText.Strings = (
       'begin'
@@ -2683,7 +2191,10 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
           Font.Style = [fsBold]
           Frame.Typ = []
           Memo.UTF8W = (
-            '[frxDBDatasetFacture."NOM"]')
+            '[frxDBDatasetFacture."NOM"]'
+            '[frxDBDatasetFacture."AD1"]'
+            '[frxDBDatasetFacture."AD2"]'
+            '[frxDBDatasetFacture."AD3"]')
           ParentFont = False
         end
         object MemoVarNomEntreprise: TfrxMemoView
@@ -4244,5 +3755,656 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
     DataSetOptions = []
     Left = 560
     Top = 296
+  end
+  object frxReportBL: TfrxReport
+    Version = '2024.1.2'
+    DotMatrixReport = False
+    IniFile = '\Software\Fast Reports'
+    PreviewOptions.Buttons = [pbPrint, pbLoad, pbSave, pbExport, pbZoom, pbFind, pbOutline, pbPageSetup, pbTools, pbEdit, pbNavigator, pbExportQuick, pbCopy, pbSelection, pbWatermarks]
+    PreviewOptions.Zoom = 1.000000000000000000
+    PrintOptions.Printer = 'Default'
+    PrintOptions.PrintOnSheet = 0
+    ReportOptions.CreateDate = 46280.575471794000000000
+    ReportOptions.LastChange = 46297.402595590280000000
+    ScriptLanguage = 'PascalScript'
+    ScriptText.Strings = (
+      'begin'
+      ''
+      'end.')
+    OnBeforePrint = frxReportBLBeforePrint
+    Left = 416
+    Top = 216
+    Datasets = <
+      item
+        DataSet = frxDBDatasetFacture
+        DataSetName = 'frxDBDatasetFacture'
+      end>
+    Variables = <
+      item
+        Name = ' Globales'
+        Value = Null
+      end
+      item
+        Name = 'VarNomEntreprise'
+        Value = #39'Societe'#39
+      end
+      item
+        Name = 'VarTelephone'
+        Value = #39'87777600'#39
+      end
+      item
+        Name = 'VarAdresse'
+        Value = #39'Kauehi'#39
+      end
+      item
+        Name = 'VarNoTAHITI'
+        Value = #39'1234567899'#39
+      end
+      item
+        Name = 'VarFAX'
+        Value = #39'123456789'#39
+      end
+      item
+        Name = 'VarEMAIL'
+        Value = #39'contact@fai.com'#39
+      end
+      item
+        Name = 'VarMEMO_FAC'
+        Value = #39'memo fac'#39
+      end
+      item
+        Name = 'VarRC'
+        Value = #39'1000A'#39
+      end
+      item
+        Name = 'VarRepres'
+        Value = #39'Commercial'#39
+      end
+      item
+        Name = 'VarRef_Bancaire'
+        Value = Null
+      end
+      item
+        Name = 'VarTotalAlpha'
+        Value = Null
+      end
+      item
+        Name = 'VarLogo'
+        Value = Null
+      end
+      item
+        Name = 'VarLibTypeFacture'
+        Value = Null
+      end>
+    Style = <>
+    Watermarks = <>
+    object Data: TfrxDataPage
+      Height = 1000.000000000000000000
+      Width = 1000.000000000000000000
+    end
+    object PageFacture: TfrxReportPage
+      PaperWidth = 210.000000000000000000
+      PaperHeight = 297.000000000000000000
+      PaperSize = 9
+      LeftMargin = 5.000000000000000000
+      RightMargin = 5.000000000000000000
+      TopMargin = 10.000000000000000000
+      BottomMargin = 10.000000000000000000
+      Frame.Typ = []
+      MirrorMode = []
+      object GroupHeader1: TfrxGroupHeader
+        FillType = ftBrush
+        FillGap.Top = 0
+        FillGap.Left = 0
+        FillGap.Bottom = 0
+        FillGap.Right = 0
+        Frame.Typ = []
+        Height = 162.519606930000000000
+        Top = 18.897650000000000000
+        Width = 755.906000000000000000
+        Child = frxReportBL.Child1
+        Condition = '<frxDBDatasetFacture."CODFAC">'
+        ResetPageNumbers = True
+        StartNewPage = True
+        Stretched = True
+        object MemofrxDBDataset1CODFAC: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 355.275820000000000000
+          Top = 37.795300000000000000
+          Width = 283.464750000000000000
+          Height = 18.897650000000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = frxDBDatasetFacture
+          DataSetName = 'frxDBDatasetFacture'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -16
+          Font.Name = 'Arial'
+          Font.Style = [fsBold]
+          Frame.Typ = []
+          Memo.UTF8W = (
+            'Bon de Livraison No [frxDBDatasetFacture."CODFAC"]'
+            'du [frxDBDatasetFacture."DATE_"]')
+          ParentFont = False
+          Formats = <
+            item
+            end
+            item
+            end>
+        end
+        object MemofrxDBDataset1CODCLI: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 355.275820000000000000
+          Top = 83.149660000000000000
+          Width = 192.756030000000000000
+          Height = 30.236240000000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = frxDBDatasetFacture
+          DataSetName = 'frxDBDatasetFacture'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = []
+          Memo.UTF8W = (
+            'Client: [frxDBDatasetFacture."CODCLI"]'
+            'No TAHITI: [frxDBDatasetFacture."NOTAHITI"]')
+          ParentFont = False
+          Formats = <
+            item
+            end
+            item
+            end>
+        end
+        object MemofrxDBDataset1NOM: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 355.275820000000000000
+          Top = 117.165430000000000000
+          Width = 389.291590000000000000
+          Height = 37.795300000000000000
+          StretchMode = smActualHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = frxDBDatasetFacture
+          DataSetName = 'frxDBDatasetFacture'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = [fsBold]
+          Frame.Typ = []
+          Memo.UTF8W = (
+            '[frxDBDatasetFacture."NOM"]'
+            '[frxDBDatasetFacture."AD1"]'
+            '[frxDBDatasetFacture."AD2"]'
+            '[frxDBDatasetFacture."AD3"]')
+          ParentFont = False
+          Formats = <
+            item
+            end
+            item
+            end>
+        end
+        object MemoVarNomEntreprise: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 3.779530000000000000
+          Top = 3.779530000000000000
+          Width = 525.354670000000000000
+          Height = 18.897650000000000000
+          StretchMode = smActualHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = frxDBDatasetReglements
+          DataSetName = 'frxDBDatasetReglements'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -16
+          Font.Name = 'Arial'
+          Font.Style = [fsBold]
+          Frame.Typ = []
+          Memo.UTF8W = (
+            '[VarNomEntreprise]')
+          ParentFont = False
+        end
+        object MemoVarAdresse: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 3.779530000000000000
+          Top = 30.236240000000000000
+          Width = 336.378170000000000000
+          Height = 18.897650000000000000
+          StretchMode = smActualHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Frame.Typ = []
+          Memo.UTF8W = (
+            '[VarAdresse]')
+        end
+        object LogoEntreprise: TfrxPictureView
+          AllowVectorExport = True
+          Left = 642.520076410000000000
+          Top = 7.559060390000000000
+          Width = 102.047244090000000000
+          Height = 102.047307860000000000
+          Center = True
+          Frame.Typ = []
+          HightQuality = False
+          Transparent = False
+          TransparentColor = clWhite
+        end
+        object VarEMAIL: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 3.779530000000000000
+          Top = 56.692950000000000000
+          Width = 336.378170000000000000
+          Height = 18.897650000000000000
+          StretchMode = smActualHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Frame.Typ = []
+          Memo.UTF8W = (
+            'email: [VarEMAIL]'
+            'T'#233'l: [VarTelephone]'
+            'Fax: [VarFAX]'
+            'No RC: [VarRC]'
+            'No TAHITI: [VarNoTAHITI]')
+          Formats = <
+            item
+            end
+            item
+            end
+            item
+            end
+            item
+            end
+            item
+            end>
+        end
+        object MemofrxDBDataset1REFERENCE_: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 355.275820000000000000
+          Top = 60.472480000000000000
+          Width = 192.756030000000000000
+          Height = 18.897650000000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = frxDBDatasetFacture
+          DataSetName = 'frxDBDatasetFacture'
+          Frame.Typ = []
+          Memo.UTF8W = (
+            'R'#233'f'#233'rence : [frxDBDatasetFacture."REFERENCE_"]')
+        end
+        object MemofrxDBDataset1OBSERV: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 3.779530000000000000
+          Top = 86.929190000000000000
+          Width = 336.378170000000000000
+          Height = 68.031540000000000000
+          StretchMode = smActualHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = frxDBDatasetFacture
+          DataSetName = 'frxDBDatasetFacture'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftRight, ftTop, ftBottom]
+          Memo.UTF8W = (
+            'Observations: [frxDBDatasetFacture."OBSERV"]')
+          ParentFont = False
+        end
+      end
+      object MasterData1: TfrxMasterData
+        FillType = ftBrush
+        FillGap.Top = 0
+        FillGap.Left = 0
+        FillGap.Bottom = 0
+        FillGap.Right = 0
+        Frame.Typ = [ftLeft, ftRight, ftTop, ftBottom]
+        Font.Charset = DEFAULT_CHARSET
+        Font.Color = clBlack
+        Font.Height = -11
+        Font.Name = 'Arial'
+        Font.Style = []
+        Height = 19.653543310000000000
+        ParentFont = False
+        Top = 287.244280000000000000
+        Width = 755.906000000000000000
+        DataSet = frxDBDatasetFacture
+        DataSetName = 'frxDBDatasetFacture'
+        PrintIfDetailEmpty = True
+        RowCount = 0
+        Stretched = True
+        object MemofrxDBDataset1CODART: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 3.779530000000000000
+          Width = 83.149660000000000000
+          Height = 18.897637800000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = frxDBDatasetFacture
+          DataSetName = 'frxDBDatasetFacture'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = []
+          Memo.UTF8W = (
+            '[frxDBDatasetFacture."CODART"]')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object MemofrxDBDataset1LIBELLE: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 86.929190000000000000
+          Width = 612.283860000000000000
+          Height = 18.897650000000000000
+          StretchMode = smActualHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = frxDBDatasetFacture
+          DataSetName = 'frxDBDatasetFacture'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft]
+          GapX = 5.000000000000000000
+          Memo.UTF8W = (
+            '[frxDBDatasetFacture."LIBELLE"]')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object MemofrxDBDataset1QTE: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 699.449290000000000000
+          Width = 56.692950000000000000
+          Height = 18.897650000000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = frxDBDatasetFacture
+          DataSetName = 'frxDBDatasetFacture'
+          DisplayFormat.DecimalSeparator = ','
+          DisplayFormat.FormatStr = '%2.2f'
+          DisplayFormat.Kind = fkNumeric
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft]
+          GapX = 5.000000000000000000
+          HAlign = haCenter
+          Memo.UTF8W = (
+            '[frxDBDatasetFacture."QTE"]')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+      end
+      object PageFooter1: TfrxPageFooter
+        FillType = ftBrush
+        FillGap.Top = 0
+        FillGap.Left = 0
+        FillGap.Bottom = 0
+        FillGap.Right = 0
+        Frame.Typ = []
+        Height = 154.960726070000000000
+        Top = 608.504330000000000000
+        Width = 755.906000000000000000
+        PrintOnFirstPage = False
+        PrintOnSinglePage = True
+        object Memo16: TfrxMemoView
+          AllowVectorExport = True
+          Left = 0.000000100000000000
+          Top = 7.559062029999988000
+          Width = 748.346939780000000000
+          Height = 117.165424040000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftTop]
+          Memo.UTF8W = (
+            
+              'Les marchandises voyageant aux risques et p'#233'rils du destinataire' +
+              ', il appartient '#224' ce dernier de v'#233'rifier l'#39#233'tat des colis '#224' l'#39'ar' +
+              'riv'#233'e et d'#39'exercer, le cas '#233'ch'#233'ant, les recours contre les trans' +
+              'porteurs.'
+            ''
+            
+              'La soci'#233't'#233' conserve la propri'#233't'#233' des marchandises vendues jusqu'#39 +
+              'au paiement int'#233'gral de leur prix.'
+            ''
+            
+              'Toute r'#233'clamation concernant les vices apparents ou la non-confo' +
+              'rmit'#233' des produits livr'#233's doit '#234'tre formul'#233'e par '#233'crit dans les ' +
+              '2 jours suivant la r'#233'ception de la marchandise. Pass'#233' ce d'#233'lai, ' +
+              'aucun retour ni r'#233'clamation ne sera accept'#233'.')
+          ParentFont = False
+        end
+        object Memo6: TfrxMemoView
+          AllowVectorExport = True
+          Left = 623.622436520000000000
+          Top = 128.504031820000000000
+          Width = 128.504051250000000000
+          Height = 18.897644040000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftRight, ftTop, ftBottom]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            '[Page] / [TotalPages]')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+      end
+      object Child1: TfrxChild
+        FillType = ftBrush
+        FillGap.Top = 0
+        FillGap.Left = 0
+        FillGap.Bottom = 0
+        FillGap.Right = 0
+        Frame.Typ = []
+        Height = 60.472629660000000000
+        Top = 204.094620000000000000
+        Width = 755.906000000000000000
+        Stretched = True
+        ToNRows = 0
+        ToNRowsMode = rmCount
+        object Shape1: TfrxShapeView
+          AllowVectorExport = True
+          Top = 30.236410880000000000
+          Width = 755.905511810000000000
+          Height = 30.236218780000000000
+          Frame.Typ = []
+        end
+        object Memo5: TfrxMemoView
+          AllowVectorExport = True
+          Left = 699.669749380000000000
+          Top = 30.236409160000000000
+          Width = 56.692950730000000000
+          Height = 28.346456690000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'Qt'#233)
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object Memo3: TfrxMemoView
+          AllowVectorExport = True
+          Left = 87.149653060000000000
+          Top = 30.236403210000000000
+          Width = 230.551330730000000000
+          Height = 28.346456690000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'D'#233'signation')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object Memo2: TfrxMemoView
+          AllowVectorExport = True
+          Left = 0.220470050000000000
+          Top = 30.236403210000000000
+          Width = 86.929186440000000000
+          Height = 28.346456690000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = []
+          HAlign = haCenter
+          Memo.UTF8W = (
+            'Code article')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object MemoVarRepres: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 377.953000000000000000
+          Top = 3.779530000000000000
+          Width = 366.614410000000000000
+          Height = 18.897650000000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = []
+          HAlign = haRight
+          Memo.UTF8W = (
+            'Repr'#233'sentant: [VarRepres]')
+          ParentFont = False
+        end
+      end
+      object Footer1: TfrxFooter
+        FillType = ftBrush
+        FillGap.Top = 0
+        FillGap.Left = 0
+        FillGap.Bottom = 0
+        FillGap.Right = 0
+        Frame.Typ = []
+        Height = 219.212747090000000000
+        Top = 328.819110000000000000
+        Width = 755.906000000000000000
+        object SysMemo2: TfrxSysMemoView
+          AllowVectorExport = True
+          Left = 699.590797720000000000
+          Width = 56.692913390000000000
+          Height = 18.897644040000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DisplayFormat.FormatStr = '%2.2f'
+          DisplayFormat.Kind = fkNumeric
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft, ftRight, ftTop, ftBottom]
+          GapX = 5.000000000000000000
+          HAlign = haCenter
+          Memo.UTF8W = (
+            '[SUM(<frxDBDatasetFacture."QTE">,MasterData1)]')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object Memo18: TfrxMemoView
+          AllowVectorExport = True
+          Left = 0.000000390000000000
+          Top = 68.031530120000000000
+          Width = 120.944956920000000000
+          Height = 18.897674560000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = []
+          Memo.UTF8W = (
+            'Date de livraison :')
+          ParentFont = False
+        end
+        object Memo17: TfrxMemoView
+          AllowVectorExport = True
+          Left = -0.000000660000000000
+          Top = 98.267793050000000000
+          Width = 755.905998830000000000
+          Height = 26.456704040000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = [fsUnderline]
+          Frame.Typ = []
+          HAlign = haCenter
+          Memo.UTF8W = (
+            
+              'Signature du client pr'#233'c'#233'd'#233'e par la mention '#171' Bon pour r'#233'ception' +
+              ' '#187)
+          ParentFont = False
+        end
+      end
+    end
   end
 end

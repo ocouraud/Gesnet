@@ -88,7 +88,7 @@ type
       AFinMois: Integer): TDateTime;
     function CalculSoldeClient(pCODCLI: Integer): Double;
     procedure ExecuterInsertionEntVteJJ(ASource: TDataSet; AQryExec: TFDQuery;
-      ACoddev: Integer; ACodfac: Integer);
+      ACoddev: Integer; ACodfac: Integer; ANolot: Integer);
     procedure ExecuterInsertionLigVteJJ(ASource: TDataSet; AQryExec: TFDQuery;
       ACoddev: Integer; ACodfac: Integer; ANoenr: Integer);
    end;
@@ -118,7 +118,7 @@ end;
 
 
 procedure TDM_Olivier.ExecuterInsertionEntVteJJ(ASource: TDataSet; AQryExec: TFDQuery;
- ACoddev: Integer; ACodfac: Integer);
+ ACoddev: Integer; ACodfac: Integer; ANolot: Integer);
 begin
   AQryExec.SQL.Text :=
     'INSERT INTO `entvtejj` (' +
@@ -179,7 +179,7 @@ begin
   AQryExec.ParamByName('ACOMPTE').AsInteger    := 0;
   AQryExec.ParamByName('CODGEO').AsString      := ASource.FieldByName('CODGEO').AsString;
   AQryExec.ParamByName('FLAG_TAX').AsInteger   := ASource.FieldByName('FLAG_TAX').AsInteger;
-  AQryExec.ParamByName('SEL').AsInteger        := 0;
+  AQryExec.ParamByName('SEL').AsInteger        := ANolot;
   AQryExec.ParamByName('NOMVEN').AsString      := DMGesCloud.LoggedUser;
   AQryExec.ParamByName('MT_TSOC').AsFloat      := ASource.FieldByName('MT_TSOC').AsFloat;
   AQryExec.ParamByName('MT_HTSOC').AsFloat     := ASource.FieldByName('MT_HTSOC').AsFloat;

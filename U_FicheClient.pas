@@ -436,6 +436,8 @@ type
     FDQueryDevisIMP_CODE: TSmallintField;
     FDQueryDevisTX_TSOC_1: TBCDField;
     FDQueryDevisMT_TSOC_1: TBCDField;
+    BtnReleves: TBitBtn;
+    BtnGrandLivre: TBitBtn;
     procedure BtnValiderClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure ComboTarifKeyDown(Sender: TObject; var Key: Word;
@@ -467,6 +469,8 @@ type
       Field: TField);
     procedure BtnConsulter_devisClick(Sender: TObject);
     procedure BtnImpDevisClick(Sender: TObject);
+    procedure BtnRelevesClick(Sender: TObject);
+    procedure BtnGrandLivreClick(Sender: TObject);
 
   private
     { Déclarations privées }
@@ -482,7 +486,7 @@ implementation
 
 uses U_FicheTarifClient, U_DataModule, U_DM_Olivier, System.Generics.Collections, System.Generics.Defaults,
   U_ReportFactureAA, U_ReportDevis, U_FicheFacture, U_FicheDevis, U_FormAide, U_SelCodInfoCompl,
-  U_ReportFactureMem; // <--- C'est cette ligne qui donne l'accès à DMGesCloud !
+  U_ReportFactureMem, U_FormParametresRelevesClients; // <--- C'est cette ligne qui donne l'accès à DMGesCloud !
 
 {$R *.dfm}
 
@@ -579,6 +583,25 @@ try
     FormFicheDevis.ShowModal;
   finally
     FormFicheDevis.Free;
+  end;
+end;
+
+procedure TFormFicheClient.BtnGrandLivreClick(Sender: TObject);
+begin
+  // Vérifie qu'un client est bien sélectionné
+  if DMGescloud.ReqClients.IsEmpty then Exit;
+
+  FormParametresRelevesClients := TFormParametresRelevesClients.Create(Self);
+  try
+    FormParametresRelevesClients.Caption := 'Paramètres Grand Livre clients';
+    FormParametresRelevesClients.DBLookupComboBoxClientDu.KeyValue:=
+    DMGescloud.ReqClients.FieldByName('NOM').AsString;
+    FormParametresRelevesClients.DBLookupComboBoxClientAu.KeyValue:=
+    DMGescloud.ReqClients.FieldByName('NOM').AsString;
+
+    FormParametresRelevesClients.ShowModal;
+  finally
+    FormParametresRelevesClients.Free;
   end;
 end;
 
@@ -876,6 +899,27 @@ begin
   end;
 end;
 
+
+procedure TFormFicheClient.BtnRelevesClick(Sender: TObject);
+begin
+  // Vérifie qu'un client est bien sélectionné
+  if DMGescloud.ReqClients.IsEmpty then Exit;
+
+  FormParametresRelevesClients := TFormParametresRelevesClients.Create(Self);
+  try
+    FormParametresRelevesClients.Caption := 'Paramètres relevés clients';
+    FormParametresRelevesClients.DBLookupComboBoxClientDu.KeyValue:=
+    DMGescloud.ReqClients.FieldByName('NOM').AsString;
+    FormParametresRelevesClients.DBLookupComboBoxClientAu.KeyValue:=
+    DMGescloud.ReqClients.FieldByName('NOM').AsString;
+
+    FormParametresRelevesClients.ShowModal;
+
+  finally
+    FormParametresRelevesClients.Free;
+  end;
+
+end;
 
 //Supression d'un Tarifcli
 procedure TFormFicheClient.BtnSupprimerInfoClick(Sender: TObject);

@@ -50,7 +50,7 @@ object FrameTableDevis: TFrameTableDevis
       Top = 0
       Width = 87
       Height = 29
-      Caption = '&Imprimer'
+      Caption = '&Imprimer '#55357#56744#65039
       TabOrder = 3
       OnClick = BtnImprimerClick
     end
@@ -802,7 +802,7 @@ object FrameTableDevis: TFrameTableDevis
     PrintOptions.Printer = 'Default'
     PrintOptions.PrintOnSheet = 0
     ReportOptions.CreateDate = 46280.575471794000000000
-    ReportOptions.LastChange = 46288.595777523150000000
+    ReportOptions.LastChange = 46296.624159583330000000
     ScriptLanguage = 'PascalScript'
     ScriptText.Strings = (
       'begin'
@@ -974,7 +974,10 @@ object FrameTableDevis: TFrameTableDevis
           Font.Style = [fsBold]
           Frame.Typ = []
           Memo.UTF8W = (
-            '[frxDBDatasetDevis."NOM"]')
+            '[frxDBDatasetDevis."NOM"]'
+            '[frxDBDatasetDevis."AD1"]'
+            '[frxDBDatasetDevis."AD2"]'
+            '[frxDBDatasetDevis."AD3"]')
           ParentFont = False
         end
         object MemoVarNomEntreprise: TfrxMemoView

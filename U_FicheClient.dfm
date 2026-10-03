@@ -813,12 +813,11 @@ object FormFicheClient: TFormFicheClient
       object BtnImprimerFacture: TSpeedButton
         Left = 81
         Top = 345
-        Width = 72
+        Width = 80
         Height = 28
         Anchors = [akLeft, akBottom]
-        Caption = 'Imprimer'
+        Caption = 'Imprimer '#55357#56744#65039
         OnClick = BtnImprimerFactureClick
-        ExplicitTop = 288
       end
       object JvDBGridEntvteaa: TJvDBGrid
         Left = 3
@@ -927,10 +926,10 @@ object FormFicheClient: TFormFicheClient
       object BtnImpDevis: TSpeedButton
         Left = 81
         Top = 345
-        Width = 72
+        Width = 91
         Height = 28
         Anchors = [akLeft, akBottom]
-        Caption = 'Imprimer'
+        Caption = 'Imprimer '#55357#56744#65039
         OnClick = BtnImpDevisClick
       end
       object JvDBGridEnt_prof: TJvDBGrid
@@ -1167,6 +1166,28 @@ object FormFicheClient: TFormFicheClient
             Title.Caption = 'No ENR.'
             Visible = True
           end>
+      end
+      object BtnReleves: TBitBtn
+        Left = 683
+        Top = 114
+        Width = 105
+        Height = 29
+        Margins.Left = 6
+        Margins.Right = 6
+        Caption = '&Relev'#233's '#55357#56744#65039
+        TabOrder = 3
+        OnClick = BtnRelevesClick
+      end
+      object BtnGrandLivre: TBitBtn
+        Left = 683
+        Top = 149
+        Width = 105
+        Height = 29
+        Margins.Left = 6
+        Margins.Right = 6
+        Caption = '&Grand livre '#55357#56744#65039
+        TabOrder = 4
+        OnClick = BtnGrandLivreClick
       end
     end
     object TabSheet6: TTabSheet
@@ -4657,7 +4678,7 @@ object FormFicheClient: TFormFicheClient
       'begin'
       ''
       'end.')
-    Left = 648
+    Left = 624
     Top = 208
     Datasets = <
       item

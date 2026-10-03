@@ -333,64 +333,64 @@ object FrameEcrituresClients: TFrameEcrituresClients
       Height = 29
       Margins.Left = 6
       Margins.Right = 6
-      Caption = '&Fiche client'
+      Caption = '&Fiche client '#55357#56744#65039
       Default = True
       TabOrder = 0
       OnClick = BtnOuvrirClick
     end
     object BtnSupprimer: TBitBtn
-      Left = 689
+      Left = 739
       Top = 48
       Width = 87
       Height = 29
       Margins.Left = 6
       Margins.Right = 6
       Caption = '&Supprimer'
-      TabOrder = 1
+      TabOrder = 6
       OnClick = BtnSupprimerClick
     end
     object BtnModifier: TBitBtn
-      Left = 602
+      Left = 652
       Top = 48
       Width = 87
       Height = 29
       Margins.Left = 6
       Margins.Right = 6
       Caption = '&Modifier'
-      TabOrder = 2
+      TabOrder = 5
       OnClick = BtnModifierClick
     end
     object BtnAjouter: TBitBtn
-      Left = 515
+      Left = 565
       Top = 48
       Width = 87
       Height = 29
       Margins.Left = 6
       Margins.Right = 6
       Caption = '&Ajouter'
-      TabOrder = 3
+      TabOrder = 4
       OnClick = BtnAjouterClick
     end
     object BtnContrePartie: TBitBtn
-      Left = 776
+      Left = 826
       Top = 48
       Width = 87
       Height = 29
       Margins.Left = 6
       Margins.Right = 6
       Caption = '&Contre-partie'
-      TabOrder = 4
+      TabOrder = 7
       OnClick = BtnContrePartieClick
     end
     object BtnLettrage: TBitBtn
-      Left = 863
+      Left = 913
       Top = 48
       Width = 87
       Height = 29
       Margins.Left = 6
       Margins.Right = 6
       Caption = '&Lettrage'
-      TabOrder = 5
+      TabOrder = 8
       OnClick = BtnLettrageClick
     end
     object BtnReleves: TBitBtn
@@ -400,17 +400,17 @@ object FrameEcrituresClients: TFrameEcrituresClients
       Height = 29
       Margins.Left = 6
       Margins.Right = 6
-      Caption = '&Relev'#233's'
-      TabOrder = 6
+      Caption = '&Relev'#233's '#55357#56744#65039
+      TabOrder = 1
       OnClick = BtnRelevesClick
     end
     object BtnImprimerFacture: TButton
-      Left = 440
+      Left = 490
       Top = 48
       Width = 75
       Height = 29
-      Caption = 'Facture'
-      TabOrder = 7
+      Caption = 'Facture '#55357#56744#65039
+      TabOrder = 3
       OnClick = BtnImprimerFactureClick
     end
     object BtnGrandLivre: TBitBtn
@@ -420,8 +420,8 @@ object FrameEcrituresClients: TFrameEcrituresClients
       Height = 29
       Margins.Left = 6
       Margins.Right = 6
-      Caption = '&Grand livre'
-      TabOrder = 8
+      Caption = '&Grand livre '#55357#56744#65039
+      TabOrder = 2
       OnClick = BtnGrandLivreClick
     end
   end

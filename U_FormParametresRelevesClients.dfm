@@ -58,7 +58,7 @@ object FormParametresRelevesClients: TFormParametresRelevesClients
     Top = 8
     Width = 89
     Height = 33
-    Caption = 'Imprimer'
+    Caption = 'Imprimer '#55357#56744#65039
     TabOrder = 4
     OnClick = BtnImprimerClick
   end
@@ -127,8 +127,8 @@ object FormParametresRelevesClients: TFormParametresRelevesClients
       'begin'
       ''
       'end.')
-    Left = 144
-    Top = 144
+    Left = 368
+    Top = 136
     Datasets = <
       item
         DataSet = frxDBDatasetReleves
@@ -237,7 +237,7 @@ object FormParametresRelevesClients: TFormParametresRelevesClients
           StretchMode = smMaxHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
-          DataSet = FrameTableEntvteaa.frxDBDatasetFacture
+          DataSet = FrameTableEntvtejj.frxDBDatasetFacture
           DataSetName = 'frxDBDatasetFacture'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
@@ -266,7 +266,7 @@ object FormParametresRelevesClients: TFormParametresRelevesClients
           StretchMode = smMaxHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
-          DataSet = FrameTableEntvteaa.frxDBDatasetFacture
+          DataSet = FrameTableEntvtejj.frxDBDatasetFacture
           DataSetName = 'frxDBDatasetFacture'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
@@ -293,7 +293,7 @@ object FormParametresRelevesClients: TFormParametresRelevesClients
           StretchMode = smActualHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
-          DataSet = FrameTableEntvteaa.frxDBDatasetFacture
+          DataSet = FrameTableEntvtejj.frxDBDatasetFacture
           DataSetName = 'frxDBDatasetFacture'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
@@ -323,7 +323,7 @@ object FormParametresRelevesClients: TFormParametresRelevesClients
           StretchMode = smActualHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
-          DataSet = FrameTableEntvteaa.frxDBDatasetReglements
+          DataSet = FrameTableEntvtejj.frxDBDatasetReglements
           DataSetName = 'frxDBDatasetReglements'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
@@ -422,7 +422,7 @@ object FormParametresRelevesClients: TFormParametresRelevesClients
           StretchMode = smMaxHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
-          DataSet = FrameTableEntvteaa.frxDBDatasetFacture
+          DataSet = FrameTableEntvtejj.frxDBDatasetFacture
           DataSetName = 'frxDBDatasetFacture'
           DisplayFormat.FormatStr = 'dd mmm yyyy'
           DisplayFormat.Kind = fkDateTime
@@ -446,7 +446,7 @@ object FormParametresRelevesClients: TFormParametresRelevesClients
           StretchMode = smActualHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
-          DataSet = FrameTableEntvteaa.frxDBDatasetFacture
+          DataSet = FrameTableEntvtejj.frxDBDatasetFacture
           DataSetName = 'frxDBDatasetFacture'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
@@ -469,7 +469,7 @@ object FormParametresRelevesClients: TFormParametresRelevesClients
           StretchMode = smMaxHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
-          DataSet = FrameTableEntvteaa.frxDBDatasetFacture
+          DataSet = FrameTableEntvtejj.frxDBDatasetFacture
           DataSetName = 'frxDBDatasetFacture'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
@@ -492,7 +492,7 @@ object FormParametresRelevesClients: TFormParametresRelevesClients
           StretchMode = smMaxHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
-          DataSet = FrameTableEntvteaa.frxDBDatasetFacture
+          DataSet = FrameTableEntvtejj.frxDBDatasetFacture
           DataSetName = 'frxDBDatasetFacture'
           DisplayFormat.FormatStr = '%2.0n'
           DisplayFormat.Kind = fkNumeric
@@ -518,7 +518,7 @@ object FormParametresRelevesClients: TFormParametresRelevesClients
           StretchMode = smMaxHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
-          DataSet = FrameTableEntvteaa.frxDBDatasetFacture
+          DataSet = FrameTableEntvtejj.frxDBDatasetFacture
           DataSetName = 'frxDBDatasetFacture'
           DisplayFormat.FormatStr = 'dd mmm yyyy'
           DisplayFormat.Kind = fkDateTime
@@ -544,7 +544,7 @@ object FormParametresRelevesClients: TFormParametresRelevesClients
           StretchMode = smMaxHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
-          DataSet = FrameTableEntvteaa.frxDBDatasetFacture
+          DataSet = FrameTableEntvtejj.frxDBDatasetFacture
           DataSetName = 'frxDBDatasetFacture'
           DisplayFormat.FormatStr = '%2.0n'
           DisplayFormat.Kind = fkNumeric
@@ -1428,7 +1428,7 @@ object FormParametresRelevesClients: TFormParametresRelevesClients
           StretchMode = smMaxHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
-          DataSet = FrameTableEntvteaa.frxDBDatasetFacture
+          DataSet = FrameTableEntvtejj.frxDBDatasetFacture
           DataSetName = 'frxDBDatasetFacture'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
@@ -1455,7 +1455,7 @@ object FormParametresRelevesClients: TFormParametresRelevesClients
           StretchMode = smActualHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
-          DataSet = FrameTableEntvteaa.frxDBDatasetFacture
+          DataSet = FrameTableEntvtejj.frxDBDatasetFacture
           DataSetName = 'frxDBDatasetFacture'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
@@ -1530,7 +1530,7 @@ object FormParametresRelevesClients: TFormParametresRelevesClients
           StretchMode = smActualHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
-          DataSet = FrameTableEntvteaa.frxDBDatasetFacture
+          DataSet = FrameTableEntvtejj.frxDBDatasetFacture
           DataSetName = 'frxDBDatasetFacture'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
@@ -1553,7 +1553,7 @@ object FormParametresRelevesClients: TFormParametresRelevesClients
           StretchMode = smMaxHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
-          DataSet = FrameTableEntvteaa.frxDBDatasetFacture
+          DataSet = FrameTableEntvtejj.frxDBDatasetFacture
           DataSetName = 'frxDBDatasetFacture'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
@@ -1576,7 +1576,7 @@ object FormParametresRelevesClients: TFormParametresRelevesClients
           StretchMode = smMaxHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
-          DataSet = FrameTableEntvteaa.frxDBDatasetFacture
+          DataSet = FrameTableEntvtejj.frxDBDatasetFacture
           DataSetName = 'frxDBDatasetFacture'
           DisplayFormat.FormatStr = '%2.0n'
           DisplayFormat.Kind = fkNumeric
@@ -1602,7 +1602,7 @@ object FormParametresRelevesClients: TFormParametresRelevesClients
           StretchMode = smMaxHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
-          DataSet = FrameTableEntvteaa.frxDBDatasetFacture
+          DataSet = FrameTableEntvtejj.frxDBDatasetFacture
           DataSetName = 'frxDBDatasetFacture'
           DisplayFormat.FormatStr = 'dd/mm/yyyy'
           DisplayFormat.Kind = fkDateTime
@@ -1628,7 +1628,7 @@ object FormParametresRelevesClients: TFormParametresRelevesClients
           StretchMode = smMaxHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
-          DataSet = FrameTableEntvteaa.frxDBDatasetFacture
+          DataSet = FrameTableEntvtejj.frxDBDatasetFacture
           DataSetName = 'frxDBDatasetFacture'
           DisplayFormat.FormatStr = '%2.0n'
           DisplayFormat.Kind = fkNumeric
@@ -1778,7 +1778,7 @@ object FormParametresRelevesClients: TFormParametresRelevesClients
           StretchMode = smActualHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
-          DataSet = FrameTableEntvteaa.frxDBDatasetReglements
+          DataSet = FrameTableEntvtejj.frxDBDatasetReglements
           DataSetName = 'frxDBDatasetReglements'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
@@ -1799,7 +1799,7 @@ object FormParametresRelevesClients: TFormParametresRelevesClients
           StretchMode = smMaxHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
-          DataSet = FrameTableEntvteaa.frxDBDatasetFacture
+          DataSet = FrameTableEntvtejj.frxDBDatasetFacture
           DataSetName = 'frxDBDatasetFacture'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack

@@ -723,7 +723,7 @@ begin
 
       // Appel de la procédure mutualisée
       QryExec.close;
-      DM_Olivier.ExecuterInsertionEntVteJJ(FDQueryEnt_prof, QryExec, CodDevCourant, NumFacture);
+      DM_Olivier.ExecuterInsertionEntVteJJ(FDQueryEnt_prof, QryExec, CodDevCourant, NumFacture, 0);
 
 
       QryExec.Close;

@@ -83,6 +83,7 @@ type
     procedure TravauxDevisClick(Sender: TObject);
     procedure TresorerieClientsClick(Sender: TObject);
     procedure Journauxcomptables1Click(Sender: TObject);
+    procedure FacturesreccurentesClick(Sender: TObject);
   private
     function ChercherEtActiverOnglet(const ACaption: string): Boolean;
     function OuvrirOnglet<T: TControl>(const ACaption: string; const AImageName: string = ''; AOnCreate: TProc<T> = nil): T;
@@ -105,7 +106,7 @@ uses
   U_TableSousfam, U_TableDepart, U_TableChrono, U_TableTarif, U_TableInfoscompl,
   U_FicheCtrstock, U_FicheCaisse, U_FormGestionDroits, U_TableArticles, U_TableEntvtejj,
   U_TableEntvteaa, U_FormCentraVentes, U_TableDevis, U_FrameEcrituresClients,
-  U_TableJournal;
+  U_TableJournal, U_FrameFacturesReccurentes;
 
 procedure TFormMenuPrincipal.FormCreate(Sender: TObject);
 begin
@@ -324,6 +325,8 @@ begin
   OuvrirOnglet<TFrameTableGeo>('Secteurs géographiques', 'server_configuration');
 end;
 
+
+
 procedure TFormMenuPrincipal.Postesachats1Click(Sender: TObject);
 begin
   OuvrirOnglet<TFrameTablePostesAchats>('Postes achats', 'server_configuration');
@@ -399,6 +402,15 @@ begin
   MonFrame := OuvrirOnglet<TFrameEcrituresClients>('Ecritures clients', 'client_account_template');
 end;
 
+
+procedure TFormMenuPrincipal.FacturesreccurentesClick(
+  Sender: TObject);
+var
+  MonFrame: TFrameFacturesReccurentes;
+begin
+  // Votre méthode qui crée ou ouvre l'onglet/frame
+  MonFrame := OuvrirOnglet<TFrameFacturesReccurentes>('Factures reccurentes', 'client_account_template');
+end;
 
 procedure TFormMenuPrincipal.Centralisationdesventes1Click(Sender: TObject);
 var

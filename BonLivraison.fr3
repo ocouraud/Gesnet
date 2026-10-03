@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<TfrxReport Version="2024.1.2" DotMatrixReport="False" IniFile="\Software\Fast Reports" PreviewOptions.Buttons="692223" PreviewOptions.Zoom="1" PrintOptions.Printer="Default" PrintOptions.PrintOnSheet="0" ReportOptions.CreateDate="46280,575471794" ReportOptions.Description.Text="" ReportOptions.LastChange="46297,4025955903" ScriptLanguage="PascalScript" ScriptText.Text="begin&#13;&#10;&#13;&#10;end.">
+  <Datasets>
+    <item DataSet="frxDBDatasetFacture" DataSetName="frxDBDatasetFacture"/>
+  </Datasets>
+  <Variables>
+    <item Name=" Globales"/>
+    <item Name="VarNomEntreprise" Value="&#39;Societe&#39;"/>
+    <item Name="VarTelephone" Value="&#39;87777600&#39;"/>
+    <item Name="VarAdresse" Value="&#39;Kauehi&#39;"/>
+    <item Name="VarNoTAHITI" Value="&#39;1234567899&#39;"/>
+    <item Name="VarFAX" Value="&#39;123456789&#39;"/>
+    <item Name="VarEMAIL" Value="&#39;contact@fai.com&#39;"/>
+    <item Name="VarMEMO_FAC" Value="&#39;memo fac&#39;"/>
+    <item Name="VarRC" Value="&#39;1000A&#39;"/>
+    <item Name="VarRepres" Value="&#39;Commercial&#39;"/>
+    <item Name="VarRef_Bancaire"/>
+    <item Name="VarTotalAlpha"/>
+    <item Name="VarLogo"/>
+    <item Name="VarLibTypeFacture"/>
+  </Variables>
+  <TfrxDataPage Name="Data" HGuides.Text="" VGuides.Text="" Height="1000" Left="0" Top="0" Width="1000"/>
+  <TfrxReportPage Name="PageFacture" HGuides.Text="" VGuides.Text="" PaperWidth="210" PaperHeight="297" PaperSize="9" LeftMargin="5" RightMargin="5" TopMargin="10" BottomMargin="10" ColumnWidth="0" ColumnPositions.Text="" Frame.Typ="0" MirrorMode="0">
+    <TfrxGroupHeader Name="GroupHeader1" FillType="ftBrush" FillGap.Top="0" FillGap.Left="0" FillGap.Bottom="0" FillGap.Right="0" Frame.Typ="0" Height="162,51960693" Left="0" Top="18,89765" Width="755,906" Child="Child1" Condition="&#60;frxDBDatasetFacture.&#34;CODFAC&#34;&#62;" ResetPageNumbers="True" StartNewPage="True" Stretched="True">
+      <TfrxMemoView Name="MemofrxDBDataset1CODFAC" IndexTag="1" AllowVectorExport="True" Left="355,27582" Top="37,7953" Width="283,46475" Height="18,89765" StretchMode="smMaxHeight" ContentScaleOptions.Constraints.MaxIterationValue="0" ContentScaleOptions.Constraints.MinIterationValue="0" DataSet="frxDBDatasetFacture" DataSetName="frxDBDatasetFacture" Font.Charset="1" Font.Color="0" Font.Height="-16" Font.Name="Arial" Font.Style="1" Frame.Typ="0" ParentFont="False" Text="Bon de Livraison No [frxDBDatasetFacture.&#34;CODFAC&#34;]&#13;&#10;du [frxDBDatasetFacture.&#34;DATE_&#34;]">
+        <Formats>
+          <item/>
+          <item/>
+        </Formats>
+      </TfrxMemoView>
+      <TfrxMemoView Name="MemofrxDBDataset1CODCLI" IndexTag="1" AllowVectorExport="True" Left="355,27582" Top="83,14966" Width="192,75603" Height="30,23624" StretchMode="smMaxHeight" ContentScaleOptions.Constraints.MaxIterationValue="0" ContentScaleOptions.Constraints.MinIterationValue="0" DataSet="frxDBDatasetFacture" DataSetName="frxDBDatasetFacture" Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="0" Frame.Typ="0" ParentFont="False" Text="Client: [frxDBDatasetFacture.&#34;CODCLI&#34;]&#13;&#10;No TAHITI: [frxDBDatasetFacture.&#34;NOTAHITI&#34;]">
+        <Formats>
+          <item/>
+          <item/>
+        </Formats>
+      </TfrxMemoView>
+      <TfrxMemoView Name="MemofrxDBDataset1NOM" IndexTag="1" AllowVectorExport="True" Left="355,27582" Top="117,16543" Width="389,29159" Height="37,7953" StretchMode="smActualHeight" ContentScaleOptions.Constraints.MaxIterationValue="0" ContentScaleOptions.Constraints.MinIterationValue="0" DataSet="frxDBDatasetFacture" DataSetName="frxDBDatasetFacture" Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="1" Frame.Typ="0" ParentFont="False" Text="[frxDBDatasetFacture.&#34;NOM&#34;]&#13;&#10;[frxDBDatasetFacture.&#34;AD1&#34;]&#13;&#10;[frxDBDatasetFacture.&#34;AD2&#34;]&#13;&#10;[frxDBDatasetFacture.&#34;AD3&#34;]">
+        <Formats>
+          <item/>
+          <item/>
+        </Formats>
+      </TfrxMemoView>
+      <TfrxMemoView Name="MemoVarNomEntreprise" IndexTag="1" AllowVectorExport="True" Left="3,77953" Top="3,77953" Width="525,35467" Height="18,89765" StretchMode="smActualHeight" ContentScaleOptions.Constraints.MaxIterationValue="0" ContentScaleOptions.Constraints.MinIterationValue="0" DataSet="frxDBDatasetReglements" DataSetName="frxDBDatasetReglements" Font.Charset="1" Font.Color="0" Font.Height="-16" Font.Name="Arial" Font.Style="1" Frame.Typ="0" ParentFont="False" Text="[VarNomEntreprise]"/>
+      <TfrxMemoView Name="MemoVarAdresse" IndexTag="1" AllowVectorExport="True" Left="3,77953" Top="30,23624" Width="336,37817" Height="18,89765" StretchMode="smActualHeight" ContentScaleOptions.Constraints.MaxIterationValue="0" ContentScaleOptions.Constraints.MinIterationValue="0" Frame.Typ="0" Text="[VarAdresse]"/>
+      <TfrxPictureView Name="LogoEntreprise" AllowVectorExport="True" Left="642,52007641" Top="7,55906039" Width="102,04724409" Height="102,04730786" Center="True" Frame.Typ="0" HightQuality="False" Transparent="False" TransparentColor="16777215"/>
+      <TfrxMemoView Name="VarEMAIL" IndexTag="1" AllowVectorExport="True" Left="3,77953" Top="56,69295" Width="336,37817" Height="18,89765" StretchMode="smActualHeight" ContentScaleOptions.Constraints.MaxIterationValue="0" ContentScaleOptions.Constraints.MinIterationValue="0" Frame.Typ="0" Text="email: [VarEMAIL]&#13;&#10;Tél: [VarTelephone]&#13;&#10;Fax: [VarFAX]&#13;&#10;No RC: [VarRC]&#13;&#10;No TAHITI: [VarNoTAHITI]">
+        <Formats>
+          <item/>
+          <item/>
+          <item/>
+          <item/>
+          <item/>
+        </Formats>
+      </TfrxMemoView>
+      <TfrxMemoView Name="MemofrxDBDataset1REFERENCE_" IndexTag="1" AllowVectorExport="True" Left="355,27582" Top="60,47248" Width="192,75603" Height="18,89765" StretchMode="smMaxHeight" ContentScaleOptions.Constraints.MaxIterationValue="0" ContentScaleOptions.Constraints.MinIterationValue="0" DataSet="frxDBDatasetFacture" DataSetName="frxDBDatasetFacture" Frame.Typ="0" Text="Référence : [frxDBDatasetFacture.&#34;REFERENCE_&#34;]"/>
+      <TfrxMemoView Name="MemofrxDBDataset1OBSERV" IndexTag="1" AllowVectorExport="True" Left="3,77953" Top="86,92919" Width="336,37817" Height="68,03154" StretchMode="smActualHeight" ContentScaleOptions.Constraints.MaxIterationValue="0" ContentScaleOptions.Constraints.MinIterationValue="0" DataSet="frxDBDatasetFacture" DataSetName="frxDBDatasetFacture" Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="0" Frame.Typ="15" ParentFont="False" Text="Observations: [frxDBDatasetFacture.&#34;OBSERV&#34;]"/>
+    </TfrxGroupHeader>
+    <TfrxMasterData Name="MasterData1" FillType="ftBrush" FillGap.Top="0" FillGap.Left="0" FillGap.Bottom="0" FillGap.Right="0" Frame.Typ="15" Font.Charset="1" Font.Color="0" Font.Height="-11" Font.Name="Arial" Font.Style="0" Height="19,65354331" Left="0" ParentFont="False" Top="287,24428" Width="755,906" ColumnWidth="0" ColumnGap="0" DataSet="frxDBDatasetFacture" DataSetName="frxDBDatasetFacture" PrintIfDetailEmpty="True" RowCount="0" Stretched="True">
+      <TfrxMemoView Name="MemofrxDBDataset1CODART" IndexTag="1" AllowVectorExport="True" Left="3,77953" Top="0" Width="83,14966" Height="18,8976378" StretchMode="smMaxHeight" ContentScaleOptions.Constraints.MaxIterationValue="0" ContentScaleOptions.Constraints.MinIterationValue="0" DataSet="frxDBDatasetFacture" DataSetName="frxDBDatasetFacture" Font.Charset="1" Font.Color="0" Font.Height="-11" Font.Name="Arial" Font.Style="0" Frame.Typ="0" ParentFont="False" VAlign="vaCenter" Text="[frxDBDatasetFacture.&#34;CODART&#34;]"/>
+      <TfrxMemoView Name="MemofrxDBDataset1LIBELLE" IndexTag="1" AllowVectorExport="True" Left="86,92919" Top="0" Width="612,28386" Height="18,89765" StretchMode="smActualHeight" ContentScaleOptions.Constraints.MaxIterationValue="0" ContentScaleOptions.Constraints.MinIterationValue="0" DataSet="frxDBDatasetFacture" DataSetName="frxDBDatasetFacture" Font.Charset="1" Font.Color="0" Font.Height="-11" Font.Name="Arial" Font.Style="0" Frame.Typ="1" GapX="5" ParentFont="False" VAlign="vaCenter" Text="[frxDBDatasetFacture.&#34;LIBELLE&#34;]"/>
+      <TfrxMemoView Name="MemofrxDBDataset1QTE" IndexTag="1" AllowVectorExport="True" Left="699,44929" Top="0" Width="56,69295" Height="18,89765" StretchMode="smMaxHeight" ContentScaleOptions.Constraints.MaxIterationValue="0" ContentScaleOptions.Constraints.MinIterationValue="0" DataSet="frxDBDatasetFacture" DataSetName="frxDBDatasetFacture" DisplayFormat.DecimalSeparator="," DisplayFormat.FormatStr="%2.2f" DisplayFormat.Kind="fkNumeric" Font.Charset="1" Font.Color="0" Font.Height="-11" Font.Name="Arial" Font.Style="0" Frame.Typ="1" GapX="5" HAlign="haCenter" ParentFont="False" VAlign="vaCenter" Text="[frxDBDatasetFacture.&#34;QTE&#34;]"/>
+    </TfrxMasterData>
+    <TfrxPageFooter Name="PageFooter1" FillType="ftBrush" FillGap.Top="0" FillGap.Left="0" FillGap.Bottom="0" FillGap.Right="0" Frame.Typ="0" Height="154,96072607" Left="0" Top="608,50433" Width="755,906" PrintOnFirstPage="False" PrintOnSinglePage="True">
+      <TfrxMemoView Name="Memo16" AllowVectorExport="True" Left="1E-7" Top="7,55906202999999" Width="748,34693978" Height="117,16542404" ContentScaleOptions.Constraints.MaxIterationValue="0" ContentScaleOptions.Constraints.MinIterationValue="0" Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="0" Frame.Typ="4" ParentFont="False" Text="Les marchandises voyageant aux risques et périls du destinataire, il appartient à ce dernier de vérifier l&#39;état des colis à l&#39;arrivée et d&#39;exercer, le cas échéant, les recours contre les transporteurs.&#13;&#10;&#13;&#10;La société conserve la propriété des marchandises vendues jusqu&#39;au paiement intégral de leur prix.&#13;&#10;&#13;&#10;Toute réclamation concernant les vices apparents ou la non-conformité des produits livrés doit être formulée par écrit dans les 2 jours suivant la réception de la marchandise. Passé ce délai, aucun retour ni réclamation ne sera accepté."/>
+      <TfrxMemoView Name="Memo6" AllowVectorExport="True" Left="623,62243652" Top="128,50403182" Width="128,50405125" Height="18,89764404" ContentScaleOptions.Constraints.MaxIterationValue="0" ContentScaleOptions.Constraints.MinIterationValue="0" Font.Charset="1" Font.Color="0" Font.Height="-11" Font.Name="Arial" Font.Style="0" Frame.Typ="15" HAlign="haCenter" ParentFont="False" VAlign="vaCenter" Text="[Page] / [TotalPages]"/>
+    </TfrxPageFooter>
+    <TfrxChild Name="Child1" FillType="ftBrush" FillGap.Top="0" FillGap.Left="0" FillGap.Bottom="0" FillGap.Right="0" Frame.Typ="0" Height="60,47262966" Left="0" Top="204,09462" Width="755,906" Stretched="True" ToNRows="0" ToNRowsMode="rmCount">
+      <TfrxShapeView Name="Shape1" AllowVectorExport="True" Left="0" Top="30,23641088" Width="755,90551181" Height="30,23621878" Frame.Typ="0"/>
+      <TfrxMemoView Name="Memo5" AllowVectorExport="True" Left="699,66974938" Top="30,23640916" Width="56,69295073" Height="28,34645669" StretchMode="smMaxHeight" ContentScaleOptions.Constraints.MaxIterationValue="0" ContentScaleOptions.Constraints.MinIterationValue="0" Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="0" Frame.Typ="1" HAlign="haCenter" ParentFont="False" VAlign="vaCenter" Text="Qté"/>
+      <TfrxMemoView Name="Memo3" AllowVectorExport="True" Left="87,14965306" Top="30,23640321" Width="230,55133073" Height="28,34645669" StretchMode="smMaxHeight" ContentScaleOptions.Constraints.MaxIterationValue="0" ContentScaleOptions.Constraints.MinIterationValue="0" Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="0" Frame.Typ="1" HAlign="haCenter" ParentFont="False" VAlign="vaCenter" Text="Désignation"/>
+      <TfrxMemoView Name="Memo2" AllowVectorExport="True" Left="0,22047005" Top="30,23640321" Width="86,92918644" Height="28,34645669" StretchMode="smMaxHeight" ContentScaleOptions.Constraints.MaxIterationValue="0" ContentScaleOptions.Constraints.MinIterationValue="0" Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="0" Frame.Typ="0" HAlign="haCenter" ParentFont="False" VAlign="vaCenter" Text="Code article"/>
+      <TfrxMemoView Name="MemoVarRepres" IndexTag="1" AllowVectorExport="True" Left="377,953" Top="3,77953" Width="366,61441" Height="18,89765" StretchMode="smMaxHeight" ContentScaleOptions.Constraints.MaxIterationValue="0" ContentScaleOptions.Constraints.MinIterationValue="0" Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="0" Frame.Typ="0" HAlign="haRight" ParentFont="False" Text="Représentant: [VarRepres]"/>
+    </TfrxChild>
+    <TfrxFooter Name="Footer1" FillType="ftBrush" FillGap.Top="0" FillGap.Left="0" FillGap.Bottom="0" FillGap.Right="0" Frame.Typ="0" Height="219,21274709" Left="0" Top="328,81911" Width="755,906">
+      <TfrxSysMemoView Name="SysMemo2" AllowVectorExport="True" Left="699,59079772" Top="0" Width="56,69291339" Height="18,89764404" ContentScaleOptions.Constraints.MaxIterationValue="0" ContentScaleOptions.Constraints.MinIterationValue="0" DisplayFormat.FormatStr="%2.2f" DisplayFormat.Kind="fkNumeric" Font.Charset="1" Font.Color="0" Font.Height="-11" Font.Name="Arial" Font.Style="0" Frame.Typ="15" GapX="5" HAlign="haCenter" ParentFont="False" VAlign="vaCenter" Text="[SUM(&#60;frxDBDatasetFacture.&#34;QTE&#34;&#62;,MasterData1)]"/>
+      <TfrxMemoView Name="Memo18" AllowVectorExport="True" Left="3,9E-7" Top="68,03153012" Width="120,94495692" Height="18,89767456" ContentScaleOptions.Constraints.MaxIterationValue="0" ContentScaleOptions.Constraints.MinIterationValue="0" Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="0" Frame.Typ="0" ParentFont="False" Text="Date de livraison :"/>
+      <TfrxMemoView Name="Memo17" AllowVectorExport="True" Left="-6,6E-7" Top="98,26779305" Width="755,90599883" Height="26,45670404" ContentScaleOptions.Constraints.MaxIterationValue="0" ContentScaleOptions.Constraints.MinIterationValue="0" Font.Charset="1" Font.Color="0" Font.Height="-13" Font.Name="Arial" Font.Style="4" Frame.Typ="0" HAlign="haCenter" ParentFont="False" Text="Signature du client précédée par la mention « Bon pour réception »"/>
+    </TfrxFooter>
+  </TfrxReportPage>
+</TfrxReport>

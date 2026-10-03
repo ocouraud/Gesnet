@@ -242,6 +242,9 @@ type
     FDQueryReglements: TFDQuery;
     frxDBDatasetReglements: TfrxDBDataset;
     BtnTicket: TButton;
+    BtnBL: TButton;
+    frxReportBL: TfrxReport;
+    FDQueryEntvtejjNOCOULEUR: TIntegerField;
     procedure CheckBoxToutesFacturesClick(Sender: TObject);
     procedure JvDBGridEntvtejjTitleBtnClick(Sender: TObject; ACol: LongInt;
       Field: TField);
@@ -263,6 +266,8 @@ type
     procedure BtnImprimerClick(Sender: TObject);
     procedure frxReportFactureBeforePrint(Sender: TfrxReportComponent);
     procedure BtnTicketClick(Sender: TObject);
+    procedure BtnBLClick(Sender: TObject);
+    procedure frxReportBLBeforePrint(Sender: TfrxReportComponent);
   private
     procedure AppliquerFiltreMaitre;
     { Déclarations privées }
@@ -310,6 +315,65 @@ begin
   finally
     FormEntvtejj.Free;
   end;
+end;
+
+
+procedure TFrameTableEntvtejj.BtnBLClick(Sender: TObject);
+begin
+
+  // 1. Lire vos paramètres globaux (via une requête ou un fichier de config)
+  DM_Olivier.FDQueryCtrstock.open;
+
+  if DM_Olivier.FDQueryCtrstock.IsEmpty then
+    Exit;
+
+     // 2. Charger le modèle d'état externe
+    frxReportBL.LoadFromFile('BonLivraison.fr3');
+
+  // 2. Vider les variables mémoire pour repartir proprement
+  frxReportBL.Variables.Clear;
+
+  // 3. CRÉER AUTOMATIQUEMENT la catégorie et les variables
+  // ATTENTION : FastReport impose de créer au moins une catégorie (commençant par un espace)
+  // avant d'y injecter des variables.
+  frxReportBL.Variables[' ' + 'Globales'] := Null;
+
+  // On ajoute les variables à la catégorie qui vient d'être créée
+  frxReportBL.Variables.AddVariable('Globales','VarNomEntreprise',
+  ( DM_Olivier.FDQueryCtrstock.FieldByName('Nom').AsString + #13#10 +
+    DM_Olivier.FDQueryCtrstock.FieldByName('Nom2').AsString ));
+  frxReportBL.Variables.AddVariable('Globales','VarTelephone', QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('Tel').AsString));
+  frxReportBL.Variables.AddVariable('Globales','VarAdresse', DM_Olivier.FDQueryCtrstock.FieldByName('Adresse').AsString);
+  frxReportBL.Variables.AddVariable('Globales','VarNoTAHITI', QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('NOTAHITI').AsString));
+  frxReportBL.Variables.AddVariable('Globales','VarLOGO', QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('LOGO').AsString));
+  frxReportBL.Variables.AddVariable('Globales','VarEMAIL', QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('EMAIL').AsString));
+  frxReportBL.Variables.AddVariable('Globales','VarFAX', QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('FAX').AsString));
+  frxReportBL.Variables.AddVariable('Globales','VarRC', QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('RC').AsString));
+  frxReportBL.Variables.AddVariable('Globales','VarMEMO_FAC', QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('MEMO_FAC').AsString));
+  frxReportBL.Variables.AddVariable('Globales','VarRef_Bancaire', DM_Olivier.FDQueryCtrstock.FieldByName('BANQUE').AsString);
+  frxReportBL.Variables.AddVariable('Globales','VarTotalAlpha',QuotedStr('Facture arrêtée à la somme de : ' +
+    DMGesCloud.MontantenLettres(FDQueryEntvtejj.FieldByName('MT_TTC').AsInteger) + ' Francs CFP.'));
+  if FDQueryEntvtejj.FieldByName('TYPE_').AsString='F' then
+    frxReportBL.Variables.AddVariable('Globales','VarLibTypeFacture', QuotedStr('FACTURE'))
+  else
+    frxReportBL.Variables.AddVariable('Globales','VarLibTypeFacture', QuotedStr('AVOIR'));
+
+  //Lecture representant
+  DM_Olivier.FDQueryRepres.SQL.Text:='select * from repres where codrep=:codrep';
+  DM_Olivier.FDQueryRepres.ParamByName('CODREP').AsInteger:= FDQueryEntvtejj.FieldByName('CODREP').AsInteger;
+  DM_Olivier.FDQueryRepres.Open;
+  frxReportBL.Variables.AddVariable('Globales','VarRepres', QuotedStr(DM_Olivier.FDQueryRepres.FieldByName('NOM').AsString));
+
+  // 1. Activer la requête SQL contenant les données du devis
+  //FDQueryDevis.ParamByName('CODFAC').AsInteger := FDQueryEntvtejj.FieldByName('CODFAC').AsInteger;
+  FDQueryFacture.Open;
+
+  // 2. Charger le modèle visuel externe (.fr3)
+  //frxReportBL.LoadFromFile('Facture.fr3');
+
+  // 3. Afficher l'aperçu avant impression à l'écran
+  frxReportBL.EngineOptions.DoublePass := True;
+  frxReportBL.ShowReport;
 end;
 
 
@@ -800,6 +864,31 @@ begin
 end;
 
 
+procedure TFrameTableEntvtejj.frxReportBLBeforePrint(
+  Sender: TfrxReportComponent);
+var
+  CheminLogo: string;
+begin
+  // 1. Détecter le moment où l'objet image va être dessiné
+  if Sender.Name = 'LogoEntreprise' then
+  begin
+    // 2. Définir le chemin (Exemple : un dossier "Images" situé à côté de votre exécutable .exe)
+    CheminLogo := DM_Olivier.FDQueryCtrstock.FieldByName('LOGO').AsString;
+
+    // 3. Charger l'image dynamiquement si le fichier existe
+    if FileExists(CheminLogo) then
+    begin
+      TfrxPictureView(Sender).Picture.LoadFromFile(CheminLogo); // Charge l'image
+    end
+    else
+    begin
+      // Sécurité : Si le logo est absent, on peut masquer le bloc pour éviter un carré vide
+      TfrxPictureView(Sender).Visible := False;
+    end;
+  end;
+
+end;
+
 procedure TFrameTableEntvtejj.frxReportFactureBeforePrint(
   Sender: TfrxReportComponent);
 var
@@ -826,6 +915,8 @@ end;
 
 procedure TFrameTableEntvtejj.JvDBGridEntvtejjDrawColumnCell(Sender: TObject;
   const Rect: TRect; DataCol: Integer; Column: TColumn; State: TGridDrawState);
+var
+  QryExec: TFDQuery;
 begin
   // Si avoir
   if Assigned(JvDBGridEntvtejj.DataSource) and Assigned(JvDBGridEntvtejj.DataSource.DataSet) then
@@ -849,6 +940,15 @@ begin
       JvDBGridEntvtejj.Canvas.Font.Color := clRed;
     end;
   end;
+
+  //Couleur du lot
+  // 1. On vérifie si on se trouve sur la colonne cible 'SEL_'
+  //ShowMessage(IntToStr(FDQueryEntvtejj.FieldByName('NOCOULEUR').AsInteger));
+  if (CompareText(Column.FieldName, 'SEL') = 0) and
+    (FDQueryEntvtejj.FieldByName('NOCOULEUR').AsInteger<>0) then
+    // 2. On définit la couleur de fond du pinceau (Canvas)
+    // (Remplace par ta logique pour récupérer la couleur du lot ou de la cellule)
+    JvDBGridEntvtejj.Canvas.Brush.Color := FDQueryEntvtejj.FieldByName('NOCOULEUR').AsInteger;
 
   // L'instruction indispensable pour appliquer le dessin par défaut avec nos modifications de couleurs
   JvDBGridEntvtejj.DefaultDrawColumnCell(Rect, DataCol, Column, State);

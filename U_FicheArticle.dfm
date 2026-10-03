@@ -870,10 +870,10 @@ object FormFicheArticle: TFormFicheArticle
       object BtnImprimerFacture: TSpeedButton
         Left = 81
         Top = 427
-        Width = 72
+        Width = 92
         Height = 28
         Anchors = [akLeft, akBottom]
-        Caption = 'Imprimer'
+        Caption = 'Imprimer '#55357#56744#65039
         OnClick = BtnImprimerFactureClick
       end
       object JvDBGridLigvteaa: TJvDBGrid
@@ -1099,10 +1099,10 @@ object FormFicheArticle: TFormFicheArticle
       object SBImpDevis: TSpeedButton
         Left = 78
         Top = 430
-        Width = 72
+        Width = 95
         Height = 28
         Anchors = [akLeft, akBottom]
-        Caption = 'Imprimer'
+        Caption = 'Imprimer '#55357#56744#65039
         OnClick = SBImpDevisClick
       end
       object JvDBGridLig_prof: TJvDBGrid
