@@ -62,7 +62,7 @@ object FrameFicheCaisse: TFrameFicheCaisse
       Height = 24
       Align = alTop
       Anchors = [akTop]
-      Caption = '&Valider'
+      Caption = '&Valider '#10004
       Default = True
       TabOrder = 0
       OnClick = BtnValiderClick
@@ -73,7 +73,7 @@ object FrameFicheCaisse: TFrameFicheCaisse
       Width = 101
       Height = 24
       Cancel = True
-      Caption = '&Annuler'
+      Caption = '&Annuler '#10060
       ModalResult = 2
       TabOrder = 1
       OnClick = BtnAnnulerClick
@@ -83,7 +83,7 @@ object FrameFicheCaisse: TFrameFicheCaisse
       Top = 48
       Width = 101
       Height = 24
-      Caption = 'Aide'
+      Caption = 'Aide '#10067
       TabOrder = 2
       OnClick = BtnAideClick
     end

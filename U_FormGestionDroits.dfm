@@ -17,7 +17,7 @@ object FrameGestionDroits: TFrameGestionDroits
     Top = 24
     Width = 162
     Height = 44
-    Caption = 'Enregistrer les attributions'#13#10'de l'#39'utilisateur'
+    Caption = 'Enregistrer les attributions'#13#10'de l'#39'utilisateur '#55357#56510
     TabOrder = 1
     OnClick = BtnEnregistrerClick
   end
@@ -59,7 +59,7 @@ object FrameGestionDroits: TFrameGestionDroits
       Top = 37
       Width = 75
       Height = 25
-      Caption = 'Ajouter'
+      Caption = 'Ajouter '#10133
       Enabled = False
       TabOrder = 2
       OnClick = BtnAjouterDroitClick
@@ -70,7 +70,7 @@ object FrameGestionDroits: TFrameGestionDroits
     Top = 74
     Width = 162
     Height = 44
-    Caption = 'Supprimer la '#13#10'permission selectionn'#233'e'
+    Caption = 'Supprimer la '#13#10'permission selectionn'#233'e '#55357#56785#65039
     Enabled = False
     TabOrder = 4
     OnClick = BtnSupprimerDroitClick
@@ -80,7 +80,7 @@ object FrameGestionDroits: TFrameGestionDroits
     Top = 56
     Width = 145
     Height = 25
-    Caption = 'Gestion des utilisateurs'
+    Caption = 'Gestion des utilisateurs '#55357#56421
     TabOrder = 5
     OnClick = BtnUsersClick
   end

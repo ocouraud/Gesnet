@@ -39,7 +39,7 @@ object FormCentraVentes: TFormCentraVentes
     Top = 112
     Width = 89
     Height = 33
-    Caption = 'Executer'
+    Caption = 'Executer '#9654#65039
     ModalResult = 1
     TabOrder = 0
     OnClick = BtnValidClick
@@ -70,7 +70,7 @@ object FormCentraVentes: TFormCentraVentes
     Width = 89
     Height = 33
     Cancel = True
-    Caption = 'Annuler'
+    Caption = 'Annuler '#10060
     ModalResult = 2
     TabOrder = 3
   end

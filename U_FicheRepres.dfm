@@ -190,7 +190,7 @@ object FormFicheRepres: TFormFicheRepres
     Top = 80
     Width = 608
     Height = 353
-    ActivePage = TabSheet2
+    ActivePage = TabSheet3
     TabOrder = 2
     object TabSheet1: TTabSheet
       Caption = 'Financier'
@@ -498,7 +498,7 @@ object FormFicheRepres: TFormFicheRepres
       Height = 27
       Align = alTop
       Anchors = [akTop]
-      Caption = '&Valider'
+      Caption = '&Valider '#10004
       Default = True
       TabOrder = 0
       OnClick = BtnValiderClick
@@ -510,7 +510,7 @@ object FormFicheRepres: TFormFicheRepres
       Height = 27
       Align = alClient
       Cancel = True
-      Caption = '&Annuler'
+      Caption = '&Annuler '#10060
       ModalResult = 2
       TabOrder = 1
     end
@@ -521,7 +521,7 @@ object FormFicheRepres: TFormFicheRepres
       Height = 27
       Align = alBottom
       Anchors = [akBottom]
-      Caption = 'Aide'
+      Caption = 'Aide '#10067
       TabOrder = 2
       OnClick = BtnAideClick
     end

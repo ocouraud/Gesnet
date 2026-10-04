@@ -168,11 +168,10 @@ object FormFichePaiement: TFormFichePaiement
       Height = 27
       Align = alTop
       Anchors = [akTop]
-      Caption = '&Valider'
+      Caption = '&Valider '#10004
       Default = True
       TabOrder = 0
       OnClick = BtnValiderClick
-      ExplicitLeft = 1
     end
     object BtnAnnuler: TBitBtn
       Left = 0
@@ -181,10 +180,9 @@ object FormFichePaiement: TFormFichePaiement
       Height = 27
       Align = alClient
       Cancel = True
-      Caption = '&Annuler'
+      Caption = '&Annuler '#10060
       ModalResult = 2
       TabOrder = 1
-      ExplicitLeft = 1
     end
     object BtnAide: TBitBtn
       Left = 0
@@ -193,10 +191,9 @@ object FormFichePaiement: TFormFichePaiement
       Height = 27
       Align = alBottom
       Anchors = [akBottom]
-      Caption = 'Aide'
+      Caption = 'Aide '#10067
       TabOrder = 2
       OnClick = BtnAideClick
-      ExplicitLeft = 1
     end
   end
   object DBLookupComboBoxJournal: TDBLookupComboBox

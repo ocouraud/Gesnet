@@ -78,7 +78,7 @@ object FrameTableJournaux: TFrameTableJournaux
       Height = 29
       Margins.Left = 6
       Margins.Right = 6
-      Caption = '&Fermer'
+      Caption = '&Fermer '#10060
       ModalResult = 8
       TabOrder = 0
       OnClick = BtnFermerClick
@@ -88,7 +88,7 @@ object FrameTableJournaux: TFrameTableJournaux
       Top = 28
       Width = 87
       Height = 29
-      Caption = 'Aide'
+      Caption = 'Aide '#10067
       TabOrder = 1
       OnClick = BtnAideClick
     end
@@ -108,7 +108,7 @@ object FrameTableJournaux: TFrameTableJournaux
       Margins.Left = 6
       Margins.Right = 6
       Align = alLeft
-      Caption = '&Supprimer'
+      Caption = '&Supprimer '#55357#56785#65039
       TabOrder = 0
       OnClick = BtnSupprimerClick
     end

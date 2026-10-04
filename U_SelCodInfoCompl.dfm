@@ -73,7 +73,7 @@ object FormSelCodInfoCompl: TFormSelCodInfoCompl
     Width = 75
     Height = 25
     Anchors = [akRight, akBottom]
-    Caption = '&Valider'
+    Caption = '&Valider '#10004
     ModalResult = 1
     TabOrder = 1
     OnClick = BtnValiderClick
@@ -84,7 +84,7 @@ object FormSelCodInfoCompl: TFormSelCodInfoCompl
     Width = 75
     Height = 25
     Anchors = [akRight, akBottom]
-    Caption = '&Annuler'
+    Caption = '&Annuler '#10060
     ModalResult = 2
     TabOrder = 2
   end

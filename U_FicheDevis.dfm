@@ -341,7 +341,6 @@ object FormFicheDevis: TFormFicheDevis
     Height = 106
     Align = alBottom
     TabOrder = 12
-    ExplicitWidth = 762
     DesignSize = (
       884
       106)
@@ -439,7 +438,6 @@ object FormFicheDevis: TFormFicheDevis
       ParentFont = False
       ReadOnly = True
       TabOrder = 0
-      ExplicitLeft = 535
     end
     object DBEdit12: TDBEdit
       Left = 781
@@ -460,7 +458,6 @@ object FormFicheDevis: TFormFicheDevis
       ParentFont = False
       ReadOnly = True
       TabOrder = 1
-      ExplicitLeft = 659
     end
     object DBEdit14: TDBEdit
       Left = 781
@@ -481,7 +478,6 @@ object FormFicheDevis: TFormFicheDevis
       ParentFont = False
       ReadOnly = True
       TabOrder = 2
-      ExplicitLeft = 659
     end
     object DBEdit16: TDBEdit
       Left = 781
@@ -502,7 +498,6 @@ object FormFicheDevis: TFormFicheDevis
       ParentFont = False
       ReadOnly = True
       TabOrder = 3
-      ExplicitLeft = 659
     end
     object DBEdit15: TDBEdit
       Left = 781
@@ -523,7 +518,6 @@ object FormFicheDevis: TFormFicheDevis
       ParentFont = False
       ReadOnly = True
       TabOrder = 4
-      ExplicitLeft = 659
     end
   end
   object DBEdit22: TDBEdit
@@ -550,7 +544,6 @@ object FormFicheDevis: TFormFicheDevis
     Caption = 'Exonere TVA'
     Enabled = False
     TabOrder = 14
-    ExplicitLeft = 649
   end
   object BtnAnnuler: TBitBtn
     Left = 753
@@ -559,10 +552,9 @@ object FormFicheDevis: TFormFicheDevis
     Height = 32
     Anchors = [akTop, akRight]
     Cancel = True
-    Caption = '&Fermer'
+    Caption = '&Fermer '#10060
     ModalResult = 8
     TabOrder = 15
-    ExplicitLeft = 631
   end
   object RzDBCheckBox2: TRzDBCheckBox
     Left = 771
@@ -578,7 +570,6 @@ object FormFicheDevis: TFormFicheDevis
     Caption = 'TVA Iles'
     Enabled = False
     TabOrder = 16
-    ExplicitLeft = 649
   end
   object DSEnt_prof: TDataSource
     DataSet = DM_Olivier.FDQueryEnt_prof

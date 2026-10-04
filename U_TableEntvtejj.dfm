@@ -20,7 +20,7 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
       Margins.Left = 6
       Margins.Right = 6
       Align = alLeft
-      Caption = '&Ajouter'
+      Caption = '&Ajouter '#10133
       TabOrder = 0
       OnClick = BtnAjouterClick
     end
@@ -32,7 +32,7 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
       Margins.Left = 6
       Margins.Right = 6
       Align = alLeft
-      Caption = '&Ouvrir'
+      Caption = '&Ouvrir '#55357#56514
       Default = True
       TabOrder = 1
       OnClick = BtnOuvrirClick
@@ -45,7 +45,7 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
       Margins.Left = 6
       Margins.Right = 6
       Align = alLeft
-      Caption = '&Suspendre'
+      Caption = '&Suspendre '#9208#65039
       TabOrder = 2
       StyleElements = [seClient, seBorder]
       OnClick = BtnSuspendreClick
@@ -58,7 +58,7 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
       Margins.Left = 6
       Margins.Right = 6
       Align = alRight
-      Caption = '&Fermer'
+      Caption = '&Fermer '#10060
       ModalResult = 8
       TabOrder = 3
       OnClick = BtnFermerClick
@@ -69,7 +69,7 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
       Width = 87
       Height = 29
       Align = alRight
-      Caption = 'Aide'
+      Caption = 'Aide '#10067
       TabOrder = 4
       OnClick = BtnAideClick
     end
@@ -843,8 +843,7 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
       'WHERE e.CODFAC = :CODFAC'
       
         'ORDER BY e.CODFAC ASC, l.NOENRF ASC -- Le tri obligatoire pour l' +
-        'a rupture'
-      '')
+        'a rupture ')
     Left = 152
     Top = 136
     ParamData = <
@@ -1958,6 +1957,24 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
     DataSetOptions = []
     Left = 552
     Top = 216
+    FieldDefs = <
+      item
+        FieldName = 'NoTVA'
+      end
+      item
+        FieldName = 'Libelle'
+        FieldType = fftString
+        Size = 30
+      end
+      item
+        FieldName = 'Taux'
+      end
+      item
+        FieldName = 'BaseHT'
+      end
+      item
+        FieldName = 'MontantTVA'
+      end>
   end
   object frxPDFExportFacture: TfrxPDFExport
     UseFileCache = True
@@ -1995,6 +2012,496 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
     DataSetOptions = []
     Left = 552
     Top = 152
+    FieldDefs = <
+      item
+        FieldName = 'OBSERV'
+        FieldType = fftString
+        Size = 1000
+      end
+      item
+        FieldName = 'CODFAC'
+      end
+      item
+        FieldName = 'TOP_'
+        FieldType = fftString
+      end
+      item
+        FieldName = 'CODCLI'
+      end
+      item
+        FieldName = 'CODCAI'
+        FieldType = fftString
+      end
+      item
+        FieldName = 'CODDEV'
+      end
+      item
+        FieldName = 'CODDEP'
+      end
+      item
+        FieldName = 'CODVEN'
+      end
+      item
+        FieldName = 'NOM'
+        FieldType = fftString
+        Size = 50
+      end
+      item
+        FieldName = 'NOTAHITI'
+        FieldType = fftString
+      end
+      item
+        FieldName = 'TYPE_'
+        FieldType = fftString
+      end
+      item
+        FieldName = 'EXO_TVA'
+      end
+      item
+        FieldName = 'ANNEE'
+      end
+      item
+        FieldName = 'MOIS'
+      end
+      item
+        FieldName = 'DATE_'
+        FieldType = fftDateTime
+      end
+      item
+        FieldName = 'HEURE'
+      end
+      item
+        FieldName = 'PRC_REMISE'
+      end
+      item
+        FieldName = 'MT_REMISE'
+      end
+      item
+        FieldName = 'TOTHT'
+      end
+      item
+        FieldName = 'MT_TTC'
+      end
+      item
+        FieldName = 'MT_HT0'
+      end
+      item
+        FieldName = 'MT_HT1'
+      end
+      item
+        FieldName = 'MT_HT2'
+      end
+      item
+        FieldName = 'MT_HT3'
+      end
+      item
+        FieldName = 'MT_TVA1'
+      end
+      item
+        FieldName = 'MT_TVA2'
+      end
+      item
+        FieldName = 'MT_TVA3'
+      end
+      item
+        FieldName = 'MT_TVA'
+      end
+      item
+        FieldName = 'MARGE'
+      end
+      item
+        FieldName = 'REFERENCE_'
+        FieldType = fftString
+        Size = 15
+      end
+      item
+        FieldName = 'CODREP'
+      end
+      item
+        FieldName = 'NO_SEM'
+      end
+      item
+        FieldName = 'NO_JOUR'
+      end
+      item
+        FieldName = 'REGL'
+      end
+      item
+        FieldName = 'CODPAI'
+        FieldType = fftString
+      end
+      item
+        FieldName = 'JRSCRD'
+      end
+      item
+        FieldName = 'FIN_MOIS'
+      end
+      item
+        FieldName = 'LIBREG'
+        FieldType = fftString
+        Size = 50
+      end
+      item
+        FieldName = 'CRD_FORCE'
+      end
+      item
+        FieldName = 'date_ech'
+        FieldType = fftDateTime
+      end
+      item
+        FieldName = 'ACOMPTE'
+      end
+      item
+        FieldName = 'CODGEO'
+        FieldType = fftString
+      end
+      item
+        FieldName = 'FLAG_TAX'
+      end
+      item
+        FieldName = 'SEL'
+      end
+      item
+        FieldName = 'DER_MODIF'
+      end
+      item
+        FieldName = 'NOMVEN'
+        FieldType = fftString
+        Size = 30
+      end
+      item
+        FieldName = 'MT_TSOC'
+      end
+      item
+        FieldName = 'MT_HTSOC'
+      end
+      item
+        FieldName = 'TX_TSOC'
+      end
+      item
+        FieldName = 'EXO_CPS'
+      end
+      item
+        FieldName = 'MT_TVAI'
+      end
+      item
+        FieldName = 'MT_HTI'
+      end
+      item
+        FieldName = 'TVA_ILES'
+        FieldType = fftBoolean
+      end
+      item
+        FieldName = 'OBSERV_1'
+        FieldType = fftString
+      end
+      item
+        FieldName = 'CODCLI_1'
+      end
+      item
+        FieldName = 'CPTAUX'
+        FieldType = fftString
+        Size = 13
+      end
+      item
+        FieldName = 'NOM_1'
+        FieldType = fftString
+        Size = 50
+      end
+      item
+        FieldName = 'CODREP_1'
+      end
+      item
+        FieldName = 'PRC_REMISE_1'
+      end
+      item
+        FieldName = 'NOTEL'
+        FieldType = fftString
+        Size = 15
+      end
+      item
+        FieldName = 'NOTAHITI_1'
+        FieldType = fftString
+      end
+      item
+        FieldName = 'NOFAX'
+        FieldType = fftString
+        Size = 15
+      end
+      item
+        FieldName = 'JRSCRD_1'
+      end
+      item
+        FieldName = 'CREDIT'
+      end
+      item
+        FieldName = 'plaf_crd'
+      end
+      item
+        FieldName = 'CODPAI_1'
+        FieldType = fftString
+      end
+      item
+        FieldName = 'FIN_MOIS_1'
+      end
+      item
+        FieldName = 'NB_EX'
+      end
+      item
+        FieldName = 'CAAN'
+      end
+      item
+        FieldName = 'AD1'
+        FieldType = fftString
+        Size = 30
+      end
+      item
+        FieldName = 'AD2'
+        FieldType = fftString
+        Size = 30
+      end
+      item
+        FieldName = 'AD3'
+        FieldType = fftString
+        Size = 30
+      end
+      item
+        FieldName = 'CUM_MVT'
+      end
+      item
+        FieldName = 'MT_CPTA'
+      end
+      item
+        FieldName = 'EXO_TVA_1'
+      end
+      item
+        FieldName = 'BLOQUE'
+      end
+      item
+        FieldName = 'CODGEO_1'
+        FieldType = fftString
+        Size = 20
+      end
+      item
+        FieldName = 'EMAIL'
+        FieldType = fftString
+        Size = 50
+      end
+      item
+        FieldName = 'CODTAR'
+        FieldType = fftString
+      end
+      item
+        FieldName = 'ADM'
+      end
+      item
+        FieldName = 'FLAG_TAX_1'
+      end
+      item
+        FieldName = 'CODFAC_ADM'
+        FieldType = fftString
+        Size = 20
+      end
+      item
+        FieldName = 'FERME'
+      end
+      item
+        FieldName = 'DER_MODIF_1'
+      end
+      item
+        FieldName = 'SPEC_GOUV'
+      end
+      item
+        FieldName = 'NOGSM'
+      end
+      item
+        FieldName = 'PLV'
+      end
+      item
+        FieldName = 'INTIT_BQ'
+        FieldType = fftString
+        Size = 30
+      end
+      item
+        FieldName = 'CODE_BQ'
+        FieldType = fftString
+      end
+      item
+        FieldName = 'CODE_GUI'
+        FieldType = fftString
+      end
+      item
+        FieldName = 'NOCPT'
+        FieldType = fftString
+        Size = 11
+      end
+      item
+        FieldName = 'CLE'
+        FieldType = fftString
+      end
+      item
+        FieldName = 'COEF_MAJ_PR'
+      end
+      item
+        FieldName = 'EXO_CPS_1'
+      end
+      item
+        FieldName = 'PAS_REM'
+      end
+      item
+        FieldName = 'REM_FAM'
+      end
+      item
+        FieldName = 'RELEVE_EMAIL'
+        FieldType = fftBoolean
+      end
+      item
+        FieldName = 'SELECT_'
+        FieldType = fftBoolean
+      end
+      item
+        FieldName = 'APP_TARIFCLI'
+        FieldType = fftBoolean
+      end
+      item
+        FieldName = 'TVA_ILES_1'
+        FieldType = fftBoolean
+      end
+      item
+        FieldName = 'LIBELLE'
+        FieldType = fftString
+      end
+      item
+        FieldName = 'CODFAC_1'
+      end
+      item
+        FieldName = 'CODCLI_2'
+      end
+      item
+        FieldName = 'CODCAI_1'
+        FieldType = fftString
+      end
+      item
+        FieldName = 'CODDEV_1'
+      end
+      item
+        FieldName = 'CODDEP_1'
+      end
+      item
+        FieldName = 'NOENR'
+      end
+      item
+        FieldName = 'ANNEE_1'
+      end
+      item
+        FieldName = 'MOIS_1'
+      end
+      item
+        FieldName = 'CODREP_2'
+      end
+      item
+        FieldName = 'CODFOU'
+        FieldType = fftString
+      end
+      item
+        FieldName = 'CODSSF'
+        FieldType = fftString
+      end
+      item
+        FieldName = 'CODFAM'
+        FieldType = fftString
+      end
+      item
+        FieldName = 'CODDPT'
+        FieldType = fftString
+      end
+      item
+        FieldName = 'TYPE__1'
+        FieldType = fftString
+      end
+      item
+        FieldName = 'CODART'
+        FieldType = fftString
+        Size = 13
+      end
+      item
+        FieldName = 'CODBAR'
+        FieldType = fftString
+        Size = 13
+      end
+      item
+        FieldName = 'QTE'
+      end
+      item
+        FieldName = 'POIDS'
+      end
+      item
+        FieldName = 'CODTAR_1'
+        FieldType = fftString
+      end
+      item
+        FieldName = 'PRIXHT'
+      end
+      item
+        FieldName = 'PRIXTTC'
+      end
+      item
+        FieldName = 'PRIXNET'
+      end
+      item
+        FieldName = 'TOTHT_1'
+      end
+      item
+        FieldName = 'MT_TTC_1'
+      end
+      item
+        FieldName = 'PRC_REMISE_2'
+      end
+      item
+        FieldName = 'MT_REMISE_1'
+      end
+      item
+        FieldName = 'TX_TVA'
+      end
+      item
+        FieldName = 'MT_TVA_1'
+      end
+      item
+        FieldName = 'NO_TVA'
+      end
+      item
+        FieldName = 'PRIXREV'
+      end
+      item
+        FieldName = 'MARGE_1'
+      end
+      item
+        FieldName = 'NO_SEM_1'
+      end
+      item
+        FieldName = 'NO_JOUR_1'
+      end
+      item
+        FieldName = 'DET_PPT'
+      end
+      item
+        FieldName = 'DET_ILE'
+      end
+      item
+        FieldName = 'NOENRF'
+      end
+      item
+        FieldName = 'PXLVTTC'
+      end
+      item
+        FieldName = 'DER_MODIF_2'
+      end
+      item
+        FieldName = 'TX_TSOC_1'
+      end
+      item
+        FieldName = 'MT_TSOC_1'
+      end>
   end
   object frxReportFacture: TfrxReport
     Version = '2024.1.2'
@@ -2005,7 +2512,7 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
     PrintOptions.Printer = 'Default'
     PrintOptions.PrintOnSheet = 0
     ReportOptions.CreateDate = 46280.575471794000000000
-    ReportOptions.LastChange = 46296.617577291670000000
+    ReportOptions.LastChange = 46298.627134282400000000
     ScriptLanguage = 'PascalScript'
     ScriptText.Strings = (
       'begin'
@@ -2322,10 +2829,10 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
         Frame.Typ = [ftLeft, ftRight, ftTop, ftBottom]
         Font.Charset = DEFAULT_CHARSET
         Font.Color = clBlack
-        Font.Height = -11
+        Font.Height = -9
         Font.Name = 'Arial'
         Font.Style = []
-        Height = 19.653543310000000000
+        Height = 18.897637795275590000
         ParentFont = False
         Top = 287.244280000000000000
         Width = 755.906000000000000000
@@ -2337,8 +2844,7 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
         object MemofrxDBDataset1CODART: TfrxMemoView
           IndexTag = 1
           AllowVectorExport = True
-          Left = 3.779530000000000000
-          Width = 83.149660000000000000
+          Width = 86.929190000000000000
           Height = 18.897637800000000000
           StretchMode = smMaxHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
@@ -2347,7 +2853,7 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
           DataSetName = 'frxDBDatasetFacture'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
-          Font.Height = -11
+          Font.Height = -9
           Font.Name = 'Arial'
           Font.Style = []
           Frame.Typ = []
@@ -2362,22 +2868,28 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
           Left = 86.929190000000000000
           Width = 230.551330000000000000
           Height = 18.897650000000000000
-          StretchMode = smActualHeight
+          StretchMode = smMaxHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
           DataSet = frxDBDatasetFacture
           DataSetName = 'frxDBDatasetFacture'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
-          Font.Height = -11
+          Font.Height = -9
           Font.Name = 'Arial'
           Font.Style = []
           Frame.Typ = [ftLeft]
           GapX = 5.000000000000000000
+          HideZeros = True
           Memo.UTF8W = (
             '[frxDBDatasetFacture."LIBELLE"]')
           ParentFont = False
           VAlign = vaCenter
+          Formats = <
+            item
+            end
+            item
+            end>
         end
         object MemofrxDBDataset1QTE: TfrxMemoView
           IndexTag = 1
@@ -2395,7 +2907,7 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
           DisplayFormat.Kind = fkNumeric
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
-          Font.Height = -11
+          Font.Height = -9
           Font.Name = 'Arial'
           Font.Style = []
           Frame.Typ = [ftLeft]
@@ -2421,7 +2933,7 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
           DisplayFormat.Kind = fkNumeric
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
-          Font.Height = -11
+          Font.Height = -9
           Font.Name = 'Arial'
           Font.Style = []
           Frame.Typ = [ftLeft]
@@ -2448,7 +2960,7 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
           DisplayFormat.Kind = fkNumeric
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
-          Font.Height = -11
+          Font.Height = -9
           Font.Name = 'Arial'
           Font.Style = []
           Frame.Typ = [ftLeft]
@@ -2475,7 +2987,7 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
           DisplayFormat.Kind = fkNumeric
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
-          Font.Height = -11
+          Font.Height = -9
           Font.Name = 'Arial'
           Font.Style = []
           Frame.Typ = [ftLeft]
@@ -2501,7 +3013,7 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
           DisplayFormat.Kind = fkNumeric
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
-          Font.Height = -11
+          Font.Height = -9
           Font.Name = 'Arial'
           Font.Style = []
           Frame.Typ = [ftLeft]
@@ -2553,7 +3065,7 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
           DisplayFormat.Kind = fkNumeric
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
-          Font.Height = -11
+          Font.Height = -9
           Font.Name = 'Arial'
           Font.Style = []
           Frame.Typ = [ftLeft]
@@ -2577,7 +3089,7 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
           DataSetName = 'frxDBDatasetFacture'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
-          Font.Height = -11
+          Font.Height = -9
           Font.Name = 'Arial'
           Font.Style = []
           Frame.Typ = [ftLeft]
@@ -3271,9 +3783,9 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
           DisplayFormat.Kind = fkNumeric
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
-          Font.Height = -11
+          Font.Height = -9
           Font.Name = 'Arial'
-          Font.Style = []
+          Font.Style = [fsBold]
           Frame.Typ = [ftLeft, ftRight, ftTop, ftBottom]
           GapX = 5.000000000000000000
           HAlign = haRight
@@ -3293,9 +3805,9 @@ object FrameTableEntvtejj: TFrameTableEntvtejj
           DisplayFormat.Kind = fkNumeric
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
-          Font.Height = -11
+          Font.Height = -9
           Font.Name = 'Arial'
-          Font.Style = []
+          Font.Style = [fsBold]
           Frame.Typ = [ftLeft, ftRight, ftTop, ftBottom]
           GapX = 5.000000000000000000
           HAlign = haRight

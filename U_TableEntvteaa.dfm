@@ -20,7 +20,7 @@ object FrameTableEntvteaa: TFrameTableEntvteaa
       Margins.Left = 6
       Margins.Right = 6
       Align = alLeft
-      Caption = '&Ouvrir'
+      Caption = '&Ouvrir '#55357#56514
       Default = True
       TabOrder = 0
       OnClick = BtnOuvrirClick
@@ -33,7 +33,7 @@ object FrameTableEntvteaa: TFrameTableEntvteaa
       Margins.Left = 6
       Margins.Right = 6
       Align = alRight
-      Caption = '&Fermer'
+      Caption = '&Fermer '#10060
       ModalResult = 8
       TabOrder = 1
       OnClick = BtnFermerClick
@@ -44,7 +44,7 @@ object FrameTableEntvteaa: TFrameTableEntvteaa
       Width = 87
       Height = 29
       Align = alRight
-      Caption = 'Aide'
+      Caption = 'Aide '#10067
       TabOrder = 2
       OnClick = BtnAideClick
     end
@@ -56,6 +56,18 @@ object FrameTableEntvteaa: TFrameTableEntvteaa
       Caption = 'Imprimer '#55357#56744#65039
       TabOrder = 3
       OnClick = BtnImprimerClick
+    end
+    object BtnDupliquer: TBitBtn
+      Left = 194
+      Top = 0
+      Width = 87
+      Height = 29
+      Margins.Left = 6
+      Margins.Right = 6
+      Caption = '&Dupliquer '#55357#56523
+      TabOrder = 4
+      StyleElements = [seClient, seBorder]
+      OnClick = BtnDupliquerClick
     end
   end
   object JvDBGridEntvteaa: TJvDBGrid

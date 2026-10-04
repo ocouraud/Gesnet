@@ -194,7 +194,7 @@ object FormFicheClient: TFormFicheClient
     Top = 112
     Width = 799
     Height = 406
-    ActivePage = TabSheet5
+    ActivePage = TabSheet3
     Align = alCustom
     Anchors = [akLeft, akTop, akRight, akBottom]
     TabOrder = 5
@@ -690,26 +690,26 @@ object FormFicheClient: TFormFicheClient
       end
       object BtnNouveauTarifcli: TSpeedButton
         Left = 3
-        Top = 288
+        Top = 346
         Width = 72
         Height = 28
-        Caption = 'Ajouter'
+        Caption = 'Ajouter '#10133
         OnClick = BtnNouveauTarifcliClick
       end
       object BtnModifierTarifcli: TSpeedButton
         Left = 81
-        Top = 288
+        Top = 346
         Width = 72
         Height = 28
-        Caption = 'Modifier'
+        Caption = 'Modifier '#55357#56514
         OnClick = BtnModifierTarifcliClick
       end
       object BtnSupprimerTarifcli: TSpeedButton
         Left = 159
-        Top = 288
-        Width = 72
+        Top = 346
+        Width = 80
         Height = 28
-        Caption = 'Supprimer'
+        Caption = 'Supprimer '#55357#56785#65039
         OnClick = BtnSupprimerTarifcliClick
       end
       object ComboTarif: TDBLookupComboBox
@@ -730,7 +730,7 @@ object FormFicheClient: TFormFicheClient
         Left = 3
         Top = 68
         Width = 570
-        Height = 214
+        Height = 272
         DataSource = DSTarifcli
         Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
         TabOrder = 1
@@ -803,15 +803,14 @@ object FormFicheClient: TFormFicheClient
       object BtnConsulterFacture: TSpeedButton
         Left = 3
         Top = 345
-        Width = 72
+        Width = 82
         Height = 28
         Anchors = [akLeft, akBottom]
-        Caption = 'Consulter'
+        Caption = 'Consulter '#55357#56514
         OnClick = BtnConsulterFactureClick
-        ExplicitTop = 288
       end
       object BtnImprimerFacture: TSpeedButton
-        Left = 81
+        Left = 92
         Top = 345
         Width = 80
         Height = 28
@@ -917,14 +916,14 @@ object FormFicheClient: TFormFicheClient
       object BtnConsulter_devis: TSpeedButton
         Left = 3
         Top = 345
-        Width = 72
+        Width = 82
         Height = 28
         Anchors = [akLeft, akBottom]
-        Caption = 'Consulter'
+        Caption = 'Consulter '#55357#56514
         OnClick = BtnConsulter_devisClick
       end
       object BtnImpDevis: TSpeedButton
-        Left = 81
+        Left = 91
         Top = 345
         Width = 91
         Height = 28
@@ -1376,7 +1375,7 @@ object FormFicheClient: TFormFicheClient
         Width = 75
         Height = 25
         Anchors = [akRight, akBottom]
-        Caption = '&Ajouter'
+        Caption = '&Ajouter '#10133
         TabOrder = 1
         OnClick = BtnAjouterInfoClick
       end
@@ -1386,7 +1385,7 @@ object FormFicheClient: TFormFicheClient
         Width = 75
         Height = 25
         Anchors = [akRight, akBottom]
-        Caption = '&Supprimer'
+        Caption = '&Supprimer '#55357#56785#65039
         TabOrder = 2
         OnClick = BtnSupprimerInfoClick
       end
@@ -1447,10 +1446,11 @@ object FormFicheClient: TFormFicheClient
       Height = 27
       Align = alTop
       Anchors = [akTop]
-      Caption = '&Valider'
+      Caption = '&Valider '#10004
       Default = True
       TabOrder = 0
       OnClick = BtnValiderClick
+      ExplicitTop = -6
     end
     object BtnAnnuler: TBitBtn
       Left = 0
@@ -1459,7 +1459,7 @@ object FormFicheClient: TFormFicheClient
       Height = 27
       Align = alClient
       Cancel = True
-      Caption = '&Annuler'
+      Caption = '&Annuler '#10060
       ModalResult = 2
       TabOrder = 1
     end
@@ -1470,7 +1470,7 @@ object FormFicheClient: TFormFicheClient
       Height = 27
       Align = alBottom
       Anchors = [akBottom]
-      Caption = 'Aide'
+      Caption = 'Aide '#10067
       TabOrder = 2
       OnClick = BtnAideClick
     end
@@ -1489,13 +1489,13 @@ object FormFicheClient: TFormFicheClient
   end
   object DSClients: TDataSource
     DataSet = DMGesCloud.ReqClients
-    Left = 104
-    Top = 427
+    Left = 80
+    Top = 435
   end
   object DSRepres: TDataSource
     DataSet = DMGesCloud.ReqRepres
-    Left = 48
-    Top = 392
+    Left = 80
+    Top = 368
   end
   object DSGeo: TDataSource
     DataSet = DMGesCloud.ReqGeo
@@ -1504,8 +1504,8 @@ object FormFicheClient: TFormFicheClient
   end
   object DSPaiement: TDataSource
     DataSet = DMGesCloud.ReqPaiement
-    Left = 152
-    Top = 430
+    Left = 168
+    Top = 358
   end
   object DSTarif: TDataSource
     DataSet = DMGesCloud.ReqTarif
@@ -1575,8 +1575,8 @@ object FormFicheClient: TFormFicheClient
     SQL.Strings = (
       'select * from tresor t'
       'WHERE t.CODCLI = :CODCLI')
-    Left = 244
-    Top = 394
+    Left = 292
+    Top = 338
     ParamData = <
       item
         Name = 'CODCLI'
@@ -1631,8 +1631,8 @@ object FormFicheClient: TFormFicheClient
   end
   object DSCliinfocompl: TDataSource
     DataSet = FDQueryCliinfocompl
-    Left = 548
-    Top = 458
+    Left = 476
+    Top = 466
   end
   object FDQueryEnt_prof: TFDQuery
     MasterSource = DSClients
@@ -1732,8 +1732,8 @@ object FormFicheClient: TFormFicheClient
         'TWEEN p_eff.dat_deb AND p_eff.dat_fin'
       'WHERE ep.CODFAC = :CODFAC AND ep.mt_htI <> 0'
       '')
-    Left = 128
-    Top = 184
+    Left = 152
+    Top = 152
     ParamData = <
       item
         Name = 'CODFAC'
@@ -3586,8 +3586,8 @@ object FormFicheClient: TFormFicheClient
         'ORDER BY e.CODFAC ASC, l.NOENRF ASC -- Le tri obligatoire pour l' +
         'a rupture'
       '')
-    Left = 32
-    Top = 184
+    Left = 48
+    Top = 152
     ParamData = <
       item
         Name = 'CODFAC'

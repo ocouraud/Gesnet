@@ -22,7 +22,7 @@ object FrameTableDevises: TFrameTableDevises
       Margins.Left = 6
       Margins.Right = 6
       Align = alRight
-      Caption = '&Fermer'
+      Caption = '&Fermer '#10060
       ModalResult = 8
       TabOrder = 0
       OnClick = BtnFermerClick
@@ -33,7 +33,7 @@ object FrameTableDevises: TFrameTableDevises
       Width = 87
       Height = 29
       Align = alRight
-      Caption = 'Aide'
+      Caption = 'Aide '#10067
       TabOrder = 1
       OnClick = BtnAideClick
     end

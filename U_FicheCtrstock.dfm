@@ -19,7 +19,7 @@ object FrameFicheCtrstock: TFrameFicheCtrstock
     Top = 76
     Width = 741
     Height = 497
-    ActivePage = TabSheet3
+    ActivePage = TabSheet4
     Align = alClient
     TabOrder = 0
     object TabSheet1: TTabSheet
@@ -801,7 +801,7 @@ object FrameFicheCtrstock: TFrameFicheCtrstock
         Height = 24
         Align = alTop
         Anchors = [akTop]
-        Caption = '&Valider'
+        Caption = '&Valider '#10004
         Default = True
         TabOrder = 0
         OnClick = BtnValiderClick
@@ -812,7 +812,7 @@ object FrameFicheCtrstock: TFrameFicheCtrstock
         Width = 101
         Height = 24
         Cancel = True
-        Caption = '&Annuler'
+        Caption = '&Annuler '#10060
         ModalResult = 2
         TabOrder = 1
         OnClick = BtnAnnulerClick
@@ -822,7 +822,7 @@ object FrameFicheCtrstock: TFrameFicheCtrstock
         Top = 48
         Width = 101
         Height = 24
-        Caption = 'Aide'
+        Caption = 'Aide '#10067
         TabOrder = 2
         OnClick = BtnAideClick
       end

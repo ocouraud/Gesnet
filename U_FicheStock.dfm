@@ -117,7 +117,7 @@ object FormFicheStock: TFormFicheStock
       Width = 105
       Height = 28
       Align = alTop
-      Caption = '&Valider'
+      Caption = '&Valider '#10004
       Default = True
       TabOrder = 0
       OnClick = BtnValiderClick
@@ -128,7 +128,7 @@ object FormFicheStock: TFormFicheStock
       Width = 105
       Height = 32
       Cancel = True
-      Caption = '&Annuler'
+      Caption = '&Annuler '#10060
       ModalResult = 2
       TabOrder = 1
       OnClick = BtnAnnulerClick

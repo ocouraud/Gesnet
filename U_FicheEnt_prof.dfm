@@ -4,7 +4,7 @@ object FormEnt_prof: TFormEnt_prof
   ActiveControl = JvDBDate_
   Caption = 'FormEnt_prof'
   ClientHeight = 661
-  ClientWidth = 1004
+  ClientWidth = 1016
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -17,17 +17,18 @@ object FormEnt_prof: TFormEnt_prof
   object Panel3: TPanel
     Left = 0
     Top = 528
-    Width = 1004
+    Width = 1016
     Height = 133
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 2
+    ExplicitWidth = 1004
     DesignSize = (
-      1004
+      1016
       133)
     object Label13: TLabel
-      Left = 601
-      Top = 18
+      Left = 575
+      Top = 9
       Width = 55
       Height = 15
       Anchors = [akRight, akBottom]
@@ -38,11 +39,10 @@ object FormEnt_prof: TFormEnt_prof
       Font.Name = 'Segoe UI'
       Font.Style = [fsBold]
       ParentFont = False
-      ExplicitLeft = 514
     end
     object Label12: TLabel
-      Left = 723
-      Top = 18
+      Left = 697
+      Top = 9
       Width = 65
       Height = 15
       Anchors = [akRight, akBottom]
@@ -53,11 +53,10 @@ object FormEnt_prof: TFormEnt_prof
       Font.Name = 'Segoe UI'
       Font.Style = [fsBold]
       ParentFont = False
-      ExplicitLeft = 636
     end
     object Label14: TLabel
-      Left = 723
-      Top = 47
+      Left = 697
+      Top = 38
       Width = 55
       Height = 15
       Anchors = [akRight, akBottom]
@@ -68,11 +67,10 @@ object FormEnt_prof: TFormEnt_prof
       Font.Name = 'Segoe UI'
       Font.Style = [fsBold]
       ParentFont = False
-      ExplicitLeft = 636
     end
     object Label16: TLabel
-      Left = 723
-      Top = 76
+      Left = 697
+      Top = 67
       Width = 84
       Height = 15
       Anchors = [akRight, akBottom]
@@ -83,11 +81,10 @@ object FormEnt_prof: TFormEnt_prof
       Font.Name = 'Segoe UI'
       Font.Style = [fsBold]
       ParentFont = False
-      ExplicitLeft = 636
     end
     object Label15: TLabel
-      Left = 723
-      Top = 105
+      Left = 697
+      Top = 96
       Width = 77
       Height = 21
       Anchors = [akRight, akBottom]
@@ -98,11 +95,10 @@ object FormEnt_prof: TFormEnt_prof
       Font.Name = 'Segoe UI'
       Font.Style = [fsBold]
       ParentFont = False
-      ExplicitLeft = 636
     end
     object DBPRC_REMISE: TDBEdit
-      Left = 662
-      Top = 15
+      Left = 636
+      Top = 6
       Width = 35
       Height = 23
       Anchors = [akRight, akBottom]
@@ -120,8 +116,8 @@ object FormEnt_prof: TFormEnt_prof
       OnExit = DBPRC_REMISEExit
     end
     object DBMT_REMISE: TDBEdit
-      Left = 813
-      Top = 15
+      Left = 787
+      Top = 6
       Width = 87
       Height = 23
       Anchors = [akRight, akBottom]
@@ -140,8 +136,8 @@ object FormEnt_prof: TFormEnt_prof
       TabOrder = 1
     end
     object DBTOTHT: TDBEdit
-      Left = 814
-      Top = 44
+      Left = 788
+      Top = 35
       Width = 86
       Height = 23
       Anchors = [akRight, akBottom]
@@ -160,8 +156,8 @@ object FormEnt_prof: TFormEnt_prof
       TabOrder = 2
     end
     object DBMT_TVA: TDBEdit
-      Left = 813
-      Top = 73
+      Left = 787
+      Top = 64
       Width = 87
       Height = 23
       Anchors = [akRight, akBottom]
@@ -180,8 +176,8 @@ object FormEnt_prof: TFormEnt_prof
       TabOrder = 3
     end
     object DBMT_TTC: TDBEdit
-      Left = 813
-      Top = 102
+      Left = 787
+      Top = 93
       Width = 87
       Height = 29
       Anchors = [akRight, akBottom]
@@ -203,12 +199,13 @@ object FormEnt_prof: TFormEnt_prof
   object Panel1: TPanel
     Left = 0
     Top = 0
-    Width = 1004
+    Width = 1016
     Height = 242
     Align = alTop
     TabOrder = 0
+    ExplicitWidth = 1004
     DesignSize = (
-      1004
+      1016
       242)
     object LabelHeureLisible: TLabel
       Left = 375
@@ -288,7 +285,7 @@ object FormEnt_prof: TFormEnt_prof
       Caption = 'Nom sur facture . . . . . >'
     end
     object RzDBCheckBoxEXO_TVA: TRzDBCheckBox
-      Left = 756
+      Left = 768
       Top = 108
       Width = 87
       Height = 18
@@ -300,9 +297,10 @@ object FormEnt_prof: TFormEnt_prof
       Caption = 'Exonere TVA'
       TabOrder = 11
       OnClick = RzDBCheckBoxEXO_TVAClick
+      ExplicitLeft = 756
     end
     object RzDBCheckBoxFlag_Tax: TRzDBCheckBox
-      Left = 756
+      Left = 768
       Top = 156
       Width = 106
       Height = 32
@@ -314,9 +312,10 @@ object FormEnt_prof: TFormEnt_prof
       Caption = 'Calcul de la TVA'#13' sur le HT.'
       TabOrder = 13
       OnClick = RzDBCheckBoxFlag_TaxClick
+      ExplicitLeft = 756
     end
     object RzDBCheckBoxTVA_ILES: TRzDBCheckBox
-      Left = 756
+      Left = 768
       Top = 132
       Width = 62
       Height = 18
@@ -328,15 +327,17 @@ object FormEnt_prof: TFormEnt_prof
       Caption = 'TVA Iles'
       TabOrder = 12
       OnClick = RzDBCheckBoxTVA_ILESClick
+      ExplicitLeft = 756
     end
     object Panel12: TPanel
-      Left = 899
+      Left = 911
       Top = 1
       Width = 104
       Height = 240
       Align = alRight
       BevelOuter = bvNone
       TabOrder = 2
+      ExplicitLeft = 899
       object BtnValider: TBitBtn
         Left = 0
         Top = 0
@@ -344,7 +345,7 @@ object FormEnt_prof: TFormEnt_prof
         Height = 30
         Align = alTop
         Anchors = [akTop]
-        Caption = '&Valider'
+        Caption = '&Valider '#10004
         Default = True
         TabOrder = 0
         OnClick = BtnValiderClick
@@ -355,7 +356,7 @@ object FormEnt_prof: TFormEnt_prof
         Width = 104
         Height = 30
         Align = alTop
-        Caption = 'Aide'
+        Caption = 'Aide '#10067
         TabOrder = 2
       end
       object BtnAnnuler: TBitBtn
@@ -365,7 +366,7 @@ object FormEnt_prof: TFormEnt_prof
         Height = 30
         Align = alTop
         Cancel = True
-        Caption = '&Annuler'
+        Caption = '&Annuler '#10060
         ModalResult = 2
         TabOrder = 1
       end
@@ -519,14 +520,15 @@ object FormEnt_prof: TFormEnt_prof
   object Panel2: TPanel
     Left = 0
     Top = 242
-    Width = 1004
+    Width = 1016
     Height = 286
     Align = alClient
     TabOrder = 1
+    ExplicitWidth = 1004
     object Panel5: TPanel
-      Left = 900
+      Left = 896
       Top = 1
-      Width = 103
+      Width = 119
       Height = 284
       Align = alRight
       BevelOuter = bvNone
@@ -534,27 +536,27 @@ object FormEnt_prof: TFormEnt_prof
       object BtnAjouterLigne: TButton
         Left = 1
         Top = 1
-        Width = 102
+        Width = 112
         Height = 30
-        Caption = 'Nouvelle ligne'
+        Caption = 'Nouvelle ligne '#10133
         TabOrder = 0
         OnClick = BtnAjouterLigneClick
       end
       object BtnSupprimerLigne: TButton
         Left = 1
         Top = 73
-        Width = 102
+        Width = 112
         Height = 30
-        Caption = 'Supprimer ligne'
+        Caption = 'Supprimer lignes '#55357#56785#65039
         TabOrder = 2
         OnClick = BtnSupprimerLigneClick
       end
       object BtnModifierLigne: TButton
         Left = 1
         Top = 37
-        Width = 102
+        Width = 112
         Height = 30
-        Caption = 'Modifier ligne'
+        Caption = 'Modifier ligne '#55357#56514
         TabOrder = 1
         OnClick = BtnModifierLigneClick
       end
@@ -562,11 +564,11 @@ object FormEnt_prof: TFormEnt_prof
     object JvDBGridLig_prof: TJvDBGrid
       Left = 1
       Top = 1
-      Width = 899
+      Width = 895
       Height = 284
       Align = alClient
       DataSource = DSMemTableLig_prof
-      Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
+      Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit, dgMultiSelect, dgTitleClick, dgTitleHotTrack]
       TabOrder = 1
       TitleFont.Charset = DEFAULT_CHARSET
       TitleFont.Color = clWindowText
@@ -576,6 +578,7 @@ object FormEnt_prof: TFormEnt_prof
       OnDblClick = BtnModifierLigneClick
       OnEnter = JvDBGridLig_profEnter
       OnKeyDown = JvDBGridLig_profKeyDown
+      MultiSelect = True
       AlternateRowColor = clAliceblue
       SelectColumnsDialogStrings.Caption = 'Select columns'
       SelectColumnsDialogStrings.OK = '&OK'

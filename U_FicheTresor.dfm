@@ -88,7 +88,7 @@ object FormFicheTresor: TFormFicheTresor
     Width = 105
     Height = 32
     Cancel = True
-    Caption = '&Annuler'
+    Caption = '&Annuler '#10060
     ModalResult = 2
     TabOrder = 6
   end
@@ -97,7 +97,7 @@ object FormFicheTresor: TFormFicheTresor
     Top = 1
     Width = 105
     Height = 28
-    Caption = '&Valider'
+    Caption = '&Valider '#10004
     Default = True
     TabOrder = 7
     OnClick = BtnValiderClick

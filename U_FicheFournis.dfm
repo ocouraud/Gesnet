@@ -237,7 +237,7 @@ object FormFicheFournis: TFormFicheFournis
       Height = 27
       Align = alTop
       Anchors = [akTop]
-      Caption = '&Valider'
+      Caption = '&Valider '#10004
       Default = True
       TabOrder = 0
       OnClick = BtnValiderClick
@@ -249,7 +249,7 @@ object FormFicheFournis: TFormFicheFournis
       Height = 27
       Align = alClient
       Cancel = True
-      Caption = '&Annuler'
+      Caption = '&Annuler '#10060
       ModalResult = 2
       TabOrder = 1
     end
@@ -260,7 +260,7 @@ object FormFicheFournis: TFormFicheFournis
       Height = 27
       Align = alBottom
       Anchors = [akBottom]
-      Caption = 'Aide'
+      Caption = 'Aide '#10067
       TabOrder = 2
       OnClick = BtnAideClick
     end
@@ -270,7 +270,7 @@ object FormFicheFournis: TFormFicheFournis
     Top = 103
     Width = 619
     Height = 306
-    ActivePage = TabSheet3
+    ActivePage = TabSheet1
     Anchors = [akLeft, akTop, akRight, akBottom]
     TabOrder = 5
     object TabSheet1: TTabSheet
@@ -522,7 +522,7 @@ object FormFicheFournis: TFormFicheFournis
         Width = 105
         Anchors = [akTop, akRight]
         Caption = ''
-        Color = 15590617
+        Color = 15658734
         ItemIndex = 3
         Items.Strings = (
           'Toutes'

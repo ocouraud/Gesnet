@@ -103,7 +103,7 @@ object FormFicheArticle: TFormFicheArticle
     Top = 104
     Width = 768
     Height = 488
-    ActivePage = TabSheetDevis
+    ActivePage = TabSheetCodbar
     TabOrder = 5
     object TabSheetGral: TTabSheet
       Caption = 'G'#233'n'#233'ral'
@@ -487,7 +487,7 @@ object FormFicheArticle: TFormFicheArticle
         Height = 33
         TabOrder = 1
         object Label28: TLabel
-          Left = 312
+          Left = 352
           Top = 8
           Width = 253
           Height = 15
@@ -498,25 +498,25 @@ object FormFicheArticle: TFormFicheArticle
           Top = 4
           Width = 75
           Height = 25
-          Caption = 'Nouveau'
+          Caption = 'Nouveau '#10133
           TabOrder = 0
           OnClick = BtnNewStockClick
         end
         object BtnSupprimer: TButton
           Left = 89
           Top = 4
-          Width = 75
+          Width = 92
           Height = 25
-          Caption = 'Supprimer*'
+          Caption = 'Supprimer* '#55357#56785#65039
           TabOrder = 1
           OnClick = BtnSupprimerClick
         end
         object BtnTransfert: TButton
-          Left = 170
+          Left = 187
           Top = 4
-          Width = 119
+          Width = 134
           Height = 25
-          Caption = 'Transfert de d'#233'pots'
+          Caption = 'Transfert de d'#233'pots '#55357#56576
           TabOrder = 2
           OnClick = BtnTransfertClick
         end
@@ -665,7 +665,7 @@ object FormFicheArticle: TFormFicheArticle
         Height = 26
         Margins.Left = 6
         Margins.Right = 6
-        Caption = '&Supprimer'
+        Caption = '&Supprimer '#55357#56785#65039
         TabOrder = 2
         OnClick = BtnSuprPromoClick
       end
@@ -676,7 +676,7 @@ object FormFicheArticle: TFormFicheArticle
         Height = 26
         Margins.Left = 6
         Margins.Right = 6
-        Caption = '&Supprimer'
+        Caption = '&Supprimer '#55357#56785#65039
         TabOrder = 3
         OnClick = BtnSuprTarifartClick
       end
@@ -747,7 +747,7 @@ object FormFicheArticle: TFormFicheArticle
         Height = 26
         Margins.Left = 6
         Margins.Right = 6
-        Caption = '&Supprimer'
+        Caption = '&Supprimer '#55357#56785#65039
         TabOrder = 1
         OnClick = BtnSupprCodbarClick
       end
@@ -758,7 +758,7 @@ object FormFicheArticle: TFormFicheArticle
         Height = 26
         Margins.Left = 6
         Margins.Right = 6
-        Caption = '&G'#233'n'#233'rer'
+        Caption = '&G'#233'n'#233'rer '#9889
         TabOrder = 2
         OnClick = BtnGenCodbarClick
       end
@@ -861,14 +861,14 @@ object FormFicheArticle: TFormFicheArticle
       object BtnConsulterFacture: TSpeedButton
         Left = 3
         Top = 427
-        Width = 72
+        Width = 78
         Height = 28
         Anchors = [akLeft, akBottom]
-        Caption = 'Consulter'
+        Caption = 'Consulter '#55357#56514
         OnClick = BtnConsulterFactureClick
       end
       object BtnImprimerFacture: TSpeedButton
-        Left = 81
+        Left = 87
         Top = 427
         Width = 92
         Height = 28
@@ -1090,14 +1090,14 @@ object FormFicheArticle: TFormFicheArticle
       object SBConsultDevis: TSpeedButton
         Left = 0
         Top = 430
-        Width = 72
+        Width = 89
         Height = 28
         Anchors = [akLeft, akBottom]
-        Caption = 'Consulter'
+        Caption = 'Consulter '#55357#56514
         OnClick = SBConsultDevisClick
       end
       object SBImpDevis: TSpeedButton
-        Left = 78
+        Left = 95
         Top = 430
         Width = 95
         Height = 28
@@ -1664,7 +1664,7 @@ object FormFicheArticle: TFormFicheArticle
         Width = 75
         Height = 25
         Anchors = [akRight, akBottom]
-        Caption = '&Supprimer'
+        Caption = '&Supprimer '#55357#56785#65039
         TabOrder = 1
         OnClick = BtnSupprimerInfoClick
       end
@@ -1674,7 +1674,7 @@ object FormFicheArticle: TFormFicheArticle
         Width = 75
         Height = 25
         Anchors = [akRight, akBottom]
-        Caption = '&Ajouter'
+        Caption = '&Ajouter '#10133
         TabOrder = 2
         OnClick = BtnAjouterInfoClick
       end
@@ -1831,7 +1831,7 @@ object FormFicheArticle: TFormFicheArticle
         Height = 27
         Align = alTop
         Anchors = [akTop]
-        Caption = '&Valider'
+        Caption = '&Valider '#10004
         Default = True
         TabOrder = 0
         OnClick = BtnValiderClick
@@ -1843,7 +1843,7 @@ object FormFicheArticle: TFormFicheArticle
         Height = 27
         Align = alClient
         Cancel = True
-        Caption = '&Annuler'
+        Caption = '&Annuler '#10060
         ModalResult = 2
         TabOrder = 1
       end
@@ -1854,7 +1854,7 @@ object FormFicheArticle: TFormFicheArticle
         Height = 27
         Align = alBottom
         Anchors = [akBottom]
-        Caption = 'Aide'
+        Caption = 'Aide '#10067
         TabOrder = 2
         OnClick = BtnAideClick
       end
@@ -2203,8 +2203,8 @@ object FormFicheArticle: TFormFicheArticle
       
         'select * from stock where codart = :codart and coddep = :coddep ' +
         'order by DATE_, noenr ')
-    Left = 36
-    Top = 418
+    Left = 44
+    Top = 450
     ParamData = <
       item
         Name = 'CODART'
@@ -2588,8 +2588,8 @@ object FormFicheArticle: TFormFicheArticle
       
         'AND (codinfocompl.codinfo=artinfocompl.codinfo and codinfocompl.' +
         'type_='#39'A'#39') ')
-    Left = 316
-    Top = 514
+    Left = 332
+    Top = 498
     ParamData = <
       item
         Name = 'CODART'
@@ -2598,8 +2598,8 @@ object FormFicheArticle: TFormFicheArticle
   end
   object DSArtinfocompl: TDataSource
     DataSet = FDQueryArtinfocompl
-    Left = 364
-    Top = 530
+    Left = 380
+    Top = 490
   end
   object OpenDialog1: TOpenDialog
     Left = 660

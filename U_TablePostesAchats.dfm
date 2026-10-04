@@ -75,8 +75,6 @@ object FrameTablePostesAchats: TFrameTablePostesAchats
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitLeft = 24
-    ExplicitTop = 416
     object BtnFermer: TBitBtn
       Left = 553
       Top = 0
@@ -85,7 +83,7 @@ object FrameTablePostesAchats: TFrameTablePostesAchats
       Margins.Left = 6
       Margins.Right = 6
       Align = alRight
-      Caption = '&Fermer'
+      Caption = '&Fermer '#10060
       ModalResult = 8
       TabOrder = 0
       OnClick = BtnFermerClick
@@ -96,7 +94,7 @@ object FrameTablePostesAchats: TFrameTablePostesAchats
       Width = 87
       Height = 29
       Align = alRight
-      Caption = 'Aide'
+      Caption = 'Aide '#10067
       TabOrder = 1
       OnClick = BtnAideClick
     end
@@ -107,7 +105,7 @@ object FrameTablePostesAchats: TFrameTablePostesAchats
       Height = 29
       Margins.Left = 6
       Margins.Right = 6
-      Caption = '&Supprimer'
+      Caption = '&Supprimer '#55357#56785#65039
       TabOrder = 2
       OnClick = BtnSupprimerClick
     end

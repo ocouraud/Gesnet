@@ -815,7 +815,7 @@ begin
       begin
         // TRANSACTION: En cas d'erreur, on annule tout (ni l'en-tête ni les lignes ne sont modifiés)
         DMGesCloud.ConnexionGesCloud.Rollback;
-        ShowMessage('Erreur lors de l''enregistrement : ' + E.Message);;
+        ShowMessage('Erreur lors de l''enregistrement : ' + E.Message);
       end;
     end;
   finally

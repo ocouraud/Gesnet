@@ -100,6 +100,10 @@ type
     PanelFond: TPanel;
     Shape1: TShape;
     BalloonHint1: TBalloonHint;
+    FDQueryCodbarCODART_1: TStringField;
+    FDQueryCodbarTYPE: TStringField;
+    FDQueryCodbarPRIXVTE_1: TIntegerField;
+    FDQueryCodbarDER_MODIF_1: TSQLTimeStampField;
     procedure BtnValiderClick(Sender: TObject);
     procedure BtnAnnulerClick(Sender: TObject);
     procedure JvDBSpinPrc_remiseExit(Sender: TObject);
@@ -117,8 +121,9 @@ type
   private
     { Déclarations privées }
     FIsLoading: Boolean;   //Juste pour louverture
+    Valid: Boolean;        //Indicateur de validation
     procedure ExecuterAnnulation;
-    procedure CalculLigne;
+    procedure CalculLigne(Sender: TObject);
   public
     { Déclarations publiques }
     ModeSaisieLigne: TModeSaisieLigne; // On utilise ce type ici
@@ -145,7 +150,7 @@ end;
 
 
 //CALCUL COMPLET DE LA LIGNE
-procedure TFormLigvtejj.CalculLigne;
+procedure TFormLigvtejj.CalculLigne(Sender: TObject);
 var
   AQte: Double;
 begin
@@ -298,11 +303,17 @@ begin
       end;
     end;
 
+    //Qte negative si avoir
     if (FormEntvtejj.RzDBRadioGroupType.Value <> 'F') and (DbQte.Field.AsFloat > 0) then
       DbQte.Field.AsFloat := -DbQte.Field.AsFloat;
 
-    if (QryExecArticle.FieldByName('OBSERV_FAC').AsString <> '') then
+    //Observation article sur facture
+    if (QryExecArticle.FieldByName('OBSERV_FAC').AsString = '1') then
       DBLibelle.Text := DBLibelle.Text + #13#10 + QryExecArticle.FieldByName('OBSERV').AsString;
+
+    //Impression codbar
+    if (FDQueryCodbar.FieldByName('TYPE').AsString = '1') then
+      DBLibelle.Text := DBLibelle.Text + #13#10 + FDQueryCodbar.FieldByName('CODBAR').AsString;
 
     // Lecture Client
     QryExecClient.SQL.Text := 'SELECT * FROM client WHERE CODCLI = :CODCLI';
@@ -420,7 +431,7 @@ begin
     DSLigvtejj.DataSet.FieldByName('PRIXTTC').AsFloat := DM_Olivier.CalculerTTC(DSLigvtejj.DataSet.FieldByName('PRIXNET').AsFloat, DBTx_tva.Field.AsFloat);
     DSLigvtejj.DataSet.FieldByName('PXLVTTC').AsFloat := DM_Olivier.CalculerTTC(QryExecArticle.FieldByName('PXLVHT').AsFloat, DBTx_tva.Field.AsFloat);
 
-    CalculLigne;
+    CalculLigne(Sender);
     DBQte.SetFocus;
 
   finally
@@ -431,13 +442,16 @@ begin
 end;
 
 
+
+
+
 procedure TFormLigvtejj.JvDBSpinPrc_remiseChange(Sender: TObject);
 begin
   if FIsLoading = False then
   begin
     exit;
   end;
-  CalculLigne;
+  CalculLigne(Sender);
 end;
 
 procedure TFormLigvtejj.JvDBSpinPrc_remiseEnter(Sender: TObject);
@@ -447,7 +461,7 @@ end;
 
 procedure TFormLigvtejj.JvDBSpinPrc_remiseExit(Sender: TObject);
 begin
-  CalculLigne;
+  CalculLigne(Sender);
 end;
 
 procedure TFormLigvtejj.DBPrixhtExit(Sender: TObject);
@@ -458,7 +472,7 @@ begin
     BalloonHint1.ShowHint(DBPrixht);
     DBPrixttc.SetFocus;
   end;
-  CalculLigne;
+  CalculLigne(Sender);
 end;
 
 procedure TFormLigvtejj.DBPrixttcExit(Sender: TObject);
@@ -480,7 +494,7 @@ begin
 
   DBPrixnet.Field.AsFloat := DM_Olivier.CalculerHT(DBPrixttc.Field.AsInteger,Wtx_tva);
   DBPrixht.Field.AsFloat := DBPrixnet.Field.AsFloat/(1-(JvDBSpinPrc_remise.Value));  //Field.AsFloat/100));
-  CalculLigne;
+  CalculLigne(Sender);
 end;
 
 
@@ -490,7 +504,9 @@ begin
 end;
 
 procedure TFormLigvtejj.DBQteExit(Sender: TObject);
-var QryStodep: TFDQuery;
+var
+  QryStodep: TFDQuery;
+  NomBouton: string;
 begin
   if (FormEntvtejj.RzDBRadioGroupType.Value <> 'F') and (DbQte.Field.AsFloat>0) then   // Facture ou Avoir
     DbQte.Field.AsFloat := -DbQte.Field.AsFloat;
@@ -510,8 +526,8 @@ begin
     if QryStodep.FieldByName('QTE').AsFloat < DBQte.Field.AsFloat then
     begin
       //Selon parametrage global
-      if DM_Olivier.gALERT_ASTO='A' then   // On autorise
-        Exit;
+      //if DM_Olivier.gALERT_ASTO='A' then   // On autorise
+      //  Exit;
 
       if DM_Olivier.gALERT_ASTO='R' then  // On refuse
       begin
@@ -520,13 +536,18 @@ begin
         exit;
       end;
 
-      // On demande
-      if MessageDlg('Quantité en stock dépôt insuffisante, forcer la vente ?', mtConfirmation, [mbYes, mbNo], 0) = mrNo then
-        Exit;
+      if DM_Olivier.gALERT_ASTO='D' then   // On demande
+      begin
+        if MessageDlg('Quantité en stock dépôt insuffisante, forcer la vente ?', mtConfirmation, [mbYes, mbNo], 0) = mrNo then
+        begin
+          DBQte.SetFocus;
+          Exit
+        end;
+      end;
     end;
   end;
-
-  CalculLigne;
+  CalculLigne(Sender);
+  Valid := True;
 end;
 
 
@@ -553,6 +574,7 @@ end;
 
 procedure TFormLigvtejj.FormShow(Sender: TObject);
 begin
+  Valid := False;
   FIsLoading := False; // On active le verrou pour bloquer les calculs en cascade pendant l'initialisation
   try
     if ModeSaisieLigne = msModification then
@@ -598,6 +620,25 @@ end;
 
 procedure TFormLigvtejj.BtnValiderClick(Sender: TObject);
 begin
+  //On recupere le visuel
+  DBCodbar.Field.AsString:=DBCodbar.Text;
+  //On force la sortie codbar au cas ou elle n'aurait pas eu lieu (touche enter)
+  DBCodbarExit(Sender);
+  //Si pas de saisie codbar on retourne
+  if DBCodbar.Field.AsString='' then  //DSLigvtejj.DataSet.FieldByName('CODBAR').AsString='' then
+  begin
+    DBCodbar.SetFocus;
+    Exit;
+  end;
+
+  //Si saisie qté non validée
+  if Valid=False then
+  begin
+    DBQte.SetFocus;
+    DBQteExit(Sender);
+    Exit;
+  end;
+
   try
     // On valide le dataset via son DataSource (plus indépendant)
     if DSLigvtejj.Dataset.State in [dsEdit, dsInsert] then

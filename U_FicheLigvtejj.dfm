@@ -31,7 +31,7 @@ object FormLigvtejj: TFormLigvtejj
       Width = 105
       Height = 28
       Align = alTop
-      Caption = '&Valider'
+      Caption = '&Valider '#10004
       Default = True
       TabOrder = 0
       OnClick = BtnValiderClick
@@ -40,9 +40,9 @@ object FormLigvtejj: TFormLigvtejj
       Left = 0
       Top = 31
       Width = 105
-      Height = 32
+      Height = 28
       Cancel = True
-      Caption = '&Annuler'
+      Caption = '&Annuler '#10060
       ModalResult = 2
       TabOrder = 1
       OnClick = BtnAnnulerClick
@@ -436,7 +436,7 @@ object FormLigvtejj: TFormLigvtejj
   object FDQueryCodbar: TFDQuery
     Connection = DMGesCloud.ConnexionGesCloud
     SQL.Strings = (
-      'SELECT article.*, codbar.codbar '
+      'SELECT article.*, codbar.* '
       'FROM article '
       'JOIN codbar ON codbar.codart = article.codart '
       'WHERE article.ferme <> 1 OR article.ferme IS NULL '
@@ -690,6 +690,34 @@ object FormLigvtejj: TFormLigvtejj
       ProviderFlags = []
       ReadOnly = True
       Size = 13
+    end
+    object FDQueryCodbarCODART_1: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODART_1'
+      Origin = 'CODART'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 13
+    end
+    object FDQueryCodbarTYPE: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'TYPE'
+      Origin = '`TYPE`'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 1
+    end
+    object FDQueryCodbarPRIXVTE_1: TIntegerField
+      AutoGenerateValue = arDefault
+      FieldName = 'PRIXVTE_1'
+      Origin = 'PRIXVTE'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryCodbarDER_MODIF_1: TSQLTimeStampField
+      AutoGenerateValue = arDefault
+      FieldName = 'DER_MODIF_1'
+      Origin = 'DER_MODIF'
     end
   end
   object DSCodbar: TDataSource

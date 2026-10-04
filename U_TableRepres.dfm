@@ -20,7 +20,7 @@ object FrameTableRepres: TFrameTableRepres
       Margins.Left = 6
       Margins.Right = 6
       Align = alLeft
-      Caption = '&Ajouter'
+      Caption = '&Ajouter '#10133
       TabOrder = 0
       OnClick = BtnAjouterClick
     end
@@ -32,7 +32,7 @@ object FrameTableRepres: TFrameTableRepres
       Margins.Left = 6
       Margins.Right = 6
       Align = alLeft
-      Caption = '&Ouvrir'
+      Caption = '&Ouvrir '#55357#56514
       Default = True
       TabOrder = 1
       OnClick = BtnOuvrirClick
@@ -45,7 +45,7 @@ object FrameTableRepres: TFrameTableRepres
       Margins.Left = 6
       Margins.Right = 6
       Align = alLeft
-      Caption = '&Supprimer'
+      Caption = '&Supprimer '#55357#56785#65039
       TabOrder = 2
       OnClick = BtnSupprimerClick
     end
@@ -57,7 +57,7 @@ object FrameTableRepres: TFrameTableRepres
       Margins.Left = 6
       Margins.Right = 6
       Align = alRight
-      Caption = '&Fermer'
+      Caption = '&Fermer '#10060
       ModalResult = 8
       TabOrder = 3
       OnClick = BtnFermerClick
@@ -68,7 +68,7 @@ object FrameTableRepres: TFrameTableRepres
       Width = 87
       Height = 29
       Align = alRight
-      Caption = 'Aide'
+      Caption = 'Aide '#10067
       TabOrder = 4
       OnClick = BtnAideClick
     end
@@ -81,7 +81,6 @@ object FrameTableRepres: TFrameTableRepres
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitTop = 8
     object EdtCherche_CODFOU: TEdit
       Left = 16
       Top = 12

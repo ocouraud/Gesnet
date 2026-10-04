@@ -4,7 +4,7 @@ object FormEntvtejj: TFormEntvtejj
   ActiveControl = JvDBDate_
   Caption = 'FormEntvtejj'
   ClientHeight = 661
-  ClientWidth = 1004
+  ClientWidth = 1032
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -17,17 +17,18 @@ object FormEntvtejj: TFormEntvtejj
   object Panel3: TPanel
     Left = 0
     Top = 528
-    Width = 1004
+    Width = 1032
     Height = 133
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 2
+    ExplicitWidth = 1011
     DesignSize = (
-      1004
+      1032
       133)
     object Label13: TLabel
-      Left = 601
-      Top = 18
+      Left = 608
+      Top = 10
       Width = 55
       Height = 15
       Anchors = [akRight, akBottom]
@@ -38,11 +39,10 @@ object FormEntvtejj: TFormEntvtejj
       Font.Name = 'Segoe UI'
       Font.Style = [fsBold]
       ParentFont = False
-      ExplicitLeft = 514
     end
     object Label12: TLabel
-      Left = 723
-      Top = 18
+      Left = 730
+      Top = 10
       Width = 65
       Height = 15
       Anchors = [akRight, akBottom]
@@ -53,11 +53,10 @@ object FormEntvtejj: TFormEntvtejj
       Font.Name = 'Segoe UI'
       Font.Style = [fsBold]
       ParentFont = False
-      ExplicitLeft = 636
     end
     object Label14: TLabel
-      Left = 723
-      Top = 47
+      Left = 730
+      Top = 39
       Width = 55
       Height = 15
       Anchors = [akRight, akBottom]
@@ -68,11 +67,10 @@ object FormEntvtejj: TFormEntvtejj
       Font.Name = 'Segoe UI'
       Font.Style = [fsBold]
       ParentFont = False
-      ExplicitLeft = 636
     end
     object Label16: TLabel
-      Left = 723
-      Top = 76
+      Left = 730
+      Top = 68
       Width = 84
       Height = 15
       Anchors = [akRight, akBottom]
@@ -83,11 +81,10 @@ object FormEntvtejj: TFormEntvtejj
       Font.Name = 'Segoe UI'
       Font.Style = [fsBold]
       ParentFont = False
-      ExplicitLeft = 636
     end
     object Label15: TLabel
-      Left = 723
-      Top = 105
+      Left = 730
+      Top = 97
       Width = 77
       Height = 21
       Anchors = [akRight, akBottom]
@@ -98,11 +95,10 @@ object FormEntvtejj: TFormEntvtejj
       Font.Name = 'Segoe UI'
       Font.Style = [fsBold]
       ParentFont = False
-      ExplicitLeft = 636
     end
     object DBPRC_REMISE: TDBEdit
-      Left = 662
-      Top = 15
+      Left = 669
+      Top = 7
       Width = 35
       Height = 23
       Anchors = [akRight, akBottom]
@@ -120,8 +116,8 @@ object FormEntvtejj: TFormEntvtejj
       OnExit = DBPRC_REMISEExit
     end
     object DBMT_REMISE: TDBEdit
-      Left = 813
-      Top = 15
+      Left = 820
+      Top = 7
       Width = 87
       Height = 23
       Anchors = [akRight, akBottom]
@@ -140,8 +136,8 @@ object FormEntvtejj: TFormEntvtejj
       TabOrder = 1
     end
     object DBTOTHT: TDBEdit
-      Left = 814
-      Top = 44
+      Left = 821
+      Top = 36
       Width = 86
       Height = 23
       Anchors = [akRight, akBottom]
@@ -160,8 +156,8 @@ object FormEntvtejj: TFormEntvtejj
       TabOrder = 2
     end
     object DBMT_TVA: TDBEdit
-      Left = 813
-      Top = 73
+      Left = 820
+      Top = 65
       Width = 87
       Height = 23
       Anchors = [akRight, akBottom]
@@ -180,8 +176,8 @@ object FormEntvtejj: TFormEntvtejj
       TabOrder = 3
     end
     object DBMT_TTC: TDBEdit
-      Left = 813
-      Top = 102
+      Left = 820
+      Top = 94
       Width = 87
       Height = 29
       Anchors = [akRight, akBottom]
@@ -211,7 +207,7 @@ object FormEntvtejj: TFormEntvtejj
       Font.Height = -12
       Font.Name = 'Segoe UI'
       Font.Style = []
-      Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
+      Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit, dgMultiSelect, dgTitleClick, dgTitleHotTrack]
       ParentFont = False
       TabOrder = 5
       TitleFont.Charset = DEFAULT_CHARSET
@@ -220,6 +216,7 @@ object FormEntvtejj: TFormEntvtejj
       TitleFont.Name = 'Segoe UI'
       TitleFont.Style = []
       OnDblClick = BtnModifierReglClick
+      MultiSelect = True
       AlternateRowColor = clInfoBk
       SelectColumnsDialogStrings.Caption = 'Select columns'
       SelectColumnsDialogStrings.OK = '&OK'
@@ -277,27 +274,27 @@ object FormEntvtejj: TFormEntvtejj
     object BtnAjouterRegl: TButton
       Left = 463
       Top = 5
-      Width = 82
+      Width = 90
       Height = 25
-      Caption = 'Ajout reglt.'
+      Caption = 'Ajout reglt. '#10133
       TabOrder = 6
       OnClick = BtnAjouterReglClick
     end
     object BtnModifierRegl: TButton
       Left = 463
       Top = 37
-      Width = 82
+      Width = 90
       Height = 25
-      Caption = 'Modif reglt.'
+      Caption = 'Modif reglt. '#55357#56514
       TabOrder = 7
       OnClick = BtnModifierReglClick
     end
     object BtnSupprimerRegl: TButton
       Left = 463
       Top = 68
-      Width = 82
+      Width = 90
       Height = 25
-      Caption = 'Suppr reglt.'
+      Caption = 'Suppr reglt. '#55357#56785#65039
       TabOrder = 8
       OnClick = BtnSupprimerReglClick
     end
@@ -305,12 +302,13 @@ object FormEntvtejj: TFormEntvtejj
   object Panel1: TPanel
     Left = 0
     Top = 0
-    Width = 1004
+    Width = 1032
     Height = 242
     Align = alTop
     TabOrder = 0
+    ExplicitWidth = 1011
     DesignSize = (
-      1004
+      1032
       242)
     object LabelHeureLisible: TLabel
       Left = 375
@@ -397,7 +395,7 @@ object FormEntvtejj: TFormEntvtejj
       Caption = 'Nom sur facture . . . . . >'
     end
     object RzDBCheckBoxEXO_TVA: TRzDBCheckBox
-      Left = 756
+      Left = 784
       Top = 108
       Width = 87
       Height = 18
@@ -409,9 +407,10 @@ object FormEntvtejj: TFormEntvtejj
       Caption = 'Exonere TVA'
       TabOrder = 12
       OnClick = RzDBCheckBoxEXO_TVAClick
+      ExplicitLeft = 763
     end
     object RzDBCheckBoxFlag_Tax: TRzDBCheckBox
-      Left = 756
+      Left = 784
       Top = 156
       Width = 106
       Height = 32
@@ -423,9 +422,10 @@ object FormEntvtejj: TFormEntvtejj
       Caption = 'Calcul de la TVA'#13' sur le HT.'
       TabOrder = 14
       OnClick = RzDBCheckBoxFlag_TaxClick
+      ExplicitLeft = 763
     end
     object RzDBCheckBoxTVA_ILES: TRzDBCheckBox
-      Left = 756
+      Left = 784
       Top = 132
       Width = 62
       Height = 18
@@ -437,9 +437,10 @@ object FormEntvtejj: TFormEntvtejj
       Caption = 'TVA Iles'
       TabOrder = 13
       OnClick = RzDBCheckBoxTVA_ILESClick
+      ExplicitLeft = 763
     end
     object RzDBRadioGroupType: TRzDBRadioGroup
-      Left = 756
+      Left = 784
       Top = 3
       Width = 123
       Height = 84
@@ -458,15 +459,17 @@ object FormEntvtejj: TFormEntvtejj
       Caption = 'Nature'
       Color = 15658734
       TabOrder = 11
+      ExplicitLeft = 763
     end
     object Panel12: TPanel
-      Left = 899
+      Left = 927
       Top = 1
       Width = 104
       Height = 240
       Align = alRight
       BevelOuter = bvNone
       TabOrder = 2
+      ExplicitLeft = 906
       object BtnValider: TBitBtn
         Left = 0
         Top = 0
@@ -474,7 +477,7 @@ object FormEntvtejj: TFormEntvtejj
         Height = 30
         Align = alTop
         Anchors = [akTop]
-        Caption = '&Valider'
+        Caption = '&Valider '#10004
         Default = True
         TabOrder = 0
         OnClick = BtnValiderClick
@@ -485,7 +488,7 @@ object FormEntvtejj: TFormEntvtejj
         Width = 104
         Height = 30
         Align = alTop
-        Caption = 'Aide'
+        Caption = 'Aide '#10067
         TabOrder = 2
       end
       object BtnAnnuler: TBitBtn
@@ -495,7 +498,7 @@ object FormEntvtejj: TFormEntvtejj
         Height = 30
         Align = alTop
         Cancel = True
-        Caption = '&Annuler'
+        Caption = '&Annuler '#10060
         ModalResult = 2
         TabOrder = 1
       end
@@ -670,14 +673,15 @@ object FormEntvtejj: TFormEntvtejj
   object Panel2: TPanel
     Left = 0
     Top = 242
-    Width = 1004
+    Width = 1032
     Height = 286
     Align = alClient
     TabOrder = 1
+    ExplicitWidth = 1011
     object Panel5: TPanel
-      Left = 900
+      Left = 904
       Top = 1
-      Width = 103
+      Width = 127
       Height = 284
       Align = alRight
       BevelOuter = bvNone
@@ -685,27 +689,27 @@ object FormEntvtejj: TFormEntvtejj
       object BtnAjouterLigne: TButton
         Left = 1
         Top = 1
-        Width = 102
+        Width = 120
         Height = 30
-        Caption = 'Nouvelle ligne'
+        Caption = 'Nouvelle ligne '#10133
         TabOrder = 0
         OnClick = BtnAjouterLigneClick
       end
       object BtnSupprimerLigne: TButton
         Left = 1
         Top = 73
-        Width = 102
+        Width = 120
         Height = 30
-        Caption = 'Supprimer ligne'
+        Caption = 'Supprimer lignes '#55357#56785#65039
         TabOrder = 2
         OnClick = BtnSupprimerLigneClick
       end
       object BtnModifierLigne: TButton
         Left = 1
         Top = 37
-        Width = 102
+        Width = 120
         Height = 30
-        Caption = 'Modifier ligne'
+        Caption = 'Modifier ligne '#55357#56514
         TabOrder = 1
         OnClick = BtnModifierLigneClick
       end
@@ -713,11 +717,11 @@ object FormEntvtejj: TFormEntvtejj
     object JvDBGridLigvtejj: TJvDBGrid
       Left = 1
       Top = 1
-      Width = 899
+      Width = 903
       Height = 284
       Align = alClient
       DataSource = DSMemTableLigvtejj
-      Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
+      Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit, dgMultiSelect, dgTitleClick, dgTitleHotTrack]
       TabOrder = 1
       TitleFont.Charset = DEFAULT_CHARSET
       TitleFont.Color = clWindowText
@@ -727,6 +731,7 @@ object FormEntvtejj: TFormEntvtejj
       OnDblClick = BtnModifierLigneClick
       OnEnter = JvDBGridLigvtejjEnter
       OnKeyDown = JvDBGridLigvtejjKeyDown
+      MultiSelect = True
       AlternateRowColor = clAliceblue
       SelectColumnsDialogStrings.Caption = 'Select columns'
       SelectColumnsDialogStrings.OK = '&OK'

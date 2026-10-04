@@ -146,7 +146,7 @@ object FrameEcrituresClients: TFrameEcrituresClients
       Height = 29
       Margins.Left = 6
       Margins.Right = 6
-      Caption = '&Fermer'
+      Caption = '&Fermer '#10060
       ModalResult = 8
       TabOrder = 5
       OnClick = BtnFermerClick
@@ -156,7 +156,7 @@ object FrameEcrituresClients: TFrameEcrituresClients
       Top = 35
       Width = 87
       Height = 29
-      Caption = 'Aide'
+      Caption = 'Aide '#10067
       TabOrder = 6
       OnClick = BtnAideClick
     end
@@ -339,46 +339,46 @@ object FrameEcrituresClients: TFrameEcrituresClients
       OnClick = BtnOuvrirClick
     end
     object BtnSupprimer: TBitBtn
-      Left = 739
+      Left = 729
       Top = 48
       Width = 87
       Height = 29
       Margins.Left = 6
       Margins.Right = 6
-      Caption = '&Supprimer'
+      Caption = '&Supprimer '#55357#56785#65039
       TabOrder = 6
       OnClick = BtnSupprimerClick
     end
     object BtnModifier: TBitBtn
-      Left = 652
+      Left = 642
       Top = 48
       Width = 87
       Height = 29
       Margins.Left = 6
       Margins.Right = 6
-      Caption = '&Modifier'
+      Caption = '&Modifier '#55357#56514
       TabOrder = 5
       OnClick = BtnModifierClick
     end
     object BtnAjouter: TBitBtn
-      Left = 565
+      Left = 555
       Top = 48
       Width = 87
       Height = 29
       Margins.Left = 6
       Margins.Right = 6
-      Caption = '&Ajouter'
+      Caption = '&Ajouter '#10133
       TabOrder = 4
       OnClick = BtnAjouterClick
     end
     object BtnContrePartie: TBitBtn
-      Left = 826
+      Left = 816
       Top = 48
-      Width = 87
+      Width = 97
       Height = 29
       Margins.Left = 6
       Margins.Right = 6
-      Caption = '&Contre-partie'
+      Caption = '&Contre-partie '#9878#65039
       TabOrder = 7
       OnClick = BtnContrePartieClick
     end
@@ -389,7 +389,7 @@ object FrameEcrituresClients: TFrameEcrituresClients
       Height = 29
       Margins.Left = 6
       Margins.Right = 6
-      Caption = '&Lettrage'
+      Caption = '&Lettrage '#55357#56599
       TabOrder = 8
       OnClick = BtnLettrageClick
     end
@@ -405,7 +405,7 @@ object FrameEcrituresClients: TFrameEcrituresClients
       OnClick = BtnRelevesClick
     end
     object BtnImprimerFacture: TButton
-      Left = 490
+      Left = 480
       Top = 48
       Width = 75
       Height = 29

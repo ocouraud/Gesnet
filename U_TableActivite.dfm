@@ -60,7 +60,7 @@ object FrameTableActivite: TFrameTableActivite
       Margins.Left = 6
       Margins.Right = 6
       Align = alRight
-      Caption = '&Fermer'
+      Caption = '&Fermer '#10060
       ModalResult = 8
       TabOrder = 0
     end
@@ -70,7 +70,7 @@ object FrameTableActivite: TFrameTableActivite
       Width = 87
       Height = 29
       Align = alRight
-      Caption = 'Aide'
+      Caption = 'Aide '#10067
       TabOrder = 1
       OnClick = BtnAideClick
     end
@@ -81,7 +81,7 @@ object FrameTableActivite: TFrameTableActivite
       Height = 29
       Margins.Left = 6
       Margins.Right = 6
-      Caption = '&Supprimer'
+      Caption = '&Supprimer '#55357#56785#65039
       TabOrder = 2
       OnClick = BtnSupprimerClick
     end

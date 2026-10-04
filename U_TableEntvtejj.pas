@@ -915,8 +915,6 @@ end;
 
 procedure TFrameTableEntvtejj.JvDBGridEntvtejjDrawColumnCell(Sender: TObject;
   const Rect: TRect; DataCol: Integer; Column: TColumn; State: TGridDrawState);
-var
-  QryExec: TFDQuery;
 begin
   // Si avoir
   if Assigned(JvDBGridEntvtejj.DataSource) and Assigned(JvDBGridEntvtejj.DataSource.DataSet) then

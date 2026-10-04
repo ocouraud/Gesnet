@@ -141,10 +141,10 @@ object FrameFacturesReccurentes: TFrameFacturesReccurentes
     object Label1: TLabel
       Left = 462
       Top = 10
-      Width = 234
+      Width = 249
       Height = 15
       Alignment = taCenter
-      Caption = 'Ctrl+Suppr pour supprimer (multi-s'#233'lection)'
+      Caption = 'Ctrl+Suppr pour supprimer (multi-s'#233'lection) '#55357#56785#65039
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clRed
       Font.Height = -12
@@ -156,9 +156,9 @@ object FrameFacturesReccurentes: TFrameFacturesReccurentes
     object Label2: TLabel
       Left = 288
       Top = 10
-      Width = 130
+      Width = 145
       Height = 15
-      Caption = 'Curseur bas pour ajouter'
+      Caption = 'Curseur bas pour ajouter '#10133
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -12
@@ -167,11 +167,11 @@ object FrameFacturesReccurentes: TFrameFacturesReccurentes
       ParentFont = False
     end
     object BtnSupprimer: TButton
-      Left = 0
+      Left = 2
       Top = 6
       Width = 75
       Height = 25
-      Caption = 'Supprimer'
+      Caption = 'Supprimer '#55357#56785#65039
       TabOrder = 0
       OnClick = BtnSupprimerClick
     end
@@ -180,16 +180,16 @@ object FrameFacturesReccurentes: TFrameFacturesReccurentes
       Top = 6
       Width = 241
       Height = 25
-      Caption = 'S'#233'lection des factures '#224' associer '
+      Caption = 'S'#233'lection des factures '#224' associer '#55357#56514
       TabOrder = 1
       OnClick = BtnSelectionClick
     end
     object BtnGenerer: TButton
-      Left = 81
+      Left = 83
       Top = 6
       Width = 182
       Height = 25
-      Caption = 'Generer les factures du lot'
+      Caption = 'G'#233'n'#233'rer les factures du lot '#9889
       TabOrder = 2
       OnClick = BtnGenererClick
     end
@@ -201,9 +201,6 @@ object FrameFacturesReccurentes: TFrameFacturesReccurentes
     Height = 41
     Align = alTop
     TabOrder = 3
-    ExplicitLeft = 400
-    ExplicitTop = 72
-    ExplicitWidth = 185
     object Label3: TLabel
       Left = 0
       Top = 14
@@ -229,6 +226,27 @@ object FrameFacturesReccurentes: TFrameFacturesReccurentes
       Font.Name = 'Segoe UI'
       Font.Style = []
       ParentFont = False
+    end
+    object BtnFermer: TBitBtn
+      Left = 910
+      Top = 6
+      Width = 87
+      Height = 29
+      Margins.Left = 6
+      Margins.Right = 6
+      Caption = '&Fermer '#10060
+      ModalResult = 8
+      TabOrder = 0
+      OnClick = BtnFermerClick
+    end
+    object BtnAide: TBitBtn
+      Left = 822
+      Top = 6
+      Width = 87
+      Height = 29
+      Caption = 'Aide '#10067
+      TabOrder = 1
+      OnClick = BtnAideClick
     end
   end
   object FDQueryLot_eva: TFDQuery

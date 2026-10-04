@@ -329,33 +329,72 @@ end;
 
 
 procedure TFormEnt_prof.BtnSupprimerLigneClick(Sender: TObject);
+var
+  i: Integer;
+  BookmarkList: TBookmarkList;
+  NbLignesSupprimees: Integer;
 begin
-  // Si le focus est sur la grille et qu'on appuie sur Entrée
+  // Garde-fou existant
   if FDMemTableEnt_prof.FieldByName('TYPE_').AsString = 'F' then
-      Exit;
+    Exit;
 
+  // 1. Vérification si la table est vide
   if FDMemTableLig_prof.IsEmpty then
   begin
-    ShowMessage('Aucune ligne sélectionnée à supprimer.');
+    ShowMessage('Aucune ligne à supprimer.');
     JvDBGridLig_prof.SetFocus;
     Exit;
   end;
 
-  // Demande de confirmation et suppression
-  if MessageDlg('Voulez-vous vraiment supprimer cette ligne ?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+  // 2. Vérifier si des lignes sont sélectionnées dans la JvDBGrid
+  BookmarkList := JvDBGridLig_prof.SelectedRows;
+  if BookmarkList.Count = 0 then
   begin
+    ShowMessage('Veuillez sélectionner au moins une ligne à supprimer.');
+    JvDBGridLig_prof.SetFocus;
+    Exit;
+  end;
+
+  // 3. Demande de confirmation globale
+  if MessageDlg('Voulez-vous vraiment supprimer les ' + IntToStr(BookmarkList.Count) + ' ligne(s) sélectionnée(s) ?',
+                mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+  begin
+    NbLignesSupprimees := 0;
     try
-      FDMemTableLig_prof.Delete;
+      // Désactiver le rafraîchissement visuel pendant la suppression en masse
+      FDMemTableLig_prof.DisableControls;
+      try
+        // Parcours à l'envers (de la fin vers le début) pour préserver la validité des signets
+        for i := BookmarkList.Count - 1 downto 0 do
+        begin
+          if FDMemTableLig_prof.BookmarkValid(TBookmark(BookmarkList[i])) then
+          begin
+            FDMemTableLig_prof.GotoBookmark(TBookmark(BookmarkList[i]));
+            FDMemTableLig_prof.Delete;
+            Inc(NbLignesSupprimees);
+          end;
+        end;
+      finally
+        // Réactiver l'affichage de la grille
+        FDMemTableLig_prof.EnableControls;
+      end;
 
-      // Recalcul de la facture
-      CalculCompletPiece;
+      // 4. Recalcul unique de la pièce après la suppression des lignes
+      if NbLignesSupprimees > 0 then
+        CalculCompletPiece;
 
-      //ShowMessage('La ligne a été supprimée avec succès.');
     except
       on E: Exception do
-        MessageDlg('Erreur lors de la suppression de la ligne: ' + E.Message, mtError, [mbOK], 0);
+      begin
+        // S'assurer de réactiver les contrôles en cas d'erreur
+        if FDMemTableLig_prof.ControlsDisabled then
+          FDMemTableLig_prof.EnableControls;
+
+        MessageDlg('Erreur lors de la suppression des lignes : ' + E.Message, mtError, [mbOK], 0);
+      end;
     end;
   end;
+
   JvDBGridLig_prof.SetFocus;
 end;
 

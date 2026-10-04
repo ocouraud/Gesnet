@@ -692,7 +692,7 @@ object FormFicheFacture: TFormFicheFacture
     Height = 32
     Anchors = [akTop, akRight]
     Cancel = True
-    Caption = '&Fermer'
+    Caption = '&Fermer '#10060
     ModalResult = 8
     TabOrder = 19
   end

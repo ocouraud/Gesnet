@@ -37,7 +37,7 @@ object FormChoixSociete: TFormChoixSociete
     Top = 248
     Width = 139
     Height = 35
-    Caption = 'Ouvrir'
+    Caption = 'Ouvrir '#55357#56514
     Default = True
     TabOrder = 1
     OnClick = BtnValiderClick

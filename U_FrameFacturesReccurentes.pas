@@ -5,10 +5,12 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, System.UITypes,
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Data.DB,
+  RzTabs, RzPanel, RzRadGrp,
   FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param,
   FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf,
   FireDAC.Stan.Async, FireDAC.DApt, FireDAC.Comp.DataSet, FireDAC.Comp.Client,
-  Vcl.Grids, Vcl.DBGrids, JvExDBGrids, JvDBGrid, Vcl.StdCtrls, Vcl.ExtCtrls;
+  Vcl.Grids, Vcl.DBGrids, JvExDBGrids, JvDBGrid, Vcl.StdCtrls, Vcl.ExtCtrls,
+  Vcl.Buttons;
 
 type
   TFrameFacturesReccurentes = class(TFrame)
@@ -39,12 +41,16 @@ type
     Label4: TLabel;
     BtnSelection: TButton;
     BtnGenerer: TButton;
+    BtnFermer: TBitBtn;
+    BtnAide: TBitBtn;
     procedure JvDBGridLot_evaCellClick(Column: TColumn);
     procedure JvDBGridLot_evaDrawColumnCell(Sender: TObject; const Rect: TRect;
       DataCol: Integer; Column: TColumn; State: TGridDrawState);
     procedure BtnSupprimerClick(Sender: TObject);
     procedure BtnSelectionClick(Sender: TObject);
     procedure BtnGenererClick(Sender: TObject);
+    procedure BtnFermerClick(Sender: TObject);
+    procedure BtnAideClick(Sender: TObject);
   private
     { Déclarations privées }
   public
@@ -115,6 +121,33 @@ begin
 end;
 
 
+procedure TFrameFacturesReccurentes.BtnAideClick(Sender: TObject);
+begin
+  // 1. On s'assure que la fiche d'aide existe en mémoire
+  if not Assigned(FormAide) then
+    Application.CreateForm(TFormAide, FormAide);
+
+  // 2. On affiche la page
+  FormAide.AfficherAide('facturesreccurentes.html');
+end;
+
+procedure TFrameFacturesReccurentes.BtnFermerClick(Sender: TObject);
+var
+  OngletParent: TRzTabSheet;
+begin
+  if Assigned(Self.Parent) and (Self.Parent is TRzTabSheet) then
+  begin
+    OngletParent := TRzTabSheet(Self.Parent);
+
+    // Repousse la destruction de l'onglet à la fin du traitement du clic
+    TThread.ForceQueue(nil, procedure
+    begin
+      OngletParent.Free;
+    end);
+  end;
+
+end;
+
 procedure TFrameFacturesReccurentes.BtnGenererClick(Sender: TObject);
 var
   QryExec: TFDQuery;
@@ -162,7 +195,7 @@ begin
     QryExecEVA.Connection := DMGesCloud.ConnexionGesCloud;
 
     // Démarrage de la TRANSACTION MySQL
-   DMGesCloud.ConnexionGesCloud.StartTransaction;
+    DMGesCloud.ConnexionGesCloud.StartTransaction;
     try
       //LECTURE LOT_EVA_DET
       QryExecLEVAD.SQL.Text := 'SELECT * from lot_eva_det where NOLOT=:NOLOT';
@@ -286,7 +319,7 @@ begin
       begin
         // TRANSACTION: En cas d'erreur, on annule tout (ni l'en-tête ni les lignes ne sont modifiés)
         DMGesCloud.ConnexionGesCloud.Rollback;
-        ShowMessage('Erreur lors de l''enregistrement : ' + E.Message);;
+        ShowMessage('Erreur lors de l''enregistrement : ' + E.Message);
       end;
     end;
   finally

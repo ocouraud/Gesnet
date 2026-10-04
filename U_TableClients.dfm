@@ -58,7 +58,7 @@ object FormTableClients: TFormTableClients
       Margins.Left = 6
       Margins.Right = 6
       Align = alLeft
-      Caption = '&Ajouter'
+      Caption = '&Ajouter '#10133
       TabOrder = 0
       OnClick = BtnAjouterClick
     end
@@ -70,7 +70,7 @@ object FormTableClients: TFormTableClients
       Margins.Left = 6
       Margins.Right = 6
       Align = alLeft
-      Caption = '&Ouvrir'
+      Caption = '&Ouvrir '#55357#56514
       Default = True
       TabOrder = 1
       OnClick = JvDBGridClientsDblClick
@@ -83,7 +83,7 @@ object FormTableClients: TFormTableClients
       Margins.Left = 6
       Margins.Right = 6
       Align = alLeft
-      Caption = '&Supprimer'
+      Caption = '&Supprimer '#55357#56785#65039
       TabOrder = 2
       OnClick = BtnSupprimerClick
     end
@@ -95,10 +95,11 @@ object FormTableClients: TFormTableClients
       Margins.Left = 6
       Margins.Right = 6
       Align = alRight
-      Caption = '&Fermer'
+      Caption = '&Fermer '#10060
       ModalResult = 8
       TabOrder = 3
       OnClick = BtnFermerClick
+      ExplicitTop = 6
     end
     object BtnAide: TBitBtn
       Left = 620
@@ -106,7 +107,7 @@ object FormTableClients: TFormTableClients
       Width = 87
       Height = 29
       Align = alRight
-      Caption = 'Aide'
+      Caption = 'Aide '#10067
       TabOrder = 4
       OnClick = BtnAideClick
     end

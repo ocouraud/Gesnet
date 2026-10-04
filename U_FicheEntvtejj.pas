@@ -487,57 +487,136 @@ end;
 
 
 procedure TFormEntvtejj.BtnSupprimerLigneClick(Sender: TObject);
+var
+  i: Integer;
+  BookmarkList: TBookmarkList;
+  NbLignesSupprimees: Integer;
 begin
+  // 1. Vérification si la table est vide
   if FDMemTableLigvtejj.IsEmpty then
   begin
-    ShowMessage('Aucune ligne sélectionnée à supprimer.');
+    ShowMessage('Aucune ligne à supprimer.');
     JvDBGridLigvtejj.SetFocus;
     Exit;
   end;
 
-  // Demande de confirmation et suppression
-  if MessageDlg('Voulez-vous vraiment supprimer cette ligne ?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+  // 2. Vérifier si des lignes sont sélectionnées dans la JvDBGrid
+  BookmarkList := JvDBGridLigvtejj.SelectedRows;
+  if BookmarkList.Count = 0 then
   begin
+    ShowMessage('Veuillez sélectionner au moins une ligne à supprimer.');
+    JvDBGridLigvtejj.SetFocus;
+    Exit;
+  end;
+
+  // 3. Demande de confirmation globale
+  if MessageDlg('Voulez-vous vraiment supprimer les ' + IntToStr(BookmarkList.Count) + ' ligne(s) sélectionnée(s) ?',
+                mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+  begin
+    NbLignesSupprimees := 0;
     try
-      FDMemTableLigvtejj.Delete;
+      // Désactiver le rafraîchissement visuel de la grille pendant la suppression en masse (gagne en performance)
+      FDMemTableLigvtejj.DisableControls;
+      try
+        // Important : Pour supprimer plusieurs signets sans corrompre l'indexation,
+        // on parcourt la liste à l'envers (de la fin vers le début)
+        for i := BookmarkList.Count - 1 downto 0 do
+        begin
+          if FDMemTableLigvtejj.BookmarkValid(TBookmark(BookmarkList[i])) then
+          begin
+            FDMemTableLigvtejj.GotoBookmark(TBookmark(BookmarkList[i]));
+            FDMemTableLigvtejj.Delete;
+            Inc(NbLignesSupprimees);
+          end;
+        end;
+      finally
+        // Réactiver l'affichage de la grille
+        FDMemTableLigvtejj.EnableControls;
+      end;
 
-      // Recalcul de la facture
-      CalculCompletFacture;
+      // 4. Recalcul unique de la facture après toutes les suppressions
+      if NbLignesSupprimees > 0 then
+        CalculCompletFacture;
 
-      //ShowMessage('La ligne a été supprimée avec succès.');
     except
       on E: Exception do
-        MessageDlg('Erreur lors de la suppression de la ligne: ' + E.Message, mtError, [mbOK], 0);
+      begin
+        // S'assurer de réactiver les contrôles en cas d'erreur
+        if FDMemTableLigvtejj.ControlsDisabled then
+          FDMemTableLigvtejj.EnableControls;
+
+        MessageDlg('Erreur lors de la suppression des lignes : ' + E.Message, mtError, [mbOK], 0);
+      end;
     end;
   end;
+
   JvDBGridLigvtejj.SetFocus;
 end;
 
 
 procedure TFormEntvtejj.BtnSupprimerReglClick(Sender: TObject);
+var
+  i: Integer;
+  BookmarkList: TBookmarkList;
+  NbReglementsSupprimes: Integer;
 begin
+  // 1. Vérification si la table est vide
   if FDMemTableRegljj.IsEmpty then
   begin
-    ShowMessage('Aucun règlement sélectionné à supprimer.');
+    ShowMessage('Aucun règlement à supprimer.');
     JvDBGridRegljj.SetFocus;
     Exit;
   end;
 
-  // Demande de confirmation et suppression
-  if MessageDlg('Voulez-vous vraiment supprimer ce règlement ?', mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+  // 2. Vérifier si des règlements sont sélectionnés dans la JvDBGrid
+  BookmarkList := JvDBGridRegljj.SelectedRows;
+  if BookmarkList.Count = 0 then
   begin
+    ShowMessage('Veuillez sélectionner au moins un règlement à supprimer.');
+    JvDBGridRegljj.SetFocus;
+    Exit;
+  end;
+
+  // 3. Demande de confirmation globale
+  if MessageDlg('Voulez-vous vraiment supprimer les ' + IntToStr(BookmarkList.Count) + ' règlement(s) sélectionné(s) ?',
+                mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+  begin
+    NbReglementsSupprimes := 0;
     try
-      FDMemTableRegljj.Delete;
+      // Désactiver le rafraîchissement visuel pendant la suppression en masse
+      FDMemTableRegljj.DisableControls;
+      try
+        // Parcours à l'envers (de la fin vers le début) pour préserver la validité des signets
+        for i := BookmarkList.Count - 1 downto 0 do
+        begin
+          if FDMemTableRegljj.BookmarkValid(TBookmark(BookmarkList[i])) then
+          begin
+            FDMemTableRegljj.GotoBookmark(TBookmark(BookmarkList[i]));
+            FDMemTableRegljj.Delete;
+            Inc(NbReglementsSupprimes);
+          end;
+        end;
+      finally
+        // Réactiver l'affichage de la grille
+        FDMemTableRegljj.EnableControls;
+      end;
 
-      // Recalcul de la facture
-      CalculCompletFacture;
+      // 4. Recalcul unique de la facture après la suppression des règlements
+      if NbReglementsSupprimes > 0 then
+        CalculCompletFacture;
 
-      //ShowMessage('La ligne a été supprimée avec succès.');
     except
       on E: Exception do
-        MessageDlg('Erreur lors de la suppression: ' + E.Message, mtError, [mbOK], 0);
+      begin
+        // S'assurer de réactiver les contrôles en cas d'erreur
+        if FDMemTableRegljj.ControlsDisabled then
+          FDMemTableRegljj.EnableControls;
+
+        MessageDlg('Erreur lors de la suppression des règlements : ' + E.Message, mtError, [mbOK], 0);
+      end;
     end;
   end;
+
   JvDBGridRegljj.SetFocus;
 end;
 

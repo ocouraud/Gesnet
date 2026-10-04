@@ -15,10 +15,6 @@ object FrameTableInfoscompl: TFrameTableInfoscompl
     TabOrder = 0
     OnDblClick = TreeViewICDblClick
     OnMouseDown = TreeViewICMouseDown
-    ExplicitLeft = 8
-    ExplicitTop = 8
-    ExplicitWidth = 537
-    ExplicitHeight = 369
   end
   object FDQueryTree: TFDQuery
     Connection = DMGesCloud.ConnexionGesCloud
