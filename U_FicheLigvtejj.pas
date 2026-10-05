@@ -121,9 +121,10 @@ type
   private
     { Déclarations privées }
     FIsLoading: Boolean;   //Juste pour louverture
-    Valid: Boolean;        //Indicateur de validation
+    ValidQte: Boolean;        //Indicateur de validation
+    ValidPrix: Boolean;        //Indicateur de validation
     procedure ExecuterAnnulation;
-    procedure CalculLigne(Sender: TObject);
+    procedure CalculLigne;
   public
     { Déclarations publiques }
     ModeSaisieLigne: TModeSaisieLigne; // On utilise ce type ici
@@ -150,7 +151,7 @@ end;
 
 
 //CALCUL COMPLET DE LA LIGNE
-procedure TFormLigvtejj.CalculLigne(Sender: TObject);
+procedure TFormLigvtejj.CalculLigne;
 var
   AQte: Double;
 begin
@@ -431,7 +432,7 @@ begin
     DSLigvtejj.DataSet.FieldByName('PRIXTTC').AsFloat := DM_Olivier.CalculerTTC(DSLigvtejj.DataSet.FieldByName('PRIXNET').AsFloat, DBTx_tva.Field.AsFloat);
     DSLigvtejj.DataSet.FieldByName('PXLVTTC').AsFloat := DM_Olivier.CalculerTTC(QryExecArticle.FieldByName('PXLVHT').AsFloat, DBTx_tva.Field.AsFloat);
 
-    CalculLigne(Sender);
+    CalculLigne;
     DBQte.SetFocus;
 
   finally
@@ -442,16 +443,13 @@ begin
 end;
 
 
-
-
-
 procedure TFormLigvtejj.JvDBSpinPrc_remiseChange(Sender: TObject);
 begin
   if FIsLoading = False then
   begin
     exit;
   end;
-  CalculLigne(Sender);
+  CalculLigne;
 end;
 
 procedure TFormLigvtejj.JvDBSpinPrc_remiseEnter(Sender: TObject);
@@ -461,30 +459,26 @@ end;
 
 procedure TFormLigvtejj.JvDBSpinPrc_remiseExit(Sender: TObject);
 begin
-  CalculLigne(Sender);
+  CalculLigne;
 end;
 
 procedure TFormLigvtejj.DBPrixhtExit(Sender: TObject);
 begin
-  if DBPrixht.Field.AsFloat<0 then
-  begin
-    BalloonHint1.Description := '⚠ Prix négatif interdit';
-    BalloonHint1.ShowHint(DBPrixht);
-    DBPrixttc.SetFocus;
-  end;
-  CalculLigne(Sender);
+//  if DBPrixht.Field.AsFloat<0 then
+//  begin
+//    BalloonHint1.Description := '⚠ Prix négatif interdit';
+//    BalloonHint1.ShowHint(DBPrixht);
+//    DBPrixht.SetFocus;
+//  end;
+  //Controle se fait en amont lors de la creation du dataset mem (FicheEntvtejj)
+  CalculLigne;
 end;
+
 
 procedure TFormLigvtejj.DBPrixttcExit(Sender: TObject);
 var
   Wtx_tva: Double;
 begin
-  if DBPrixttc.Field.AsFloat<0 then
-  begin
-    BalloonHint1.Description := '⚠ Prix négatif interdit';
-    BalloonHint1.ShowHint(DBPrixttc);
-    DBPrixttc.SetFocus;
-  end;
   IF FormEntvtejj.RzDBCheckBoxEXO_TVA.Checked then
   begin
   	Wtx_tva:=0;
@@ -494,7 +488,7 @@ begin
 
   DBPrixnet.Field.AsFloat := DM_Olivier.CalculerHT(DBPrixttc.Field.AsInteger,Wtx_tva);
   DBPrixht.Field.AsFloat := DBPrixnet.Field.AsFloat/(1-(JvDBSpinPrc_remise.Value));  //Field.AsFloat/100));
-  CalculLigne(Sender);
+  CalculLigne;
 end;
 
 
@@ -546,8 +540,8 @@ begin
       end;
     end;
   end;
-  CalculLigne(Sender);
-  Valid := True;
+  CalculLigne;
+  ValidQte := True;
 end;
 
 
@@ -574,7 +568,8 @@ end;
 
 procedure TFormLigvtejj.FormShow(Sender: TObject);
 begin
-  Valid := False;
+  ValidQte := False;
+  ValidPrix := False;
   FIsLoading := False; // On active le verrou pour bloquer les calculs en cascade pendant l'initialisation
   try
     if ModeSaisieLigne = msModification then
@@ -632,12 +627,13 @@ begin
   end;
 
   //Si saisie qté non validée
-  if Valid=False then
+  if ValidQte=False then
   begin
     DBQte.SetFocus;
     DBQteExit(Sender);
     Exit;
   end;
+
 
   try
     // On valide le dataset via son DataSource (plus indépendant)

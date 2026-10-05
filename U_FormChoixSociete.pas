@@ -60,6 +60,16 @@ begin
 
     // Stockage de la société courante si besoin dans le DataModule
     //DMGesCloud.SocieteCourante := SectionChoisie;
+    // Initialisation du chemin local (ex: dossier où se trouve l'exécutable)
+    DMGesCloud.GsCheminLocal := ExtractFilePath(ParamStr(0));
+    // S'assurer que le sous-dossier \export\ existe pour éviter les erreurs d'écriture
+    if not DirectoryExists(DMGesCloud.GsCheminLocal +
+     IniFile.ReadString(SectionChoisie, 'Database', '')+ '\export') then
+       ForceDirectories(DMGesCloud.GsCheminLocal + IniFile.ReadString(SectionChoisie, 'Database', '')+
+        '\export');
+
+    DMGesCloud.GsCheminLocal := DMGesCloud.GsCheminLocal +
+     IniFile.ReadString(SectionChoisie, 'Database', '');
 
     // Test de connexion effective
     DMGesCloud.ConnexionGesCloud.Connected := True;

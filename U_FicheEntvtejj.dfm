@@ -22,7 +22,6 @@ object FormEntvtejj: TFormEntvtejj
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 2
-    ExplicitWidth = 1011
     DesignSize = (
       1032
       133)
@@ -306,7 +305,6 @@ object FormEntvtejj: TFormEntvtejj
     Height = 242
     Align = alTop
     TabOrder = 0
-    ExplicitWidth = 1011
     DesignSize = (
       1032
       242)
@@ -397,8 +395,8 @@ object FormEntvtejj: TFormEntvtejj
     object RzDBCheckBoxEXO_TVA: TRzDBCheckBox
       Left = 784
       Top = 108
-      Width = 87
-      Height = 18
+      Width = 84
+      Height = 17
       DataField = 'EXO_TVA'
       DataSource = DSMemTableEntvtejj
       ValueChecked = '1'
@@ -407,12 +405,11 @@ object FormEntvtejj: TFormEntvtejj
       Caption = 'Exonere TVA'
       TabOrder = 12
       OnClick = RzDBCheckBoxEXO_TVAClick
-      ExplicitLeft = 763
     end
     object RzDBCheckBoxFlag_Tax: TRzDBCheckBox
       Left = 784
       Top = 156
-      Width = 106
+      Width = 103
       Height = 32
       DataField = 'FLAG_TAX'
       DataSource = DSMemTableEntvtejj
@@ -422,13 +419,12 @@ object FormEntvtejj: TFormEntvtejj
       Caption = 'Calcul de la TVA'#13' sur le HT.'
       TabOrder = 14
       OnClick = RzDBCheckBoxFlag_TaxClick
-      ExplicitLeft = 763
     end
     object RzDBCheckBoxTVA_ILES: TRzDBCheckBox
       Left = 784
       Top = 132
-      Width = 62
-      Height = 18
+      Width = 59
+      Height = 17
       DataField = 'TVA_ILES'
       DataSource = DSMemTableEntvtejj
       ValueChecked = '1'
@@ -437,7 +433,6 @@ object FormEntvtejj: TFormEntvtejj
       Caption = 'TVA Iles'
       TabOrder = 13
       OnClick = RzDBCheckBoxTVA_ILESClick
-      ExplicitLeft = 763
     end
     object RzDBRadioGroupType: TRzDBRadioGroup
       Left = 784
@@ -459,7 +454,6 @@ object FormEntvtejj: TFormEntvtejj
       Caption = 'Nature'
       Color = 15658734
       TabOrder = 11
-      ExplicitLeft = 763
     end
     object Panel12: TPanel
       Left = 927
@@ -469,7 +463,6 @@ object FormEntvtejj: TFormEntvtejj
       Align = alRight
       BevelOuter = bvNone
       TabOrder = 2
-      ExplicitLeft = 906
       object BtnValider: TBitBtn
         Left = 0
         Top = 0
@@ -677,7 +670,6 @@ object FormEntvtejj: TFormEntvtejj
     Height = 286
     Align = alClient
     TabOrder = 1
-    ExplicitWidth = 1011
     object Panel5: TPanel
       Left = 904
       Top = 1

@@ -9,7 +9,9 @@ uses
   FireDAC.Phys.MySQLDef, FireDAC.VCLUI.Wait, FireDAC.Stan.Param, FireDAC.DatS,
   FireDAC.DApt.Intf, FireDAC.DApt, Data.DB, FireDAC.Comp.DataSet,
   FireDAC.Comp.Client, System.Variants, Vcl.Dialogs, System.IniFiles, System.Math,
-  System.DateUtils, Vcl.Forms;
+  System.DateUtils, Vcl.Forms,
+  Winapi.Windows, Winapi.Messages,
+  Vcl.Graphics, Vcl.Controls, Vcl.Grids, Vcl.StdCtrls;
 
 type
   TDM_Olivier = class(TDataModule)
@@ -308,7 +310,7 @@ var
 begin
   Qry := CreerRequeteTemp;
   try
-    // 1. On tente d'ouvrir la table pour voir si elle existe
+    // 1. On tente d'ouvrir la table journal pour voir si elle existe
     TableExiste := True;
     Qry.Close;
     try
@@ -334,6 +336,40 @@ begin
 
       //Modif structure tresor pour ajour codjal
       Qry.SQL.Text :='ALTER TABLE `tresor` ADD COLUMN `CODJAL` VARCHAR(5) NULL AFTER `DER_MODIF`';
+      Qry.ExecSQL;
+    end;
+
+      // 1. On tente d'ouvrir la table ecr_cpt pour voir si elle existe
+    TableExiste := True;
+    Qry.Close;
+    try
+      Qry.Open('SELECT * FROM ecr_cpt WHERE 1 = 0');
+    except
+      TableExiste := False;
+    end;
+
+    // 2. Si elle n'existe pas, on la crée
+    if not TableExiste then
+    begin
+      Qry.Close;
+      Qry.SQL.Text := 'CREATE TABLE IF NOT EXISTS ecr_cpt ('+
+          'noenr INT AUTO_INCREMENT PRIMARY KEY,'+
+          'nopiece VARCHAR(5) DEFAULT NULL,'+
+          'codjal VARCHAR(3) DEFAULT NULL,'+
+          'date_mvt DATE DEFAULT NULL,'+
+          'date_ech DATE DEFAULT NULL,'+
+          'reference VARCHAR(15) DEFAULT NULL,'+
+          'nocpt VARCHAR(14) DEFAULT NULL,'+
+          'noaux VARCHAR(14) DEFAULT NULL,'+
+          'libelle VARCHAR(30) DEFAULT NULL,'+
+          'montant DECIMAL(12,2) DEFAULT 0.00,'+
+          'sens VARCHAR(1) DEFAULT NULL,'+
+          'pai VARCHAR(1) DEFAULT NULL,'+
+          'type VARCHAR(2) DEFAULT NULL,'+
+          'INDEX key_piejou (nopiece, codjal),'+
+          'INDEX key_jal (codjal)'+
+      ') ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci';
+
       Qry.ExecSQL;
     end;
 

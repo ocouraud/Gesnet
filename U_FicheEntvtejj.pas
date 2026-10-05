@@ -148,6 +148,7 @@ type
     function SiRemisesSaisie(): Boolean;
     procedure CMDialogKey(var Msg: TCMDialogKey); message CM_DIALOGKEY;
     function ExecuterAjoutReglement: Boolean;
+    procedure ValiderChampPrix(Sender: TField);
 
   public
     { Déclarations publiques }
@@ -166,6 +167,16 @@ implementation
 {$R *.dfm}
 
 uses U_DM_Olivier, U_TableEntvtejj, U_DataModule, U_FicheLigvtejj, U_FicheRegljj;
+
+procedure TFormEntvtejj.ValiderChampPrix(Sender: TField);
+begin
+  if Sender.IsNull then Exit;
+
+  if Sender.AsFloat < 0 then
+  begin
+    DatabaseError('⚠ Prix négatif interdit.');
+  end;
+end;
 
 
 procedure TFormEntvtejj.CMDialogKey(var Msg: TCMDialogKey);
@@ -1164,6 +1175,7 @@ begin
     FDMemTableEntvtejj.Close;
     FDMemTableEntvtejj.FieldDefs.Assign(DM_Olivier.FDQueryEntvtejj.FieldDefs);
     FDMemTableEntvtejj.CreateDataSet;
+    FDMemTableEntvtejj.Open;
 
     if ModeSaisie = msAjout then
     begin
@@ -1214,6 +1226,13 @@ begin
     FDMemTableLigvtejj.Close;
     FDMemTableLigvtejj.FieldDefs.Assign(DM_Olivier.FDQueryLigvtejj.FieldDefs);
     FDMemTableLigvtejj.CreateDataSet;
+    FDMemTableLigvtejj.Open;
+    // Attaches événement dynamiquement aux champs :
+    if FDMemTableLigvtejj.FindField('PRIXHT') <> nil then
+      FDMemTableLigvtejj.FieldByName('PRIXHT').OnValidate := ValiderChampPrix;
+
+    if FDMemTableLigvtejj.FindField('PRIXTTC') <> nil then
+      FDMemTableLigvtejj.FieldByName('PRIXTTC').OnValidate := ValiderChampPrix;
 
     // 3. Gestion des Reglements
     DM_Olivier.FDQueryRegljj.Close;
@@ -1224,6 +1243,7 @@ begin
     FDMemTableRegljj.Close;
     FDMemTableRegljj.FieldDefs.Assign(DM_Olivier.FDQueryRegljj.FieldDefs);
     FDMemTableRegljj.CreateDataSet;
+    FDMemTableRegljj.Open;
 
     if ModeSaisie = msModification then
     begin

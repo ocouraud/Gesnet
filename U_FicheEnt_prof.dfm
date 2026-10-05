@@ -22,7 +22,6 @@ object FormEnt_prof: TFormEnt_prof
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 2
-    ExplicitWidth = 1004
     DesignSize = (
       1016
       133)
@@ -203,7 +202,6 @@ object FormEnt_prof: TFormEnt_prof
     Height = 242
     Align = alTop
     TabOrder = 0
-    ExplicitWidth = 1004
     DesignSize = (
       1016
       242)
@@ -297,7 +295,6 @@ object FormEnt_prof: TFormEnt_prof
       Caption = 'Exonere TVA'
       TabOrder = 11
       OnClick = RzDBCheckBoxEXO_TVAClick
-      ExplicitLeft = 756
     end
     object RzDBCheckBoxFlag_Tax: TRzDBCheckBox
       Left = 768
@@ -312,7 +309,6 @@ object FormEnt_prof: TFormEnt_prof
       Caption = 'Calcul de la TVA'#13' sur le HT.'
       TabOrder = 13
       OnClick = RzDBCheckBoxFlag_TaxClick
-      ExplicitLeft = 756
     end
     object RzDBCheckBoxTVA_ILES: TRzDBCheckBox
       Left = 768
@@ -327,7 +323,6 @@ object FormEnt_prof: TFormEnt_prof
       Caption = 'TVA Iles'
       TabOrder = 12
       OnClick = RzDBCheckBoxTVA_ILESClick
-      ExplicitLeft = 756
     end
     object Panel12: TPanel
       Left = 911
@@ -337,7 +332,6 @@ object FormEnt_prof: TFormEnt_prof
       Align = alRight
       BevelOuter = bvNone
       TabOrder = 2
-      ExplicitLeft = 899
       object BtnValider: TBitBtn
         Left = 0
         Top = 0
@@ -524,7 +518,6 @@ object FormEnt_prof: TFormEnt_prof
     Height = 286
     Align = alClient
     TabOrder = 1
-    ExplicitWidth = 1004
     object Panel5: TPanel
       Left = 896
       Top = 1

@@ -66,6 +66,7 @@ type
     FUserRights: TStringList;
     LoggedUser: string;
     gCodven_defaut: Integer;
+    GsCheminLocal: String;
     { Déclarations publiques }
     function ExisteEnregistrement(const NomTable: string; const Champs: array of string; const Valeurs: array of string; QueryOutil: TFDQuery): Boolean;
     function CreerRequeteTemp: TFDQuery;
@@ -89,7 +90,6 @@ implementation
 {$R *.dfm}
 
 uses U_FormAide;
-
 
 
 procedure TDMGesCloud.InitialiserTypesDocuments;

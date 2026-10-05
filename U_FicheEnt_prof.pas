@@ -134,6 +134,7 @@ type
     procedure CalculCompletPiece;
     function SiRemisesSaisie(): Boolean;
     procedure CMDialogKey(var Msg: TCMDialogKey); message CM_DIALOGKEY;
+    procedure ValiderChampPrix(Sender: TField);
 
   public
     { Déclarations publiques }
@@ -152,6 +153,17 @@ implementation
 {$R *.dfm}
 
 uses U_DM_Olivier, U_TableDevis, U_DataModule, U_FicheLig_prof;
+
+
+procedure TFormEnt_prof.ValiderChampPrix(Sender: TField);
+begin
+  if Sender.IsNull then Exit;
+
+  if Sender.AsFloat < 0 then
+  begin
+    DatabaseError('⚠ Prix négatif interdit.');
+  end;
+end;
 
 
 procedure TFormEnt_prof.CMDialogKey(var Msg: TCMDialogKey);
@@ -759,6 +771,7 @@ begin
     FDMemTableEnt_prof.Close;
     FDMemTableEnt_prof.FieldDefs.Assign(DM_Olivier.FDQueryEnt_prof.FieldDefs);
     FDMemTableEnt_prof.CreateDataSet;
+    FDMemTableEnt_prof.Open;
 
     if ModeSaisie = msAjout then
     begin
@@ -807,6 +820,14 @@ begin
     FDMemTableLig_prof.Close;
     FDMemTableLig_prof.FieldDefs.Assign(DM_Olivier.FDQueryLig_prof.FieldDefs);
     FDMemTableLig_prof.CreateDataSet;
+    FDMemTableLig_prof.Open;
+
+    // Attaches événement dynamiquement aux champs :
+    if FDMemTableLig_prof.FindField('PRIXHT') <> nil then
+      FDMemTableLig_prof.FieldByName('PRIXHT').OnValidate := ValiderChampPrix;
+
+    if FDMemTableLig_prof.FindField('PRIXTTC') <> nil then
+      FDMemTableLig_prof.FieldByName('PRIXTTC').OnValidate := ValiderChampPrix;
 
     if ModeSaisie = msModification then
     begin
