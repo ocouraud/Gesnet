@@ -84,6 +84,7 @@ type
     procedure TresorerieClientsClick(Sender: TObject);
     procedure Journauxcomptables1Click(Sender: TObject);
     procedure FacturesreccurentesClick(Sender: TObject);
+    procedure ExportEcrituresClientClick(Sender: TObject);
   private
     function ChercherEtActiverOnglet(const ACaption: string): Boolean;
     function OuvrirOnglet<T: TControl>(const ACaption: string; const AImageName: string = ''; AOnCreate: TProc<T> = nil): T;
@@ -106,7 +107,7 @@ uses
   U_TableSousfam, U_TableDepart, U_TableChrono, U_TableTarif, U_TableInfoscompl,
   U_FicheCtrstock, U_FicheCaisse, U_FormGestionDroits, U_TableArticles, U_TableEntvtejj,
   U_TableEntvteaa, U_FormCentraVentes, U_TableDevis, U_FrameEcrituresClients,
-  U_TableJournal, U_FrameFacturesReccurentes;
+  U_TableJournal, U_FrameFacturesReccurentes, U_FormExportEcrituresClient;
 
 procedure TFormMenuPrincipal.FormCreate(Sender: TObject);
 begin
@@ -410,6 +411,20 @@ var
 begin
   // Votre méthode qui crée ou ouvre l'onglet/frame
   MonFrame := OuvrirOnglet<TFrameFacturesReccurentes>('Factures reccurentes', 'client_account_template');
+end;
+
+procedure TFormMenuPrincipal.ExportEcrituresClientClick(
+  Sender: TObject);
+var
+  Fiche: TFormExportEcrituresClient;
+begin
+  Fiche := TFormExportEcrituresClient.Create(nil);
+  try
+    Fiche.ShowModal;
+  finally
+    Fiche.Free;
+  end;
+
 end;
 
 procedure TFormMenuPrincipal.Centralisationdesventes1Click(Sender: TObject);

@@ -112,6 +112,11 @@ begin
       Qry.ExecSQL('DELETE FROM imp_cpta');
       Qry.ExecSQL('DELETE FROM ecr_cpt');
 
+      // S'assurer que les FDQuery du DataModule ont bien une connexion assignée
+      FDQueryImp_cpta.Open;
+      FDQueryEcr_cpt.Open;
+      DM_Olivier.FDQueryCtrstock.Open;
+
       if pNature <> 2 then // Mouvements de facturation inclus[cite: 6]
       begin
         PIEVTE := 99999;
@@ -203,6 +208,13 @@ begin
               DATECPT := JJ + MM + AA;
               DATECPT4 := JJ + MM + AAAA;
               DATECPTS := AAAA + MM + JJ;
+
+              if QryEntVte.FieldByName('date_ech').AsString = '' then
+              begin
+                QryEntVte.Edit;
+                QryEntVte.FieldByName('date_ech').AsDateTime:=QryEntVte.FieldByName('date_').AsDateTime;
+                QryEntVte.Post;
+              end;
               DATEECH := Copy(QryEntVte.FieldByName('date_ech').AsString, 1, 4) + MM + JJ;
               WPAIE := 'S';
 
@@ -221,8 +233,8 @@ begin
                   FDQueryImp_cpta.FieldByName('jal').AsString := DM_Olivier.FDQueryCtrstock.FieldByName('jal_vte').AsString;
                   FDQueryImp_cpta.FieldByName('nocpt').AsString := LcptCli;
                   FDQueryImp_cpta.FieldByName('libelle').AsString := 'Fact.:' + FormatFloat('000000009', QryEntVte.FieldByName('codfac').AsInteger);
-                  FDQueryImp_cpta.FieldByName('date_cpt').AsDateTime := WDATE;
-                  FDQueryImp_cpta.FieldByName('date_ech').AsString := QryEntVte.FieldByName('date_ech').AsString;
+                  FDQueryImp_cpta.FieldByName('date_cpt').AsInteger := Integer(Trunc(WDATE)); // Trunc supprime la partie décimale (l'heure)
+                  FDQueryImp_cpta.FieldByName('date_ech').AsInteger := Integer(Trunc(QryEntVte.FieldByName('date_ech').AsDateTime));
                   FDQueryImp_cpta.FieldByName('debit').AsFloat := MONT;
                   FDQueryImp_cpta.FieldByName('credit').AsFloat := 0;
                   FDQueryImp_cpta.Post;
@@ -231,7 +243,7 @@ begin
                   FDQueryEcr_cpt.FieldByName('nopiece').AsInteger := PIEVTE;
                   FDQueryEcr_cpt.FieldByName('codjal').AsString := DM_Olivier.FDQueryCtrstock.FieldByName('jal_vte').AsString;
                   FDQueryEcr_cpt.FieldByName('date_mvt').AsDateTime := WDATE;
-                  FDQueryEcr_cpt.FieldByName('date_ech').AsString := QryEntVte.FieldByName('date_ech').AsString;
+                  FDQueryEcr_cpt.FieldByName('date_ech').AsDateTime := QryEntVte.FieldByName('date_ech').AsDateTime;
                   FDQueryEcr_cpt.FieldByName('reference').AsString := FormatDateTime('yyyymmdd', WDATE);
                   FDQueryEcr_cpt.FieldByName('nocpt').AsString := QryRepres.FieldByName('cptcli').AsString;
                   FDQueryEcr_cpt.FieldByName('noaux').AsString := LcptCli;
@@ -253,8 +265,8 @@ begin
                   FDQueryImp_cpta.FieldByName('jal').AsString := DM_Olivier.FDQueryCtrstock.FieldByName('jal_vte').AsString;
                   FDQueryImp_cpta.FieldByName('nocpt').AsString := LcptCli;
                   FDQueryImp_cpta.FieldByName('libelle').AsString := 'Avoir : ' + FormatFloat('0000007', QryEntVte.FieldByName('codfac').AsInteger);
-                  FDQueryImp_cpta.FieldByName('date_cpt').AsDateTime := WDATE;
-                  FDQueryImp_cpta.FieldByName('date_ech').AsString := QryEntVte.FieldByName('date_ech').AsString;
+                  FDQueryImp_cpta.FieldByName('date_cpt').AsInteger := Integer(Trunc(WDATE));
+                  FDQueryImp_cpta.FieldByName('date_ech').AsInteger := Integer(Trunc(QryEntVte.FieldByName('date_ech').AsDateTime));
                   FDQueryImp_cpta.FieldByName('debit').AsFloat := 0;
                   FDQueryImp_cpta.FieldByName('credit').AsFloat := MONT;
                   FDQueryImp_cpta.Post;
@@ -263,7 +275,7 @@ begin
                   FDQueryEcr_cpt.FieldByName('nopiece').AsInteger := PIEVTE;
                   FDQueryEcr_cpt.FieldByName('codjal').AsString := DM_Olivier.FDQueryCtrstock.FieldByName('jal_vte').AsString;
                   FDQueryEcr_cpt.FieldByName('date_mvt').AsDateTime := WDATE;
-                  FDQueryEcr_cpt.FieldByName('date_ech').AsString := QryEntVte.FieldByName('date_ech').AsString;
+                  FDQueryEcr_cpt.FieldByName('date_ech').AsDateTime := QryEntVte.FieldByName('date_ech').AsDateTime;
                   FDQueryEcr_cpt.FieldByName('reference').AsString := DATEJ;
                   FDQueryEcr_cpt.FieldByName('nocpt').AsString := QryRepres.FieldByName('cptcli').AsString;
                   FDQueryEcr_cpt.FieldByName('noaux').AsString := LcptCli;
@@ -277,28 +289,28 @@ begin
               end
               else
               begin
-                FDQueryImp_cpta.Close;
-                FDQueryImp_cpta.SQL.Text := 'SELECT * FROM compta WHERE date_ = :wdate AND type_ = :vtype AND nocpt = :nocpt AND codjal = :codjal';
-                FDQueryImp_cpta.ParamByName('wdate').AsDate := WDATE;
-                FDQueryImp_cpta.ParamByName('vtype').AsString := 'VC';
-                FDQueryImp_cpta.ParamByName('nocpt').AsString := QryClient.FieldByName('codcli').AsString;
-                FDQueryImp_cpta.ParamByName('codjal').AsString := DM_Olivier.FDQueryCtrstock.FieldByName('jal_vte').AsString;
-                FDQueryImp_cpta.Open;
+                QryCompta.Close;
+                QryCompta.SQL.Text := 'SELECT * FROM compta WHERE date_ = :wdate AND type_ = :vtype AND nocpt = :nocpt AND codjal = :codjal';
+                QryCompta.ParamByName('wdate').AsDate := WDATE;
+                QryCompta.ParamByName('vtype').AsString := 'VC';
+                QryCompta.ParamByName('nocpt').AsString := QryClient.FieldByName('codcli').AsString;
+                QryCompta.ParamByName('codjal').AsString := DM_Olivier.FDQueryCtrstock.FieldByName('jal_vte').AsString;
+                QryCompta.Open;
 
-                if FDQueryImp_cpta.IsEmpty then
+                if QryCompta.IsEmpty then
                 begin
-                  FDQueryImp_cpta.Insert;
-                  FDQueryImp_cpta.FieldByName('type_').AsString := 'VC';
-                  FDQueryImp_cpta.FieldByName('date_').AsDateTime := WDATE;
-                  FDQueryImp_cpta.FieldByName('nocpt').AsString := QryClient.FieldByName('codcli').AsString;
-                  FDQueryImp_cpta.FieldByName('codjal').AsString := DM_Olivier.FDQueryCtrstock.FieldByName('jal_vte').AsString;
-                  FDQueryImp_cpta.Post;
-                  FDQueryImp_cpta.Refresh;
+                  QryCompta.Insert;
+                  QryCompta.FieldByName('type_').AsString := 'VC';
+                  QryCompta.FieldByName('date_').AsDateTime := WDATE;
+                  QryCompta.FieldByName('nocpt').AsString := QryClient.FieldByName('codcli').AsString;
+                  QryCompta.FieldByName('codjal').AsString := DM_Olivier.FDQueryCtrstock.FieldByName('jal_vte').AsString;
+                  QryCompta.Post;
+                  QryCompta.Refresh;
                 end;
 
-                FDQueryImp_cpta.Edit;
-                FDQueryImp_cpta.FieldByName('debit').AsFloat := FDQueryImp_cpta.FieldByName('debit').AsFloat + Round(NETTTC);
-                FDQueryImp_cpta.Post;
+                QryCompta.Edit;
+                QryCompta.FieldByName('debit').AsFloat := QryCompta.FieldByName('debit').AsFloat + Round(NETTTC);
+                QryCompta.Post;
               end;
 
               // ------------------------------------------------------------------
@@ -318,28 +330,28 @@ begin
                 begin
                   VT_TVA := 1;
 
-                  FDQueryImp_cpta.Close;
-                  FDQueryImp_cpta.SQL.Text := 'SELECT * FROM compta WHERE date_ = :wdate AND type_ = :vtype AND nocpt = :nocpt AND codjal = :codjal';
-                  FDQueryImp_cpta.ParamByName('wdate').AsDate := WDATE;
-                  FDQueryImp_cpta.ParamByName('vtype').AsString := 'VV';
-                  FDQueryImp_cpta.ParamByName('nocpt').AsString := QryParame.FieldByName('cptdec').AsString;
-                  FDQueryImp_cpta.ParamByName('codjal').AsString := DM_Olivier.FDQueryCtrstock.FieldByName('jal_vte').AsString;
-                  FDQueryImp_cpta.Open;
+                  QryCompta.Close;
+                  QryCompta.SQL.Text := 'SELECT * FROM compta WHERE date_ = :wdate AND type_ = :vtype AND nocpt = :nocpt AND codjal = :codjal';
+                  QryCompta.ParamByName('wdate').AsDate := WDATE;
+                  QryCompta.ParamByName('vtype').AsString := 'VV';
+                  QryCompta.ParamByName('nocpt').AsString := QryParame.FieldByName('cptdec').AsString;
+                  QryCompta.ParamByName('codjal').AsString := DM_Olivier.FDQueryCtrstock.FieldByName('jal_vte').AsString;
+                  QryCompta.Open;
 
-                  if FDQueryImp_cpta.IsEmpty then
+                  if QryCompta.IsEmpty then
                   begin
-                    FDQueryImp_cpta.Insert;
-                    FDQueryImp_cpta.FieldByName('type_').AsString := 'VV';
-                    FDQueryImp_cpta.FieldByName('nocpt').AsString := QryParame.FieldByName('cptdec').AsString;
-                    FDQueryImp_cpta.FieldByName('codjal').AsString := DM_Olivier.FDQueryCtrstock.FieldByName('jal_vte').AsString;
-                    FDQueryImp_cpta.FieldByName('date_').AsDateTime := WDATE;
-                    FDQueryImp_cpta.Post;
-                    FDQueryImp_cpta.Refresh;
+                    QryCompta.Insert;
+                    QryCompta.FieldByName('type_').AsString := 'VV';
+                    QryCompta.FieldByName('nocpt').AsString := QryParame.FieldByName('cptdec').AsString;
+                    QryCompta.FieldByName('codjal').AsString := DM_Olivier.FDQueryCtrstock.FieldByName('jal_vte').AsString;
+                    QryCompta.FieldByName('date_').AsDateTime := WDATE;
+                    QryCompta.Post;
+                    QryCompta.Refresh;
                   end;
 
-                  FDQueryImp_cpta.Edit;
-                  FDQueryImp_cpta.FieldByName('credit').AsFloat := FDQueryImp_cpta.FieldByName('credit').AsFloat + Round(QryEntVte.FieldByName('mt_ht0').AsFloat);
-                  FDQueryImp_cpta.Post;
+                  QryCompta.Edit;
+                  QryCompta.FieldByName('credit').AsFloat := QryCompta.FieldByName('credit').AsFloat + Round(QryEntVte.FieldByName('mt_ht0').AsFloat);
+                  QryCompta.Post;
                 end;
               end;
 
@@ -360,28 +372,28 @@ begin
                   begin
                     VT_TVA := 1;
 
-                    FDQueryImp_cpta.Close;
-                    FDQueryImp_cpta.SQL.Text := 'SELECT * FROM compta WHERE date_ = :wdate AND type_ = :vtype AND nocpt = :nocpt AND codjal = :codjal';
-                    FDQueryImp_cpta.ParamByName('wdate').AsDate := WDATE;
-                    FDQueryImp_cpta.ParamByName('vtype').AsString := 'VV';
-                    FDQueryImp_cpta.ParamByName('nocpt').AsString := QryParame.FieldByName('cptdec').AsString;
-                    FDQueryImp_cpta.ParamByName('codjal').AsString := DM_Olivier.FDQueryCtrstock.FieldByName('jal_vte').AsString;
-                    FDQueryImp_cpta.Open;
+                    QryCompta.Close;
+                    QryCompta.SQL.Text := 'SELECT * FROM compta WHERE date_ = :wdate AND type_ = :vtype AND nocpt = :nocpt AND codjal = :codjal';
+                    QryCompta.ParamByName('wdate').AsDate := WDATE;
+                    QryCompta.ParamByName('vtype').AsString := 'VV';
+                    QryCompta.ParamByName('nocpt').AsString := QryParame.FieldByName('cptdec').AsString;
+                    QryCompta.ParamByName('codjal').AsString := DM_Olivier.FDQueryCtrstock.FieldByName('jal_vte').AsString;
+                    QryCompta.Open;
 
-                    if FDQueryImp_cpta.IsEmpty then
+                    if QryCompta.IsEmpty then
                     begin
-                      FDQueryImp_cpta.Insert;
-                      FDQueryImp_cpta.FieldByName('type_').AsString := 'VV';
-                      FDQueryImp_cpta.FieldByName('nocpt').AsString := QryParame.FieldByName('cptdec').AsString;
-                      FDQueryImp_cpta.FieldByName('codjal').AsString := DM_Olivier.FDQueryCtrstock.FieldByName('jal_vte').AsString;
-                      FDQueryImp_cpta.FieldByName('date_').AsDateTime := WDATE;
-                      FDQueryImp_cpta.Post;
-                      FDQueryImp_cpta.Refresh;
+                      QryCompta.Insert;
+                      QryCompta.FieldByName('type_').AsString := 'VV';
+                      QryCompta.FieldByName('nocpt').AsString := QryParame.FieldByName('cptdec').AsString;
+                      QryCompta.FieldByName('codjal').AsString := DM_Olivier.FDQueryCtrstock.FieldByName('jal_vte').AsString;
+                      QryCompta.FieldByName('date_').AsDateTime := WDATE;
+                      QryCompta.Post;
+                      QryCompta.Refresh;
                     end;
 
-                    FDQueryImp_cpta.Edit;
-                    FDQueryImp_cpta.FieldByName('credit').AsFloat := FDQueryImp_cpta.FieldByName('credit').AsFloat + Round(QryEntVte.FieldByName('mt_ht1').AsFloat);
-                    FDQueryImp_cpta.Post;
+                    QryCompta.Edit;
+                    QryCompta.FieldByName('credit').AsFloat := QryCompta.FieldByName('credit').AsFloat + Round(QryEntVte.FieldByName('mt_ht1').AsFloat);
+                    QryCompta.Post;
                   end;
                   QryParame.Post;
                 end;
@@ -404,28 +416,28 @@ begin
                   begin
                     VT_TVA := 1;
 
-                    FDQueryImp_cpta.Close;
-                    FDQueryImp_cpta.SQL.Text := 'SELECT * FROM compta WHERE date_ = :wdate AND type_ = :vtype AND nocpt = :nocpt AND codjal = :codjal';
-                    FDQueryImp_cpta.ParamByName('wdate').AsDate := WDATE;
-                    FDQueryImp_cpta.ParamByName('vtype').AsString := 'VV';
-                    FDQueryImp_cpta.ParamByName('nocpt').AsString := QryParame.FieldByName('cptdec').AsString;
-                    FDQueryImp_cpta.ParamByName('codjal').AsString := DM_Olivier.FDQueryCtrstock.FieldByName('jal_vte').AsString;
-                    FDQueryImp_cpta.Open;
+                    QryCompta.Close;
+                    QryCompta.SQL.Text := 'SELECT * FROM compta WHERE date_ = :wdate AND type_ = :vtype AND nocpt = :nocpt AND codjal = :codjal';
+                    QryCompta.ParamByName('wdate').AsDate := WDATE;
+                    QryCompta.ParamByName('vtype').AsString := 'VV';
+                    QryCompta.ParamByName('nocpt').AsString := QryParame.FieldByName('cptdec').AsString;
+                    QryCompta.ParamByName('codjal').AsString := DM_Olivier.FDQueryCtrstock.FieldByName('jal_vte').AsString;
+                    QryCompta.Open;
 
-                    if FDQueryImp_cpta.IsEmpty then
+                    if QryCompta.IsEmpty then
                     begin
-                      FDQueryImp_cpta.Insert;
-                      FDQueryImp_cpta.FieldByName('type_').AsString := 'VV';
-                      FDQueryImp_cpta.FieldByName('nocpt').AsString := QryParame.FieldByName('cptdec').AsString;
-                      FDQueryImp_cpta.FieldByName('codjal').AsString := DM_Olivier.FDQueryCtrstock.FieldByName('jal_vte').AsString;
-                      FDQueryImp_cpta.FieldByName('date_').AsDateTime := WDATE;
-                      FDQueryImp_cpta.Post;
-                      FDQueryImp_cpta.Refresh;
+                      QryCompta.Insert;
+                      QryCompta.FieldByName('type_').AsString := 'VV';
+                      QryCompta.FieldByName('nocpt').AsString := QryParame.FieldByName('cptdec').AsString;
+                      QryCompta.FieldByName('codjal').AsString := DM_Olivier.FDQueryCtrstock.FieldByName('jal_vte').AsString;
+                      QryCompta.FieldByName('date_').AsDateTime := WDATE;
+                      QryCompta.Post;
+                      QryCompta.Refresh;
                     end;
 
-                    FDQueryImp_cpta.Edit;
-                    FDQueryImp_cpta.FieldByName('credit').AsFloat := FDQueryImp_cpta.FieldByName('credit').AsFloat + Round(QryEntVte.FieldByName('mt_ht2').AsFloat);
-                    FDQueryImp_cpta.Post;
+                    QryCompta.Edit;
+                    QryCompta.FieldByName('credit').AsFloat := QryCompta.FieldByName('credit').AsFloat + Round(QryEntVte.FieldByName('mt_ht2').AsFloat);
+                    QryCompta.Post;
                   end;
                   QryParame.Post;
                 end;
@@ -448,28 +460,28 @@ begin
                   begin
                     VT_TVA := 1;
 
-                    FDQueryImp_cpta.Close;
-                    FDQueryImp_cpta.SQL.Text := 'SELECT * FROM compta WHERE date_ = :wdate AND type_ = :vtype AND nocpt = :nocpt AND codjal = :codjal';
-                    FDQueryImp_cpta.ParamByName('wdate').AsDate := WDATE;
-                    FDQueryImp_cpta.ParamByName('vtype').AsString := 'VV';
-                    FDQueryImp_cpta.ParamByName('nocpt').AsString := QryParame.FieldByName('cptdec').AsString;
-                    FDQueryImp_cpta.ParamByName('codjal').AsString := DM_Olivier.FDQueryCtrstock.FieldByName('jal_vte').AsString;
-                    FDQueryImp_cpta.Open;
+                    QryCompta.Close;
+                    QryCompta.SQL.Text := 'SELECT * FROM compta WHERE date_ = :wdate AND type_ = :vtype AND nocpt = :nocpt AND codjal = :codjal';
+                    QryCompta.ParamByName('wdate').AsDate := WDATE;
+                    QryCompta.ParamByName('vtype').AsString := 'VV';
+                    QryCompta.ParamByName('nocpt').AsString := QryParame.FieldByName('cptdec').AsString;
+                    QryCompta.ParamByName('codjal').AsString := DM_Olivier.FDQueryCtrstock.FieldByName('jal_vte').AsString;
+                    QryCompta.Open;
 
-                    if FDQueryImp_cpta.IsEmpty then
+                    if QryCompta.IsEmpty then
                     begin
-                      FDQueryImp_cpta.Insert;
-                      FDQueryImp_cpta.FieldByName('type_').AsString := 'VV';
-                      FDQueryImp_cpta.FieldByName('nocpt').AsString := QryParame.FieldByName('cptdec').AsString;
-                      FDQueryImp_cpta.FieldByName('codjal').AsString := DM_Olivier.FDQueryCtrstock.FieldByName('jal_vte').AsString;
-                      FDQueryImp_cpta.FieldByName('date_').AsDateTime := WDATE;
-                      FDQueryImp_cpta.Post;
-                      FDQueryImp_cpta.Refresh;
+                      QryCompta.Insert;
+                      QryCompta.FieldByName('type_').AsString := 'VV';
+                      QryCompta.FieldByName('nocpt').AsString := QryParame.FieldByName('cptdec').AsString;
+                      QryCompta.FieldByName('codjal').AsString := DM_Olivier.FDQueryCtrstock.FieldByName('jal_vte').AsString;
+                      QryCompta.FieldByName('date_').AsDateTime := WDATE;
+                      QryCompta.Post;
+                      QryCompta.Refresh;
                     end;
 
-                    FDQueryImp_cpta.Edit;
-                    FDQueryImp_cpta.FieldByName('credit').AsFloat := FDQueryImp_cpta.FieldByName('credit').AsFloat + Round(QryEntVte.FieldByName('mt_ht3').AsFloat);
-                    FDQueryImp_cpta.Post;
+                    QryCompta.Edit;
+                    QryCompta.FieldByName('credit').AsFloat := QryCompta.FieldByName('credit').AsFloat + Round(QryEntVte.FieldByName('mt_ht3').AsFloat);
+                    QryCompta.Post;
                   end;
                   QryParame.Post;
                 end;
@@ -492,28 +504,28 @@ begin
                   begin
                     VT_TVA := 1;
 
-                    FDQueryImp_cpta.Close;
-                    FDQueryImp_cpta.SQL.Text := 'SELECT * FROM compta WHERE date_ = :wdate AND type_ = :vtype AND nocpt = :nocpt AND codjal = :codjal';
-                    FDQueryImp_cpta.ParamByName('wdate').AsDate := WDATE;
-                    FDQueryImp_cpta.ParamByName('vtype').AsString := 'VV';
-                    FDQueryImp_cpta.ParamByName('nocpt').AsString := QryParame.FieldByName('cptdec').AsString;
-                    FDQueryImp_cpta.ParamByName('codjal').AsString := DM_Olivier.FDQueryCtrstock.FieldByName('jal_vte').AsString;
-                    FDQueryImp_cpta.Open;
+                    QryCompta.Close;
+                    QryCompta.SQL.Text := 'SELECT * FROM compta WHERE date_ = :wdate AND type_ = :vtype AND nocpt = :nocpt AND codjal = :codjal';
+                    QryCompta.ParamByName('wdate').AsDate := WDATE;
+                    QryCompta.ParamByName('vtype').AsString := 'VV';
+                    QryCompta.ParamByName('nocpt').AsString := QryParame.FieldByName('cptdec').AsString;
+                    QryCompta.ParamByName('codjal').AsString := DM_Olivier.FDQueryCtrstock.FieldByName('jal_vte').AsString;
+                    QryCompta.Open;
 
-                    if FDQueryImp_cpta.IsEmpty then
+                    if QryCompta.IsEmpty then
                     begin
-                      FDQueryImp_cpta.Insert;
-                      FDQueryImp_cpta.FieldByName('type_').AsString := 'VV';
-                      FDQueryImp_cpta.FieldByName('nocpt').AsString := QryParame.FieldByName('cptdec').AsString;
-                      FDQueryImp_cpta.FieldByName('codjal').AsString := DM_Olivier.FDQueryCtrstock.FieldByName('jal_vte').AsString;
-                      FDQueryImp_cpta.FieldByName('date_').AsDateTime := WDATE;
-                      FDQueryImp_cpta.Post;
-                      FDQueryImp_cpta.Refresh;
+                      QryCompta.Insert;
+                      QryCompta.FieldByName('type_').AsString := 'VV';
+                      QryCompta.FieldByName('nocpt').AsString := QryParame.FieldByName('cptdec').AsString;
+                      QryCompta.FieldByName('codjal').AsString := DM_Olivier.FDQueryCtrstock.FieldByName('jal_vte').AsString;
+                      QryCompta.FieldByName('date_').AsDateTime := WDATE;
+                      QryCompta.Post;
+                      QryCompta.Refresh;
                     end;
 
-                    FDQueryImp_cpta.Edit;
-                    FDQueryImp_cpta.FieldByName('credit').AsFloat := FDQueryImp_cpta.FieldByName('credit').AsFloat + Round(QryEntVte.FieldByName('mt_hti').AsFloat);
-                    FDQueryImp_cpta.Post;
+                    QryCompta.Edit;
+                    QryCompta.FieldByName('credit').AsFloat := QryCompta.FieldByName('credit').AsFloat + Round(QryEntVte.FieldByName('mt_hti').AsFloat);
+                    QryCompta.Post;
                   end;
                   QryParame.Post;
                 end;
@@ -536,28 +548,28 @@ begin
                   begin
                     VT_TVA := 1;
 
-                    FDQueryImp_cpta.Close;
-                    FDQueryImp_cpta.SQL.Text := 'SELECT * FROM compta WHERE date_ = :wdate AND type_ = :vtype AND nocpt = :nocpt AND codjal = :codjal';
-                    FDQueryImp_cpta.ParamByName('wdate').AsDate := WDATE;
-                    FDQueryImp_cpta.ParamByName('vtype').AsString := 'VV';
-                    FDQueryImp_cpta.ParamByName('nocpt').AsString := QryParame.FieldByName('cptdec').AsString;
-                    FDQueryImp_cpta.ParamByName('codjal').AsString := DM_Olivier.FDQueryCtrstock.FieldByName('jal_vte').AsString;
-                    FDQueryImp_cpta.Open;
+                    QryCompta.Close;
+                    QryCompta.SQL.Text := 'SELECT * FROM compta WHERE date_ = :wdate AND type_ = :vtype AND nocpt = :nocpt AND codjal = :codjal';
+                    QryCompta.ParamByName('wdate').AsDate := WDATE;
+                    QryCompta.ParamByName('vtype').AsString := 'VV';
+                    QryCompta.ParamByName('nocpt').AsString := QryParame.FieldByName('cptdec').AsString;
+                    QryCompta.ParamByName('codjal').AsString := DM_Olivier.FDQueryCtrstock.FieldByName('jal_vte').AsString;
+                    QryCompta.Open;
 
-                    if FDQueryImp_cpta.IsEmpty then
+                    if QryCompta.IsEmpty then
                     begin
-                      FDQueryImp_cpta.Insert;
-                      FDQueryImp_cpta.FieldByName('type_').AsString := 'VV';
-                      FDQueryImp_cpta.FieldByName('nocpt').AsString := QryParame.FieldByName('cptdec').AsString;
-                      FDQueryImp_cpta.FieldByName('codjal').AsString := DM_Olivier.FDQueryCtrstock.FieldByName('jal_vte').AsString;
-                      FDQueryImp_cpta.FieldByName('date_').AsDateTime := WDATE;
-                      FDQueryImp_cpta.Post;
-                      FDQueryImp_cpta.Refresh;
+                      QryCompta.Insert;
+                      QryCompta.FieldByName('type_').AsString := 'VV';
+                      QryCompta.FieldByName('nocpt').AsString := QryParame.FieldByName('cptdec').AsString;
+                      QryCompta.FieldByName('codjal').AsString := DM_Olivier.FDQueryCtrstock.FieldByName('jal_vte').AsString;
+                      QryCompta.FieldByName('date_').AsDateTime := WDATE;
+                      QryCompta.Post;
+                      QryCompta.Refresh;
                     end;
 
-                    FDQueryImp_cpta.Edit;
-                    FDQueryImp_cpta.FieldByName('credit').AsFloat := FDQueryImp_cpta.FieldByName('credit').AsFloat + Round(QryEntVte.FieldByName('mt_htsoc').AsFloat);
-                    FDQueryImp_cpta.Post;
+                    QryCompta.Edit;
+                    QryCompta.FieldByName('credit').AsFloat := QryCompta.FieldByName('credit').AsFloat + Round(QryEntVte.FieldByName('mt_htsoc').AsFloat);
+                    QryCompta.Post;
                   end;
                   QryParame.Post;
                 end;
@@ -589,56 +601,56 @@ begin
                   QryFamille.ParamByName('codfam').AsString := QryLigVte.FieldByName('codfam').AsString;
                   QryFamille.Open;
 
-                  FDQueryImp_cpta.Close;
-                  FDQueryImp_cpta.SQL.Text := 'SELECT * FROM compta WHERE date_ = :wdate AND type_ = :vtype AND nocpt = :nocpt AND codjal = :codjal';
-                  FDQueryImp_cpta.ParamByName('wdate').AsDate := WDATE;
-                  FDQueryImp_cpta.ParamByName('vtype').AsString := 'VV';
-                  FDQueryImp_cpta.ParamByName('nocpt').AsString := QryFamille.FieldByName('cptvte').AsString;
-                  FDQueryImp_cpta.ParamByName('codjal').AsString := DM_Olivier.FDQueryCtrstock.FieldByName('jal_vte').AsString;
-                  FDQueryImp_cpta.Open;
+                  QryCompta.Close;
+                  QryCompta.SQL.Text := 'SELECT * FROM compta WHERE date_ = :wdate AND type_ = :vtype AND nocpt = :nocpt AND codjal = :codjal';
+                  QryCompta.ParamByName('wdate').AsDate := WDATE;
+                  QryCompta.ParamByName('vtype').AsString := 'VV';
+                  QryCompta.ParamByName('nocpt').AsString := QryFamille.FieldByName('cptvte').AsString;
+                  QryCompta.ParamByName('codjal').AsString := DM_Olivier.FDQueryCtrstock.FieldByName('jal_vte').AsString;
+                  QryCompta.Open;
 
-                  if FDQueryImp_cpta.IsEmpty then
+                  if QryCompta.IsEmpty then
                   begin
-                    FDQueryImp_cpta.Insert;
-                    FDQueryImp_cpta.FieldByName('type_').AsString := 'VV';
-                    FDQueryImp_cpta.FieldByName('nocpt').AsString := QryFamille.FieldByName('cptvte').AsString;
-                    FDQueryImp_cpta.FieldByName('codjal').AsString := DM_Olivier.FDQueryCtrstock.FieldByName('jal_vte').AsString;
-                    FDQueryImp_cpta.FieldByName('date_').AsDateTime := WDATE;
-                    FDQueryImp_cpta.Post;
-                    FDQueryImp_cpta.Refresh;
+                    QryCompta.Insert;
+                    QryCompta.FieldByName('type_').AsString := 'VV';
+                    QryCompta.FieldByName('nocpt').AsString := QryFamille.FieldByName('cptvte').AsString;
+                    QryCompta.FieldByName('codjal').AsString := DM_Olivier.FDQueryCtrstock.FieldByName('jal_vte').AsString;
+                    QryCompta.FieldByName('date_').AsDateTime := WDATE;
+                    QryCompta.Post;
+                    QryCompta.Refresh;
                   end;
 
-                  FDQueryImp_cpta.Edit;
+                  QryCompta.Edit;
                   if QryFamille.FieldByName('cptrem').AsString = '' then
-                    FDQueryImp_cpta.FieldByName('credit').AsFloat := FDQueryImp_cpta.FieldByName('credit').AsFloat + NETHT
+                    QryCompta.FieldByName('credit').AsFloat := QryCompta.FieldByName('credit').AsFloat + NETHT
                   else
-                    FDQueryImp_cpta.FieldByName('credit').AsFloat := FDQueryImp_cpta.FieldByName('credit').AsFloat + NETHT + QryLigVte.FieldByName('mt_remise').AsFloat;
-                  FDQueryImp_cpta.Post;
+                    QryCompta.FieldByName('credit').AsFloat := QryCompta.FieldByName('credit').AsFloat + NETHT + QryLigVte.FieldByName('mt_remise').AsFloat;
+                  QryCompta.Post;
 
                   if (QryLigVte.FieldByName('mt_remise').AsFloat <> 0) and (QryFamille.FieldByName('cptrem').AsString <> '') then
                   begin
-                    FDQueryImp_cpta.Close;
-                    FDQueryImp_cpta.SQL.Text := 'SELECT * FROM compta WHERE date_ = :wdate AND type_ = :vtype AND nocpt = :nocpt AND codjal = :codjal';
-                    FDQueryImp_cpta.ParamByName('wdate').AsDate := WDATE;
-                    FDQueryImp_cpta.ParamByName('vtype').AsString := 'VR';
-                    FDQueryImp_cpta.ParamByName('nocpt').AsString := QryFamille.FieldByName('cptrem').AsString;
-                    FDQueryImp_cpta.ParamByName('codjal').AsString := DM_Olivier.FDQueryCtrstock.FieldByName('jal_vte').AsString;
-                    FDQueryImp_cpta.Open;
+                    QryCompta.Close;
+                    QryCompta.SQL.Text := 'SELECT * FROM compta WHERE date_ = :wdate AND type_ = :vtype AND nocpt = :nocpt AND codjal = :codjal';
+                    QryCompta.ParamByName('wdate').AsDate := WDATE;
+                    QryCompta.ParamByName('vtype').AsString := 'VR';
+                    QryCompta.ParamByName('nocpt').AsString := QryFamille.FieldByName('cptrem').AsString;
+                    QryCompta.ParamByName('codjal').AsString := DM_Olivier.FDQueryCtrstock.FieldByName('jal_vte').AsString;
+                    QryCompta.Open;
 
-                    if FDQueryImp_cpta.IsEmpty then
+                    if QryCompta.IsEmpty then
                     begin
-                      FDQueryImp_cpta.Insert;
-                      FDQueryImp_cpta.FieldByName('type_').AsString := 'VR';
-                      FDQueryImp_cpta.FieldByName('nocpt').AsString := QryFamille.FieldByName('cptrem').AsString;
-                      FDQueryImp_cpta.FieldByName('codjal').AsString := DM_Olivier.FDQueryCtrstock.FieldByName('jal_vte').AsString;
-                      FDQueryImp_cpta.FieldByName('date_').AsDateTime := WDATE;
-                      FDQueryImp_cpta.Post;
-                      FDQueryImp_cpta.Refresh;
+                      QryCompta.Insert;
+                      QryCompta.FieldByName('type_').AsString := 'VR';
+                      QryCompta.FieldByName('nocpt').AsString := QryFamille.FieldByName('cptrem').AsString;
+                      QryCompta.FieldByName('codjal').AsString := DM_Olivier.FDQueryCtrstock.FieldByName('jal_vte').AsString;
+                      QryCompta.FieldByName('date_').AsDateTime := WDATE;
+                      QryCompta.Post;
+                      QryCompta.Refresh;
                     end;
 
-                    FDQueryImp_cpta.Edit;
-                    FDQueryImp_cpta.FieldByName('debit').AsFloat := FDQueryImp_cpta.FieldByName('debit').AsFloat + QryLigVte.FieldByName('mt_remise').AsFloat;
-                    FDQueryImp_cpta.Post;
+                    QryCompta.Edit;
+                    QryCompta.FieldByName('debit').AsFloat := QryCompta.FieldByName('debit').AsFloat + QryLigVte.FieldByName('mt_remise').AsFloat;
+                    QryCompta.Post;
                   end;
                 end;
 
@@ -680,8 +692,8 @@ begin
                   FDQueryImp_cpta.FieldByName('jal').AsString := QryPaiement.FieldByName('codjal').AsString;
                   FDQueryImp_cpta.FieldByName('nocpt').AsString := QryPaiement.FieldByName('nocpt').AsString;
                   FDQueryImp_cpta.FieldByName('libelle').AsString := Copy(QryRegLaa.FieldByName('libelle').AsString, 1, 25);
-                  FDQueryImp_cpta.FieldByName('date_cpt').AsDateTime := WDATE;
-                  FDQueryImp_cpta.FieldByName('date_ech').AsDateTime := WDATE;
+                  FDQueryImp_cpta.FieldByName('date_cpt').AsInteger := Integer(Trunc(WDATE));
+                  FDQueryImp_cpta.FieldByName('date_ech').AsInteger := Integer(Trunc(WDATE));
                   FDQueryImp_cpta.FieldByName('debit').AsFloat := MONT;
                   FDQueryImp_cpta.FieldByName('credit').AsFloat := 0;
                   FDQueryImp_cpta.Post;
@@ -695,8 +707,8 @@ begin
                   FDQueryImp_cpta.FieldByName('jal').AsString := QryPaiement.FieldByName('codjal').AsString;
                   FDQueryImp_cpta.FieldByName('nocpt').AsString := QryPaiement.FieldByName('nocpt').AsString;
                   FDQueryImp_cpta.FieldByName('libelle').AsString := Copy(QryRegLaa.FieldByName('libelle').AsString, 1, 25);
-                  FDQueryImp_cpta.FieldByName('date_cpt').AsDateTime := WDATE;
-                  FDQueryImp_cpta.FieldByName('date_ech').AsDateTime := WDATE;
+                  FDQueryImp_cpta.FieldByName('date_cpt').AsInteger := Integer(Trunc(WDATE));
+                  FDQueryImp_cpta.FieldByName('date_ech').AsInteger := Integer(Trunc(WDATE));
                   FDQueryImp_cpta.FieldByName('debit').AsFloat := 0;
                   FDQueryImp_cpta.FieldByName('credit').AsFloat := MONT;
                   FDQueryImp_cpta.Post;
@@ -731,8 +743,8 @@ begin
                     FDQueryImp_cpta.FieldByName('jal').AsString := QryPaiement.FieldByName('codjal').AsString;
                     FDQueryImp_cpta.FieldByName('nocpt').AsString := LcptCli;
                     FDQueryImp_cpta.FieldByName('libelle').AsString := Copy(QryRegLaa.FieldByName('libelle').AsString, 1, 25);
-                    FDQueryImp_cpta.FieldByName('date_cpt').AsDateTime := WDATE;
-                    FDQueryImp_cpta.FieldByName('date_ech').AsString := QryEntVte.FieldByName('date_ech').AsString;
+                    FDQueryImp_cpta.FieldByName('date_cpt').AsInteger := Integer(Trunc(WDATE));
+                    FDQueryImp_cpta.FieldByName('date_ech').AsInteger := Integer(Trunc(QryEntVte.FieldByName('date_ech').AsDateTime));
                     FDQueryImp_cpta.FieldByName('debit').AsFloat := 0;
                     FDQueryImp_cpta.FieldByName('credit').AsFloat := MONT;
                     FDQueryImp_cpta.Post;
@@ -741,7 +753,7 @@ begin
                     FDQueryEcr_cpt.FieldByName('nopiece').AsInteger := PIEVTE;
                     FDQueryEcr_cpt.FieldByName('codjal').AsString := QryPaiement.FieldByName('codjal').AsString;
                     FDQueryEcr_cpt.FieldByName('date_mvt').AsDateTime := WDATE;
-                    FDQueryEcr_cpt.FieldByName('date_ech').AsString := QryEntVte.FieldByName('date_ech').AsString;
+                    FDQueryEcr_cpt.FieldByName('date_ech').AsDateTime := QryEntVte.FieldByName('date_ech').AsDateTime;
                     FDQueryEcr_cpt.FieldByName('reference').AsString := DATEJ;
                     FDQueryEcr_cpt.FieldByName('nocpt').AsString := QryRepres.FieldByName('cptcli').AsString;
                     FDQueryEcr_cpt.FieldByName('noaux').AsString := LcptCli;
@@ -762,8 +774,8 @@ begin
                     FDQueryImp_cpta.FieldByName('jal').AsString := QryPaiement.FieldByName('codjal').AsString;
                     FDQueryImp_cpta.FieldByName('nocpt').AsString := LcptCli;
                     FDQueryImp_cpta.FieldByName('libelle').AsString := Copy(QryRegLaa.FieldByName('libelle').AsString, 1, 25);
-                    FDQueryImp_cpta.FieldByName('date_cpt').AsDateTime := WDATE;
-                    FDQueryImp_cpta.FieldByName('date_ech').AsString := QryEntVte.FieldByName('date_ech').AsString;
+                    FDQueryImp_cpta.FieldByName('date_cpt').AsInteger := Integer(Trunc(WDATE));
+                    FDQueryImp_cpta.FieldByName('date_ech').AsInteger := Integer(Trunc(QryEntVte.FieldByName('date_ech').AsDateTime));
                     FDQueryImp_cpta.FieldByName('debit').AsFloat := MONT;
                     FDQueryImp_cpta.FieldByName('credit').AsFloat := 0;
                     FDQueryImp_cpta.Post;
@@ -772,7 +784,7 @@ begin
                     FDQueryEcr_cpt.FieldByName('nopiece').AsInteger := PIEVTE;
                     FDQueryEcr_cpt.FieldByName('codjal').AsString := QryPaiement.FieldByName('codjal').AsString;
                     FDQueryEcr_cpt.FieldByName('date_mvt').AsDateTime := WDATE;
-                    FDQueryEcr_cpt.FieldByName('date_ech').AsString := QryEntVte.FieldByName('date_ech').AsString;
+                    FDQueryEcr_cpt.FieldByName('date_ech').AsDateTime := QryEntVte.FieldByName('date_ech').AsDateTime;
                     FDQueryEcr_cpt.FieldByName('reference').AsString := DATEJ;
                     FDQueryEcr_cpt.FieldByName('nocpt').AsString := QryRepres.FieldByName('cptcli').AsString;
                     FDQueryEcr_cpt.FieldByName('noaux').AsString := LcptCli;
@@ -845,8 +857,8 @@ begin
                   FDQueryImp_cpta.FieldByName('jal').AsString := DM_Olivier.FDQueryCtrstock.FieldByName('jal_vte').AsString;
                   FDQueryImp_cpta.FieldByName('nocpt').AsString := LcptCli;
                   FDQueryImp_cpta.FieldByName('libelle').AsString := 'Ventes cumulées du jour';
-                  FDQueryImp_cpta.FieldByName('date_cpt').AsDateTime := WDATE;
-                  FDQueryImp_cpta.FieldByName('date_ech').AsDateTime := WDATE;
+                  FDQueryImp_cpta.FieldByName('date_cpt').AsInteger := Integer(Trunc(WDATE));
+                  FDQueryImp_cpta.FieldByName('date_ech').AsInteger := Integer(Trunc(WDATE));
                   FDQueryImp_cpta.FieldByName('debit').AsFloat := MONT;
                   FDQueryImp_cpta.FieldByName('credit').AsFloat := 0;
                   FDQueryImp_cpta.Post;
@@ -877,8 +889,8 @@ begin
                   FDQueryImp_cpta.FieldByName('jal').AsString := DM_Olivier.FDQueryCtrstock.FieldByName('jal_vte').AsString;
                   FDQueryImp_cpta.FieldByName('nocpt').AsString := LcptCli;
                   FDQueryImp_cpta.FieldByName('libelle').AsString := 'Ventes cumulées du jour';
-                  FDQueryImp_cpta.FieldByName('date_cpt').AsDateTime := WDATE;
-                  FDQueryImp_cpta.FieldByName('date_ech').AsDateTime := WDATE;
+                  FDQueryImp_cpta.FieldByName('date_cpt').AsInteger := Integer(Trunc(WDATE));
+                  FDQueryImp_cpta.FieldByName('date_ech').AsInteger := Integer(Trunc(WDATE));
                   FDQueryImp_cpta.FieldByName('debit').AsFloat := 0;
                   FDQueryImp_cpta.FieldByName('credit').AsFloat := MONT;
                   FDQueryImp_cpta.Post;
@@ -1017,8 +1029,8 @@ begin
                 FDQueryImp_cpta.FieldByName('jal').AsString := DM_Olivier.FDQueryCtrstock.FieldByName('jal_vte').AsString;
                 FDQueryImp_cpta.FieldByName('nocpt').AsString := QryCompta.FieldByName('nocpt').AsString;
                 FDQueryImp_cpta.FieldByName('libelle').AsString := 'Journée du ' + DateToStr(WDATE);
-                FDQueryImp_cpta.FieldByName('date_cpt').AsDateTime := WDATE;
-                FDQueryImp_cpta.FieldByName('date_ech').AsDateTime := WDATE;
+                FDQueryImp_cpta.FieldByName('date_cpt').AsInteger := Integer(Trunc(WDATE));
+                FDQueryImp_cpta.FieldByName('date_ech').AsInteger := Integer(Trunc(WDATE));
                 if SENS = 'C' then
                 begin
                   FDQueryImp_cpta.FieldByName('debit').AsFloat := 0;
@@ -1080,8 +1092,8 @@ begin
                 FDQueryImp_cpta.FieldByName('jal').AsString := DM_Olivier.FDQueryCtrstock.FieldByName('jal_vte').AsString;
                 FDQueryImp_cpta.FieldByName('nocpt').AsString := QryCompta.FieldByName('nocpt').AsString;
                 FDQueryImp_cpta.FieldByName('libelle').AsString := 'Remises du ' + DateToStr(WDATE);
-                FDQueryImp_cpta.FieldByName('date_cpt').AsDateTime := WDATE;
-                FDQueryImp_cpta.FieldByName('date_ech').AsDateTime := WDATE;
+                FDQueryImp_cpta.FieldByName('date_cpt').AsInteger := Integer(Trunc(WDATE));
+                FDQueryImp_cpta.FieldByName('date_ech').AsInteger := Integer(Trunc(WDATE));
                 if SENS = 'D' then
                 begin
                   FDQueryImp_cpta.FieldByName('debit').AsFloat := MONT;
@@ -1149,8 +1161,8 @@ begin
                   else
                     FDQueryImp_cpta.FieldByName('libelle').AsString := 'CPS du ' + DateToStr(WDATE);
 
-                  FDQueryImp_cpta.FieldByName('date_cpt').AsDateTime := WDATE;
-                  FDQueryImp_cpta.FieldByName('date_ech').AsDateTime := WDATE;
+                  FDQueryImp_cpta.FieldByName('date_cpt').AsInteger := Integer(Trunc(WDATE));
+                  FDQueryImp_cpta.FieldByName('date_ech').AsInteger := Integer(Trunc(WDATE));
                   if SENS = 'C' then
                   begin
                     FDQueryImp_cpta.FieldByName('debit').AsFloat := 0;
@@ -1229,8 +1241,8 @@ begin
                 FDQueryImp_cpta.FieldByName('jal').AsString := QryCompta.FieldByName('codjal').AsString;
                 FDQueryImp_cpta.FieldByName('nocpt').AsString := LcptCli;
                 FDQueryImp_cpta.FieldByName('libelle').AsString := 'Règlements cumules jour';
-                FDQueryImp_cpta.FieldByName('date_cpt').AsDateTime := WDATE;
-                FDQueryImp_cpta.FieldByName('date_ech').AsDateTime := WDATE;
+                FDQueryImp_cpta.FieldByName('date_cpt').AsInteger := Integer(Trunc(WDATE));
+                FDQueryImp_cpta.FieldByName('date_ech').AsInteger := Integer(Trunc(WDATE));
                 if SENS = 'C' then
                 begin
                   FDQueryImp_cpta.FieldByName('debit').AsFloat := 0;
@@ -1304,11 +1316,12 @@ begin
         MM := Copy(SDateStr, 5, 2);
         JJ := Copy(SDateStr, 7, 2);
         AAAA := Copy(SDateStr, 1, 4);
-        DATEJ := FormatDateTime('yyyymmdd', FDQueryEcr_cpt.FieldByName('date_mvt').AsDateTime);
+        DATEJ := FormatDateTime('dd/mm/yyyy', FDQueryEcr_cpt.FieldByName('date_mvt').AsDateTime);
         DATECPT := JJ + MM + AA;
         DATECPT4 := JJ + MM + AAAA;
 
-        SEchStr := FDQueryEcr_cpt.FieldByName('date_ech').AsString;
+        SEchStr := FormatDateTime('yyyymmdd', FDQueryEcr_cpt.FieldByName('date_ech').AsDateTime);
+        //FDQueryEcr_cpt.FieldByName('date_ech').AsString;
         if Length(SEchStr) >= 8 then
         begin
           AA := Copy(SEchStr, 3, 2);
@@ -1339,7 +1352,7 @@ begin
                                FormatFloat('00000000000000000000', FDQueryEcr_cpt.FieldByName('montant').AsFloat * 100) + 'N'
             else
               SLigneAEcrire := PadRight(FDQueryEcr_cpt.FieldByName('codjal').AsString, 3) + DATECPT + '  ' +
-                               PadRight(FDQueryEcr_cpt.FieldByName('nocpt').AsString, 13) + '             ' +
+                               PadRight(FDQueryEcr_cpt.FieldByName('nocpt').AsString, 13) + '              ' +
                                DATEJ + '    ' + PadRight(FDQueryEcr_cpt.FieldByName('libelle').AsString, 26) + DATEECH +
                                FDQueryEcr_cpt.FieldByName('sens').AsString +
                                FormatFloat('00000000000000000000', FDQueryEcr_cpt.FieldByName('montant').AsFloat * 100) + 'N';
@@ -1402,6 +1415,7 @@ begin
 
   Screen.Cursor := crDefault;
 end;
+
 
 function TDM_ExportEcrituresClients.Tresorerie(pDate1, pDate2: TDateTime; pModele, pNature, pEtendu: Integer): string;
 var
@@ -1579,8 +1593,8 @@ begin
       FDQueryImp_cpta.FieldByName('jal').AsString := QryPaiement.FieldByName('codjal').AsString;
       FDQueryImp_cpta.FieldByName('nocpt').AsString := QryPaiement.FieldByName('nocpt').AsString;
       FDQueryImp_cpta.FieldByName('libelle').AsString := Trelib;
-      FDQueryImp_cpta.FieldByName('date_cpt').AsDateTime := WDATE;
-      FDQueryImp_cpta.FieldByName('date_ech').AsString := QryTresor.FieldByName('date_ech').AsString;
+      FDQueryImp_cpta.FieldByName('date_cpt').AsInteger := Integer(Trunc(WDATE));
+      FDQueryImp_cpta.FieldByName('date_ech').AsInteger := Integer(Trunc(QryTresor.FieldByName('date_ech').AsDateTime));
       if SENS = 'C' then
       begin
         FDQueryImp_cpta.FieldByName('debit').AsFloat := 0;
@@ -1598,7 +1612,7 @@ begin
       FDQueryEcr_cpt.FieldByName('nopiece').AsInteger := PIEVTE;
       FDQueryEcr_cpt.FieldByName('codjal').AsString := QryPaiement.FieldByName('codjal').AsString;
       FDQueryEcr_cpt.FieldByName('date_mvt').AsDateTime := WDATE;
-      FDQueryEcr_cpt.FieldByName('date_ech').AsString := QryTresor.FieldByName('date_ech').AsString;
+      FDQueryEcr_cpt.FieldByName('date_ech').AsDateTime := QryTresor.FieldByName('date_ech').AsDateTime;
       FDQueryEcr_cpt.FieldByName('reference').AsString := DATEJ;
       FDQueryEcr_cpt.FieldByName('nocpt').AsString := QryPaiement.FieldByName('nocpt').AsString;
       FDQueryEcr_cpt.FieldByName('noaux').AsString := '';
@@ -1630,8 +1644,8 @@ begin
         FDQueryImp_cpta.FieldByName('jal').AsString := QryPaiement.FieldByName('codjal').AsString;
         FDQueryImp_cpta.FieldByName('nocpt').AsString := LcptCli;
         FDQueryImp_cpta.FieldByName('libelle').AsString := Trelib;
-        FDQueryImp_cpta.FieldByName('date_cpt').AsDateTime := WDATE;
-        FDQueryImp_cpta.FieldByName('date_ech').AsString := QryTresor.FieldByName('date_ech').AsString;
+        FDQueryImp_cpta.FieldByName('date_cpt').AsInteger := Integer(Trunc(WDATE));
+        FDQueryImp_cpta.FieldByName('date_ech').AsInteger := Integer(Trunc(QryTresor.FieldByName('date_ech').AsDateTime));
         if SENS = 'D' then
         begin
           FDQueryImp_cpta.FieldByName('debit').AsFloat := MONT;
@@ -1649,7 +1663,7 @@ begin
         FDQueryEcr_cpt.FieldByName('nopiece').AsInteger := PIEVTE;
         FDQueryEcr_cpt.FieldByName('codjal').AsString := QryPaiement.FieldByName('codjal').AsString;
         FDQueryEcr_cpt.FieldByName('date_mvt').AsDateTime := WDATE;
-        FDQueryEcr_cpt.FieldByName('date_ech').AsString := QryTresor.FieldByName('date_ech').AsString;
+        FDQueryEcr_cpt.FieldByName('date_ech').AsDateTime := QryTresor.FieldByName('date_ech').AsDateTime;
         FDQueryEcr_cpt.FieldByName('reference').AsString := DATEJ;
         FDQueryEcr_cpt.FieldByName('nocpt').AsString := QryRepres.FieldByName('cptcli').AsString;
         FDQueryEcr_cpt.FieldByName('noaux').AsString := LcptCli;
@@ -1747,8 +1761,8 @@ begin
         FDQueryImp_cpta.FieldByName('jal').AsString := QryCompta.FieldByName('codjal').AsString;
         FDQueryImp_cpta.FieldByName('nocpt').AsString := LcptCli;
         FDQueryImp_cpta.FieldByName('libelle').AsString := 'Reglements cumules';
-        FDQueryImp_cpta.FieldByName('date_cpt').AsDateTime := WDATE;
-        FDQueryImp_cpta.FieldByName('date_ech').AsDateTime := WDATE;
+        FDQueryImp_cpta.FieldByName('date_cpt').AsInteger := Integer(Trunc(WDATE));
+        FDQueryImp_cpta.FieldByName('date_ech').AsInteger := Integer(Trunc(WDATE));
         if SENS = 'C' then
         begin
           FDQueryImp_cpta.FieldByName('debit').AsFloat := 0;
