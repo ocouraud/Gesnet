@@ -64,6 +64,7 @@ type
     gCoddep_defaut: Integer;
     gCodcli_defaut: Integer;
     gPass_modif_fac: String;
+    gNomSociete: String;
 
     gTx_TVA0: Double;
     gTx_TVA1: Double;
@@ -893,6 +894,8 @@ begin
 
     //Gestion des quantites insuffisantes en facturation
     gALERT_ASTO := FDQueryParam.FieldByName('ALERT_STO').AsString;
+
+    gNomSociete := FDQueryParam.FieldByName('NOM').AsString;
 
     FDQueryParam.Close;
   finally

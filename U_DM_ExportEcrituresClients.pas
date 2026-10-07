@@ -1554,7 +1554,7 @@ begin
       QryCompta.ParamByName('vtype').AsString := 'RT';
       QryCompta.ParamByName('wdate').AsDate := WDATE;
       QryCompta.ParamByName('nocpt').AsString := QryPaiement.FieldByName('nocpt').AsString;
-      QryCompta.ParamByName('codjal').AsString := QryPaiement.FieldByName('codjal').AsString;
+      QryCompta.ParamByName('codjal').AsString := QryTresor.FieldByName('codjal').AsString;  //QryPaiement.FieldByName('codjal').AsString;
       QryCompta.Open;
 
       if QryCompta.IsEmpty then
@@ -1563,7 +1563,7 @@ begin
         QryCompta.FieldByName('type_').AsString := 'RT';
         QryCompta.FieldByName('date_').AsDateTime := WDATE;
         QryCompta.FieldByName('nocpt').AsString := QryPaiement.FieldByName('nocpt').AsString;
-        QryCompta.FieldByName('codjal').AsString := QryPaiement.FieldByName('codjal').AsString;
+        QryCompta.FieldByName('codjal').AsString := QryTresor.FieldByName('codjal').AsString;  //QryPaiement.FieldByName('codjal').AsString;
         QryCompta.FieldByName('debit').AsFloat := 0;
         QryCompta.FieldByName('credit').AsFloat := 0;
         QryCompta.Post;
@@ -1590,7 +1590,7 @@ begin
 
       // Fichier d'impression (Trésorerie)
       FDQueryImp_cpta.Insert;
-      FDQueryImp_cpta.FieldByName('jal').AsString := QryPaiement.FieldByName('codjal').AsString;
+      FDQueryImp_cpta.FieldByName('jal').AsString := QryTresor.FieldByName('codjal').AsString;  //QryPaiement.FieldByName('codjal').AsString;
       FDQueryImp_cpta.FieldByName('nocpt').AsString := QryPaiement.FieldByName('nocpt').AsString;
       FDQueryImp_cpta.FieldByName('libelle').AsString := Trelib;
       FDQueryImp_cpta.FieldByName('date_cpt').AsInteger := Integer(Trunc(WDATE));
@@ -1610,7 +1610,7 @@ begin
       // Ajout ECR_CPT (Trésorerie)
       FDQueryEcr_cpt.Insert;
       FDQueryEcr_cpt.FieldByName('nopiece').AsInteger := PIEVTE;
-      FDQueryEcr_cpt.FieldByName('codjal').AsString := QryPaiement.FieldByName('codjal').AsString;
+      FDQueryEcr_cpt.FieldByName('codjal').AsString := QryTresor.FieldByName('codjal').AsString;  //QryPaiement.FieldByName('codjal').AsString;
       FDQueryEcr_cpt.FieldByName('date_mvt').AsDateTime := WDATE;
       FDQueryEcr_cpt.FieldByName('date_ech').AsDateTime := QryTresor.FieldByName('date_ech').AsDateTime;
       FDQueryEcr_cpt.FieldByName('reference').AsString := DATEJ;
@@ -1641,7 +1641,7 @@ begin
 
         // Fichier d'impression
         FDQueryImp_cpta.Insert;
-        FDQueryImp_cpta.FieldByName('jal').AsString := QryPaiement.FieldByName('codjal').AsString;
+        FDQueryImp_cpta.FieldByName('jal').AsString := QryTresor.FieldByName('codjal').AsString;  //QryPaiement.FieldByName('codjal').AsString;
         FDQueryImp_cpta.FieldByName('nocpt').AsString := LcptCli;
         FDQueryImp_cpta.FieldByName('libelle').AsString := Trelib;
         FDQueryImp_cpta.FieldByName('date_cpt').AsInteger := Integer(Trunc(WDATE));
@@ -1661,7 +1661,7 @@ begin
         // Ajout ECR_CPT
         FDQueryEcr_cpt.Insert;
         FDQueryEcr_cpt.FieldByName('nopiece').AsInteger := PIEVTE;
-        FDQueryEcr_cpt.FieldByName('codjal').AsString := QryPaiement.FieldByName('codjal').AsString;
+        FDQueryEcr_cpt.FieldByName('codjal').AsString := QryTresor.FieldByName('codjal').AsString;  //QryPaiement.FieldByName('codjal').AsString;
         FDQueryEcr_cpt.FieldByName('date_mvt').AsDateTime := WDATE;
         FDQueryEcr_cpt.FieldByName('date_ech').AsDateTime := QryTresor.FieldByName('date_ech').AsDateTime;
         FDQueryEcr_cpt.FieldByName('reference').AsString := DATEJ;
@@ -1682,7 +1682,7 @@ begin
         QryCompta.ParamByName('wdate').AsDate := WDATE;
         QryCompta.ParamByName('vtype').AsString := 'RC';
         QryCompta.ParamByName('nocpt').AsString := QryTresor.FieldByName('codcli').AsString;
-        QryCompta.ParamByName('codjal').AsString := QryPaiement.FieldByName('codjal').AsString;
+        QryCompta.ParamByName('codjal').AsString := QryTresor.FieldByName('codjal').AsString;  //QryPaiement.FieldByName('codjal').AsString;
         QryCompta.Open;
 
         if QryCompta.IsEmpty then
@@ -1691,7 +1691,7 @@ begin
           QryCompta.FieldByName('type_').AsString := 'RC';
           QryCompta.FieldByName('date_').AsDateTime := WDATE;
           QryCompta.FieldByName('nocpt').AsString := QryTresor.FieldByName('codcli').AsString;
-          QryCompta.FieldByName('codjal').AsString := QryPaiement.FieldByName('codjal').AsString;
+          QryCompta.FieldByName('codjal').AsString := QryTresor.FieldByName('codjal').AsString;  //QryPaiement.FieldByName('codjal').AsString;
           QryCompta.FieldByName('debit').AsFloat := 0;
           QryCompta.FieldByName('credit').AsFloat := 0;
           QryCompta.Post;

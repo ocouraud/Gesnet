@@ -345,7 +345,7 @@ var
   iNoLot: Integer;
   QryInsert: TFDQuery;
   i: Integer;
-  sNoFacture: string;
+  iNoFacture: Integer;
 begin
   // 1. S'assurer qu'un lot est sélectionné dans le maître
   if FDQueryLot_eva.IsEmpty then
@@ -395,13 +395,13 @@ begin
           for i := 0 to FiltreFrame.JvDBGridEntvteaa.SelectedRows.Count - 1 do
           begin
             FiltreFrame.FDQueryEntvteaa.Bookmark := FiltreFrame.JvDBGridEntvteaa.SelectedRows[i];
-            sNoFacture := FiltreFrame.FDQueryEntvteaa.FieldByName('CODFAC').AsString;
+            iNoFacture := FiltreFrame.FDQueryEntvteaa.FieldByName('CODFAC').AsInteger;
 
-            if sNoFacture <> '' then
+            if iNoFacture <> 0 then
             begin
               QryInsert.SQL.Text := 'INSERT IGNORE INTO lot_eva_det (nolot, codfac) VALUES (:nolot, :codfac)';
               QryInsert.ParamByName('nolot').AsInteger := iNoLot;
-              QryInsert.ParamByName('codfac').AsString := sNoFacture;
+              QryInsert.ParamByName('codfac').AsInteger := iNoFacture;
               QryInsert.ExecSQL;
             end;
           end;
