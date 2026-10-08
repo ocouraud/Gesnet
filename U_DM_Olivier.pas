@@ -151,10 +151,10 @@ begin
   AQryExec.ParamByName('NOTAHITI').AsString    := ASource.FieldByName('NOTAHITI').AsString;
   AQryExec.ParamByName('TYPE_').AsString       := 'F';
   AQryExec.ParamByName('EXO_TVA').AsInteger    := ASource.FieldByName('EXO_TVA').AsInteger;
-  AQryExec.ParamByName('ANNEE').AsInteger      := ASource.FieldByName('ANNEE').AsInteger;
-  AQryExec.ParamByName('MOIS').AsInteger       := ASource.FieldByName('MOIS').AsInteger;
-  AQryExec.ParamByName('DATE_').AsDateTime     := ASource.FieldByName('DATE_').AsDateTime;
-  AQryExec.ParamByName('HEURE').AsInteger      := ASource.FieldByName('HEURE').AsInteger;
+  AQryExec.ParamByName('ANNEE').AsInteger      := CurrentYear;
+  AQryExec.ParamByName('MOIS').AsInteger       := Strtoint(FormatDateTime('mm', Now));
+  AQryExec.ParamByName('DATE_').AsDateTime     := Now;  //ASource.FieldByName('DATE_').AsDateTime;
+  AQryExec.ParamByName('HEURE').AsInteger      := Round(Time * 8640000);  //ASource.FieldByName('HEURE').AsInteger;
   AQryExec.ParamByName('PRC_REMISE').AsFloat   := ASource.FieldByName('PRC_REMISE').AsFloat;
   AQryExec.ParamByName('MT_REMISE').AsFloat    := ASource.FieldByName('MT_REMISE').AsFloat;
   AQryExec.ParamByName('TOTHT').AsFloat        := ASource.FieldByName('TOTHT').AsFloat;

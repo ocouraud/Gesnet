@@ -107,7 +107,7 @@ uses
   U_TableSousfam, U_TableDepart, U_TableChrono, U_TableTarif, U_TableInfoscompl,
   U_FicheCtrstock, U_FicheCaisse, U_FormGestionDroits, U_TableArticles, U_TableEntvtejj,
   U_TableEntvteaa, U_FormCentraVentes, U_TableDevis, U_FrameEcrituresClients,
-  U_TableJournal, U_FrameFacturesReccurentes, U_FormExportEcrituresClient;
+  U_TableJournal, U_FrameFacturesReccurentes, U_FormExportEcrituresClient, U_TableEntcde_cli;
 
 procedure TFormMenuPrincipal.FormCreate(Sender: TObject);
 begin
@@ -277,8 +277,12 @@ begin
 end;
 
 procedure TFormMenuPrincipal.TravauxCommandesClients(Sender: TObject);
+var
+  MonFrame: TFrameTableEntcde_cli;
 begin
-  OuvrirOnglet<TRzTabSheet>('Commandes clients');
+  // Votre méthode qui crée ou ouvre l'onglet/frame
+  MonFrame := OuvrirOnglet<TFrameTableEntcde_cli>('Commandes clients', 'shell32_1011');
+
 end;
 
 procedure TFormMenuPrincipal.Dpartements1Click(Sender: TObject);
@@ -325,6 +329,7 @@ procedure TFormMenuPrincipal.Secteursgographiques1Click(Sender: TObject);
 begin
   OuvrirOnglet<TFrameTableGeo>('Secteurs géographiques', 'server_configuration');
 end;
+
 
 
 
@@ -426,6 +431,7 @@ begin
   end;
 
 end;
+
 
 procedure TFormMenuPrincipal.Centralisationdesventes1Click(Sender: TObject);
 var
