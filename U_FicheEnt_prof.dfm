@@ -325,9 +325,9 @@ object FormEnt_prof: TFormEnt_prof
       OnClick = RzDBCheckBoxTVA_ILESClick
     end
     object Panel12: TPanel
-      Left = 911
+      Left = 896
       Top = 1
-      Width = 104
+      Width = 119
       Height = 240
       Align = alRight
       BevelOuter = bvNone
@@ -335,7 +335,7 @@ object FormEnt_prof: TFormEnt_prof
       object BtnValider: TBitBtn
         Left = 0
         Top = 0
-        Width = 104
+        Width = 119
         Height = 30
         Align = alTop
         Anchors = [akTop]
@@ -343,26 +343,30 @@ object FormEnt_prof: TFormEnt_prof
         Default = True
         TabOrder = 0
         OnClick = BtnValiderClick
+        ExplicitWidth = 104
       end
       object BtnAide: TBitBtn
         Left = 0
         Top = 60
-        Width = 104
+        Width = 119
         Height = 30
         Align = alTop
         Caption = 'Aide '#10067
         TabOrder = 2
+        OnClick = BtnAideClick
+        ExplicitWidth = 104
       end
       object BtnAnnuler: TBitBtn
         Left = 0
         Top = 30
-        Width = 104
+        Width = 119
         Height = 30
         Align = alTop
         Cancel = True
         Caption = '&Annuler '#10060
         ModalResult = 2
         TabOrder = 1
+        ExplicitWidth = 104
       end
     end
     object DBCODREP: TDBEdit

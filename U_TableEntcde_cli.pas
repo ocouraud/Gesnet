@@ -55,6 +55,9 @@ type
     procedure BtnAideClick(Sender: TObject);
     procedure BtnTransformerClick(Sender: TObject);
     procedure FrameResize(Sender: TObject);
+    procedure BtnOuvrirClick(Sender: TObject);
+    procedure BtnAjouterClick(Sender: TObject);
+    procedure BtnSupprimerClick(Sender: TObject);
   private
     { Déclarations privées }
     procedure AppliquerFiltreMaitre;
@@ -67,7 +70,7 @@ implementation
 
 {$R *.dfm}
 
-uses U_DM_Olivier, U_DataModule, U_OutilsGrille, U_FormAide;  //, U_FicheEntcde_cli;
+uses U_DM_Olivier, U_DataModule, U_OutilsGrille, U_FormAide, U_FicheEntcde_cli;
 
 procedure TFrameTableEntcde_cli.BtnAideClick(Sender: TObject);
 begin
@@ -76,7 +79,28 @@ begin
     Application.CreateForm(TFormAide, FormAide);
 
   // 2. On affiche la page
-  FormAide.AfficherAide('entcde_cli.html');
+  FormAide.AfficherAide('entcde_cli_liste.html');
+end;
+
+procedure TFrameTableEntcde_cli.BtnAjouterClick(Sender: TObject);
+begin
+  // On crée la fiche en passant le mode Création et le numéro 0 pour nouveau
+  FormFicheEntcde_cli := TFormFicheEntcde_cli.Create(Self, msAjout, 0);
+  try
+    FormFicheEntcde_cli.Caption := 'Créer une nouvelle commande';
+
+    if FormFicheEntcde_cli.ShowModal = mrOk then
+    begin
+      // La validation a réussi (INSERT en base effectué), on rafraîchit la liste
+      FDQueryEntcde_cli.Refresh;
+
+      // Se positionner sur la nouvelle facture créée dans la grille
+      if not FDQueryEntcde_cli.IsEmpty then
+        FDQueryEntcde_cli.Locate('NOCDE', FormFicheEntcde_cli.NocdeCree, []);
+    end;
+  finally
+    FormFicheEntcde_cli.Free;
+  end;
 end;
 
 procedure TFrameTableEntcde_cli.BtnFermerClick(Sender: TObject);
@@ -93,6 +117,86 @@ begin
       OngletParent.Free;
     end);
   end;
+end;
+
+procedure TFrameTableEntcde_cli.BtnOuvrirClick(Sender: TObject);
+var
+  Nocde: Integer;
+begin
+  if FDQueryEntcde_cli.IsEmpty then Exit;
+
+  Nocde := FDQueryEntcde_cli.FieldByName('NOCDE').AsInteger;
+  FormFicheEntcde_cli := TFormFicheEntcde_cli.Create(Self, msModification, Nocde);
+
+  try
+    FormFicheEntcde_cli.Caption := 'Modifier la commande';
+
+    if FormFicheEntcde_cli.ShowModal = mrOk then
+    begin
+      // 1. On recharge les données de la table
+      FDQueryEntcde_cli.Refresh;
+
+      // 2. On se repositionne proprement sur le devis modifié grâce à sa clé unique
+      if not FDQueryEntcde_cli.Locate('NOCDE', Nocde, []) then
+      begin
+        // Optionnel : si la commande a changé de filtre ou n'est plus visible,
+        // Locate renvoie false, gérer un repli si nécessaire.
+      end;
+    end;
+  finally
+    FormFicheEntcde_cli.Free;
+  end;
+
+end;
+
+procedure TFrameTableEntcde_cli.BtnSupprimerClick(Sender: TObject);
+var
+  QryExec: TFDQuery;
+  NouveauType: string;
+  NoCdeCourant: Integer;
+begin
+  if FDQueryEntcde_cli.IsEmpty then Exit;
+
+  if FDQueryEntcde_cli.FieldByName('TYPE_').AsString = 'F' then
+  begin
+    ShowMessage('Opération impossible, commande déjà facturée.');
+    Exit;
+  end;
+
+  // Récupérer la clé unique du devis courant
+  NoCdeCourant := FDQueryEntcde_cli.FieldByName('NOCDE').AsInteger;
+
+  if MessageDlg('Supprimer la commande ?', mtConfirmation, [mbYes, mbNo], 0) = mrNo then
+    Exit;
+
+  // Exécution d'un DELETE direct DES LIGNES
+  QryExec := TFDQuery.Create(nil);
+  try
+    QryExec.Connection := FDQueryEntcde_cli.Connection; // Utilise la même connexion
+    QryExec.SQL.Text := 'DELETE FROM ligcde_cli WHERE NOCDE = :NOCDE';
+    QryExec.ParamByName('NOCDE').AsInteger := NoCdeCourant;
+    QryExec.ExecSQL;
+
+  finally
+    QryExec.Free;
+  end;
+
+  // Suivi d'un DELETE direct et ultra-sécurisé par la clé primaire
+  QryExec := TFDQuery.Create(nil);
+  try
+    QryExec.Connection := FDQueryEntcde_cli.Connection; // Utilise la même connexion
+    QryExec.SQL.Text := 'DELETE FROM ent_prof WHERE NOCDE = :NOCDE';
+    QryExec.ParamByName('NOCDE').AsInteger := NoCdeCourant;
+    QryExec.ExecSQL;
+
+    // Rafraîchir la vue pour voir le changement instantanément
+    FDQueryEntcde_cli.Refresh;
+    JvDBGrid1.SetFocus;
+  finally
+    QryExec.Free;
+  end;
+
+
 end;
 
 procedure TFrameTableEntcde_cli.BtnTransformerClick(Sender: TObject);

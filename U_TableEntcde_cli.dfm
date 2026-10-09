@@ -20,6 +20,7 @@ object FrameTableEntcde_cli: TFrameTableEntcde_cli
     TitleFont.Height = -12
     TitleFont.Name = 'Segoe UI'
     TitleFont.Style = []
+    OnDblClick = BtnOuvrirClick
     TitleButtons = True
     OnTitleBtnClick = JvDBGrid1TitleBtnClick
     AlternateRowColor = clAzure
@@ -70,7 +71,6 @@ object FrameTableEntcde_cli: TFrameTableEntcde_cli
         FieldName = 'TOTHT'
         Title.Alignment = taRightJustify
         Title.Caption = 'Total HT.'
-        Width = 64
         Visible = True
       end
       item
@@ -121,8 +121,6 @@ object FrameTableEntcde_cli: TFrameTableEntcde_cli
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitLeft = -5
-    ExplicitWidth = 821
     object EdtCherche_NOCDE: TEdit
       Left = 16
       Top = 46
@@ -184,8 +182,6 @@ object FrameTableEntcde_cli: TFrameTableEntcde_cli
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 2
-    ExplicitLeft = -5
-    ExplicitWidth = 821
     object BtnTransformer: TBitBtn
       Left = 90
       Top = 32
@@ -235,6 +231,7 @@ object FrameTableEntcde_cli: TFrameTableEntcde_cli
       Margins.Right = 6
       Caption = '&Ajouter '#10133
       TabOrder = 4
+      OnClick = BtnAjouterClick
     end
     object BtnSupprimer: TBitBtn
       Left = 179
@@ -246,6 +243,7 @@ object FrameTableEntcde_cli: TFrameTableEntcde_cli
       Caption = '&Supprimer '#55357#56785#65039
       TabOrder = 5
       StyleElements = [seClient, seBorder]
+      OnClick = BtnSupprimerClick
     end
     object BtnOuvrir: TBitBtn
       Left = 90
@@ -257,6 +255,7 @@ object FrameTableEntcde_cli: TFrameTableEntcde_cli
       Caption = '&Ouvrir '#55357#56514
       Default = True
       TabOrder = 6
+      OnClick = BtnOuvrirClick
     end
     object BtnDupliquer: TBitBtn
       Left = 275

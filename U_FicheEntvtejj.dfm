@@ -395,8 +395,8 @@ object FormEntvtejj: TFormEntvtejj
     object RzDBCheckBoxEXO_TVA: TRzDBCheckBox
       Left = 784
       Top = 108
-      Width = 84
-      Height = 17
+      Width = 87
+      Height = 18
       DataField = 'EXO_TVA'
       DataSource = DSMemTableEntvtejj
       ValueChecked = '1'
@@ -409,7 +409,7 @@ object FormEntvtejj: TFormEntvtejj
     object RzDBCheckBoxFlag_Tax: TRzDBCheckBox
       Left = 784
       Top = 156
-      Width = 103
+      Width = 106
       Height = 32
       DataField = 'FLAG_TAX'
       DataSource = DSMemTableEntvtejj
@@ -423,8 +423,8 @@ object FormEntvtejj: TFormEntvtejj
     object RzDBCheckBoxTVA_ILES: TRzDBCheckBox
       Left = 784
       Top = 132
-      Width = 59
-      Height = 17
+      Width = 62
+      Height = 18
       DataField = 'TVA_ILES'
       DataSource = DSMemTableEntvtejj
       ValueChecked = '1'
@@ -483,6 +483,7 @@ object FormEntvtejj: TFormEntvtejj
         Align = alTop
         Caption = 'Aide '#10067
         TabOrder = 2
+        OnClick = BtnAideClick
       end
       object BtnAnnuler: TBitBtn
         Left = 0

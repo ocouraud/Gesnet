@@ -139,6 +139,7 @@ type
     procedure BtnModifierReglClick(Sender: TObject);
     procedure BtnSupprimerReglClick(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+    procedure BtnAideClick(Sender: TObject);
 
   private
     { Déclarations privées }
@@ -166,7 +167,7 @@ implementation
 
 {$R *.dfm}
 
-uses U_DM_Olivier, U_TableEntvtejj, U_DataModule, U_FicheLigvtejj, U_FicheRegljj;
+uses U_DM_Olivier, U_TableEntvtejj, U_DataModule, U_FicheLigvtejj, U_FicheRegljj, U_FormAide;
 
 procedure TFormEntvtejj.ValiderChampPrix(Sender: TField);
 begin
@@ -241,6 +242,17 @@ begin
   ExecuterAjoutReglement;
 end;
 
+
+procedure TFormEntvtejj.BtnAideClick(Sender: TObject);
+
+begin
+  // 1. On s'assure que la fiche d'aide existe en mémoire
+  if not Assigned(FormAide) then
+    Application.CreateForm(TFormAide, FormAide);
+
+  // 2. On affiche la page
+  FormAide.AfficherAide('fichefacture.html');
+end;
 
 procedure TFormEntvtejj.BtnAjouterLigneClick(Sender: TObject);
 var

@@ -126,6 +126,7 @@ type
       Shift: TShiftState);
     procedure JvDBDate_Enter(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+    procedure BtnAideClick(Sender: TObject);
 
   private
     { Déclarations privées }
@@ -152,7 +153,7 @@ implementation
 
 {$R *.dfm}
 
-uses U_DM_Olivier, U_TableDevis, U_DataModule, U_FicheLig_prof;
+uses U_DM_Olivier, U_TableDevis, U_DataModule, U_FicheLig_prof, U_FormAide;
 
 
 procedure TFormEnt_prof.ValiderChampPrix(Sender: TField);
@@ -229,6 +230,16 @@ begin
   Result := False;
 end;
 
+
+procedure TFormEnt_prof.BtnAideClick(Sender: TObject);
+begin
+  // 1. On s'assure que la fiche d'aide existe en mémoire
+  if not Assigned(FormAide) then
+    Application.CreateForm(TFormAide, FormAide);
+
+  // 2. On affiche la page
+  FormAide.AfficherAide('ent_prof_fiche.html');
+end;
 
 procedure TFormEnt_prof.BtnAjouterLigneClick(Sender: TObject);
 var
