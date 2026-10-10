@@ -343,7 +343,6 @@ object FormEnt_prof: TFormEnt_prof
         Default = True
         TabOrder = 0
         OnClick = BtnValiderClick
-        ExplicitWidth = 104
       end
       object BtnAide: TBitBtn
         Left = 0
@@ -354,7 +353,6 @@ object FormEnt_prof: TFormEnt_prof
         Caption = 'Aide '#10067
         TabOrder = 2
         OnClick = BtnAideClick
-        ExplicitWidth = 104
       end
       object BtnAnnuler: TBitBtn
         Left = 0
@@ -366,7 +364,6 @@ object FormEnt_prof: TFormEnt_prof
         Caption = '&Annuler '#10060
         ModalResult = 2
         TabOrder = 1
-        ExplicitWidth = 104
       end
     end
     object DBCODREP: TDBEdit
@@ -531,31 +528,43 @@ object FormEnt_prof: TFormEnt_prof
       BevelOuter = bvNone
       TabOrder = 0
       object BtnAjouterLigne: TButton
-        Left = 1
-        Top = 1
-        Width = 112
+        Left = 0
+        Top = 0
+        Width = 119
         Height = 30
+        Align = alTop
         Caption = 'Nouvelle ligne '#10133
         TabOrder = 0
         OnClick = BtnAjouterLigneClick
+        ExplicitLeft = 1
+        ExplicitTop = 1
+        ExplicitWidth = 112
       end
       object BtnSupprimerLigne: TButton
-        Left = 1
-        Top = 73
-        Width = 112
+        Left = 0
+        Top = 60
+        Width = 119
         Height = 30
+        Align = alTop
         Caption = 'Supprimer lignes '#55357#56785#65039
         TabOrder = 2
         OnClick = BtnSupprimerLigneClick
+        ExplicitLeft = 1
+        ExplicitTop = 73
+        ExplicitWidth = 112
       end
       object BtnModifierLigne: TButton
-        Left = 1
-        Top = 37
-        Width = 112
+        Left = 0
+        Top = 30
+        Width = 119
         Height = 30
+        Align = alTop
         Caption = 'Modifier ligne '#55357#56514
         TabOrder = 1
         OnClick = BtnModifierLigneClick
+        ExplicitLeft = 1
+        ExplicitTop = 37
+        ExplicitWidth = 112
       end
     end
     object JvDBGridLig_prof: TJvDBGrid

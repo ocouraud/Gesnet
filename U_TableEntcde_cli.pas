@@ -9,7 +9,8 @@ uses
   FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS,
   FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt,
   Data.DB, FireDAC.Comp.DataSet, FireDAC.Comp.Client, Vcl.Grids, Vcl.DBGrids,
-  JvExDBGrids, JvDBGrid, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Buttons;
+  JvExDBGrids, JvDBGrid, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Buttons, frxClass,
+  frxExportBaseDialog, frxExportPDF, frCoreClasses, frxDBSet;
 
 type
   TFrameTableEntcde_cli = class(TFrame)
@@ -44,6 +45,10 @@ type
     FDQueryEntcde_cliDATE_VALID: TDateField;
     FDQueryEntcde_cliDER_MODIF: TSQLTimeStampField;
     FDQueryEntcde_cliDATE_LIVR: TDateField;
+    frxPDFExport1: TfrxPDFExport;
+    frxDBDatasetCde_Client: TfrxDBDataset;
+    frxReportCmde_Client: TfrxReport;
+    FDQueryCmde_Client: TFDQuery;
     procedure JvDBGrid1TitleBtnClick(Sender: TObject; ACol: LongInt;
       Field: TField);
     procedure RadioGroupEtatClick(Sender: TObject);
@@ -58,6 +63,8 @@ type
     procedure BtnOuvrirClick(Sender: TObject);
     procedure BtnAjouterClick(Sender: TObject);
     procedure BtnSupprimerClick(Sender: TObject);
+    procedure BtnDupliquerClick(Sender: TObject);
+    procedure BtnImprimerClick(Sender: TObject);
   private
     { Déclarations privées }
     procedure AppliquerFiltreMaitre;
@@ -103,6 +110,145 @@ begin
   end;
 end;
 
+procedure TFrameTableEntcde_cli.BtnDupliquerClick(Sender: TObject);
+var
+  QryExec: TFDQuery;
+  QryLig: TFDQuery;
+  NouveauNum: Integer;
+  AncienNum: Integer;
+  iNolig: Integer;
+
+begin
+  AncienNum := FDQueryEntcde_cli.FieldByName('NOCDE').AsInteger;
+
+  if AncienNum = 0 then
+  begin
+    ShowMessage('Veuillez sélectionner une commande dans la liste.');
+    Exit;
+  end;
+
+  if MessageDlg('Dupliquer la commande ' +IntToStr(AncienNum)+' ?', mtConfirmation, [mbYes, mbNo], 0) = mrNo then
+      Exit;
+
+
+  QryExec := TFDQuery.Create(nil);
+  QryLig := TFDQuery.Create(nil);
+  try
+    QryExec.Connection := DMGesCloud.ConnexionGesCloud;
+    QryLig.Connection := DMGesCloud.ConnexionGesCloud;
+
+    //Recuperation dernier num commande
+    QryExec.close;
+    QryExec.SQL.Text := 'SELECT NOCDE FROM `entcde_cli` ORDER BY NOCDE DESC LIMIT 1';
+    QryExec.Open;
+    QryExec.first;
+    NouveauNum:=1;
+    if QryExec.Eof=false then
+      NouveauNum := QryExec.FieldByName('NOCDE').AsInteger + 1;
+
+    // INSERT pour l'en-tête
+    QryExec.close;
+    QryExec.SQL.Text := 'INSERT INTO `entcde_cli` ('+
+    '`NOCDE`, `REFERENCE_`, `CODCLI`, `NOMCLI`, `DATE_`, `TOTHT`, `MT_TVA`, '+
+    '`MT_TTC`, `STATUT`, `OBSERV`) '+
+    'VALUES '+
+    '(:NOCDE, :REFERENCE_, :CODCLI, :NOMCLI, :DATE_, :TOTHT, :MT_TVA, :MT_TTC, :STATUT, :OBSERV)';
+
+    // Assignation directe des valeurs depuis la table mémoire
+    QryExec.ParamByName('OBSERV').AsString     := FDQueryEntcde_cli.FieldByName('OBSERV').AsString;
+    QryExec.ParamByName('NOCDE').AsInteger     := NouveauNum;
+    QryExec.ParamByName('CODCLI').AsInteger    := FDQueryEntcde_cli.FieldByName('CODCLI').AsInteger;
+    QryExec.ParamByName('NOMCLI').AsString     := FDQueryEntcde_cli.FieldByName('NOMCLI').AsString;
+    QryExec.ParamByName('STATUT').AsInteger     := 1;
+    QryExec.ParamByName('DATE_').AsDateTime    := FDQueryEntcde_cli.FieldByName('DATE_').AsDateTime;
+    QryExec.ParamByName('TOTHT').AsFloat       := FDQueryEntcde_cli.FieldByName('TOTHT').AsFloat;
+    QryExec.ParamByName('MT_TTC').AsInteger    := FDQueryEntcde_cli.FieldByName('MT_TTC').AsInteger;
+    QryExec.ParamByName('MT_TVA').AsFloat      := FDQueryEntcde_cli.FieldByName('MT_TVA').AsFloat;
+    QryExec.ParamByName('REFERENCE_').AsString := FDQueryEntcde_cli.FieldByName('REFERENCE_').AsString;
+    QryExec.ExecSQL;
+
+
+    // Dupliquer toutes les lignes associées
+    // Parcours de la table mémoire des lignes
+    iNolig := 0;
+    QryLig.SQL.Text := 'select * from ligcde_cli where nocde = :nocde';
+    QryLig.ParamByName('NOCDE').AsInteger := AncienNum;
+    QryLig.Open;
+    QryLig.First;
+    while not QryLig.Eof do
+    begin
+      iNolig:= iNolig+1;
+      //Insertion lig_prof
+      QryExec.Close;
+      QryExec.SQL.Text := 'INSERT INTO `ligcde_cli` ('+
+      '`NOCDE`,'+
+      '`CODCLI`,'+
+      '`CODART`,'+
+      '`LIBELLE`,'+
+      '`DATE_`,'+
+      '`QTE`,'+
+      '`PRIXHT`,'+
+      '`PRIXTTC`,'+
+      '`TOTHT`,'+
+      '`TVA`,'+
+      '`TX_TVA`,'+
+      '`MT_TVA`,'+
+      '`MT_TTC`,'+
+      '`NOLIG`,'+
+      '`OBSERV`) '+
+      'VALUES ('+
+      ':NOCDE, '+
+      ':CODCLI, '+
+      ':CODART, '+
+      ':LIBELLE, '+
+      ':DATE_, '+
+      ':QTE, '+
+      ':PRIXHT, '+
+      ':PRIXTTC, '+
+      ':TOTHT, '+
+      ':TVA, '+
+      ':TX_TVA, '+
+      ':MT_TVA, '+
+      ':MT_TTC, '+
+      ':NOLIG, '+
+      ':OBSERV)';
+
+      // Assignation directe des valeurs depuis la table mémoire des lignes
+      QryExec.ParamByName('NOCDE').AsInteger     := NouveauNum;
+      QryExec.ParamByName('LIBELLE').AsString    := QryLig.FieldByName('LIBELLE').AsString;
+      QryExec.ParamByName('CODCLI').AsInteger    := QryLig.FieldByName('CODCLI').AsInteger;
+      QryExec.ParamByName('CODART').AsString     := QryLig.FieldByName('CODART').AsString;
+      QryExec.ParamByName('QTE').AsFloat         := QryLig.FieldByName('QTE').AsFloat;
+      QryExec.ParamByName('PRIXHT').AsFloat      := QryLig.FieldByName('PRIXHT').AsFloat;
+      QryExec.ParamByName('PRIXTTC').AsInteger   := QryLig.FieldByName('PRIXTTC').AsInteger;
+      QryExec.ParamByName('TOTHT').AsFloat       := QryLig.FieldByName('TOTHT').AsFloat;
+      QryExec.ParamByName('MT_TTC').AsInteger    := QryLig.FieldByName('MT_TTC').AsInteger;
+      QryExec.ParamByName('TX_TVA').AsFloat      := QryLig.FieldByName('TX_TVA').AsFloat;
+      QryExec.ParamByName('MT_TVA').AsFloat      := QryLig.FieldByName('MT_TVA').AsFloat;
+      QryExec.ParamByName('TVA').AsString        := QryLig.FieldByName('TVA').AsString;
+      QryExec.ParamByName('OBSERV').AsString     := QryLig.FieldByName('OBSERV').AsString;
+      QryExec.ParamByName('DATE_').AsDateTime    := QryLig.FieldByName('DATE_').AsDateTime;
+      QryExec.ParamByName('NOLIG').AsInteger     := iNolig;
+
+      QryExec.ExecSQL;
+      //Lecture ligne memoire suivante
+      QryLig.Next;
+    end;
+
+    // La validation a réussi (INSERT en base effectué), on rafraîchit la liste
+    FDQueryEntcde_cli.Refresh;
+
+    // Se positionner sur la nouvelle facture créée dans la grille
+    if not FDQueryEntcde_cli.IsEmpty then
+      FDQueryEntcde_cli.Locate('NOCDE', NouveauNum, []);
+
+    ShowMessage('Commande dupliquée avec succès sous le numéro : ' + IntToStr(NouveauNum));
+  finally
+    QryExec.Free;
+    QryLig.Free;
+  end;
+end;
+
 procedure TFrameTableEntcde_cli.BtnFermerClick(Sender: TObject);
 var
   OngletParent: TRzTabSheet;
@@ -117,6 +263,53 @@ begin
       OngletParent.Free;
     end);
   end;
+end;
+
+procedure TFrameTableEntcde_cli.BtnImprimerClick(Sender: TObject);
+var
+  NumDevisSelectionne: Integer;
+begin
+
+  // 1. Lire vos paramètres globaux (via une requête ou un fichier de config)
+  DM_Olivier.FDQueryCtrstock.open;
+
+  if DM_Olivier.FDQueryCtrstock.IsEmpty then
+    Exit;
+
+     // 2. Charger le modèle d'état externe
+    frxReportCmde_Client.LoadFromFile('Commande_client.fr3');
+
+  // 2. Vider les variables mémoire pour repartir proprement
+  frxReportCmde_Client.Variables.Clear;
+
+  // 3. CRÉER AUTOMATIQUEMENT la catégorie et les variables
+  // ATTENTION : FastReport impose de créer au moins une catégorie (commençant par un espace)
+  // avant d'y injecter des variables.
+  frxReportCmde_Client.Variables[' ' + 'Globales'] := Null;
+
+  // On ajoute les variables à la catégorie qui vient d'être créée
+  frxReportCmde_Client.Variables.AddVariable('Globales','VarNomEntreprise',
+  ( DM_Olivier.FDQueryCtrstock.FieldByName('Nom').AsString + #13#10 +
+    DM_Olivier.FDQueryCtrstock.FieldByName('Nom2').AsString ));
+  frxReportCmde_Client.Variables.AddVariable('Globales','VarTelephone', QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('Tel').AsString));
+  frxReportCmde_Client.Variables.AddVariable('Globales','VarAdresse', DM_Olivier.FDQueryCtrstock.FieldByName('Adresse').AsString);
+  frxReportCmde_Client.Variables.AddVariable('Globales','VarNoTAHITI', QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('NOTAHITI').AsString));
+  frxReportCmde_Client.Variables.AddVariable('Globales','VarLOGO', QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('LOGO').AsString));
+  frxReportCmde_Client.Variables.AddVariable('Globales','VarEMAIL', QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('EMAIL').AsString));
+  frxReportCmde_Client.Variables.AddVariable('Globales','VarFAX', QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('FAX').AsString));
+  frxReportCmde_Client.Variables.AddVariable('Globales','VarRC', QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('RC').AsString));
+  frxReportCmde_Client.Variables.AddVariable('Globales','VarMEMO_DEV', QuotedStr(DM_Olivier.FDQueryCtrstock.FieldByName('MEMO_DEV').AsString));
+  frxReportCmde_Client.Variables.AddVariable('Globales','VarRef_Bancaire', DM_Olivier.FDQueryCtrstock.FieldByName('BANQUE').AsString);
+  frxReportCmde_Client.Variables.AddVariable('Globales','VarTotalAlpha',QuotedStr('Commande arrêtée à la somme de : ' +
+    DMGesCloud.MontantenLettres(FDQueryEntcde_cli.FieldByName('MT_TTC').AsInteger) + ' Francs CFP.'));
+
+  // 1. Activer la requête SQL contenant les données du devis
+  //FDQueryDevis.ParamByName('CODDEV').AsInteger := FDQueryEnt_prof.FieldByName('CODDEV').AsInteger;
+  FDQueryCmde_Client.Open;
+
+  // 3. Afficher l'aperçu avant impression à l'écran
+  frxReportCmde_Client.ShowReport;
+
 end;
 
 procedure TFrameTableEntcde_cli.BtnOuvrirClick(Sender: TObject);
@@ -157,7 +350,7 @@ var
 begin
   if FDQueryEntcde_cli.IsEmpty then Exit;
 
-  if FDQueryEntcde_cli.FieldByName('TYPE_').AsString = 'F' then
+  if FDQueryEntcde_cli.FieldByName('STATUT').AsInteger = 2 then
   begin
     ShowMessage('Opération impossible, commande déjà facturée.');
     Exit;
@@ -166,7 +359,7 @@ begin
   // Récupérer la clé unique du devis courant
   NoCdeCourant := FDQueryEntcde_cli.FieldByName('NOCDE').AsInteger;
 
-  if MessageDlg('Supprimer la commande ?', mtConfirmation, [mbYes, mbNo], 0) = mrNo then
+  if MessageDlg('Supprimer la commande no '+IntToStr(NoCdeCourant)+' ?', mtConfirmation, [mbYes, mbNo], 0) = mrNo then
     Exit;
 
   // Exécution d'un DELETE direct DES LIGNES
@@ -185,7 +378,7 @@ begin
   QryExec := TFDQuery.Create(nil);
   try
     QryExec.Connection := FDQueryEntcde_cli.Connection; // Utilise la même connexion
-    QryExec.SQL.Text := 'DELETE FROM ent_prof WHERE NOCDE = :NOCDE';
+    QryExec.SQL.Text := 'DELETE FROM entcde_cli WHERE NOCDE = :NOCDE';
     QryExec.ParamByName('NOCDE').AsInteger := NoCdeCourant;
     QryExec.ExecSQL;
 

@@ -106,6 +106,9 @@ type
     procedure JvDBGridLigcde_cliKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+    procedure BtnAjouterLigneClick(Sender: TObject);
+    procedure BtnModifierLigneClick(Sender: TObject);
+    procedure BtnSupprimerLigneClick(Sender: TObject);
   private
     { Déclarations privées }
     FIsLoading: Boolean;
@@ -128,7 +131,7 @@ implementation
 
 {$R *.dfm}
 
-uses U_DM_Olivier, U_TableEntcde_cli, U_DataModule, U_FormAide; //, U_FicheLigcde_cli;
+uses U_DM_Olivier, U_TableEntcde_cli, U_DataModule, U_FormAide, U_FicheLigcde_cli;
 
 
 constructor TFormFicheEntcde_cli.Create(AOwner: TComponent; AMode: TModeSaisie; ANocde: Integer);
@@ -342,7 +345,7 @@ begin
   end;
 end;
 
-//CALCUL COMPLET DU DEVIS
+//CALCUL COMPLET DE LA PIECE
 procedure TFormFicheEntcde_cli.BtnAideClick(Sender: TObject);
 begin
   // 1. On s'assure que la fiche d'aide existe en mémoire
@@ -351,6 +354,166 @@ begin
 
   // 2. On affiche la page
   FormAide.AfficherAide('entcde_cli_fiche.html');
+end;
+
+procedure TFormFicheEntcde_cli.BtnAjouterLigneClick(Sender: TObject);
+var
+  Continuer: Boolean;
+begin
+
+  if FDMemTableEntcde_cli.FieldByName('STATUT').AsInteger = 2 then
+      Exit;
+
+  repeat
+    // Création et affichage de la fiche de saisie
+    FormLigcde_cli := TFormLigcde_cli.Create(Self);
+    try
+      FormLigcde_cli.DSLigcde_cli.DataSet := FDMemTableLigcde_cli;
+
+      // Configuration de la fiche
+      FormLigcde_cli.ModeSaisieLigne := U_FicheLigcde_cli.msAjout;
+      FormLigcde_cli.Caption := 'Nouvelle ligne de commande';
+
+      // Passage en mode insertion
+      FDMemTableLigcde_cli.Insert;
+
+      // Pré-remplir les champs correctement
+      FDMemTableLigcde_cli.FieldByName('NOCDE').AsInteger := FDMemTableEntcde_cli.FieldByName('NOCDE').AsInteger;
+      FDMemTableLigcde_cli.FieldByName('CODCLI').AsInteger := FDMemTableEntcde_cli.FieldByName('CODCLI').AsInteger;
+
+      // Si l'utilisateur clique sur Valider
+      Continuer := (FormLigcde_cli.ShowModal = mrOk);
+      if Continuer then
+      begin
+        // Le .Post a DEJA été fait à l'intérieur de la fiche
+        CalculCompletPiece;
+      end
+      else
+      begin
+        // Si l'utilisateur a annulé, on annule l'insertion
+        FDMemTableLigcde_cli.Cancel;
+      end;
+    finally
+      FormLigcde_cli.Free;
+    end;
+  until not Continuer; // La boucle tourne tant que l'utilisateur valide (mrOk)
+
+  JvDBGridLigcde_cli.SetFocus;
+end;
+
+
+procedure TFormFicheEntcde_cli.BtnModifierLigneClick(Sender: TObject);
+begin
+  // Vérifie qu'une ligne est bien sélectionnée
+  if FDMemTableLigcde_cli.IsEmpty then Exit;
+
+    // Si le focus est sur la grille et qu'on appuie sur Entrée
+  if FDMemTableEntcde_cli.FieldByName('STATUT').AsInteger = 2 then
+      Exit;
+
+  FormLigcde_cli := TFormLigcde_cli.Create(Self);
+  try
+    FormLigcde_cli.DSLigcde_cli.DataSet := FDMemTableLigcde_cli;
+    FormLigcde_cli.ModeSaisieLigne := U_FicheLigcde_cli.msModification;
+    FormLigcde_cli.Caption := 'Modifier la ligne de la pièce';
+
+    if FormLigcde_cli.ShowModal = mrOk then
+    begin
+      // 1. On s'assure que le post est bien effectif et fermé
+      if FDMemTableLigcde_cli.State in [dsEdit, dsInsert] then
+        FDMemTableLigcde_cli.Post;
+
+      CalculCompletPiece;
+      // 2. On repositionne et rafraîchit proprement le dataset
+      DM_Olivier.RefreshDataSetWithBookmark(FDMemTableLigcde_cli)
+    end
+    else
+    begin
+      // Si annulé, on s'assure juste proprement de remettre le dataset en état stable
+      // S'il était en édit/insert, on l'annule, mais on protège avec un try/except pour éviter tout plantage visuel
+      try
+        if FDMemTableLigcde_cli.State in [dsEdit, dsInsert] then
+          FDMemTableLigcde_cli.Cancel;
+      except
+        // On ignore silencieusement si le dataset était déjà fermé/sorti du mode édit
+      end;
+    end;
+  finally
+    FormLigcde_cli.Free;
+    JvDBGridLigcde_cli.SetFocus;
+  end;
+
+end;
+
+procedure TFormFicheEntcde_cli.BtnSupprimerLigneClick(Sender: TObject);
+var
+  i: Integer;
+  BookmarkList: TBookmarkList;
+  NbLignesSupprimees: Integer;
+begin
+  // Garde-fou existant
+  if FDMemTableEntcde_cli.FieldByName('STATUT').AsInteger = 2 then
+    Exit;
+
+  // 1. Vérification si la table est vide
+  if FDMemTableLigcde_cli.IsEmpty then
+  begin
+    ShowMessage('Aucune ligne à supprimer.');
+    JvDBGridLigcde_cli.SetFocus;
+    Exit;
+  end;
+
+  // 2. Vérifier si des lignes sont sélectionnées dans la JvDBGrid
+  BookmarkList := JvDBGridLigcde_cli.SelectedRows;
+  if BookmarkList.Count = 0 then
+  begin
+    ShowMessage('Veuillez sélectionner au moins une ligne à supprimer.');
+    JvDBGridLigcde_cli.SetFocus;
+    Exit;
+  end;
+
+  // 3. Demande de confirmation globale
+  if MessageDlg('Voulez-vous vraiment supprimer les ' + IntToStr(BookmarkList.Count) + ' ligne(s) sélectionnée(s) ?',
+                mtConfirmation, [mbYes, mbNo], 0) = mrYes then
+  begin
+    NbLignesSupprimees := 0;
+    try
+      // Désactiver le rafraîchissement visuel pendant la suppression en masse
+      FDMemTableLigcde_cli.DisableControls;
+      try
+        // Parcours à l'envers (de la fin vers le début) pour préserver la validité des signets
+        for i := BookmarkList.Count - 1 downto 0 do
+        begin
+          if FDMemTableLigcde_cli.BookmarkValid(TBookmark(BookmarkList[i])) then
+          begin
+            FDMemTableLigcde_cli.GotoBookmark(TBookmark(BookmarkList[i]));
+            FDMemTableLigcde_cli.Delete;
+            Inc(NbLignesSupprimees);
+          end;
+        end;
+      finally
+        // Réactiver l'affichage de la grille
+        FDMemTableLigcde_cli.EnableControls;
+      end;
+
+      // 4. Recalcul unique de la pièce après la suppression des lignes
+      if NbLignesSupprimees > 0 then
+        CalculCompletPiece;
+
+    except
+      on E: Exception do
+      begin
+        // S'assurer de réactiver les contrôles en cas d'erreur
+        if FDMemTableLigcde_cli.ControlsDisabled then
+          FDMemTableLigcde_cli.EnableControls;
+
+        MessageDlg('Erreur lors de la suppression des lignes : ' + E.Message, mtError, [mbOK], 0);
+      end;
+    end;
+  end;
+
+  JvDBGridLigcde_cli.SetFocus;
+
 end;
 
 procedure TFormFicheEntcde_cli.BtnValiderClick(Sender: TObject);
@@ -363,6 +526,9 @@ var
   iNolig: Integer;
 
 begin
+
+  //Calcul de securite
+  CalculCompletPiece;
 
   // 1. S'assurer que les saisies en cours dans les grilles/champs sont validées (Post)
   if FDMemTableEntcde_cli.State in [dsEdit, dsInsert] then
@@ -390,7 +556,7 @@ begin
       begin
         //Recuperation dernier num commande
         QryExec.close;
-        QryExec.SQL.Text := 'SELECT NOCDE FROM `ent_prof` ORDER BY NOCDE DESC LIMIT 1';
+        QryExec.SQL.Text := 'SELECT NOCDE FROM `entcde_cli` ORDER BY NOCDE DESC LIMIT 1';
         QryExec.Open;
         QryExec.first;
         NumCDE:=1;
@@ -618,7 +784,7 @@ begin
       QryArticle.SQL.Text := 'SELECT * FROM article WHERE CODART=:CODART';
       QryArticle.ParamByName('CODART').AsString := FDMemTableLigcde_cli.FieldByName('CODART').AsString;
       QryArticle.Open;
-      FDMemTableLigcde_cli.FieldByName('NO_TVA').AsString := QryArticle.FieldByName('TVA').AsString;
+      FDMemTableLigcde_cli.FieldByName('TVA').AsString := QryArticle.FieldByName('TVA').AsString;
       pTVA := QryArticle.FieldByName('TVA').AsString;
 
       FDMemTableLigcde_cli.FieldByName('TX_TVA').AsFloat := DM_Olivier.fgTxTaxe(wDate,pTVA);
@@ -647,13 +813,13 @@ begin
 //      begin
         // Sur HT
         FDMemTableLigcde_cli.FieldByName('PRIXTTC').AsInteger := Round(DM_Olivier.CalculerTTC(FDMemTableLigcde_cli.FieldByName('PRIXHT').AsFloat, FDMemTableLigcde_cli.FieldByName('TX_TVA').AsFloat));
-        FDMemTableLigcde_cli.FieldByName('TOTHT').AsFloat := FDMemTableLigcde_cli.FieldByName('PRIXNET').AsFloat * FDMemTableLigcde_cli.FieldByName('QTE').AsFloat;
+        FDMemTableLigcde_cli.FieldByName('TOTHT').AsFloat := FDMemTableLigcde_cli.FieldByName('PRIXHT').AsFloat * FDMemTableLigcde_cli.FieldByName('QTE').AsFloat;
         FDMemTableLigcde_cli.FieldByName('MT_TVA').AsFloat := (FDMemTableLigcde_cli.FieldByName('TOTHT').AsFloat / 100) * FDMemTableLigcde_cli.FieldByName('TX_TVA').AsFloat;
         FDMemTableLigcde_cli.FieldByName('MT_TTC').AsInteger := Round(FDMemTableLigcde_cli.FieldByName('TOTHT').AsFloat + FDMemTableLigcde_cli.FieldByName('MT_TVA').AsFloat);
 //      end;
 
       // Arrondis
-      FDMemTableLigcde_cli.FieldByName('PRIXNET').AsFloat := RoundTo(FDMemTableLigcde_cli.FieldByName('PRIXHT').AsFloat, -2);
+      FDMemTableLigcde_cli.FieldByName('PRIXHT').AsFloat := RoundTo(FDMemTableLigcde_cli.FieldByName('PRIXHT').AsFloat, -2);
       FDMemTableLigcde_cli.FieldByName('TOTHT').AsFloat := RoundTo(FDMemTableLigcde_cli.FieldByName('TOTHT').AsFloat, -2);
       FDMemTableLigcde_cli.FieldByName('MT_TVA').AsFloat := RoundTo(FDMemTableLigcde_cli.FieldByName('MT_TVA').AsFloat, -2);
 

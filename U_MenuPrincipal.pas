@@ -85,6 +85,7 @@ type
     procedure Journauxcomptables1Click(Sender: TObject);
     procedure FacturesreccurentesClick(Sender: TObject);
     procedure ExportEcrituresClientClick(Sender: TObject);
+    procedure AchatsLocauxClick(Sender: TObject);
   private
     function ChercherEtActiverOnglet(const ACaption: string): Boolean;
     function OuvrirOnglet<T: TControl>(const ACaption: string; const AImageName: string = ''; AOnCreate: TProc<T> = nil): T;
@@ -107,7 +108,8 @@ uses
   U_TableSousfam, U_TableDepart, U_TableChrono, U_TableTarif, U_TableInfoscompl,
   U_FicheCtrstock, U_FicheCaisse, U_FormGestionDroits, U_TableArticles, U_TableEntvtejj,
   U_TableEntvteaa, U_FormCentraVentes, U_TableDevis, U_FrameEcrituresClients,
-  U_TableJournal, U_FrameFacturesReccurentes, U_FormExportEcrituresClient, U_TableEntcde_cli;
+  U_TableJournal, U_FrameFacturesReccurentes, U_FormExportEcrituresClient, U_TableEntcde_cli,
+  U_TableAchat;
 
 procedure TFormMenuPrincipal.FormCreate(Sender: TObject);
 begin
@@ -432,6 +434,15 @@ begin
 
 end;
 
+
+procedure TFormMenuPrincipal.AchatsLocauxClick(
+  Sender: TObject);
+var
+  MonFrame: TFrameTableAchat;
+begin
+  // Votre méthode qui crée ou ouvre l'onglet/frame
+  MonFrame := OuvrirOnglet<TFrameTableAchat>('Achats locaux', 'shell32_29');
+end;
 
 procedure TFormMenuPrincipal.Centralisationdesventes1Click(Sender: TObject);
 var

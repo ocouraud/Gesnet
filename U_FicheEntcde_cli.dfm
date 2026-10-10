@@ -20,14 +20,16 @@ object FormFicheEntcde_cli: TFormFicheEntcde_cli
     Height = 237
     Align = alClient
     DataSource = DSMemTableLigcde_cli
-    Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit, dgTitleClick, dgTitleHotTrack]
+    Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit, dgMultiSelect, dgTitleClick, dgTitleHotTrack]
     TabOrder = 0
     TitleFont.Charset = DEFAULT_CHARSET
     TitleFont.Color = clWindowText
     TitleFont.Height = -12
     TitleFont.Name = 'Segoe UI'
     TitleFont.Style = []
+    OnDblClick = BtnModifierLigneClick
     OnKeyDown = JvDBGridLigcde_cliKeyDown
+    MultiSelect = True
     TitleButtons = True
     AlternateRowColor = clAzure
     TitleArrow = True
@@ -156,7 +158,6 @@ object FormFicheEntcde_cli: TFormFicheEntcde_cli
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitWidth = 713
     DesignSize = (
       758
       104)
@@ -227,8 +228,6 @@ object FormFicheEntcde_cli: TFormFicheEntcde_cli
       ParentFont = False
       ReadOnly = True
       TabOrder = 0
-      ExplicitLeft = 788
-      ExplicitTop = 35
     end
     object DBMT_TVA: TDBEdit
       Left = 529
@@ -249,8 +248,6 @@ object FormFicheEntcde_cli: TFormFicheEntcde_cli
       ParentFont = False
       ReadOnly = True
       TabOrder = 1
-      ExplicitLeft = 787
-      ExplicitTop = 64
     end
     object DBMT_TTC: TDBEdit
       Left = 529
@@ -271,8 +268,6 @@ object FormFicheEntcde_cli: TFormFicheEntcde_cli
       ParentFont = False
       ReadOnly = True
       TabOrder = 2
-      ExplicitLeft = 787
-      ExplicitTop = 93
     end
   end
   object Panel1: TPanel
@@ -282,7 +277,6 @@ object FormFicheEntcde_cli: TFormFicheEntcde_cli
     Height = 193
     Align = alTop
     TabOrder = 2
-    ExplicitWidth = 624
     object Label6: TLabel
       Left = 8
       Top = 93
@@ -404,7 +398,6 @@ object FormFicheEntcde_cli: TFormFicheEntcde_cli
       Align = alRight
       BevelOuter = bvNone
       TabOrder = 7
-      ExplicitLeft = 595
       object BtnValider: TBitBtn
         Left = 0
         Top = 0
@@ -416,7 +409,6 @@ object FormFicheEntcde_cli: TFormFicheEntcde_cli
         Default = True
         TabOrder = 0
         OnClick = BtnValiderClick
-        ExplicitWidth = 104
       end
       object BtnAide: TBitBtn
         Left = 0
@@ -427,7 +419,6 @@ object FormFicheEntcde_cli: TFormFicheEntcde_cli
         Caption = 'Aide '#10067
         TabOrder = 2
         OnClick = BtnAideClick
-        ExplicitWidth = 104
       end
       object BtnAnnuler: TBitBtn
         Left = 0
@@ -439,7 +430,6 @@ object FormFicheEntcde_cli: TFormFicheEntcde_cli
         Caption = '&Annuler '#10060
         ModalResult = 2
         TabOrder = 1
-        ExplicitWidth = 104
       end
     end
   end
@@ -452,28 +442,34 @@ object FormFicheEntcde_cli: TFormFicheEntcde_cli
     BevelOuter = bvNone
     TabOrder = 3
     object BtnAjouterLigne: TButton
-      Left = 5
-      Top = 1
-      Width = 112
+      Left = 0
+      Top = 0
+      Width = 118
       Height = 30
+      Align = alTop
       Caption = 'Nouvelle ligne '#10133
       TabOrder = 0
+      OnClick = BtnAjouterLigneClick
     end
     object BtnSupprimerLigne: TButton
-      Left = 5
-      Top = 61
-      Width = 112
+      Left = 0
+      Top = 60
+      Width = 118
       Height = 30
+      Align = alTop
       Caption = 'Supprimer lignes '#55357#56785#65039
       TabOrder = 2
+      OnClick = BtnSupprimerLigneClick
     end
     object BtnModifierLigne: TButton
-      Left = 5
-      Top = 31
-      Width = 112
+      Left = 0
+      Top = 30
+      Width = 118
       Height = 30
+      Align = alTop
       Caption = 'Modifier ligne '#55357#56514
       TabOrder = 1
+      OnClick = BtnModifierLigneClick
     end
   end
   object FDQueryClientsOuverts: TFDQuery

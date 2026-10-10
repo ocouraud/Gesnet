@@ -1,7 +1,7 @@
 object FormLig_prof: TFormLig_prof
   Left = 0
   Top = 0
-  Caption = 'Ligne de facture'
+  Caption = 'Ligne de devis'
   ClientHeight = 334
   ClientWidth = 845
   Color = clBtnFace
