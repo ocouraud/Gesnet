@@ -176,7 +176,6 @@ object FrameTableAchat: TFrameTableAchat
     Align = alTop
     BevelOuter = bvNone
     TabOrder = 1
-    ExplicitWidth = 816
     object EdtCherche_CODACH: TEdit
       Left = 15
       Top = 46
@@ -238,7 +237,6 @@ object FrameTableAchat: TFrameTableAchat
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 2
-    ExplicitWidth = 816
     object BtnFermer: TBitBtn
       Left = 729
       Top = 32

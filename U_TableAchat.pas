@@ -344,7 +344,7 @@ begin
   FormFicheAchat := TFormFicheAchat.Create(Self, msModification, CodAch);
 
   try
-    FormFicheAchat.Caption := 'Modifier la commande';
+    FormFicheAchat.Caption := 'Modifier l''achat';
 
     if FormFicheAchat.ShowModal = mrOk then
     begin

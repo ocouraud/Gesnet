@@ -16,79 +16,29 @@ uses
 type
   TModeSaisie = (msAjout, msModification);
   TFormFicheAchat = class(TForm)
-    FDQueryClientsOuverts: TFDQuery;
-    FDQueryClientsOuvertsOBSERV: TMemoField;
-    FDQueryClientsOuvertsCODCLI: TIntegerField;
-    FDQueryClientsOuvertsCPTAUX: TStringField;
-    FDQueryClientsOuvertsNOM: TStringField;
-    FDQueryClientsOuvertsCODREP: TSmallintField;
-    FDQueryClientsOuvertsPRC_REMISE: TBCDField;
-    FDQueryClientsOuvertsNOTEL: TStringField;
-    FDQueryClientsOuvertsNOTAHITI: TStringField;
-    FDQueryClientsOuvertsNOFAX: TStringField;
-    FDQueryClientsOuvertsJRSCRD: TSmallintField;
-    FDQueryClientsOuvertsCREDIT: TLargeintField;
-    FDQueryClientsOuvertsplaf_crd: TIntegerField;
-    FDQueryClientsOuvertsCODPAI: TStringField;
-    FDQueryClientsOuvertsFIN_MOIS: TSmallintField;
-    FDQueryClientsOuvertsNB_EX: TSmallintField;
-    FDQueryClientsOuvertsCAAN: TLargeintField;
-    FDQueryClientsOuvertsAD1: TStringField;
-    FDQueryClientsOuvertsAD2: TStringField;
-    FDQueryClientsOuvertsAD3: TStringField;
-    FDQueryClientsOuvertsCUM_MVT: TSmallintField;
-    FDQueryClientsOuvertsMT_CPTA: TLargeintField;
-    FDQueryClientsOuvertsEXO_TVA: TSmallintField;
-    FDQueryClientsOuvertsBLOQUE: TSmallintField;
-    FDQueryClientsOuvertsCODGEO: TStringField;
-    FDQueryClientsOuvertsEMAIL: TStringField;
-    FDQueryClientsOuvertsCODTAR: TStringField;
-    FDQueryClientsOuvertsADM: TSmallintField;
-    FDQueryClientsOuvertsFLAG_TAX: TSmallintField;
-    FDQueryClientsOuvertsCODFAC_ADM: TStringField;
-    FDQueryClientsOuvertsFERME: TSmallintField;
-    FDQueryClientsOuvertsDER_MODIF: TSQLTimeStampField;
-    FDQueryClientsOuvertsSPEC_GOUV: TSmallintField;
-    FDQueryClientsOuvertsNOGSM: TLargeintField;
-    FDQueryClientsOuvertsPLV: TSmallintField;
-    FDQueryClientsOuvertsINTIT_BQ: TStringField;
-    FDQueryClientsOuvertsCODE_BQ: TStringField;
-    FDQueryClientsOuvertsCODE_GUI: TStringField;
-    FDQueryClientsOuvertsNOCPT: TStringField;
-    FDQueryClientsOuvertsCLE: TStringField;
-    FDQueryClientsOuvertsCOEF_MAJ_PR: TBCDField;
-    FDQueryClientsOuvertsEXO_CPS: TSmallintField;
-    FDQueryClientsOuvertsPAS_REM: TSmallintField;
-    FDQueryClientsOuvertsREM_FAM: TSmallintField;
-    FDQueryClientsOuvertsRELEVE_EMAIL: TBooleanField;
-    FDQueryClientsOuvertsSELECT_: TBooleanField;
-    FDQueryClientsOuvertsAPP_TARIFCLI: TBooleanField;
-    FDQueryClientsOuvertsTVA_ILES: TBooleanField;
-    DSClient: TDataSource;
-    DSMemTableEntcde_cli: TDataSource;
-    FDMemTableEntcde_cli: TFDMemTable;
-    FDMemTableLigcde_cli: TFDMemTable;
-    DSMemTableLigcde_cli: TDataSource;
-    FDQueryEntcde_cli: TFDQuery;
-    FDQueryLigcde_cli: TFDQuery;
-    DBMemoObserv: TDBMemo;
-    DBNOM: TDBEdit;
-    Label6: TLabel;
-    DBLookupComboBoxClient: TDBLookupComboBox;
-    DBCODCLI: TDBEdit;
+    FDQueryFournis: TFDQuery;
+    DSFournis: TDataSource;
+    DSMemTableAchat: TDataSource;
+    FDMemTableAchat: TFDMemTable;
+    FDMemTableLigachjj: TFDMemTable;
+    DSMemTableLigachjj: TDataSource;
+    FDQueryAchat: TFDQuery;
+    FDQueryLigachjj: TFDQuery;
+    DBLookupComboBoxFournis: TDBLookupComboBox;
+    DBCODFOU: TDBEdit;
     Label21: TLabel;
     DBREFERENCE_: TDBEdit;
     Label17: TLabel;
     JvDBDate_: TJvDBDateEdit;
     Label10: TLabel;
-    DBNOCDE: TDBEdit;
+    DBCODACH: TDBEdit;
     Label1: TLabel;
-    JvDBGridLigcde_cli: TJvDBGrid;
+    JvDBGridLignes: TJvDBGrid;
     Panel3: TPanel;
     Label14: TLabel;
     Label16: TLabel;
     Label15: TLabel;
-    DBTOTHT: TDBEdit;
+    DBMT_HT: TDBEdit;
     DBMT_TVA: TDBEdit;
     DBMT_TTC: TDBEdit;
     Panel5: TPanel;
@@ -100,15 +50,46 @@ type
     BtnValider: TBitBtn;
     BtnAide: TBitBtn;
     BtnAnnuler: TBitBtn;
-    procedure DBCODCLIExit(Sender: TObject);
+    Label2: TLabel;
+    DSLigachjj: TDataSource;
+    FDQueryLigachjjCODACH: TLargeintField;
+    FDQueryLigachjjREFER: TStringField;
+    FDQueryLigachjjDATE_: TDateField;
+    FDQueryLigachjjCODFOU: TStringField;
+    FDQueryLigachjjCODSSF: TStringField;
+    FDQueryLigachjjCODFAM: TStringField;
+    FDQueryLigachjjCODART: TStringField;
+    FDQueryLigachjjCODDEP: TShortintField;
+    FDQueryLigachjjQTE: TBCDField;
+    FDQueryLigachjjPRIXHT: TBCDField;
+    FDQueryLigachjjPRIXTTC: TIntegerField;
+    FDQueryLigachjjTOTHT: TBCDField;
+    FDQueryLigachjjTX_TVA: TBCDField;
+    FDQueryLigachjjMT_TVA: TIntegerField;
+    FDQueryLigachjjNO_TVA: TSmallintField;
+    FDQueryLigachjjPOIDS: TBCDField;
+    FDQueryLigachjjNOENR: TFDAutoIncField;
+    FDQueryLigachjjDER_MODIF: TSQLTimeStampField;
+    FDQueryLigachjjTX_TSOC: TBCDField;
+    FDQueryLigachjjMT_TSOC: TBCDField;
+    FDQueryLigachjjNOENR_STO: TLargeintField;
+    FDQueryLigachjjlibelle: TStringField;
+    FDQueryLigachjjmt_ttc: TBCDField;
+    DBLibelle: TDBLabeledEdit;
+    DBMT_REM: TDBEdit;
+    Label3: TLabel;
+    procedure DBCODFOUExit(Sender: TObject);
     procedure BtnAideClick(Sender: TObject);
     procedure BtnValiderClick(Sender: TObject);
-    procedure JvDBGridLigcde_cliKeyDown(Sender: TObject; var Key: Word;
+    procedure JvDBGridLignesKeyDown(Sender: TObject; var Key: Word;
       Shift: TShiftState);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure BtnAjouterLigneClick(Sender: TObject);
     procedure BtnModifierLigneClick(Sender: TObject);
     procedure BtnSupprimerLigneClick(Sender: TObject);
+    procedure DBMT_HTExit(Sender: TObject);
+    procedure DBMT_TVAExit(Sender: TObject);
+    procedure DBMT_TTCExit(Sender: TObject);
   private
     { Déclarations privées }
     FIsLoading: Boolean;
@@ -120,7 +101,7 @@ type
     { Déclarations publiques }
     ModeSaisie: TModeSaisie;
     ModeSaisieLigne: TModeSaisie;
-    constructor Create(AOwner: TComponent; AMode: TModeSaisie; ANocde: Integer); reintroduce;
+    constructor Create(AOwner: TComponent; AMode: TModeSaisie; ACodach: Integer); reintroduce;
     property CodAchCree: Integer read FCodAchCree;
   end;
 
@@ -131,10 +112,10 @@ implementation
 
 {$R *.dfm}
 
-uses U_DM_Olivier, U_TableEntcde_cli, U_DataModule, U_FormAide, U_FicheLigcde_cli;
+uses U_DM_Olivier, U_TableEntcde_cli, U_DataModule, U_FormAide, U_FicheLigachjj;
 
 
-constructor TFormFicheAchat.Create(AOwner: TComponent; AMode: TModeSaisie; ANocde: Integer);
+constructor TFormFicheAchat.Create(AOwner: TComponent; AMode: TModeSaisie; ACodach: Integer);
 var
   QryExec: TFDQuery;
 begin
@@ -151,82 +132,78 @@ begin
     QryExec.Connection := DMGesCloud.ConnexionGesCloud;
 
     // 1. Gestion de l'En-tête
-    FDQueryEntcde_cli.Close;
-    FDQueryEntcde_cli.SQL.Text := 'select * from entcde_cli where nocde = :NOCDE';
-    FDQueryEntcde_cli.ParamByName('NOCDE').AsInteger := ANocde;
-    FDQueryEntcde_cli.Open;
+    FDQueryAchat.Close;
+    FDQueryAchat.SQL.Text := 'select * from achat where codach = :codach';
+    FDQueryAchat.ParamByName('CODACH').AsInteger := Acodach;
+    FDQueryAchat.Open;
 
-    FDMemTableEntcde_cli.Close;
-    FDMemTableEntcde_cli.FieldDefs.Assign(FDQueryEntcde_cli.FieldDefs);
-    FDMemTableEntcde_cli.CreateDataSet;
-    FDMemTableEntcde_cli.Open;
+    FDMemTableAchat.Close;
+    FDMemTableAchat.FieldDefs.Assign(FDQueryAchat.FieldDefs);
+    FDMemTableAchat.CreateDataSet;
+    FDMemTableAchat.Open;
 
     if ModeSaisie = msAjout then
     begin
-      FDMemTableEntcde_cli.Append;
-      FDMemTableEntcde_cli.FieldByName('NOCDE').AsInteger := ANocde;
-      FDMemTableEntcde_cli.FieldByName('DATE_').AsDateTime := Date;
+      FDMemTableAchat.Append;
+      FDMemTableAchat.FieldByName('CODACH').AsInteger := ACodach;
+      FDMemTableAchat.FieldByName('DATE_').AsDateTime := Date;
       //FDMemTableEntcde_cli.FieldByName('HEURE').AsLargeInt := Round(Frac(Now) * 86400 * 100);
-      FDMemTableEntcde_cli.FieldByName('CODCLI').AsInteger := DM_Olivier.gCodcli_defaut;
-      FDMemTableEntcde_cli.FieldByName('STATUT').AsInteger := 1;
+      FDMemTableAchat.FieldByName('TOP_').AsString := 'J';
 
-      // Lecture Client
-      QryExec.Close;
-      QryExec.SQL.Text := 'SELECT * FROM client where CODCLI=:CODCLI';
-      QryExec.ParamByName('CODCLI').AsInteger := DM_Olivier.gCodcli_defaut;
-      QryExec.Open;
-      FDMemTableEntcde_cli.FieldByName('NOMCLI').AsString := QryExec.FieldByName('NOM').AsString;
-
-      FDMemTableEntcde_cli.Post;
-      FDMemTableEntcde_cli.Edit;
+      FDMemTableAchat.Post;
+      FDMemTableAchat.Edit;
     end
     else
     begin
-      FDMemTableEntcde_cli.CopyDataSet(FDQueryEntcde_cli, [coAppend]);
-      FDMemTableEntcde_cli.First;
+      FDMemTableAchat.CopyDataSet(FDQueryAchat, [coAppend]);
+      FDMemTableAchat.First;
     end;
 
     // 2. Gestion des Lignes de détails
-    FDQueryLigcde_cli.Close;
-    FDQueryLigcde_cli.Sql.Text := 'select * from ligcde_cli where nocde=:nocde';
-    FDQueryLigcde_cli.ParamByName('NOCDE').AsInteger := ANocde;
-    FDQueryLigcde_cli.Open();
-    FDQueryLigcde_cli.FetchAll;
+    FDQueryLigachjj.Close;
+    FDQueryLigachjj.Sql.Text := 'SELECT ligachjj.*, article.libelle, (ligachjj.totht + ligachjj.mt_tva) AS mt_ttc '+
+    'FROM ligachjj INNER JOIN article ON article.codart = ligachjj.codart '+
+    'WHERE ligachjj.CODACH = :CODACH';
 
-    FDMemTableLigcde_cli.Close;
-    FDMemTableLigcde_cli.FieldDefs.Assign(FDQueryLigcde_cli.FieldDefs);
-    FDMemTableLigcde_cli.CreateDataSet;
-    FDMemTableLigcde_cli.Open;
+    // On charge la requête source
+    FDQueryLigachjj.ParamByName('CODACH').AsInteger := ACodach;
+    FDQueryLigachjj.Open();
+    FDQueryLigachjj.FetchAll;
 
-    // Attaches événement dynamiquement aux champs :
-    if FDMemTableLigcde_cli.FindField('PRIXHT') <> nil then
-      FDMemTableLigcde_cli.FieldByName('PRIXHT').OnValidate := ValiderChampPrix;
-
-    if FDMemTableLigcde_cli.FindField('PRIXTTC') <> nil then
-      FDMemTableLigcde_cli.FieldByName('PRIXTTC').OnValidate := ValiderChampPrix;
+    FDMemTableLigachjj.Close;
 
     if ModeSaisie = msModification then
     begin
-      FDMemTableLigcde_cli.CopyDataSet(FDQueryLigcde_cli, [coAppend]);
-      FDMemTableLigcde_cli.First;
+      // Mode Modification : On récupère structure et données d'un coup
+      FDMemTableLigachjj.Data := FDQueryLigachjj.Data;
+      FDMemTableLigachjj.First;
     end
     else
     begin
-      if not FDMemTableLigcde_cli.Active then
-        FDMemTableLigcde_cli.Open;
-      FDMemTableLigcde_cli.EmptyDataSet;
+      // Mode Création : On initialise une structure vide basée sur la requête
+      FDMemTableLigachjj.FieldDefs.Assign(FDQueryLigachjj.FieldDefs);
+      FDMemTableLigachjj.CreateDataSet;
+      FDMemTableLigachjj.Open;
+      FDMemTableLigachjj.EmptyDataSet;
     end;
 
-    FDQueryClientsOuverts.Open;
+    // 2. Attachement dynamique des événements (OBLIGATOIREMENT APRÈS le chargement/création)
+    if FDMemTableLigachjj.FindField('PRIXHT') <> nil then
+      FDMemTableLigachjj.FieldByName('PRIXHT').OnValidate := ValiderChampPrix;
 
-    FDMemTableEntcde_cli.Edit;
+    if FDMemTableLigachjj.FindField('PRIXTTC') <> nil then
+      FDMemTableLigachjj.FieldByName('PRIXTTC').OnValidate := ValiderChampPrix;
+
+    FDQueryFournis.Open;
+
+    FDMemTableAchat.Edit;
 
     if ModeSaisie = msAjout then
-      DBCODCLIExit(self)
+//      DBCODFOUExit(self)
     else
     begin
       var i: Integer;
-      if FDMemTableEntcde_cli.FieldByName('STATUT').AsInteger = 2 then
+      if FDMemTableAchat.FieldByName('TOP_').AsString = 'C' then
       begin
 //        for i := 0 to ControlCount - 1 do
 //        begin
@@ -243,15 +220,15 @@ begin
       end;
     end;
 
-    if DM_Olivier.fgTxTaxe(FDMemTableEntcde_cli.FieldByName('DATE_').AsDateTime, 'TVAI') = 0 then
-    begin
+//    if DM_Olivier.fgTxTaxe(FDMemTableAchat.FieldByName('DATE_').AsDateTime, 'TVAI') = 0 then
+//    begin
 //      RzDBCheckBoxTVA_ILES.Visible := False;
 //      FDMemTableEntcde_cli.FieldByName('TVA_ILES').AsBoolean := False;
-    end
-    else
-    begin
+//    end
+//    else
+//    begin
 //      RzDBCheckBoxTVA_ILES.Visible := True;
-    end;
+//    end;
 
   finally
     QryExec.Free;
@@ -260,16 +237,16 @@ begin
   end;
 end;
 
-procedure TFormFicheAchat.DBCODCLIExit(Sender: TObject);
+procedure TFormFicheAchat.DBCODFOUExit(Sender: TObject);
 var
   QryExec: TFDQuery;
   Values: array of string;
   MotDePasse: string;
 begin
   // On ne fait rien si la table est simplement en train d'être lue/initialisée (sinon plantage)
-  if not (FDMemTableEntcde_cli.State in [dsEdit, dsInsert]) then
+  if not (FDMemTableAchat.State in [dsEdit, dsInsert]) then
     Exit;
-  if not FDMemTableEntcde_cli.Active then
+  if not FDMemTableAchat.Active then
     Exit;
 
   // Création d'une requête temporaire dédiée aux exécutables SQL
@@ -277,32 +254,47 @@ begin
   QryExec.Connection := DMGesCloud.ConnexionGesCloud;
   try
     QryExec.Close;
-    QryExec.SQL.Text := 'SELECT * FROM client WHERE CODCLI=:CODCLI and FERME=0';
-    QryExec.ParamByName('CODCLI').AsInteger := FDMemTableEntcde_cli.FieldByName('CODCLI').AsInteger;
+    QryExec.SQL.Text := 'SELECT * FROM fournis WHERE CODFOU=:CODFOU';
+    QryExec.ParamByName('CODFOU').AsString := FDMemTableAchat.FieldByName('CODFOU').AsString;
     QryExec.Open;
     IF QryExec.Eof then
     begin
-      ShowMessage('Client inconnu !');
-      FDMemTableEntcde_cli.FieldByName('CODCLI').AsInteger:=FDMemTableEntcde_cli.FieldByName('CODCLI').OldValue;
-      DBCODCLI.SetFocus;     //Focus sur le champ sur lequel on est positionné
+      ShowMessage('Fournisseur inconnu !');
+      if ModeSaisie = msModification then
+        FDMemTableAchat.FieldByName('CODFOU').AsString:=FDMemTableAchat.FieldByName('CODFOU').OldValue;
+
+      DBLookupComboBoxFournis.SetFocus;     //Focus sur le champ sur lequel on est positionné
       Exit;
     end;
-    if QryExec.FieldByName('BLOQUE').AsInteger=1 then
-      begin
-      ShowMessage('Client bloqué - Commande/Facturation/Devis impossible');
-      DBCODCLI.SetFocus;     //Focus sur le champ sur lequel on est positionné
-      Exit;
-    end;
+    if ModeSaisie = msAjout then
+      FDMemTableAchat.FieldByName('LIBELLE').AsString := 'Achat ' + FDQueryFournis.FieldByName('nom').AsString;
+
   finally
     //QryExec.Free;
   end;
-
-  FDMemTableEntcde_cli.FieldByName('NOMCLI').AsString := FDQueryClientsOuverts.FieldByName('NOM').AsString;
 
   CalculCompletPiece;
   QryExec.Free;
 end;
 
+
+procedure TFormFicheAchat.DBMT_TTCExit(Sender: TObject);
+begin
+  FDMemTableAchat.FieldByName('MT_HT').AsFloat := Round(FDMemTableAchat.FieldByName('MT_TTC').AsInteger
+  - FDMemTableAchat.FieldByName('MT_TVA').AsInteger + FDMemTableAchat.FieldByName('MT_REM').AsFloat);
+end;
+
+procedure TFormFicheAchat.DBMT_TVAExit(Sender: TObject);
+begin
+  FDMemTableAchat.FieldByName('MT_TTC').AsInteger := Round(FDMemTableAchat.FieldByName('MT_HT').AsFloat)
+   + FDMemTableAchat.FieldByName('MT_TVA').AsInteger - Round(FDMemTableAchat.FieldByName('MT_REM').AsFloat);
+end;
+
+procedure TFormFicheAchat.DBMT_HTExit(Sender: TObject);
+begin
+  FDMemTableAchat.FieldByName('MT_TTC').AsInteger := Round(FDMemTableAchat.FieldByName('MT_HT').AsFloat)
+   + FDMemTableAchat.FieldByName('MT_TVA').AsInteger - Round(FDMemTableAchat.FieldByName('MT_REM').AsFloat);
+end;
 
 procedure TFormFicheAchat.FormCloseQuery(Sender: TObject;
   var CanClose: Boolean);
@@ -310,7 +302,7 @@ begin
   // Si l'utilisateur essaie d'annuler/fermer la fiche
   if ModalResult = mrCancel then
   begin
-    if FDMemTableEntcde_cli.FieldByName('STATUT').AsInteger<>2 then
+    if FDMemTableAchat.FieldByName('TOP_').AsString<>'C' then
     begin
       if MessageDlg('⚠ Etes-vous sûr de vouloir annuler les modifications ?',
         mtConfirmation, [mbYes, mbNo], 0) <> mrYes then
@@ -321,7 +313,7 @@ begin
   end;
 end;
 
-procedure TFormFicheAchat.JvDBGridLigcde_cliKeyDown(Sender: TObject;
+procedure TFormFicheAchat.JvDBGridLignesKeyDown(Sender: TObject;
   var Key: Word; Shift: TShiftState);
 begin
   case Key of
@@ -361,28 +353,28 @@ var
   Continuer: Boolean;
 begin
 
-  if FDMemTableEntcde_cli.FieldByName('STATUT').AsInteger = 2 then
+  if FDMemTableAchat.FieldByName('TOP_').AsString = 'C' then
       Exit;
 
   repeat
     // Création et affichage de la fiche de saisie
-    FormLigcde_cli := TFormLigcde_cli.Create(Self);
+    FormLigachjj := TFormLigachjj.Create(Self);
     try
-      FormLigcde_cli.DSLigcde_cli.DataSet := FDMemTableLigcde_cli;
+      FormLigachjj.DSlig_prof.DataSet := FDMemTableLigachjj;
 
       // Configuration de la fiche
-      FormLigcde_cli.ModeSaisieLigne := U_FicheLigcde_cli.msAjout;
-      FormLigcde_cli.Caption := 'Nouvelle ligne de commande';
+      FormLigachjj.ModeSaisieLigne := U_FicheLigachjj.msAjout;
+      FormLigachjj.Caption := 'Nouvelle ligne d''achat';
 
       // Passage en mode insertion
-      FDMemTableLigcde_cli.Insert;
+      FDMemTableLigachjj.Insert;
 
       // Pré-remplir les champs correctement
-      FDMemTableLigcde_cli.FieldByName('NOCDE').AsInteger := FDMemTableEntcde_cli.FieldByName('NOCDE').AsInteger;
-      FDMemTableLigcde_cli.FieldByName('CODCLI').AsInteger := FDMemTableEntcde_cli.FieldByName('CODCLI').AsInteger;
+      FDMemTableLigachjj.FieldByName('CODACH').AsInteger := FDMemTableAchat.FieldByName('CODACH').AsInteger;
+      FDMemTableLigachjj.FieldByName('CODFOU').AsString := FDMemTableAchat.FieldByName('CODFOU').AsString;
 
       // Si l'utilisateur clique sur Valider
-      Continuer := (FormLigcde_cli.ShowModal = mrOk);
+      Continuer := (FormLigachjj.ShowModal = mrOk);
       if Continuer then
       begin
         // Le .Post a DEJA été fait à l'intérieur de la fiche
@@ -391,56 +383,56 @@ begin
       else
       begin
         // Si l'utilisateur a annulé, on annule l'insertion
-        FDMemTableLigcde_cli.Cancel;
+        FDMemTableLigachjj.Cancel;
       end;
     finally
-      FormLigcde_cli.Free;
+      FormLigachjj.Free;
     end;
   until not Continuer; // La boucle tourne tant que l'utilisateur valide (mrOk)
 
-  JvDBGridLigcde_cli.SetFocus;
+  JvDBGridLignes.SetFocus;
 end;
 
 
 procedure TFormFicheAchat.BtnModifierLigneClick(Sender: TObject);
 begin
   // Vérifie qu'une ligne est bien sélectionnée
-  if FDMemTableLigcde_cli.IsEmpty then Exit;
+  if FDMemTableLigachjj.IsEmpty then Exit;
 
     // Si le focus est sur la grille et qu'on appuie sur Entrée
-  if FDMemTableEntcde_cli.FieldByName('STATUT').AsInteger = 2 then
+  if FDMemTableAchat.FieldByName('TOP_').AsString = 'C' then
       Exit;
 
-  FormLigcde_cli := TFormLigcde_cli.Create(Self);
+  FormLigachjj := TFormLigachjj.Create(Self);
   try
-    FormLigcde_cli.DSLigcde_cli.DataSet := FDMemTableLigcde_cli;
-    FormLigcde_cli.ModeSaisieLigne := U_FicheLigcde_cli.msModification;
-    FormLigcde_cli.Caption := 'Modifier la ligne de la pièce';
+    FormLigachjj.DSlig_prof.DataSet := FDMemTableLigachjj;
+    FormLigachjj.ModeSaisieLigne := U_FicheLigachjj.msModification;
+    FormLigachjj.Caption := 'Modifier la ligne de la pièce';
 
-    if FormLigcde_cli.ShowModal = mrOk then
+    if FormLigachjj.ShowModal = mrOk then
     begin
       // 1. On s'assure que le post est bien effectif et fermé
-      if FDMemTableLigcde_cli.State in [dsEdit, dsInsert] then
-        FDMemTableLigcde_cli.Post;
+      if FDMemTableLigachjj.State in [dsEdit, dsInsert] then
+        FDMemTableLigachjj.Post;
 
       CalculCompletPiece;
       // 2. On repositionne et rafraîchit proprement le dataset
-      DM_Olivier.RefreshDataSetWithBookmark(FDMemTableLigcde_cli)
+      DM_Olivier.RefreshDataSetWithBookmark(FDMemTableLigachjj)
     end
     else
     begin
       // Si annulé, on s'assure juste proprement de remettre le dataset en état stable
       // S'il était en édit/insert, on l'annule, mais on protège avec un try/except pour éviter tout plantage visuel
       try
-        if FDMemTableLigcde_cli.State in [dsEdit, dsInsert] then
-          FDMemTableLigcde_cli.Cancel;
+        if FDMemTableLigachjj.State in [dsEdit, dsInsert] then
+          FDMemTableLigachjj.Cancel;
       except
         // On ignore silencieusement si le dataset était déjà fermé/sorti du mode édit
       end;
     end;
   finally
-    FormLigcde_cli.Free;
-    JvDBGridLigcde_cli.SetFocus;
+    FormLigachjj.Free;
+    JvDBGridLignes.SetFocus;
   end;
 
 end;
@@ -452,23 +444,23 @@ var
   NbLignesSupprimees: Integer;
 begin
   // Garde-fou existant
-  if FDMemTableEntcde_cli.FieldByName('STATUT').AsInteger = 2 then
+  if FDMemTableAchat.FieldByName('TOP_').AsString = 'C' then
     Exit;
 
   // 1. Vérification si la table est vide
-  if FDMemTableLigcde_cli.IsEmpty then
+  if FDMemTableLigachjj.IsEmpty then
   begin
     ShowMessage('Aucune ligne à supprimer.');
-    JvDBGridLigcde_cli.SetFocus;
+    JvDBGridLignes.SetFocus;
     Exit;
   end;
 
   // 2. Vérifier si des lignes sont sélectionnées dans la JvDBGrid
-  BookmarkList := JvDBGridLigcde_cli.SelectedRows;
+  BookmarkList := JvDBGridLignes.SelectedRows;
   if BookmarkList.Count = 0 then
   begin
     ShowMessage('Veuillez sélectionner au moins une ligne à supprimer.');
-    JvDBGridLigcde_cli.SetFocus;
+    JvDBGridLignes.SetFocus;
     Exit;
   end;
 
@@ -479,21 +471,21 @@ begin
     NbLignesSupprimees := 0;
     try
       // Désactiver le rafraîchissement visuel pendant la suppression en masse
-      FDMemTableLigcde_cli.DisableControls;
+      FDMemTableLigachjj.DisableControls;
       try
         // Parcours à l'envers (de la fin vers le début) pour préserver la validité des signets
         for i := BookmarkList.Count - 1 downto 0 do
         begin
-          if FDMemTableLigcde_cli.BookmarkValid(TBookmark(BookmarkList[i])) then
+          if FDMemTableLigachjj.BookmarkValid(TBookmark(BookmarkList[i])) then
           begin
-            FDMemTableLigcde_cli.GotoBookmark(TBookmark(BookmarkList[i]));
-            FDMemTableLigcde_cli.Delete;
+            FDMemTableLigachjj.GotoBookmark(TBookmark(BookmarkList[i]));
+            FDMemTableLigachjj.Delete;
             Inc(NbLignesSupprimees);
           end;
         end;
       finally
         // Réactiver l'affichage de la grille
-        FDMemTableLigcde_cli.EnableControls;
+        FDMemTableLigachjj.EnableControls;
       end;
 
       // 4. Recalcul unique de la pièce après la suppression des lignes
@@ -504,15 +496,15 @@ begin
       on E: Exception do
       begin
         // S'assurer de réactiver les contrôles en cas d'erreur
-        if FDMemTableLigcde_cli.ControlsDisabled then
-          FDMemTableLigcde_cli.EnableControls;
+        if FDMemTableLigachjj.ControlsDisabled then
+          FDMemTableLigachjj.EnableControls;
 
         MessageDlg('Erreur lors de la suppression des lignes : ' + E.Message, mtError, [mbOK], 0);
       end;
     end;
   end;
 
-  JvDBGridLigcde_cli.SetFocus;
+  JvDBGridLignes.SetFocus;
 
 end;
 
@@ -520,21 +512,27 @@ procedure TFormFicheAchat.BtnValiderClick(Sender: TObject);
 var
   QryExec: TFDQuery;
   QryExec2: TFDQuery;
-  NumCDE: Integer;
+  NumACH: Integer;
   VNoCde: Integer;
   WAnnuleSaisie: Boolean;
   iNolig: Integer;
 
 begin
+  //Controle fournisseur
+  if DBCODFOU.Field.Text='' then
+  begin
+    DBCODFOUExit(Sender);
+    Exit;
+  end;
 
   //Calcul de securite
   CalculCompletPiece;
 
   // 1. S'assurer que les saisies en cours dans les grilles/champs sont validées (Post)
-  if FDMemTableEntcde_cli.State in [dsEdit, dsInsert] then
-    FDMemTableEntcde_cli.Post;
-  if FDMemTableLigcde_cli.State in [dsEdit, dsInsert] then
-    FDMemTableLigcde_cli.Post;
+  if FDMemTableAchat.State in [dsEdit, dsInsert] then
+    FDMemTableAchat.Post;
+  if FDMemTableLigachjj.State in [dsEdit, dsInsert] then
+    FDMemTableLigachjj.Post;
 
   // Création d'une requête temporaire dédiée aux exécutables SQL
   QryExec := TFDQuery.Create(nil);
@@ -556,66 +554,66 @@ begin
       begin
         //Recuperation dernier num commande
         QryExec.close;
-        QryExec.SQL.Text := 'SELECT NOCDE FROM `entcde_cli` ORDER BY NOCDE DESC LIMIT 1';
+        QryExec.SQL.Text := 'SELECT CODACH FROM `achat` ORDER BY CODACH DESC LIMIT 1';
         QryExec.Open;
         QryExec.first;
-        NumCDE:=1;
+        NumACH:=1;
         if QryExec.Eof=false then
-          NumCDE := QryExec.FieldByName('NOCDE').AsInteger + 1;
+          NumACH := QryExec.FieldByName('CODACH').AsInteger + 1;
 
-        FCodAchCree := NumCDE;
+        FCodAchCree := NumACH;
 
         // INSERT pour l'en-tête
         QryExec.close;
-        QryExec.SQL.Text := 'INSERT INTO `entcde_cli` ('+
-        '`NOCDE`, `REFERENCE_`, `CODCLI`, `NOMCLI`, `DATE_`, `TOTHT`, `MT_TVA`, '+
-        '`MT_TTC`, `STATUT`, `OBSERV`) '+
+        QryExec.SQL.Text := 'INSERT INTO `achat` ('+
+        '`CODACH`, `REFER`, `CODFOU`, `DATE_`, `MT_HT`, `MT_TVA`, `MT_REM`, '+
+        '`MT_TTC`, `TOP_`, `LIBELLE`) '+
         'VALUES '+
-        '(:NOCDE, :REFERENCE_, :CODCLI, :NOMCLI, :DATE_, :TOTHT, :MT_TVA, :MT_TTC, :STATUT, :OBSERV)';
+        '(:CODACH, :REFER, :CODFOU, :DATE_, :MT_HT, :MT_TVA, :MT_REM, :MT_TTC, :TOP_, :LIBELLE)';
 
         // Assignation directe des valeurs depuis la table mémoire
-        QryExec.ParamByName('OBSERV').AsString     := FDMemTableEntcde_cli.FieldByName('OBSERV').AsString;
-        QryExec.ParamByName('NOCDE').AsInteger     := NumCDE;
-        QryExec.ParamByName('CODCLI').AsInteger    := FDMemTableEntcde_cli.FieldByName('CODCLI').AsInteger;
-        QryExec.ParamByName('NOMCLI').AsString     := FDMemTableEntcde_cli.FieldByName('NOMCLI').AsString;
-        QryExec.ParamByName('STATUT').AsInteger     := 1;
-        QryExec.ParamByName('DATE_').AsDateTime    := FDMemTableEntcde_cli.FieldByName('DATE_').AsDateTime;
-        QryExec.ParamByName('TOTHT').AsFloat       := FDMemTableEntcde_cli.FieldByName('TOTHT').AsFloat;
-        QryExec.ParamByName('MT_TTC').AsInteger    := FDMemTableEntcde_cli.FieldByName('MT_TTC').AsInteger;
-        QryExec.ParamByName('MT_TVA').AsFloat      := FDMemTableEntcde_cli.FieldByName('MT_TVA').AsFloat;
-        QryExec.ParamByName('REFERENCE_').AsString := FDMemTableEntcde_cli.FieldByName('REFERENCE_').AsString;
+        QryExec.ParamByName('LIBELLE').AsString     := FDMemTableAchat.FieldByName('LIBELLE').AsString;
+        QryExec.ParamByName('CODACH').AsInteger     := NumACH;
+        QryExec.ParamByName('CODFOU').AsString    := FDMemTableAchat.FieldByName('CODFOU').AsString;
+        QryExec.ParamByName('TOP_').AsString     := 'J';
+        QryExec.ParamByName('DATE_').AsDateTime    := FDMemTableAchat.FieldByName('DATE_').AsDateTime;
+        QryExec.ParamByName('MT_HT').AsFloat       := FDMemTableAchat.FieldByName('MT_HT').AsFloat;
+        QryExec.ParamByName('MT_REM').AsFloat    := FDMemTableAchat.FieldByName('MT_REM').AsFloat;
+        QryExec.ParamByName('MT_TVA').AsInteger      := FDMemTableAchat.FieldByName('MT_TVA').AsInteger;
+        QryExec.ParamByName('MT_TTC').AsInteger      := FDMemTableAchat.FieldByName('MT_TTC').AsInteger;
+        QryExec.ParamByName('REFER').AsString := FDMemTableAchat.FieldByName('REFER').AsString;
         QryExec.ExecSQL;
 
       end
       else
       begin
         // UPDATE pour l'en-tête en modification
-        NumCDE := FDMemTableEntcde_cli.FieldByName('NOCDE').AsInteger;
+        NumACH := FDMemTableAchat.FieldByName('CODACH').AsInteger;
 
-        QryExec.SQL.Text := 'UPDATE `entcde_cli` SET '+
-        '`NOCDE` = :NOCDE ,'+
-        '`REFERENCE_` = :REFERENCE_ ,'+
-        '`CODCLI` = :CODCLI ,'+
-        '`NOMCLI` = :NOMCLI ,'+
+        QryExec.SQL.Text := 'UPDATE `achat` SET '+
+        '`CODACH` = :CODACH ,'+
+        '`REFER` = :REFER ,'+
+        '`CODFOU` = :CODFOU ,'+
         '`DATE_` = :DATE_ ,'+
-        '`TOTHT` = :TOTHT ,'+
+        '`MT_HT` = :MT_HT ,'+
         '`MT_TVA` = :MT_TVA ,'+
         '`MT_TTC` = :MT_TTC ,'+
-        '`STATUT` = :STATUT ,'+
-        '`OBSERV` = :OBSERV '+
-        'WHERE `NOCDE` = :NOCDE';
+        '`MT_REM` = :MT_REM ,'+
+        '`TOP_` = :TOP_ ,'+
+        '`LIBELLE` = :LIBELLE '+
+        'WHERE `CODACH` = :CODACH';
 
         // Assignation directe des valeurs depuis la table mémoire
-        QryExec.ParamByName('OBSERV').AsString     := FDMemTableEntcde_cli.FieldByName('OBSERV').AsString;
-        QryExec.ParamByName('NOCDE').AsInteger     := NumCDE;
-        QryExec.ParamByName('CODCLI').AsInteger    := FDMemTableEntcde_cli.FieldByName('CODCLI').AsInteger;
-        QryExec.ParamByName('NOMCLI').AsString     := FDMemTableEntcde_cli.FieldByName('NOMCLI').AsString;
-        QryExec.ParamByName('STATUT').AsInteger     := 1;
-        QryExec.ParamByName('DATE_').AsDateTime    := FDMemTableEntcde_cli.FieldByName('DATE_').AsDateTime;
-        QryExec.ParamByName('TOTHT').AsFloat       := FDMemTableEntcde_cli.FieldByName('TOTHT').AsFloat;
-        QryExec.ParamByName('MT_TTC').AsInteger    := FDMemTableEntcde_cli.FieldByName('MT_TTC').AsInteger;
-        QryExec.ParamByName('MT_TVA').AsFloat      := FDMemTableEntcde_cli.FieldByName('MT_TVA').AsFloat;
-        QryExec.ParamByName('REFERENCE_').AsString := FDMemTableEntcde_cli.FieldByName('REFERENCE_').AsString;
+        QryExec.ParamByName('LIBELLE').AsString     := FDMemTableAchat.FieldByName('LIBELLE').AsString;
+        QryExec.ParamByName('CODACH').AsInteger     := NumACH;
+        QryExec.ParamByName('CODFOU').AsString    := FDMemTableAchat.FieldByName('CODFOU').AsString;
+        QryExec.ParamByName('TOP_').AsString     := 'J';
+        QryExec.ParamByName('DATE_').AsDateTime    := FDMemTableAchat.FieldByName('DATE_').AsDateTime;
+        QryExec.ParamByName('MT_HT').AsFloat       := FDMemTableAchat.FieldByName('MT_HT').AsFloat;
+        QryExec.ParamByName('MT_REM').AsFloat    := FDMemTableAchat.FieldByName('MT_REM').AsFloat;
+        QryExec.ParamByName('MT_TVA').AsInteger      := FDMemTableAchat.FieldByName('MT_TVA').AsInteger;
+        QryExec.ParamByName('MT_TTC').AsInteger      := FDMemTableAchat.FieldByName('MT_TTC').AsInteger;
+        QryExec.ParamByName('REFER').AsString := FDMemTableAchat.FieldByName('REFER').AsString;
         QryExec.ExecSQL;
       end;
 
@@ -629,73 +627,73 @@ begin
       if ModeSaisie = msModification then
       begin
         QryExec.Close;
-        QryExec.SQL.Text := 'DELETE FROM ligcde_cli WHERE NOCDE = :NOCDE';
-        QryExec.ParamByName('NOCDE').AsInteger := NumCDE;
+        QryExec.SQL.Text := 'DELETE FROM ligachjj WHERE CODACH = :CODACH';
+        QryExec.ParamByName('CODACH').AsInteger := NumACH;
         QryExec.ExecSQL;
       end;
 
       // Parcours de la table mémoire des lignes
       iNolig := 0;
-      FDMemTableLigcde_cli.First;
-      while not FDMemTableLigcde_cli.Eof do
+      FDMemTableLigachjj.First;
+      while not FDMemTableLigachjj.Eof do
       begin
         iNolig:= iNolig+1;
         //Insertion lig_prof
         QryExec.Close;
-        QryExec.SQL.Text := 'INSERT INTO `ligcde_cli` ('+
-        '`NOCDE`,'+
-        '`CODCLI`,'+
+        QryExec.SQL.Text := 'INSERT INTO `ligachjj` ('+
+        '`CODACH`,'+
+        '`CODFOU`,'+
+        '`CODDEP`,'+
+        '`CODFAM`,'+
+        '`CODSSF`,'+
         '`CODART`,'+
-        '`LIBELLE`,'+
+        '`REFER`,'+
         '`DATE_`,'+
         '`QTE`,'+
         '`PRIXHT`,'+
         '`PRIXTTC`,'+
         '`TOTHT`,'+
-        '`TVA`,'+
+        '`NO_TVA`,'+
         '`TX_TVA`,'+
-        '`MT_TVA`,'+
-        '`MT_TTC`,'+
-        '`NOLIG`,'+
-        '`OBSERV`) '+
+        '`MT_TVA`) '+
         'VALUES ('+
-        ':NOCDE, '+
-        ':CODCLI, '+
-        ':CODART, '+
-        ':LIBELLE, '+
-        ':DATE_, '+
-        ':QTE, '+
-        ':PRIXHT, '+
-        ':PRIXTTC, '+
-        ':TOTHT, '+
-        ':TVA, '+
-        ':TX_TVA, '+
-        ':MT_TVA, '+
-        ':MT_TTC, '+
-        ':NOLIG, '+
-        ':OBSERV)';
+        ':CODACH,'+
+        ':CODFOU,'+
+        ':CODDEP,'+
+        ':CODFAM,'+
+        ':CODSSF,'+
+        ':CODART,'+
+        ':REFER,'+
+        ':DATE_,'+
+        ':QTE,'+
+        ':PRIXHT,'+
+        ':PRIXTTC,'+
+        ':TOTHT,'+
+        ':NO_TVA,'+
+        ':TX_TVA,'+
+        ':MT_TVA)';
 
         // Assignation directe des valeurs depuis la table mémoire des lignes
-        QryExec.ParamByName('NOCDE').AsInteger     := NumCDE;
-        QryExec.ParamByName('LIBELLE').AsString    := FDMemTableLigcde_cli.FieldByName('LIBELLE').AsString;
-        QryExec.ParamByName('CODCLI').AsInteger    := FDMemTableLigcde_cli.FieldByName('CODCLI').AsInteger;
-        QryExec.ParamByName('CODART').AsString     := FDMemTableLigcde_cli.FieldByName('CODART').AsString;
-        QryExec.ParamByName('QTE').AsFloat         := FDMemTableLigcde_cli.FieldByName('QTE').AsFloat;
-        QryExec.ParamByName('PRIXHT').AsFloat      := FDMemTableLigcde_cli.FieldByName('PRIXHT').AsFloat;
-        QryExec.ParamByName('PRIXTTC').AsInteger   := FDMemTableLigcde_cli.FieldByName('PRIXTTC').AsInteger;
-        QryExec.ParamByName('TOTHT').AsFloat       := FDMemTableLigcde_cli.FieldByName('TOTHT').AsFloat;
-        QryExec.ParamByName('MT_TTC').AsInteger    := FDMemTableLigcde_cli.FieldByName('MT_TTC').AsInteger;
-        QryExec.ParamByName('TX_TVA').AsFloat      := FDMemTableLigcde_cli.FieldByName('TX_TVA').AsFloat;
-        QryExec.ParamByName('MT_TVA').AsFloat      := FDMemTableLigcde_cli.FieldByName('MT_TVA').AsFloat;
-        QryExec.ParamByName('TVA').AsString        := FDMemTableLigcde_cli.FieldByName('TVA').AsString;
-        QryExec.ParamByName('OBSERV').AsString     := FDMemTableLigcde_cli.FieldByName('OBSERV').AsString;
-        QryExec.ParamByName('DATE_').AsDateTime    := FDMemTableEntcde_cli.FieldByName('DATE_').AsDateTime;
-        QryExec.ParamByName('NOLIG').AsInteger     := iNolig;
+        QryExec.ParamByName('CODACH').AsInteger     := NumACH;
+        QryExec.ParamByName('REFER').AsString    := FDMemTableLigachjj.FieldByName('REFER').AsString;
+        QryExec.ParamByName('CODFOU').AsString    := FDMemTableLigachjj.FieldByName('CODFOU').AsString;
+        QryExec.ParamByName('CODART').AsString     := FDMemTableLigachjj.FieldByName('CODART').AsString;
+        QryExec.ParamByName('QTE').AsFloat         := FDMemTableLigachjj.FieldByName('QTE').AsFloat;
+        QryExec.ParamByName('PRIXHT').AsFloat      := FDMemTableLigachjj.FieldByName('PRIXHT').AsFloat;
+        QryExec.ParamByName('PRIXTTC').AsInteger   := FDMemTableLigachjj.FieldByName('PRIXTTC').AsInteger;
+        QryExec.ParamByName('TOTHT').AsFloat       := FDMemTableLigachjj.FieldByName('TOTHT').AsFloat;
+        QryExec.ParamByName('NO_TVA').AsInteger    := FDMemTableLigachjj.FieldByName('NO_TVA').AsInteger;
+        QryExec.ParamByName('TX_TVA').AsFloat      := FDMemTableLigachjj.FieldByName('TX_TVA').AsFloat;
+        QryExec.ParamByName('MT_TVA').AsFloat      := FDMemTableLigachjj.FieldByName('MT_TVA').AsFloat;
+        QryExec.ParamByName('CODFAM').AsString     := FDMemTableLigachjj.FieldByName('CODFAM').AsString;
+        QryExec.ParamByName('DATE_').AsDateTime    := FDMemTableLigachjj.FieldByName('DATE_').AsDateTime;
+        QryExec.ParamByName('CODSSF').AsString     := FDMemTableLigachjj.FieldByName('CODSSF').AsString;;
+        QryExec.ParamByName('CODDEP').AsInteger   := FDMemTableLigachjj.FieldByName('CODDEP').AsInteger;
 
         QryExec.ExecSQL;
 
         //Lecture ligne memoire suivante
-        FDMemTableLigcde_cli.Next;
+        FDMemTableLigachjj.Next;
       end;
 
 
@@ -751,14 +749,14 @@ var
 begin
   // Sorties anticipées si conditions non remplies
   if FIsLoading then Exit;
-  if not (FDMemTableEntcde_cli.State in [dsEdit, dsInsert]) then Exit;
-  if not FDMemTableLigcde_cli.Active then Exit;
+  if not (FDMemTableAchat.State in [dsEdit, dsInsert]) then Exit;
+  if not FDMemTableLigachjj.Active then Exit;
 
   QryExec := nil;
   QryArticle := nil;
   SavedBookmark := nil;
 
-  wDate := FDMemTableEntcde_cli.FieldByName('Date_').AsDateTime;
+  wDate := FDMemTableAchat.FieldByName('Date_').AsDateTime;
 
   try
     // Création requêtes temporaires
@@ -768,29 +766,29 @@ begin
     QryArticle := TFDQuery.Create(nil);
     QryArticle.Connection := DMGesCloud.ConnexionGesCloud;
 
-    FDMemTableLigcde_cli.DisableControls;
+    FDMemTableLigachjj.DisableControls;
     try
-      if not FDMemTableLigcde_cli.IsEmpty then
-        SavedBookmark := FDMemTableLigcde_cli.GetBookmark;
+      if not FDMemTableLigachjj.IsEmpty then
+        SavedBookmark := FDMemTableLigachjj.GetBookmark;
 
       // Si exonéré de TVA
-      FDMemTableLigcde_cli.First;
-      while not FDMemTableLigcde_cli.Eof do
+      FDMemTableLigachjj.First;
+      while not FDMemTableLigachjj.Eof do
       begin
-      FDMemTableLigcde_cli.Edit;
+      FDMemTableLigachjj.Edit;
 
       // Lecture article
       QryArticle.Close;
       QryArticle.SQL.Text := 'SELECT * FROM article WHERE CODART=:CODART';
-      QryArticle.ParamByName('CODART').AsString := FDMemTableLigcde_cli.FieldByName('CODART').AsString;
+      QryArticle.ParamByName('CODART').AsString := FDMemTableLigachjj.FieldByName('CODART').AsString;
       QryArticle.Open;
-      FDMemTableLigcde_cli.FieldByName('TVA').AsString := QryArticle.FieldByName('TVA').AsString;
+      FDMemTableLigachjj.FieldByName('NO_TVA').AsInteger := StrToIntDef(StringReplace(QryArticle.FieldByName('TVA').AsString, 'TVA', '', [rfReplaceAll, rfIgnoreCase]), 0);
       pTVA := QryArticle.FieldByName('TVA').AsString;
 
-      FDMemTableLigcde_cli.FieldByName('TX_TVA').AsFloat := DM_Olivier.fgTxTaxe(wDate,pTVA);
+      FDMemTableLigachjj.FieldByName('TX_TVA').AsFloat := DM_Olivier.fgTxTaxe(wDate,pTVA);
 
       // Sécurité anti-division par zéro sur la quantité
-      AQte := FDMemTableLigcde_cli.FieldByName('QTE').AsFloat;
+      AQte := FDMemTableLigachjj.FieldByName('QTE').AsFloat;
       if AQte = 0 then
         AQte := 1;
 
@@ -812,19 +810,18 @@ begin
 //      else
 //      begin
         // Sur HT
-        FDMemTableLigcde_cli.FieldByName('PRIXTTC').AsInteger := Round(DM_Olivier.CalculerTTC(FDMemTableLigcde_cli.FieldByName('PRIXHT').AsFloat, FDMemTableLigcde_cli.FieldByName('TX_TVA').AsFloat));
-        FDMemTableLigcde_cli.FieldByName('TOTHT').AsFloat := FDMemTableLigcde_cli.FieldByName('PRIXHT').AsFloat * FDMemTableLigcde_cli.FieldByName('QTE').AsFloat;
-        FDMemTableLigcde_cli.FieldByName('MT_TVA').AsFloat := (FDMemTableLigcde_cli.FieldByName('TOTHT').AsFloat / 100) * FDMemTableLigcde_cli.FieldByName('TX_TVA').AsFloat;
-        FDMemTableLigcde_cli.FieldByName('MT_TTC').AsInteger := Round(FDMemTableLigcde_cli.FieldByName('TOTHT').AsFloat + FDMemTableLigcde_cli.FieldByName('MT_TVA').AsFloat);
+        FDMemTableLigachjj.FieldByName('PRIXTTC').AsInteger := Round(DM_Olivier.CalculerTTC(FDMemTableLigachjj.FieldByName('PRIXHT').AsFloat, FDMemTableLigachjj.FieldByName('TX_TVA').AsFloat));
+        FDMemTableLigachjj.FieldByName('TOTHT').AsFloat := FDMemTableLigachjj.FieldByName('PRIXHT').AsFloat * FDMemTableLigachjj.FieldByName('QTE').AsFloat;
+        FDMemTableLigachjj.FieldByName('MT_TVA').AsFloat := (FDMemTableLigachjj.FieldByName('TOTHT').AsFloat / 100) * FDMemTableLigachjj.FieldByName('TX_TVA').AsFloat;
 //      end;
 
       // Arrondis
-      FDMemTableLigcde_cli.FieldByName('PRIXHT').AsFloat := RoundTo(FDMemTableLigcde_cli.FieldByName('PRIXHT').AsFloat, -2);
-      FDMemTableLigcde_cli.FieldByName('TOTHT').AsFloat := RoundTo(FDMemTableLigcde_cli.FieldByName('TOTHT').AsFloat, -2);
-      FDMemTableLigcde_cli.FieldByName('MT_TVA').AsFloat := RoundTo(FDMemTableLigcde_cli.FieldByName('MT_TVA').AsFloat, -2);
+      FDMemTableLigachjj.FieldByName('PRIXHT').AsFloat := RoundTo(FDMemTableLigachjj.FieldByName('PRIXHT').AsFloat, -2);
+      FDMemTableLigachjj.FieldByName('TOTHT').AsFloat := RoundTo(FDMemTableLigachjj.FieldByName('TOTHT').AsFloat, -2);
+      FDMemTableLigachjj.FieldByName('MT_TVA').AsFloat := RoundTo(FDMemTableLigachjj.FieldByName('MT_TVA').AsFloat, -2);
 
-      FDMemTableLigcde_cli.Post;
-      FDMemTableLigcde_cli.Next;
+      FDMemTableLigachjj.Post;
+      FDMemTableLigachjj.Next;
     end;
 
 
@@ -889,10 +886,14 @@ begin
 //        end;
 //      end;
 
-      // CAL_EVP
-      FDMemTableEntcde_cli.FieldByName('MT_TTC').AsInteger := 0;
-      FDMemTableEntcde_cli.FieldByName('TOTHT').AsFloat := 0;
-      FDMemTableEntcde_cli.FieldByName('MT_TVA').AsInteger := 0;
+      // CAL_EVP - RAZ cumul si lignes pour recalcul
+      if FDMemTableLigachjj.RecordCount>0 then
+      begin
+        FDMemTableAchat.FieldByName('MT_TTC').AsInteger := 0;
+        FDMemTableAchat.FieldByName('MT_HT').AsFloat := 0;
+        FDMemTableAchat.FieldByName('MT_TVA').AsInteger := 0;
+        FDMemTableAchat.FieldByName('MT_REM').AsFloat := 0;
+      end;
 
       wHT0 := 0; wHT0r := 0;
       wHT1 := 0; wHT1r := 0;
@@ -901,14 +902,14 @@ begin
       wHT4 := 0; wHT4r := 0;
       wTVA1 := 0; wTVA2 := 0; wTVA3 := 0; wTVA4 := 0;
 
-      FDMemTableLigcde_cli.First;
-      while not FDMemTableLigcde_cli.Eof do
+      FDMemTableLigachjj.First;
+      while not FDMemTableLigachjj.Eof do
       begin
-        FDMemTableLigcde_cli.Edit;
+        FDMemTableLigachjj.Edit;
 
         QryArticle.Close;
         QryArticle.SQL.Text := 'SELECT * FROM article WHERE CODART=:CODART';
-        QryArticle.ParamByName('CODART').AsString := FDMemTableLigcde_cli.FieldByName('CODART').AsString;
+        QryArticle.ParamByName('CODART').AsString := FDMemTableLigachjj.FieldByName('CODART').AsString;
         QryArticle.Open;
 
 //        DM_Olivier.FDQueryCtrstock.Open;
@@ -926,33 +927,31 @@ begin
 //          end;
 //        end;
 
-        FDMemTableEntcde_cli.FieldByName('TOTHT').AsFloat := FDMemTableEntcde_cli.FieldByName('TOTHT').AsFloat + FDMemTableLigcde_cli.FieldByName('TOTHT').AsFloat;
-        FDMemTableEntcde_cli.FieldByName('MT_TTC').AsInteger := FDMemTableEntcde_cli.FieldByName('MT_TTC').AsInteger + FDMemTableLigcde_cli.FieldByName('MT_TTC').AsInteger;
-        FDMemTableEntcde_cli.FieldByName('MT_TVA').AsFloat := FDMemTableEntcde_cli.FieldByName('MT_TTC').AsInteger - FDMemTableEntcde_cli.FieldByName('TOTHT').AsFloat;
+        FDMemTableAchat.FieldByName('MT_HT').AsFloat := FDMemTableAchat.FieldByName('MT_HT').AsFloat + FDMemTableLigachjj.FieldByName('TOTHT').AsFloat;
+        FDMemTableAchat.FieldByName('MT_TVA').AsInteger := FDMemTableAchat.FieldByName('MT_TVA').AsInteger + FDMemTableLigachjj.FieldByName('MT_TVA').AsInteger;
 
-        FDMemTableLigcde_cli.Post;
-        FDMemTableLigcde_cli.Next;
+        FDMemTableLigachjj.Post;
+        FDMemTableLigachjj.Next;
       end;
 
 
 
       // Arrondis
-      FDMemTableEntcde_cli.FieldByName('TOTHT').AsFloat := RoundTo(FDMemTableEntcde_cli.FieldByName('TOTHT').AsFloat, -2);
-      FDMemTableEntcde_cli.FieldByName('MT_TVA').AsFloat := RoundTo(FDMemTableEntcde_cli.FieldByName('MT_TVA').AsFloat, -2);
-      FDMemTableEntcde_cli.FieldByName('MT_TTC').AsInteger := Round(FDMemTableEntcde_cli.FieldByName('MT_TVA').AsFloat
-        + FDMemTableEntcde_cli.FieldByName('TOTHT').AsFloat);
+      FDMemTableAchat.FieldByName('MT_HT').AsFloat := RoundTo(FDMemTableAchat.FieldByName('MT_HT').AsFloat, -2);
+      FDMemTableAchat.FieldByName('MT_TTC').AsInteger := Round(FDMemTableAchat.FieldByName('MT_HT').AsFloat + FDMemTableAchat.FieldByName('MT_TVA').AsFloat)
+
 
     finally
       try
         if Assigned(SavedBookmark) then
         begin
-          if FDMemTableLigcde_cli.BookmarkValid(SavedBookmark) then
-            FDMemTableLigcde_cli.GotoBookmark(SavedBookmark);
-          FDMemTableLigcde_cli.FreeBookmark(SavedBookmark);
+          if FDMemTableLigachjj.BookmarkValid(SavedBookmark) then
+            FDMemTableLigachjj.GotoBookmark(SavedBookmark);
+          FDMemTableLigachjj.FreeBookmark(SavedBookmark);
         end;
       except
       end;
-      FDMemTableLigcde_cli.EnableControls;
+      FDMemTableLigachjj.EnableControls;
     end;
 
   finally
@@ -976,27 +975,26 @@ procedure TFormFicheAchat.CMDialogKey(var Msg: TCMDialogKey);
 begin
   //Ctrl+Entree -> Pour valider la fiche
  if (Msg.CharCode = VK_RETURN) and ((GetKeyState(VK_CONTROL) + $8000) <> 0) then
-  begin
-    if FDMemTableEntcde_cli.FieldByName('STATUT').AsInteger = 2 then
-      Exit;
+ begin
+  if FDMemTableAchat.FieldByName('TOP_').AsString = 'C' then
+    Exit;
 
     BtnValider.Click;
     Msg.Result := 1;
     Exit;
-  end;
+ end;
   // Si le focus est sur la grille et qu'on appuie sur Entrée
-  if (ActiveControl = JvDBGridLigcde_cli) and (Msg.CharCode = VK_RETURN) then
-  begin
-    if FDMemTableEntcde_cli.FieldByName('STATUT').AsInteger = 2 then
-      Exit;
-
-    BtnModifierLigne.Click;
-    Msg.Result := 1; // Indique que le message a été traité
+ if (ActiveControl = JvDBGridLignes) and (Msg.CharCode = VK_RETURN) then
+ begin
+  if FDMemTableAchat.FieldByName('TOP_').AsString = 'C' then
     Exit;
-  end;
+
+  BtnModifierLigne.Click;
+  Msg.Result := 1; // Indique que le message a été traité
+  Exit;
+ end;
 
   inherited; // Laisse le comportement par défaut pour le reste
 end;
-
 
 end.

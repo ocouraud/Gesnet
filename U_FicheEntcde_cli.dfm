@@ -280,9 +280,9 @@ object FormFicheEntcde_cli: TFormFicheEntcde_cli
     object Label6: TLabel
       Left = 8
       Top = 93
-      Width = 127
+      Width = 136
       Height = 15
-      Caption = 'Nom sur facture . . . . . >'
+      Caption = 'Nom sur commande. . . >'
     end
     object Label21: TLabel
       Left = 8
