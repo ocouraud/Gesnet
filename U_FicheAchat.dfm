@@ -64,7 +64,8 @@ object FormFicheAchat: TFormFicheAchat
       end
       item
         Expanded = False
-        FieldName = 'libelle'
+        FieldName = 'lib_art'
+        Title.Caption = 'Libell'#233
         Width = 208
         Visible = True
       end
@@ -117,9 +118,10 @@ object FormFicheAchat: TFormFicheAchat
       end
       item
         Expanded = False
-        FieldName = 'mt_ttc'
+        FieldName = 'tot_ttc'
         Title.Alignment = taCenter
         Title.Caption = 'Total TTC'
+        Width = 81
         Visible = True
       end
       item
@@ -235,8 +237,6 @@ object FormFicheAchat: TFormFicheAchat
       ParentFont = False
       TabOrder = 2
       OnExit = DBMT_TVAExit
-      ExplicitLeft = 529
-      ExplicitTop = 35
     end
     object DBMT_TTC: TDBEdit
       Left = 655
@@ -256,8 +256,6 @@ object FormFicheAchat: TFormFicheAchat
       ParentFont = False
       TabOrder = 3
       OnExit = DBMT_TTCExit
-      ExplicitLeft = 529
-      ExplicitTop = 64
     end
     object DBMT_REM: TDBEdit
       Left = 656
@@ -286,7 +284,6 @@ object FormFicheAchat: TFormFicheAchat
     Height = 131
     Align = alTop
     TabOrder = 0
-    ExplicitWidth = 758
     object Label21: TLabel
       Left = 8
       Top = 69
@@ -391,8 +388,6 @@ object FormFicheAchat: TFormFicheAchat
       Align = alRight
       BevelOuter = bvNone
       TabOrder = 6
-      ExplicitLeft = 640
-      ExplicitHeight = 191
       object BtnValider: TBitBtn
         Left = 0
         Top = 0
@@ -435,7 +430,7 @@ object FormFicheAchat: TFormFicheAchat
       DataField = 'LIBELLE'
       DataSource = DSMemTableAchat
       TabOrder = 5
-      EditLabel.Width = 49
+      EditLabel.Width = 3
       EditLabel.Height = 15
     end
   end
@@ -447,9 +442,6 @@ object FormFicheAchat: TFormFicheAchat
     Align = alRight
     BevelOuter = bvNone
     TabOrder = 3
-    ExplicitLeft = 640
-    ExplicitTop = 193
-    ExplicitHeight = 237
     object BtnAjouterLigne: TButton
       Left = 0
       Top = 0
@@ -513,6 +505,7 @@ object FormFicheAchat: TFormFicheAchat
     Top = 354
   end
   object FDMemTableLigachjj: TFDMemTable
+    OnCalcFields = FDMemTableLigachjjCalcFields
     FetchOptions.AssignedValues = [evMode]
     FetchOptions.Mode = fmAll
     ResourceOptions.AssignedValues = [rvSilentMode]
@@ -537,11 +530,11 @@ object FormFicheAchat: TFormFicheAchat
     Connection = DMGesCloud.ConnexionGesCloud
     SQL.Strings = (
       'SELECT '
-      '    ligachjj.*, '
-      '    article.libelle, '
-      '    (ligachjj.totht + ligachjj.mt_tva) AS mt_ttc '
+      '    ligachjj.* '
+      '---   , article.libelle, '
+      '---    round(ligachjj.totht + ligachjj.mt_tva) AS mt_ttc '
       'FROM ligachjj'
-      'INNER JOIN article ON article.codart = ligachjj.codart'
+      '--- INNER JOIN article ON article.codart = ligachjj.codart'
       'WHERE ligachjj.CODACH = :CODACH')
     Left = 40
     Top = 272
@@ -675,27 +668,30 @@ object FormFicheAchat: TFormFicheAchat
       FieldName = 'NOENR_STO'
       Origin = 'NOENR_STO'
     end
-    object FDQueryLigachjjlibelle: TStringField
-      AutoGenerateValue = arDefault
-      FieldName = 'libelle'
-      Origin = 'LIBELLE'
-      ProviderFlags = []
-      ReadOnly = True
-      Size = 50
+    object FDQueryLigachjjtot_ttc: TIntegerField
+      FieldKind = fkInternalCalc
+      FieldName = 'tot_ttc'
     end
-    object FDQueryLigachjjmt_ttc: TBCDField
-      AutoGenerateValue = arDefault
-      FieldName = 'mt_ttc'
-      Origin = 'mt_ttc'
-      ProviderFlags = []
-      ReadOnly = True
-      Precision = 12
-      Size = 2
+    object FDQueryLigachjjlib_art: TStringField
+      FieldKind = fkInternalCalc
+      FieldName = 'lib_art'
     end
   end
   object DSLigachjj: TDataSource
     DataSet = FDQueryLigachjj
     Left = 120
     Top = 272
+  end
+  object FDQueryArticle: TFDQuery
+    Connection = DMGesCloud.ConnexionGesCloud
+    SQL.Strings = (
+      'select * from article where codart=:codart')
+    Left = 232
+    Top = 224
+    ParamData = <
+      item
+        Name = 'CODART'
+        ParamType = ptInput
+      end>
   end
 end

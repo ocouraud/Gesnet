@@ -536,9 +536,6 @@ object FormEnt_prof: TFormEnt_prof
         Caption = 'Nouvelle ligne '#10133
         TabOrder = 0
         OnClick = BtnAjouterLigneClick
-        ExplicitLeft = 1
-        ExplicitTop = 1
-        ExplicitWidth = 112
       end
       object BtnSupprimerLigne: TButton
         Left = 0
@@ -549,9 +546,6 @@ object FormEnt_prof: TFormEnt_prof
         Caption = 'Supprimer lignes '#55357#56785#65039
         TabOrder = 2
         OnClick = BtnSupprimerLigneClick
-        ExplicitLeft = 1
-        ExplicitTop = 73
-        ExplicitWidth = 112
       end
       object BtnModifierLigne: TButton
         Left = 0
@@ -562,9 +556,6 @@ object FormEnt_prof: TFormEnt_prof
         Caption = 'Modifier ligne '#55357#56514
         TabOrder = 1
         OnClick = BtnModifierLigneClick
-        ExplicitLeft = 1
-        ExplicitTop = 37
-        ExplicitWidth = 112
       end
     end
     object JvDBGridLig_prof: TJvDBGrid
@@ -728,8 +719,8 @@ object FormEnt_prof: TFormEnt_prof
     UpdateOptions.AssignedValues = [uvCheckRequired, uvAutoCommitUpdates]
     UpdateOptions.CheckRequired = False
     UpdateOptions.AutoCommitUpdates = True
-    Left = 616
-    Top = 328
+    Left = 648
+    Top = 312
   end
   object DSMemTableLig_prof: TDataSource
     DataSet = FDMemTableLig_prof

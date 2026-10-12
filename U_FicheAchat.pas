@@ -73,11 +73,12 @@ type
     FDQueryLigachjjTX_TSOC: TBCDField;
     FDQueryLigachjjMT_TSOC: TBCDField;
     FDQueryLigachjjNOENR_STO: TLargeintField;
-    FDQueryLigachjjlibelle: TStringField;
-    FDQueryLigachjjmt_ttc: TBCDField;
     DBLibelle: TDBLabeledEdit;
     DBMT_REM: TDBEdit;
     Label3: TLabel;
+    FDQueryLigachjjtot_ttc: TIntegerField;
+    FDQueryLigachjjlib_art: TStringField;
+    FDQueryArticle: TFDQuery;
     procedure DBCODFOUExit(Sender: TObject);
     procedure BtnAideClick(Sender: TObject);
     procedure BtnValiderClick(Sender: TObject);
@@ -90,6 +91,7 @@ type
     procedure DBMT_HTExit(Sender: TObject);
     procedure DBMT_TVAExit(Sender: TObject);
     procedure DBMT_TTCExit(Sender: TObject);
+    procedure FDMemTableLigachjjCalcFields(DataSet: TDataSet);
   private
     { Déclarations privées }
     FIsLoading: Boolean;
@@ -161,9 +163,12 @@ begin
 
     // 2. Gestion des Lignes de détails
     FDQueryLigachjj.Close;
-    FDQueryLigachjj.Sql.Text := 'SELECT ligachjj.*, article.libelle, (ligachjj.totht + ligachjj.mt_tva) AS mt_ttc '+
-    'FROM ligachjj INNER JOIN article ON article.codart = ligachjj.codart '+
+    FDQueryLigachjj.Sql.Text := 'SELECT * FROM ligachjj '+
     'WHERE ligachjj.CODACH = :CODACH';
+//    'SELECT ligachjj.*, article.libelle, '+
+//    'round(ligachjj.totht + ligachjj.mt_tva) AS mt_ttc '+
+//    'FROM ligachjj INNER JOIN article ON article.codart = ligachjj.codart '+
+//    'WHERE ligachjj.CODACH = :CODACH';
 
     // On charge la requête source
     FDQueryLigachjj.ParamByName('CODACH').AsInteger := ACodach;
@@ -296,6 +301,21 @@ begin
    + FDMemTableAchat.FieldByName('MT_TVA').AsInteger - Round(FDMemTableAchat.FieldByName('MT_REM').AsFloat);
 end;
 
+
+
+procedure TFormFicheAchat.FDMemTableLigachjjCalcFields(DataSet: TDataSet);
+begin
+// Addition simple des deux champs de la ligne
+  DataSet.FieldByName('tot_ttc').AsCurrency :=
+    DataSet.FieldByName('totht').AsCurrency + DataSet.FieldByName('mt_tva').AsCurrency;
+
+  //Recup libelle article
+  FDQueryArticle.Close;
+  FDQueryArticle.ParamByName('codart').AsString := DataSet.FieldByName('codart').AsString;
+  FDQueryArticle.Open;
+  DataSet.FieldByName('lib_art').AsString := FDQueryArticle.FieldByName('LIBELLE').AsString
+end;
+
 procedure TFormFicheAchat.FormCloseQuery(Sender: TObject;
   var CanClose: Boolean);
 begin
@@ -360,7 +380,7 @@ begin
     // Création et affichage de la fiche de saisie
     FormLigachjj := TFormLigachjj.Create(Self);
     try
-      FormLigachjj.DSlig_prof.DataSet := FDMemTableLigachjj;
+      FormLigachjj.DSLigachjj.DataSet := FDMemTableLigachjj;
 
       // Configuration de la fiche
       FormLigachjj.ModeSaisieLigne := U_FicheLigachjj.msAjout;
@@ -389,7 +409,6 @@ begin
       FormLigachjj.Free;
     end;
   until not Continuer; // La boucle tourne tant que l'utilisateur valide (mrOk)
-
   JvDBGridLignes.SetFocus;
 end;
 
@@ -405,7 +424,7 @@ begin
 
   FormLigachjj := TFormLigachjj.Create(Self);
   try
-    FormLigachjj.DSlig_prof.DataSet := FDMemTableLigachjj;
+    FormLigachjj.DSLigachjj.DataSet := FDMemTableLigachjj;
     FormLigachjj.ModeSaisieLigne := U_FicheLigachjj.msModification;
     FormLigachjj.Caption := 'Modifier la ligne de la pièce';
 
@@ -819,6 +838,8 @@ begin
       FDMemTableLigachjj.FieldByName('PRIXHT').AsFloat := RoundTo(FDMemTableLigachjj.FieldByName('PRIXHT').AsFloat, -2);
       FDMemTableLigachjj.FieldByName('TOTHT').AsFloat := RoundTo(FDMemTableLigachjj.FieldByName('TOTHT').AsFloat, -2);
       FDMemTableLigachjj.FieldByName('MT_TVA').AsFloat := RoundTo(FDMemTableLigachjj.FieldByName('MT_TVA').AsFloat, -2);
+      //FDMemTableLigachjj.FieldByName('MT_TTC').AsFloat := Round(FDMemTableLigachjj.FieldByName('TOTHT').AsFloat +
+      //+ FDMemTableLigachjj.FieldByName('MT_TVA').AsFloat);
 
       FDMemTableLigachjj.Post;
       FDMemTableLigachjj.Next;

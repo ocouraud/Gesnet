@@ -410,8 +410,9 @@ object FormLig_prof: TFormLig_prof
     end
   end
   object DSLig_prof: TDataSource
-    Left = 8
-    Top = 80
+    DataSet = FormEnt_prof.FDMemTableLig_prof
+    Left = 64
+    Top = 72
   end
   object FDQueryCodbar: TFDQuery
     Connection = DMGesCloud.ConnexionGesCloud

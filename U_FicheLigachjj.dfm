@@ -1,7 +1,7 @@
 object FormLigachjj: TFormLigachjj
   Left = 0
   Top = 0
-  Caption = 'Ligne de devis'
+  Caption = 'Ligne achat'
   ClientHeight = 334
   ClientWidth = 845
   Color = clBtnFace
@@ -65,78 +65,42 @@ object FormLigachjj: TFormLigachjj
     object Label4: TLabel
       Left = 133
       Top = 159
-      Width = 42
+      Width = 106
       Height = 15
+      Alignment = taCenter
       Caption = 'PRIX HT'
     end
-    object Label5: TLabel
-      Left = 319
-      Top = 159
-      Width = 66
-      Height = 15
-      Caption = 'PRIX NET HT'
-      FocusControl = DBPrixnet
-    end
     object Label6: TLabel
-      Left = 398
+      Left = 305
       Top = 159
-      Width = 46
+      Width = 97
       Height = 15
+      Alignment = taCenter
       Caption = 'PRIX TTC'
     end
     object Label7: TLabel
-      Left = 506
+      Left = 408
       Top = 159
-      Width = 53
+      Width = 92
       Height = 15
+      Alignment = taCenter
       Caption = 'TOTAL HT.'
       FocusControl = DBTotht
     end
     object Label8: TLabel
-      Left = 621
+      Left = 604
       Top = 159
-      Width = 54
+      Width = 97
       Height = 15
+      Alignment = taCenter
       Caption = 'TOTAL TTC'
-      FocusControl = DBMt_ttc
-    end
-    object Label9: TLabel
-      Left = 247
-      Top = 159
-      Width = 52
-      Height = 15
-      Caption = '% REMISE'
-    end
-    object Label14: TLabel
-      Left = 251
-      Top = 288
-      Width = 61
-      Height = 15
-      Caption = 'PX DET ILES'
-      Enabled = False
-      FocusControl = DBDET_ILE
-    end
-    object Label16: TLabel
-      Left = 6
-      Top = 159
-      Width = 29
-      Height = 15
-      Caption = 'TARIF'
-      FocusControl = DBCodtar
-    end
-    object Label2: TLabel
-      Left = 359
-      Top = 8
-      Width = 40
-      Height = 15
-      Caption = 'LIBELLE'
-      FocusControl = DBLibelle
     end
     object Label3: TLabel
       Left = 43
       Top = 159
-      Width = 55
+      Width = 79
       Height = 15
+      Alignment = taCenter
       Caption = 'QUANTITE'
     end
     object Label1: TLabel
@@ -146,15 +110,6 @@ object FormLigachjj: TFormLigachjj
       Height = 15
       Caption = 'CODBAR'
       FocusControl = DBCodbar
-    end
-    object Label10: TLabel
-      Left = 251
-      Top = 240
-      Width = 62
-      Height = 15
-      Caption = 'MT. REMISE'
-      Enabled = False
-      FocusControl = DBMt_remise
     end
     object Label11: TLabel
       Left = 158
@@ -166,32 +121,23 @@ object FormLigachjj: TFormLigachjj
       FocusControl = DBTx_tva
     end
     object Label12: TLabel
-      Left = 457
-      Top = 240
-      Width = 43
+      Left = 506
+      Top = 159
+      Width = 92
       Height = 15
+      Alignment = taCenter
       Caption = 'MT. TVA'
-      Enabled = False
       FocusControl = DBMt_tva
-    end
-    object Label13: TLabel
-      Left = 252
-      Top = 264
-      Width = 60
-      Height = 15
-      Caption = 'PX DET PPT'
-      Enabled = False
-      FocusControl = DBDET_PPT
     end
     object JvDBLookupComboCodbar: TJvDBLookupCombo
       Left = 115
       Top = 29
-      Width = 234
+      Width = 385
       Height = 22
       DropDownCount = 25
       DropDownWidth = 700
-      DataField = 'CODBAR'
-      DataSource = DSLig_prof
+      DataField = 'CODART'
+      DataSource = DSLigachjj
       LookupField = 'codbar'
       LookupDisplay = 'codbar;libelle;prixvte;qte'
       LookupDisplayIndex = 1
@@ -200,25 +146,6 @@ object FormLigachjj: TFormLigachjj
       OnChange = DBCodbarExit
       OnEnter = DBCodbarEnter
       OnExit = DBCodbarExit
-    end
-    object JvDBSpinPrc_remise: TJvDBSpinEdit
-      Left = 249
-      Top = 180
-      Width = 64
-      Height = 25
-      ValueType = vtFloat
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -13
-      Font.Name = 'Segoe UI'
-      Font.Style = [fsBold]
-      ParentFont = False
-      TabOrder = 4
-      OnChange = JvDBSpinPrc_remiseChange
-      OnEnter = JvDBSpinPrc_remiseEnter
-      OnExit = JvDBSpinPrc_remiseExit
-      DataField = 'PRC_REMISE'
-      DataSource = DSLig_prof
     end
     object DBPrixht: TJvDBCalcEdit
       Left = 133
@@ -235,27 +162,11 @@ object FormLigachjj: TFormLigachjj
       DecimalPlacesAlwaysShown = False
       OnExit = DBPrixhtExit
       DataField = 'PRIXHT'
-      DataSource = DSLig_prof
+      DataSource = DSLigachjj
       EmptyIsNull = False
     end
-    object DBPrixnet: TDBEdit
-      Left = 319
-      Top = 180
-      Width = 73
-      Height = 25
-      DataField = 'PRIXNET'
-      DataSource = DSLig_prof
-      Enabled = False
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -13
-      Font.Name = 'Segoe UI'
-      Font.Style = [fsBold]
-      ParentFont = False
-      TabOrder = 5
-    end
     object DBPrixttc: TJvDBCalcEdit
-      Left = 398
+      Left = 305
       Top = 180
       Width = 97
       Height = 25
@@ -265,11 +176,11 @@ object FormLigachjj: TFormLigachjj
       Font.Name = 'Segoe UI'
       Font.Style = [fsBold]
       ParentFont = False
-      TabOrder = 6
+      TabOrder = 4
       DecimalPlacesAlwaysShown = False
       OnExit = DBPrixttcExit
       DataField = 'PRIXTTC'
-      DataSource = DSLig_prof
+      DataSource = DSLigachjj
     end
     object DBQte: TJvDBCalcEdit
       Left = 43
@@ -287,49 +198,42 @@ object FormLigachjj: TFormLigachjj
       OnEnter = DBQteEnter
       OnExit = DBQteExit
       DataField = 'QTE'
-      DataSource = DSLig_prof
-    end
-    object DBMt_ttc: TDBEdit
-      Left = 621
-      Top = 175
-      Width = 95
-      Height = 29
-      DataField = 'MT_TTC'
-      DataSource = DSLig_prof
-      Enabled = False
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -16
-      Font.Name = 'Segoe UI'
-      Font.Style = [fsBold]
-      ParentFont = False
-      TabOrder = 7
+      DataSource = DSLigachjj
     end
     object DBMt_tva: TDBEdit
-      Left = 506
-      Top = 238
-      Width = 92
-      Height = 23
-      DataField = 'MT_TVA'
-      DataSource = DSLig_prof
-      Enabled = False
-      TabOrder = 8
-    end
-    object DBTotht: TDBEdit
       Left = 506
       Top = 180
       Width = 92
       Height = 25
-      DataField = 'TOTHT'
-      DataSource = DSLig_prof
-      Enabled = False
+      BiDiMode = bdRightToLeft
+      DataField = 'MT_TVA'
+      DataSource = DSLigachjj
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -13
       Font.Name = 'Segoe UI'
       Font.Style = [fsBold]
+      ParentBiDiMode = False
       ParentFont = False
-      TabOrder = 9
+      TabOrder = 6
+      OnExit = DBMt_tvaExit
+    end
+    object DBTotht: TDBEdit
+      Left = 408
+      Top = 180
+      Width = 92
+      Height = 25
+      BiDiMode = bdRightToLeft
+      DataField = 'TOTHT'
+      DataSource = DSLigachjj
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -13
+      Font.Name = 'Segoe UI'
+      Font.Style = [fsBold]
+      ParentBiDiMode = False
+      ParentFont = False
+      TabOrder = 5
     end
     object DBTx_tva: TDBEdit
       Left = 200
@@ -337,79 +241,41 @@ object FormLigachjj: TFormLigachjj
       Width = 35
       Height = 23
       DataField = 'TX_TVA'
-      DataSource = DSLig_prof
+      DataSource = DSLigachjj
       Enabled = False
-      TabOrder = 10
+      TabOrder = 7
     end
     object DBCodbar: TDBEdit
       Left = 8
       Top = 29
       Width = 101
       Height = 23
-      DataField = 'CODBAR'
-      DataSource = DSLig_prof
+      DataField = 'CODART'
+      DataSource = DSLigachjj
       TabOrder = 0
       OnEnter = DBCodbarEnter
       OnExit = DBCodbarExit
     end
-    object DBDET_PPT: TDBEdit
-      Left = 318
-      Top = 261
-      Width = 74
-      Height = 23
-      DataField = 'DET_PPT'
-      DataSource = DSLig_prof
-      Enabled = False
-      TabOrder = 11
-    end
-    object DBDET_ILE: TDBEdit
-      Left = 318
-      Top = 285
-      Width = 74
-      Height = 23
-      DataField = 'DET_ILE'
-      DataSource = DSLig_prof
-      Enabled = False
-      TabOrder = 12
-    end
-    object DBCodtar: TDBEdit
-      Left = 12
+    object JvCalcEditMT_TTC: TJvCalcEdit
+      Left = 604
       Top = 180
-      Width = 19
+      Width = 97
       Height = 25
-      DataField = 'CODTAR'
-      DataSource = DSLig_prof
-      Enabled = False
+      DecimalPlaces = 0
+      DisplayFormat = '0'
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -13
       Font.Name = 'Segoe UI'
       Font.Style = [fsBold]
       ParentFont = False
-      TabOrder = 13
-    end
-    object DBMt_remise: TDBEdit
-      Left = 319
-      Top = 237
-      Width = 73
-      Height = 23
-      DataField = 'MT_REMISE'
-      DataSource = DSLig_prof
-      Enabled = False
-      TabOrder = 14
-    end
-    object DBLibelle: TDBMemo
-      Left = 355
-      Top = 29
-      Width = 357
-      Height = 108
-      DataField = 'LIBELLE'
-      DataSource = DSLig_prof
-      ScrollBars = ssVertical
-      TabOrder = 15
+      TabOrder = 8
+      DecimalPlacesAlwaysShown = False
+      OnExit = JvCalcEdit1Exit
     end
   end
-  object DSLig_prof: TDataSource
+  object DSLigachjj: TDataSource
+    DataSet = FormFicheAchat.FDMemTableLigachjj
     Left = 48
     Top = 72
   end
