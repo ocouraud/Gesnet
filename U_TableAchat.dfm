@@ -314,6 +314,18 @@ object FrameTableAchat: TFrameTableAchat
       StyleElements = [seClient, seBorder]
       OnClick = BtnDupliquerClick
     end
+    object BtnCentraliser: TBitBtn
+      Left = 90
+      Top = 32
+      Width = 87
+      Height = 29
+      Margins.Left = 6
+      Margins.Right = 6
+      Caption = '&Centraliser '#9654#65039
+      TabOrder = 7
+      StyleElements = [seClient, seBorder]
+      OnClick = BtnCentraliserClick
+    end
   end
   object FDQueryAchat: TFDQuery
     Connection = DMGesCloud.ConnexionGesCloud
@@ -477,16 +489,16 @@ object FrameTableAchat: TFrameTableAchat
     Left = 656
     Top = 144
   end
-  object frxDBDatasetCde_Client: TfrxDBDataset
-    UserName = 'frxDBDatasetCde_Client'
+  object frxDBDatasetFactureAchat: TfrxDBDataset
+    UserName = 'frxDBDatasetFactureAchat'
     CloseDataSource = False
-    DataSet = FDQueryCmde_Client
+    DataSet = FDQueryFactureAchat
     BCDToCurrency = False
     DataSetOptions = []
     Left = 560
     Top = 128
   end
-  object frxReportCmde_Client: TfrxReport
+  object frxReportFactureAchat: TfrxReport
     Version = '2024.1.2'
     DotMatrixReport = False
     IniFile = '\Software\Fast Reports'
@@ -495,7 +507,7 @@ object FrameTableAchat: TFrameTableAchat
     PrintOptions.Printer = 'Default'
     PrintOptions.PrintOnSheet = 0
     ReportOptions.CreateDate = 46280.575471794000000000
-    ReportOptions.LastChange = 46304.510709328700000000
+    ReportOptions.LastChange = 46307.507316296290000000
     ScriptLanguage = 'PascalScript'
     ScriptText.Strings = (
       'begin'
@@ -505,8 +517,8 @@ object FrameTableAchat: TFrameTableAchat
     Top = 168
     Datasets = <
       item
-        DataSet = frxDBDatasetCde_Client
-        DataSetName = 'frxDBDatasetCde_Client'
+        DataSet = frxDBDatasetFactureAchat
+        DataSetName = 'frxDBDatasetFactureAchat'
       end>
     Variables = <
       item
@@ -567,7 +579,7 @@ object FrameTableAchat: TFrameTableAchat
       Height = 1000.000000000000000000
       Width = 1000.000000000000000000
     end
-    object PageCde_client: TfrxReportPage
+    object PageAchat: TfrxReportPage
       PaperWidth = 210.000000000000000000
       PaperHeight = 297.000000000000000000
       PaperSize = 9
@@ -587,8 +599,8 @@ object FrameTableAchat: TFrameTableAchat
         Height = 162.519606930000000000
         Top = 18.897650000000000000
         Width = 755.906000000000000000
-        Child = frxReportCmde_Client.Child1
-        Condition = 'frxDBDatasetCde_Client."NOCDE"'
+        Child = frxReportFactureAchat.Child1
+        Condition = 'frxDBDatasetFactureAchat."CODACH"'
         ResetPageNumbers = True
         StartNewPage = True
         Stretched = True
@@ -602,6 +614,8 @@ object FrameTableAchat: TFrameTableAchat
           StretchMode = smMaxHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = FrameTableDevis.frxDBDatasetDevis
+          DataSetName = 'frxDBDatasetDevis'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
           Font.Height = -16
@@ -610,8 +624,8 @@ object FrameTableAchat: TFrameTableAchat
           Frame.Typ = []
           Memo.UTF8W = (
             
-              'COMMANDE No [frxDBDatasetCde_Client."NOCDE"] du [frxDBDatasetCde' +
-              '_Client."DATE_"]')
+              'ACHAT No [frxDBDatasetFactureAchat."CODACH"] du frxDBDatasetFact' +
+              'ureAchat."DATE_"]')
           ParentFont = False
           Formats = <
             item
@@ -623,16 +637,17 @@ object FrameTableAchat: TFrameTableAchat
           IndexTag = 1
           AllowVectorExport = True
           Left = 355.275820000000000000
-          Top = 83.149660000000000000
+          Top = 90.708720000000000000
           Width = 192.756030000000000000
-          Height = 30.236240000000000000
+          Height = 18.897650000000000000
           StretchMode = smMaxHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = FrameTableDevis.frxDBDatasetDevis
+          DataSetName = 'frxDBDatasetDevis'
           Frame.Typ = []
           Memo.UTF8W = (
-            'Client: [frxDBDatasetCde_Client."CODCLI"]'
-            'No TAHITI: [frxDBDatasetCde_Client."NOTAHITI"]')
+            'Fournisseur : [frxDBDatasetFactureAchat."CODFOU"]')
           Formats = <
             item
             end
@@ -649,6 +664,8 @@ object FrameTableAchat: TFrameTableAchat
           StretchMode = smActualHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = FrameTableDevis.frxDBDatasetDevis
+          DataSetName = 'frxDBDatasetDevis'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
           Font.Height = -13
@@ -656,10 +673,10 @@ object FrameTableAchat: TFrameTableAchat
           Font.Style = [fsBold]
           Frame.Typ = []
           Memo.UTF8W = (
-            '[frxDBDatasetCde_Client."NOM"]'
-            '[frxDBDatasetCde_Client."AD1"]'
-            '[frxDBDatasetCde_Client."AD2"]'
-            '[frxDBDatasetCde_Client."AD3"]')
+            '[frxDBDatasetFactureAchat."NOM"]'
+            '[frxDBDatasetFactureAchat."AD1"]'
+            '[frxDBDatasetFactureAchat."AD2"]'
+            '[frxDBDatasetFactureAchat."AD3"]')
           ParentFont = False
           Formats = <
             item
@@ -756,20 +773,24 @@ object FrameTableAchat: TFrameTableAchat
           StretchMode = smMaxHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = FrameTableDevis.frxDBDatasetDevis
+          DataSetName = 'frxDBDatasetDevis'
           Frame.Typ = []
           Memo.UTF8W = (
-            'R'#233'f'#233'rence : [frxDBDatasetCde_Client."REFERENCE_"]')
+            'R'#233'f'#233'rence : [frxDBDatasetFactureAchat."REFER"]')
         end
         object MemofrxDBDataset1OBSERV: TfrxMemoView
           IndexTag = 1
           AllowVectorExport = True
           Left = 3.779530000000000000
-          Top = 86.929190000000000000
+          Top = 136.063080000000000000
           Width = 336.378170000000000000
-          Height = 68.031540000000000000
+          Height = 18.897650000000000000
           StretchMode = smActualHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = FrameTableDevis.frxDBDatasetDevis
+          DataSetName = 'frxDBDatasetDevis'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
           Font.Height = -13
@@ -777,7 +798,7 @@ object FrameTableAchat: TFrameTableAchat
           Font.Style = []
           Frame.Typ = [ftLeft, ftRight, ftTop, ftBottom]
           Memo.UTF8W = (
-            'Observations: [frxDBDatasetCde_Client."OBSERV"]')
+            'Objet : [frxDBDatasetFactureAchat."LIBELLE"]')
           ParentFont = False
         end
       end
@@ -797,8 +818,8 @@ object FrameTableAchat: TFrameTableAchat
         ParentFont = False
         Top = 287.244280000000000000
         Width = 755.906000000000000000
-        DataSet = frxDBDatasetCde_Client
-        DataSetName = 'frxDBDatasetCde_Client'
+        DataSet = frxDBDatasetFactureAchat
+        DataSetName = 'frxDBDatasetFactureAchat'
         PrintIfDetailEmpty = True
         RowCount = 0
         Stretched = True
@@ -811,6 +832,8 @@ object FrameTableAchat: TFrameTableAchat
           StretchMode = smMaxHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = FrameTableDevis.frxDBDatasetDevis
+          DataSetName = 'frxDBDatasetDevis'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
           Font.Height = -9
@@ -818,7 +841,7 @@ object FrameTableAchat: TFrameTableAchat
           Font.Style = []
           Frame.Typ = []
           Memo.UTF8W = (
-            '[frxDBDatasetCde_Client."CODART"]')
+            '[frxDBDatasetFactureAchat."CODART_1"]')
           ParentFont = False
           VAlign = vaCenter
         end
@@ -826,11 +849,13 @@ object FrameTableAchat: TFrameTableAchat
           IndexTag = 1
           AllowVectorExport = True
           Left = 86.929190000000000000
-          Width = 336.378170000000000000
+          Width = 272.126160000000000000
           Height = 18.897650000000000000
           StretchMode = smActualHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = FrameTableDevis.frxDBDatasetDevis
+          DataSetName = 'frxDBDatasetDevis'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
           Font.Height = -9
@@ -839,19 +864,21 @@ object FrameTableAchat: TFrameTableAchat
           Frame.Typ = [ftLeft]
           GapX = 5.000000000000000000
           Memo.UTF8W = (
-            '[frxDBDatasetCde_Client."LIBELLE"]')
+            '[frxDBDatasetFactureAchat."LIBELLE_1"]')
           ParentFont = False
           VAlign = vaCenter
         end
         object MemofrxDBDataset1QTE: TfrxMemoView
           IndexTag = 1
           AllowVectorExport = True
-          Left = 423.716760000000000000
+          Left = 358.716760000000000000
           Width = 56.692950000000000000
           Height = 18.897650000000000000
           StretchMode = smMaxHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = FrameTableDevis.frxDBDatasetDevis
+          DataSetName = 'frxDBDatasetDevis'
           DisplayFormat.DecimalSeparator = ','
           DisplayFormat.FormatStr = '%2.2f'
           DisplayFormat.Kind = fkNumeric
@@ -864,21 +891,21 @@ object FrameTableAchat: TFrameTableAchat
           GapX = 5.000000000000000000
           HAlign = haRight
           Memo.UTF8W = (
-            '[frxDBDatasetCde_Client."QTE"]')
+            '[frxDBDatasetFactureAchat."QTE"]')
           ParentFont = False
           VAlign = vaCenter
         end
         object MemofrxDBDataset1PRIXHT: TfrxMemoView
           IndexTag = 1
           AllowVectorExport = True
-          Left = 480.409710000000000000
+          Left = 415.409710000000000000
           Width = 64.252010000000000000
           Height = 18.897650000000000000
           StretchMode = smMaxHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
-          DisplayFormat.FormatStr = '%2.2n'
-          DisplayFormat.Kind = fkNumeric
+          DataSet = FrameTableDevis.frxDBDatasetDevis
+          DataSetName = 'frxDBDatasetDevis'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
           Font.Height = -9
@@ -888,19 +915,28 @@ object FrameTableAchat: TFrameTableAchat
           GapX = 5.000000000000000000
           HAlign = haRight
           Memo.UTF8W = (
-            '[frxDBDatasetCde_Client."PRIXHT"]')
+            '[frxDBDatasetFactureAchat."PRIXHT"]')
           ParentFont = False
           VAlign = vaCenter
+          Formats = <
+            item
+              FormatStr = '%2.2n'
+              Kind = fkNumeric
+            end
+            item
+            end>
         end
         object MemofrxDBDataset1TOTHT_1: TfrxMemoView
           IndexTag = 1
           AllowVectorExport = True
-          Left = 606.488560000000000000
+          Left = 542.488560000000000000
           Width = 64.252010000000000000
           Height = 18.897650000000000000
           StretchMode = smMaxHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = FrameTableDevis.frxDBDatasetDevis
+          DataSetName = 'frxDBDatasetDevis'
           DisplayFormat.FormatStr = '%2.2n'
           DisplayFormat.Kind = fkNumeric
           Font.Charset = DEFAULT_CHARSET
@@ -912,7 +948,7 @@ object FrameTableAchat: TFrameTableAchat
           GapX = 5.000000000000000000
           HAlign = haRight
           Memo.UTF8W = (
-            '[frxDBDatasetCde_Client."TOTHT_1"]')
+            '[frxDBDatasetFactureAchat."TOTHT"]')
           ParentFont = False
           VAlign = vaCenter
         end
@@ -925,6 +961,8 @@ object FrameTableAchat: TFrameTableAchat
           StretchMode = smMaxHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = FrameTableDevis.frxDBDatasetDevis
+          DataSetName = 'frxDBDatasetDevis'
           DisplayFormat.FormatStr = '%2.0n'
           DisplayFormat.Kind = fkNumeric
           Font.Charset = DEFAULT_CHARSET
@@ -936,19 +974,21 @@ object FrameTableAchat: TFrameTableAchat
           GapX = 5.000000000000000000
           HAlign = haRight
           Memo.UTF8W = (
-            '[frxDBDatasetCde_Client."MT_TTC_1"]')
+            '[frxDBDatasetFactureAchat."tot_ttc"]')
           ParentFont = False
           VAlign = vaCenter
         end
         object MemofrxDBDataset1PRIXTTC: TfrxMemoView
           IndexTag = 1
           AllowVectorExport = True
-          Left = 545.007874020000000000
+          Left = 481.007874020000000000
           Width = 61.228346460000000000
           Height = 18.897650000000000000
           StretchMode = smMaxHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = FrameTableDevis.frxDBDatasetDevis
+          DataSetName = 'frxDBDatasetDevis'
           DisplayFormat.FormatStr = '%2.0n'
           DisplayFormat.Kind = fkNumeric
           Font.Charset = DEFAULT_CHARSET
@@ -960,7 +1000,7 @@ object FrameTableAchat: TFrameTableAchat
           GapX = 5.000000000000000000
           HAlign = haRight
           Memo.UTF8W = (
-            '[frxDBDatasetCde_Client."PRIXTTC"]')
+            '[frxDBDatasetFactureAchat."PRIXTTC"]')
           ParentFont = False
           VAlign = vaCenter
         end
@@ -973,15 +1013,43 @@ object FrameTableAchat: TFrameTableAchat
           StretchMode = smMaxHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = FrameTableDevis.frxDBDatasetDevis
+          DataSetName = 'frxDBDatasetDevis'
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -11
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = [ftLeft]
+          HAlign = haCenter
+          Memo.UTF8W = (
+            '[frxDBDatasetFactureAchat."TX_TVA"]')
+          ParentFont = False
+          VAlign = vaCenter
+        end
+        object Memo15: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 606.504330000000000000
+          Width = 64.252010000000000000
+          Height = 18.897650000000000000
+          StretchMode = smMaxHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = FrameTableDevis.frxDBDatasetDevis
+          DataSetName = 'frxDBDatasetDevis'
+          DisplayFormat.FormatStr = '%2.2n'
+          DisplayFormat.Kind = fkNumeric
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
           Font.Height = -9
           Font.Name = 'Arial'
           Font.Style = []
           Frame.Typ = [ftLeft]
-          HAlign = haCenter
+          GapX = 5.000000000000000000
+          HAlign = haRight
           Memo.UTF8W = (
-            '[frxDBDatasetCde_Client."TX_TVA"]')
+            '[frxDBDatasetFactureAchat."MT_TVA_1"]')
           ParentFont = False
           VAlign = vaCenter
         end
@@ -993,20 +1061,36 @@ object FrameTableAchat: TFrameTableAchat
         FillGap.Bottom = 0
         FillGap.Right = 0
         Frame.Typ = []
-        Height = 192.756030000000000000
+        Height = 268.346630000000000000
         Top = 411.968770000000000000
         Width = 755.906000000000000000
         PrintOnFirstPage = False
         PrintOnSinglePage = True
+        object VarMEMO_DEV: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 3.779530000000000000
+          Top = 196.535560000000000000
+          Width = 714.331170000000000000
+          Height = 64.252010000000000000
+          StretchMode = smActualHeight
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Frame.Typ = []
+          Memo.UTF8W = (
+            '[VarMEMO_DEV]')
+        end
         object MemofrxDBDatasetDevisTOTHT: TfrxMemoView
           IndexTag = 1
           AllowVectorExport = True
           Left = 591.165740000000000000
-          Top = 34.354360000000000000
+          Top = 14.118120000000000000
           Width = 79.370130000000000000
           Height = 18.897650000000000000
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = FrameTableDevis.frxDBDatasetDevis
+          DataSetName = 'frxDBDatasetDevis'
           DisplayFormat.FormatStr = '%2.2n'
           DisplayFormat.Kind = fkNumeric
           Font.Charset = DEFAULT_CHARSET
@@ -1017,20 +1101,20 @@ object FrameTableAchat: TFrameTableAchat
           Frame.Typ = []
           HAlign = haRight
           Memo.UTF8W = (
-            '[frxDBDatasetCde_Client."TOTHT"]')
+            '[frxDBDatasetFactureAchat."MT_HT"]')
           ParentFont = False
         end
         object MemofrxDBDatasetDevisMT_TVA: TfrxMemoView
           IndexTag = 1
           AllowVectorExport = True
           Left = 591.165740000000000000
-          Top = 52.811070000000000000
+          Top = 51.811070000000000000
           Width = 79.370130000000000000
           Height = 18.897650000000000000
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
-          DisplayFormat.FormatStr = '%2.2n'
-          DisplayFormat.Kind = fkNumeric
+          DataSet = FrameTableDevis.frxDBDatasetDevis
+          DataSetName = 'frxDBDatasetDevis'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
           Font.Height = -13
@@ -1039,8 +1123,15 @@ object FrameTableAchat: TFrameTableAchat
           Frame.Typ = []
           HAlign = haRight
           Memo.UTF8W = (
-            '[frxDBDatasetCde_Client."MT_TVA"]')
+            '[frxDBDatasetFactureAchat."MT_TVA"]')
           ParentFont = False
+          Formats = <
+            item
+              FormatStr = '%2.2n'
+              Kind = fkNumeric
+            end
+            item
+            end>
         end
         object MemofrxDBDatasetDevisMT_TTC: TfrxMemoView
           IndexTag = 1
@@ -1051,6 +1142,8 @@ object FrameTableAchat: TFrameTableAchat
           Height = 18.897650000000000000
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = FrameTableDevis.frxDBDatasetDevis
+          DataSetName = 'frxDBDatasetDevis'
           DisplayFormat.FormatStr = '%2.0n'
           DisplayFormat.Kind = fkNumeric
           Font.Charset = DEFAULT_CHARSET
@@ -1061,25 +1154,25 @@ object FrameTableAchat: TFrameTableAchat
           Frame.Typ = []
           HAlign = haRight
           Memo.UTF8W = (
-            '[frxDBDatasetCde_Client."MT_TTC"]')
+            '[frxDBDatasetFactureAchat."MT_TTC"]')
           ParentFont = False
         end
         object Memo28: TfrxMemoView
           AllowVectorExport = True
           Left = 472.441241020000000000
-          Top = 34.354361130000000000
+          Top = 14.118121130000000000
           Width = 94.488281250000000000
           Height = 18.897644040000000000
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
           Frame.Typ = []
           Memo.UTF8W = (
-            'Total net HT')
+            'Total brut HT')
         end
         object Memo29: TfrxMemoView
           AllowVectorExport = True
           Left = 472.441241020000000000
-          Top = 52.811076190000000000
+          Top = 51.811076190000000000
           Width = 94.488281250000000000
           Height = 18.897644040000000000
           ContentScaleOptions.Constraints.MaxIterationValue = 0
@@ -1102,10 +1195,10 @@ object FrameTableAchat: TFrameTableAchat
         end
         object Shape2: TfrxShapeView
           AllowVectorExport = True
-          Left = 457.323123540000000000
-          Top = 22.677171020000000000
-          Width = 226.771800730000000000
-          Height = 79.370124040000000000
+          Left = 461.102653540000000000
+          Top = 3.779521020000000000
+          Width = 222.992270730000000000
+          Height = 94.488244040000000000
           Frame.Typ = []
           Shape = skRoundRectangle
         end
@@ -1140,6 +1233,42 @@ object FrameTableAchat: TFrameTableAchat
           Frame.Typ = []
           Memo.UTF8W = (
             '[VarTotalAlpha]')
+          ParentFont = False
+        end
+        object Memo12: TfrxMemoView
+          AllowVectorExport = True
+          Left = 472.441250000000000000
+          Top = 32.677180000000000000
+          Width = 94.488281250000000000
+          Height = 18.897644040000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          Frame.Typ = []
+          Memo.UTF8W = (
+            'Remise')
+        end
+        object Memo13: TfrxMemoView
+          IndexTag = 1
+          AllowVectorExport = True
+          Left = 591.118110240000000000
+          Top = 32.677180000000000000
+          Width = 79.370130000000000000
+          Height = 18.897650000000000000
+          ContentScaleOptions.Constraints.MaxIterationValue = 0
+          ContentScaleOptions.Constraints.MinIterationValue = 0
+          DataSet = FrameTableDevis.frxDBDatasetDevis
+          DataSetName = 'frxDBDatasetDevis'
+          DisplayFormat.FormatStr = '%2.2n'
+          DisplayFormat.Kind = fkNumeric
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clBlack
+          Font.Height = -13
+          Font.Name = 'Arial'
+          Font.Style = []
+          Frame.Typ = []
+          HAlign = haRight
+          Memo.UTF8W = (
+            '[frxDBDatasetFactureAchat."MT_REM"]')
           ParentFont = False
         end
       end
@@ -1187,9 +1316,9 @@ object FrameTableAchat: TFrameTableAchat
         end
         object Memo10: TfrxMemoView
           AllowVectorExport = True
-          Left = 545.007874020000000000
+          Left = 481.007874020000000000
           Top = 30.236406640000000000
-          Width = 61.606299210000000000
+          Width = 61.228346456692910000
           Height = 28.346456690000000000
           StretchMode = smMaxHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
@@ -1229,7 +1358,7 @@ object FrameTableAchat: TFrameTableAchat
         end
         object Memo8: TfrxMemoView
           AllowVectorExport = True
-          Left = 606.709050470000000000
+          Left = 542.362204724409400000
           Top = 30.236400680000000000
           Width = 64.251980210000000000
           Height = 28.346456690000000000
@@ -1250,7 +1379,7 @@ object FrameTableAchat: TFrameTableAchat
         end
         object Memo5: TfrxMemoView
           AllowVectorExport = True
-          Left = 423.937219380000000000
+          Left = 358.677165350000000000
           Top = 30.236409160000000000
           Width = 56.692950730000000000
           Height = 28.346456690000000000
@@ -1271,9 +1400,9 @@ object FrameTableAchat: TFrameTableAchat
         end
         object Memo4: TfrxMemoView
           AllowVectorExport = True
-          Left = 480.630169380000000000
+          Left = 415.370078740000000000
           Top = 30.236414220000000000
-          Width = 64.252010730000000000
+          Width = 65.385826770000000000
           Height = 28.346456690000000000
           StretchMode = smMaxHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
@@ -1292,9 +1421,9 @@ object FrameTableAchat: TFrameTableAchat
         end
         object Memo3: TfrxMemoView
           AllowVectorExport = True
-          Left = 87.149653060000000000
+          Left = 83.370123060000000000
           Top = 30.236403210000000000
-          Width = 336.378170730000000000
+          Width = 275.905690730000000000
           Height = 28.346456690000000000
           StretchMode = smMaxHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
@@ -1332,14 +1461,12 @@ object FrameTableAchat: TFrameTableAchat
           ParentFont = False
           VAlign = vaCenter
         end
-        object MemoVarRepres: TfrxMemoView
-          IndexTag = 1
+        object Memo14: TfrxMemoView
           AllowVectorExport = True
-          Left = 377.953000000000000000
-          Top = 3.779530000000000000
-          Width = 366.614410000000000000
-          Height = 18.897650000000000000
-          Visible = False
+          Left = 606.504330000000000000
+          Top = 30.236240000000000000
+          Width = 64.251980210000000000
+          Height = 28.346456690000000000
           StretchMode = smMaxHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
@@ -1348,11 +1475,12 @@ object FrameTableAchat: TFrameTableAchat
           Font.Height = -13
           Font.Name = 'Arial'
           Font.Style = []
-          Frame.Typ = []
-          HAlign = haRight
+          Frame.Typ = [ftLeft]
+          HAlign = haCenter
           Memo.UTF8W = (
-            'Repr'#233'sentant: [VarRepres]')
+            'Total TVA')
           ParentFont = False
+          VAlign = vaCenter
         end
       end
       object Footer1: TfrxFooter
@@ -1367,7 +1495,7 @@ object FrameTableAchat: TFrameTableAchat
         Width = 755.906000000000000000
         object SysMemo2: TfrxSysMemoView
           AllowVectorExport = True
-          Left = 423.858267720000000000
+          Left = 358.685107720000000000
           Width = 56.692913390000000000
           Height = 18.897644040000000000
           ContentScaleOptions.Constraints.MaxIterationValue = 0
@@ -1383,14 +1511,15 @@ object FrameTableAchat: TFrameTableAchat
           GapX = 5.000000000000000000
           HAlign = haRight
           Memo.UTF8W = (
-            '[SUM(<frxDBDatasetCde_Client."QTE">,MasterData1)]')
+            '[SUM(<frxDBDatasetFactureAchat."QTE">,MasterData1)]')
           ParentFont = False
           VAlign = vaCenter
         end
       end
     end
   end
-  object FDQueryCmde_Client: TFDQuery
+  object FDQueryFactureAchat: TFDQuery
+    OnCalcFields = FDQueryFactureAchatCalcFields
     MasterSource = DSAchat
     MasterFields = 'CODACH'
     Connection = DMGesCloud.ConnexionGesCloud
@@ -1398,20 +1527,439 @@ object FrameTableAchat: TFrameTableAchat
       'SELECT '
       '  -- Donn'#233'es de l'#39'en-t'#234'te (vont se r'#233'p'#233'ter sur chaque ligne SQL)'
       '*'
-      'FROM entcde_cli e'
-      'JOIN Client c ON e.CODCLI = c.CODCLI'
-      'JOIN ligcde_cli l ON e.NOCDE = l.NOCDE'
-      'WHERE e.NOCDE = :NOCDE'
-      
-        'ORDER BY e.NOCDE ASC, l.NOREC ASC -- Le tri obligatoire pour la ' +
-        'rupture'
+      'FROM achat a'
+      'JOIN fournis f ON f.CODFOU = a.CODFOU'
+      'JOIN ligachjj l ON l.CODACH = a.CODACH'
+      'JOIN article i ON i.codart = l.codart '
+      'WHERE a.CODACH = :CODACH'
       '')
     Left = 296
     Top = 128
     ParamData = <
       item
-        Name = 'NOCDE'
+        Name = 'CODACH'
         ParamType = ptInput
       end>
+    object FDQueryFactureAchatCODACH: TLargeintField
+      FieldName = 'CODACH'
+      Origin = 'CODACH'
+      ProviderFlags = [pfInUpdate, pfInWhere, pfInKey]
+      Required = True
+    end
+    object FDQueryFactureAchatCODFOU: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODFOU'
+      Origin = 'CODFOU'
+      Size = 7
+    end
+    object FDQueryFactureAchatCODDEP: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODDEP'
+      Origin = 'CODDEP'
+    end
+    object FDQueryFactureAchatPOSTE: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'POSTE'
+      Origin = 'POSTE'
+      Size = 10
+    end
+    object FDQueryFactureAchatLIBELLE: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'LIBELLE'
+      Origin = 'LIBELLE'
+      Size = 30
+    end
+    object FDQueryFactureAchatREFER: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'REFER'
+      Origin = 'REFER'
+      Size = 15
+    end
+    object FDQueryFactureAchatDATE_: TDateField
+      AutoGenerateValue = arDefault
+      FieldName = 'DATE_'
+      Origin = 'DATE_'
+    end
+    object FDQueryFactureAchatDATE_COMPTA: TDateField
+      AutoGenerateValue = arDefault
+      FieldName = 'DATE_COMPTA'
+      Origin = 'DATE_COMPTA'
+    end
+    object FDQueryFactureAchatDATE_ECH: TDateField
+      AutoGenerateValue = arDefault
+      FieldName = 'DATE_ECH'
+      Origin = 'DATE_ECH'
+    end
+    object FDQueryFactureAchatMT_HT: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_HT'
+      Origin = 'MT_HT'
+      Precision = 11
+      Size = 2
+    end
+    object FDQueryFactureAchatMT_REM: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_REM'
+      Origin = 'MT_REM'
+      Precision = 9
+      Size = 2
+    end
+    object FDQueryFactureAchatMT_TVA: TIntegerField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_TVA'
+      Origin = 'MT_TVA'
+    end
+    object FDQueryFactureAchatMT_TTC: TIntegerField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_TTC'
+      Origin = 'MT_TTC'
+    end
+    object FDQueryFactureAchatCODPAI: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODPAI'
+      Origin = 'CODPAI'
+      Size = 5
+    end
+    object FDQueryFactureAchatLIBPAI: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'LIBPAI'
+      Origin = 'LIBPAI'
+      Size = 30
+    end
+    object FDQueryFactureAchatTOP_: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'TOP_'
+      Origin = 'TOP_'
+      Size = 1
+    end
+    object FDQueryFactureAchatJRSCRD: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'JRSCRD'
+      Origin = 'JRSCRD'
+    end
+    object FDQueryFactureAchatFINMOIS: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'FINMOIS'
+      Origin = 'FINMOIS'
+    end
+    object FDQueryFactureAchatREGL: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'REGL'
+      Origin = 'REGL'
+    end
+    object FDQueryFactureAchatIMPORT: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'IMPORT'
+      Origin = '`IMPORT`'
+    end
+    object FDQueryFactureAchatDER_MODIF: TIntegerField
+      AutoGenerateValue = arDefault
+      FieldName = 'DER_MODIF'
+      Origin = 'DER_MODIF'
+    end
+    object FDQueryFactureAchatMT_TSOC: TLargeintField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_TSOC'
+      Origin = 'MT_TSOC'
+    end
+    object FDQueryFactureAchatCODFOU_1: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODFOU_1'
+      Origin = 'CODFOU'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 7
+    end
+    object FDQueryFactureAchatNOM: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'NOM'
+      Origin = 'NOM'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 50
+    end
+    object FDQueryFactureAchatNOTEL: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'NOTEL'
+      Origin = 'NOTEL'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFactureAchatNOFAX: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'NOFAX'
+      Origin = 'NOFAX'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFactureAchatAD1: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'AD1'
+      Origin = 'AD1'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 30
+    end
+    object FDQueryFactureAchatAD2: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'AD2'
+      Origin = 'AD2'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 30
+    end
+    object FDQueryFactureAchatAD3: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'AD3'
+      Origin = 'AD3'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 30
+    end
+    object FDQueryFactureAchatDEVISE: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'DEVISE'
+      Origin = 'DEVISE'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 5
+    end
+    object FDQueryFactureAchatNOCPT: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'NOCPT'
+      Origin = 'NOCPT'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 13
+    end
+    object FDQueryFactureAchatJRSCRD_1: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'JRSCRD_1'
+      Origin = 'JRSCRD'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFactureAchatFIN_MOIS: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'FIN_MOIS'
+      Origin = 'FIN_MOIS'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFactureAchatEMAIL: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'EMAIL'
+      Origin = 'EMAIL'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 50
+    end
+    object FDQueryFactureAchatCOM_VTE: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'COM_VTE'
+      Origin = 'COM_VTE'
+      ProviderFlags = []
+      ReadOnly = True
+      Precision = 5
+      Size = 2
+    end
+    object FDQueryFactureAchatDER_MODIF_1: TSQLTimeStampField
+      AutoGenerateValue = arDefault
+      FieldName = 'DER_MODIF_1'
+      Origin = 'DER_MODIF'
+    end
+    object FDQueryFactureAchatCODART: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODART'
+      Origin = 'CODART'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 13
+    end
+    object FDQueryFactureAchatPRC_MARG: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'PRC_MARG'
+      Origin = 'PRC_MARG'
+      ProviderFlags = []
+      ReadOnly = True
+      Precision = 5
+      Size = 2
+    end
+    object FDQueryFactureAchatCODACH_1: TLargeintField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODACH_1'
+      Origin = 'CODACH'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFactureAchatREFER_1: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'REFER_1'
+      Origin = 'REFER'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 15
+    end
+    object FDQueryFactureAchatDATE__1: TDateField
+      AutoGenerateValue = arDefault
+      FieldName = 'DATE__1'
+      Origin = 'DATE_'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFactureAchatCODFOU_2: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODFOU_2'
+      Origin = 'CODFOU'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 7
+    end
+    object FDQueryFactureAchatCODSSF: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODSSF'
+      Origin = 'CODSSF'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 4
+    end
+    object FDQueryFactureAchatCODFAM: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODFAM'
+      Origin = 'CODFAM'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 6
+    end
+    object FDQueryFactureAchatCODART_1: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODART_1'
+      Origin = 'CODART'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 13
+    end
+    object FDQueryFactureAchatCODDEP_1: TShortintField
+      AutoGenerateValue = arDefault
+      FieldName = 'CODDEP_1'
+      Origin = 'CODDEP'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFactureAchatQTE: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'QTE'
+      Origin = 'QTE'
+      ProviderFlags = []
+      ReadOnly = True
+      Precision = 10
+      Size = 3
+    end
+    object FDQueryFactureAchatPRIXHT: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'PRIXHT'
+      Origin = 'PRIXHT'
+      ProviderFlags = []
+      ReadOnly = True
+      Precision = 9
+      Size = 2
+    end
+    object FDQueryFactureAchatPRIXTTC: TIntegerField
+      AutoGenerateValue = arDefault
+      FieldName = 'PRIXTTC'
+      Origin = 'PRIXTTC'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFactureAchatTOTHT: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'TOTHT'
+      Origin = 'TOTHT'
+      ProviderFlags = []
+      ReadOnly = True
+      Precision = 11
+      Size = 2
+    end
+    object FDQueryFactureAchatTX_TVA: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'TX_TVA'
+      Origin = 'TX_TVA'
+      ProviderFlags = []
+      ReadOnly = True
+      Precision = 5
+      Size = 2
+    end
+    object FDQueryFactureAchatMT_TVA_1: TIntegerField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_TVA_1'
+      Origin = 'MT_TVA'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFactureAchatNO_TVA: TSmallintField
+      AutoGenerateValue = arDefault
+      FieldName = 'NO_TVA'
+      Origin = 'NO_TVA'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFactureAchatPOIDS: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'POIDS'
+      Origin = 'POIDS'
+      ProviderFlags = []
+      ReadOnly = True
+      Precision = 9
+      Size = 3
+    end
+    object FDQueryFactureAchatNOENR: TIntegerField
+      AutoGenerateValue = arDefault
+      FieldName = 'NOENR'
+      Origin = 'NOENR'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFactureAchatDER_MODIF_2: TSQLTimeStampField
+      AutoGenerateValue = arDefault
+      FieldName = 'DER_MODIF_2'
+      Origin = 'DER_MODIF'
+    end
+    object FDQueryFactureAchatTX_TSOC: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'TX_TSOC'
+      Origin = 'TX_TSOC'
+      ProviderFlags = []
+      ReadOnly = True
+      Precision = 5
+      Size = 2
+    end
+    object FDQueryFactureAchatMT_TSOC_1: TBCDField
+      AutoGenerateValue = arDefault
+      FieldName = 'MT_TSOC_1'
+      Origin = 'MT_TSOC'
+      ProviderFlags = []
+      ReadOnly = True
+      Precision = 9
+      Size = 2
+    end
+    object FDQueryFactureAchatNOENR_STO: TLargeintField
+      AutoGenerateValue = arDefault
+      FieldName = 'NOENR_STO'
+      Origin = 'NOENR_STO'
+      ProviderFlags = []
+      ReadOnly = True
+    end
+    object FDQueryFactureAchattot_ttc: TIntegerField
+      FieldKind = fkInternalCalc
+      FieldName = 'tot_ttc'
+    end
+    object FDQueryFactureAchatLIBELLE_1: TStringField
+      AutoGenerateValue = arDefault
+      FieldName = 'LIBELLE_1'
+      Origin = 'LIBELLE'
+      ProviderFlags = []
+      ReadOnly = True
+      Size = 50
+    end
   end
 end

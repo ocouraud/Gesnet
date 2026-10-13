@@ -17,7 +17,7 @@ type
   TFormLigachjj = class(TForm)
     DSLigachjj: TDataSource;
     Label1: TLabel;
-    DBCodbar: TDBEdit;
+    DBCodart: TDBEdit;
     Label3: TLabel;
     Label4: TLabel;
     Label6: TLabel;
@@ -34,52 +34,51 @@ type
     DBQte: TJvDBCalcEdit;
     DBPrixht: TJvDBCalcEdit;
     DBPrixttc: TJvDBCalcEdit;
-    FDQueryCodbar: TFDQuery;
-    DSCodbar: TDataSource;
+    FDQueryArticle: TFDQuery;
+    DSArticle: TDataSource;
     JvDBLookupComboCodbar: TJvDBLookupCombo;
-    FDQueryCodbarOBSERV: TMemoField;
-    FDQueryCodbarCODART: TStringField;
-    FDQueryCodbarFERME: TSmallintField;
-    FDQueryCodbarLIBELLE: TStringField;
-    FDQueryCodbarCODFAM: TStringField;
-    FDQueryCodbarCODDPT: TStringField;
-    FDQueryCodbarCODSSF: TStringField;
-    FDQueryCodbarCODFOU: TStringField;
-    FDQueryCodbarREF_FOU: TStringField;
-    FDQueryCodbarCOND: TIntegerField;
-    FDQueryCodbarQTEMIN: TIntegerField;
-    FDQueryCodbarUNIMIN: TSmallintField;
-    FDQueryCodbarPRIXVTE: TBCDField;
-    FDQueryCodbarPMP: TBCDField;
-    FDQueryCodbarPRIXACH: TBCDField;
-    FDQueryCodbarCOM_PR: TBCDField;
-    FDQueryCodbarQTE: TBCDField;
-    FDQueryCodbarUNIT: TSmallintField;
-    FDQueryCodbarQTECDE: TIntegerField;
-    FDQueryCodbarCODEMP: TStringField;
-    FDQueryCodbarVOLUME: TBCDField;
-    FDQueryCodbarUC: TStringField;
-    FDQueryCodbarQTE_UV_UC: TSmallintField;
-    FDQueryCodbarPOIDS: TBCDField;
-    FDQueryCodbarTVA: TStringField;
-    FDQueryCodbarPREST: TSmallintField;
-    FDQueryCodbarG_STO: TSmallintField;
-    FDQueryCodbarDET_PPT: TIntegerField;
-    FDQueryCodbarCODPRIX: TStringField;
-    FDQueryCodbarSELECT_: TSmallintField;
-    FDQueryCodbarLOT: TSmallintField;
-    FDQueryCodbarGARANTIE: TSmallintField;
-    FDQueryCodbarQTE_AUTO: TSmallintField;
-    FDQueryCodbarDER_MODIF: TSQLTimeStampField;
-    FDQueryCodbarOBSERV_FAC: TSmallintField;
-    FDQueryCodbarIMAGE: TStringField;
-    FDQueryCodbarCODFAM_WEB: TStringField;
-    FDQueryCodbarLIBCOURT: TStringField;
-    FDQueryCodbarPXLVHT: TBCDField;
-    FDQueryCodbarLIBRE_PPT: TSmallintField;
-    FDQueryCodbarTAX_SOC: TSmallintField;
-    FDQueryCodbarEXCLU_TVA1: TBooleanField;
-    FDQueryCodbarcodbar: TStringField;
+    FDQueryArticleOBSERV: TMemoField;
+    FDQueryArticleCODART: TStringField;
+    FDQueryArticleFERME: TSmallintField;
+    FDQueryArticleLIBELLE: TStringField;
+    FDQueryArticleCODFAM: TStringField;
+    FDQueryArticleCODDPT: TStringField;
+    FDQueryArticleCODSSF: TStringField;
+    FDQueryArticleCODFOU: TStringField;
+    FDQueryArticleREF_FOU: TStringField;
+    FDQueryArticleCOND: TIntegerField;
+    FDQueryArticleQTEMIN: TIntegerField;
+    FDQueryArticleUNIMIN: TSmallintField;
+    FDQueryArticlePRIXVTE: TBCDField;
+    FDQueryArticlePMP: TBCDField;
+    FDQueryArticlePRIXACH: TBCDField;
+    FDQueryArticleCOM_PR: TBCDField;
+    FDQueryArticleQTE: TBCDField;
+    FDQueryArticleUNIT: TSmallintField;
+    FDQueryArticleQTECDE: TIntegerField;
+    FDQueryArticleCODEMP: TStringField;
+    FDQueryArticleVOLUME: TBCDField;
+    FDQueryArticleUC: TStringField;
+    FDQueryArticleQTE_UV_UC: TSmallintField;
+    FDQueryArticlePOIDS: TBCDField;
+    FDQueryArticleTVA: TStringField;
+    FDQueryArticlePREST: TSmallintField;
+    FDQueryArticleG_STO: TSmallintField;
+    FDQueryArticleDET_PPT: TIntegerField;
+    FDQueryArticleCODPRIX: TStringField;
+    FDQueryArticleSELECT_: TSmallintField;
+    FDQueryArticleLOT: TSmallintField;
+    FDQueryArticleGARANTIE: TSmallintField;
+    FDQueryArticleQTE_AUTO: TSmallintField;
+    FDQueryArticleDER_MODIF: TSQLTimeStampField;
+    FDQueryArticleOBSERV_FAC: TSmallintField;
+    FDQueryArticleIMAGE: TStringField;
+    FDQueryArticleCODFAM_WEB: TStringField;
+    FDQueryArticleLIBCOURT: TStringField;
+    FDQueryArticlePXLVHT: TBCDField;
+    FDQueryArticleLIBRE_PPT: TSmallintField;
+    FDQueryArticleTAX_SOC: TSmallintField;
+    FDQueryArticleEXCLU_TVA1: TBooleanField;
     PanelFond: TPanel;
     Shape1: TShape;
     BalloonHint1: TBalloonHint;
@@ -94,14 +93,13 @@ type
     procedure JvDBSpinPrc_remiseChange(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure JvDBSpinPrc_remiseEnter(Sender: TObject);
-    procedure DBCodbarEnter(Sender: TObject);
-    procedure DBCodbarExit(Sender: TObject);
+    procedure DBCodartEnter(Sender: TObject);
+    procedure DBCodartExit(Sender: TObject);
     procedure DBQteEnter(Sender: TObject);
     procedure FormKeyDown(Sender: TObject; var Key: Word; Shift: TShiftState);
     procedure DBMt_tvaExit(Sender: TObject);
     procedure JvCalcEditMT_TTCExit(Sender: TObject);
-    procedure JvDBCalcEditMT_TTCExit(Sender: TObject);
-    procedure JvCalcEdit1Exit(Sender: TObject);
+    procedure DBTothtExit(Sender: TObject);
   private
     { Déclarations privées }
     FIsLoading: Boolean;   //Juste pour louverture
@@ -176,13 +174,13 @@ begin
 end;
 
 
-procedure TFormLigachjj.DBCodbarEnter(Sender: TObject);
+procedure TFormLigachjj.DBCodartEnter(Sender: TObject);
 begin
   FIsLoading := True;
 end;
 
 
-procedure TFormLigachjj.DBCodbarExit(Sender: TObject);
+procedure TFormLigachjj.DBCodartExit(Sender: TObject);
 var
   QryExec: TFDQuery;
   QryExecArticle: TFDQuery;
@@ -191,7 +189,7 @@ var
 
 begin
   // Si on est en train d'annuler ou si le champ est vide, on laisse sortir sans bloquer
-  if (FormFicheAchat.FDMemTableLigachjj.State = dsBrowse) or (DBCodbar.Text = '') then
+  if (FormFicheAchat.FDMemTableLigachjj.State = dsBrowse) or (DBCodart.Text = '') then
     Exit;
 
   // Création des requêtes temporaires
@@ -201,63 +199,38 @@ begin
     QryExec := TFDQuery.Create(nil);
     QryExecArticle := TFDQuery.Create(nil);
 
-    QryExec.Connection := DMGesCloud.ConnexionGesCloud;
+    //QryExec.Connection := DMGesCloud.ConnexionGesCloud;
     QryExecArticle.Connection := DMGesCloud.ConnexionGesCloud;
     // Recherche du code barre
-    QryExec.SQL.Text := 'SELECT * FROM codbar WHERE CODBAR = :CODBAR';
-    QryExec.ParamByName('CODBAR').AsString := DBCodbar.Field.AsString;
-    QryExec.Open;
+    QryExecArticle.SQL.Text := 'SELECT * FROM article WHERE CODART = :CODART';
+    QryExecArticle.ParamByName('CODART').AsString := DBCodart.Field.AsString;
+    QryExecArticle.Open;
 
-    if QryExec.Eof then
+    if QryExecArticle.Eof then
     begin
       BalloonHint1.Description := '⚠ Article inconnu !';
-      BalloonHint1.ShowHint(DBCodbar);
+      BalloonHint1.ShowHint(DBCodart);
       JvDBLookupComboCodbar.SetFocus;
       Exit; // Le bloc try...finally libérera proprement les requêtes
     end;
 
-    DSLigachjj.DataSet.FieldByName('CODART').AsString := QryExec.FieldByName('CODART').AsString;
+///    DSLigachjj.DataSet.FieldByName('CODART').AsString := QryExec.FieldByName('CODART').AsString;
 
-    // Si pas de changement de code-barre, on sort
-    if DBCodbar.Field.AsString = DBCodbar.Field.OldValue then
+    // Si pas de changement de codart, on sort
+    if DBCodart.Field.AsString = DBCodart.Field.OldValue then
       Exit;
 
     // Contrôle si changement - Affectation Libellé et Prix HT de base
-    //DBLibelle.Text := FDQueryCodbar.FieldByName('LIBELLE').AsString;
-    DBPrixht.Field.AsFloat := FDQueryCodbar.FieldByName('PMP').AsFloat;
+    //DBLibelle.Text := FDQueryArticle.FieldByName('LIBELLE').AsString;
+    DBPrixht.Field.AsFloat := FDQueryArticle.FieldByName('PMP').AsFloat;
 
     // Recherche tx TVA par date d'effet
     wdate := FormFicheAchat.FDMemTableAchat.FieldByName('DATE_').AsDateTime;
-    pTVA := FDQueryCodbar.FieldByName('TVA').AsString;
+    pTVA := FDQueryArticle.FieldByName('TVA').AsString;
     DBTx_tva.Field.AsFloat := DM_Olivier.fgTxTaxe(wDate,pTVA);
-
-//    if pTVA = 'TVA0' then
-//      DBTx_tva.Field.AsFloat := 0
-//    else if pTVA = 'TVA1' then
-//      DBTx_tva.Field.AsFloat := DM_Olivier.gTx_TVA1
-//    else if pTVA = 'TVA2' then
-//      DBTx_tva.Field.AsFloat := DM_Olivier.gTx_TVA2
-//    else if pTVA = 'TVA3' then
-//      DBTx_tva.Field.AsFloat := DM_Olivier.gTx_TVA3;
 
     if pTVA <> '' then
       DSLigachjj.DataSet.FieldByName('NO_TVA').AsInteger := StrToInt(pTVA[Length(pTVA)]);
-
-    // Si TVA Îles
-//    if (FormFicheAchat.RzDBCheckBoxTVA_ILES.Checked) and (FDQueryCodbar.FieldByName('EXCLU_TVA1').AsBoolean = False) then
-//    begin
-//      DBTx_tva.Field.AsFloat := DM_Olivier.fgTxTaxe(wDate,'TVAI');  //DM_Olivier.gTx_TVAI;
-//      DSLigachjj.DataSet.FieldByName('NO_TVA').AsInteger := 4;
-//    end;
-
-    // Si exonéré TVA
-//    if FormFicheAchat.RzDBCheckBoxEXO_TVA.Checked then
-//      DBTx_tva.Field.AsFloat := 0;
-
-    // Lecture fichier article
-    QryExecArticle.SQL.Text := 'SELECT * FROM article WHERE CODART = :CODART';
-    QryExecArticle.ParamByName('CODART').AsString := DSLigachjj.DataSet.FieldByName('CODART').AsString;
-    QryExecArticle.Open;
 
     // Champs divers
     DSLigachjj.DataSet.FieldByName('CODSSF').AsString := QryExecArticle.FieldByName('CODSSF').AsString;
@@ -282,20 +255,21 @@ begin
   CalculLigne;
 end;
 
-procedure TFormLigachjj.JvCalcEdit1Exit(Sender: TObject);
-begin
-  CalculLigne;
-end;
 
 procedure TFormLigachjj.JvCalcEditMT_TTCExit(Sender: TObject);
 begin
+  if DSLigachjj.DataSet.FieldByName('TOTHT').AsFloat + DSLigachjj.DataSet.FieldByName('MT_TVA').AsFloat
+    <> JvCalcEditMT_TTC.Value then
+  begin
+    BalloonHint1.Description := '⚠ Incohérence dans les montants !';
+    BalloonHint1.ShowHint(JvCalcEditMT_TTC);
+    DBPrixht.SetFocus;
+    Exit;
+  end;
+
   CalculLigne;
 end;
 
-procedure TFormLigachjj.JvDBCalcEditMT_TTCExit(Sender: TObject);
-begin
-  CalculLigne;
-end;
 
 procedure TFormLigachjj.JvDBSpinPrc_remiseChange(Sender: TObject);
 begin
@@ -361,9 +335,16 @@ begin
   CalculLigne;
 end;
 
+procedure TFormLigachjj.DBTothtExit(Sender: TObject);
+begin
+  if DBQte.Field.AsFloat<>0 then
+    DBPrixht.Field.AsFloat := DBTotht.Field.AsFloat / DBQte.Field.AsFloat;
+  CalculLigne;
+end;
+
 procedure TFormLigachjj.FormCreate(Sender: TObject);
 begin
-  FDQueryCodbar.Open;
+  FDQueryArticle.Open;
 
 //  if FormFicheAchat.RzDBCheckBoxFlag_Tax.Checked then
 //    DBPrixttc.Enabled:=false
@@ -418,11 +399,11 @@ begin
       //Controle si saisie invalide
       if DSLigachjj.dataset.FieldByName('CODART').AsString='' then
       begin
-        DBCodbarExit(Sender);
+        DBCodartExit(Sender);
         if DSLigachjj.dataset.FieldByName('CODART').AsString='' then
          exit;
       end;
-
+      CalculLigne;
       DSLigachjj.Dataset.Post;
     end;
 

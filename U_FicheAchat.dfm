@@ -299,7 +299,7 @@ object FormFicheAchat: TFormFicheAchat
       Caption = 'Reference'
     end
     object Label10: TLabel
-      Left = 291
+      Left = 281
       Top = 11
       Width = 24
       Height = 15
@@ -318,6 +318,13 @@ object FormFicheAchat: TFormFicheAchat
       Width = 34
       Height = 15
       Caption = 'Libell'#233
+    end
+    object Label4: TLabel
+      Left = 281
+      Top = 40
+      Width = 29
+      Height = 15
+      Caption = 'Poste'
     end
     object JvDBDate_: TJvDBDateEdit
       Left = 321
@@ -367,7 +374,7 @@ object FormFicheAchat: TFormFicheAchat
       ListField = 'CODFOU;NOM'
       ListFieldIndex = 1
       ListSource = DSFournis
-      TabOrder = 4
+      TabOrder = 5
       OnExit = DBCODFOUExit
     end
     object DBCODFOU: TDBEdit
@@ -377,7 +384,7 @@ object FormFicheAchat: TFormFicheAchat
       Height = 23
       DataField = 'CODFOU'
       DataSource = DSMemTableAchat
-      TabOrder = 3
+      TabOrder = 4
       OnExit = DBCODFOUExit
     end
     object Panel12: TPanel
@@ -387,7 +394,7 @@ object FormFicheAchat: TFormFicheAchat
       Height = 129
       Align = alRight
       BevelOuter = bvNone
-      TabOrder = 6
+      TabOrder = 7
       object BtnValider: TBitBtn
         Left = 0
         Top = 0
@@ -429,9 +436,24 @@ object FormFicheAchat: TFormFicheAchat
       Height = 23
       DataField = 'LIBELLE'
       DataSource = DSMemTableAchat
-      TabOrder = 5
+      TabOrder = 6
       EditLabel.Width = 3
       EditLabel.Height = 15
+    end
+    object JvDBLookupComboPoste: TJvDBLookupCombo
+      Left = 321
+      Top = 37
+      Width = 256
+      Height = 23
+      DataField = 'POSTE'
+      DataSource = DSMemTableAchat
+      LookupField = 'POSTE'
+      LookupDisplay = 'LIBELLE'
+      LookupSource = DSPoste
+      ParentShowHint = False
+      ShowHint = False
+      TabOrder = 3
+      OnChange = JvDBLookupComboPosteChange
     end
   end
   object Panel5: TPanel
@@ -693,5 +715,10 @@ object FormFicheAchat: TFormFicheAchat
         Name = 'CODART'
         ParamType = ptInput
       end>
+  end
+  object DSPoste: TDataSource
+    DataSet = DM_Olivier.FDQueryPoste
+    Left = 352
+    Top = 416
   end
 end

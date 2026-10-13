@@ -3,14 +3,14 @@ unit U_TableEntcde_cli;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, System.UITypes,
   RzTabs, RzPanel, RzRadGrp,
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, FireDAC.Stan.Intf,
   FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS,
   FireDAC.Phys.Intf, FireDAC.DApt.Intf, FireDAC.Stan.Async, FireDAC.DApt,
   Data.DB, FireDAC.Comp.DataSet, FireDAC.Comp.Client, Vcl.Grids, Vcl.DBGrids,
   JvExDBGrids, JvDBGrid, Vcl.StdCtrls, Vcl.ExtCtrls, Vcl.Buttons, frxClass,
-  frxExportBaseDialog, frxExportPDF, frCoreClasses, frxDBSet;
+  frxExportBaseDialog, frxExportPDF, frCoreClasses, frxDBSet, U_TableDevis;
 
 type
   TFrameTableEntcde_cli = class(TFrame)
