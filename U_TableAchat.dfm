@@ -614,7 +614,6 @@ object FrameTableAchat: TFrameTableAchat
           StretchMode = smMaxHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
-          DataSet = FrameTableDevis.frxDBDatasetDevis
           DataSetName = 'frxDBDatasetDevis'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
@@ -643,7 +642,6 @@ object FrameTableAchat: TFrameTableAchat
           StretchMode = smMaxHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
-          DataSet = FrameTableDevis.frxDBDatasetDevis
           DataSetName = 'frxDBDatasetDevis'
           Frame.Typ = []
           Memo.UTF8W = (
@@ -664,7 +662,6 @@ object FrameTableAchat: TFrameTableAchat
           StretchMode = smActualHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
-          DataSet = FrameTableDevis.frxDBDatasetDevis
           DataSetName = 'frxDBDatasetDevis'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
@@ -773,7 +770,6 @@ object FrameTableAchat: TFrameTableAchat
           StretchMode = smMaxHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
-          DataSet = FrameTableDevis.frxDBDatasetDevis
           DataSetName = 'frxDBDatasetDevis'
           Frame.Typ = []
           Memo.UTF8W = (
@@ -789,7 +785,6 @@ object FrameTableAchat: TFrameTableAchat
           StretchMode = smActualHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
-          DataSet = FrameTableDevis.frxDBDatasetDevis
           DataSetName = 'frxDBDatasetDevis'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
@@ -832,7 +827,6 @@ object FrameTableAchat: TFrameTableAchat
           StretchMode = smMaxHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
-          DataSet = FrameTableDevis.frxDBDatasetDevis
           DataSetName = 'frxDBDatasetDevis'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
@@ -854,7 +848,6 @@ object FrameTableAchat: TFrameTableAchat
           StretchMode = smActualHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
-          DataSet = FrameTableDevis.frxDBDatasetDevis
           DataSetName = 'frxDBDatasetDevis'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
@@ -877,7 +870,6 @@ object FrameTableAchat: TFrameTableAchat
           StretchMode = smMaxHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
-          DataSet = FrameTableDevis.frxDBDatasetDevis
           DataSetName = 'frxDBDatasetDevis'
           DisplayFormat.DecimalSeparator = ','
           DisplayFormat.FormatStr = '%2.2f'
@@ -904,7 +896,6 @@ object FrameTableAchat: TFrameTableAchat
           StretchMode = smMaxHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
-          DataSet = FrameTableDevis.frxDBDatasetDevis
           DataSetName = 'frxDBDatasetDevis'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
@@ -935,7 +926,6 @@ object FrameTableAchat: TFrameTableAchat
           StretchMode = smMaxHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
-          DataSet = FrameTableDevis.frxDBDatasetDevis
           DataSetName = 'frxDBDatasetDevis'
           DisplayFormat.FormatStr = '%2.2n'
           DisplayFormat.Kind = fkNumeric
@@ -961,7 +951,6 @@ object FrameTableAchat: TFrameTableAchat
           StretchMode = smMaxHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
-          DataSet = FrameTableDevis.frxDBDatasetDevis
           DataSetName = 'frxDBDatasetDevis'
           DisplayFormat.FormatStr = '%2.0n'
           DisplayFormat.Kind = fkNumeric
@@ -987,7 +976,6 @@ object FrameTableAchat: TFrameTableAchat
           StretchMode = smMaxHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
-          DataSet = FrameTableDevis.frxDBDatasetDevis
           DataSetName = 'frxDBDatasetDevis'
           DisplayFormat.FormatStr = '%2.0n'
           DisplayFormat.Kind = fkNumeric
@@ -1013,7 +1001,6 @@ object FrameTableAchat: TFrameTableAchat
           StretchMode = smMaxHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
-          DataSet = FrameTableDevis.frxDBDatasetDevis
           DataSetName = 'frxDBDatasetDevis'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
@@ -1036,7 +1023,6 @@ object FrameTableAchat: TFrameTableAchat
           StretchMode = smMaxHeight
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
-          DataSet = FrameTableDevis.frxDBDatasetDevis
           DataSetName = 'frxDBDatasetDevis'
           DisplayFormat.FormatStr = '%2.2n'
           DisplayFormat.Kind = fkNumeric
@@ -1089,7 +1075,6 @@ object FrameTableAchat: TFrameTableAchat
           Height = 18.897650000000000000
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
-          DataSet = FrameTableDevis.frxDBDatasetDevis
           DataSetName = 'frxDBDatasetDevis'
           DisplayFormat.FormatStr = '%2.2n'
           DisplayFormat.Kind = fkNumeric
@@ -1113,7 +1098,6 @@ object FrameTableAchat: TFrameTableAchat
           Height = 18.897650000000000000
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
-          DataSet = FrameTableDevis.frxDBDatasetDevis
           DataSetName = 'frxDBDatasetDevis'
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clBlack
@@ -1142,7 +1126,6 @@ object FrameTableAchat: TFrameTableAchat
           Height = 18.897650000000000000
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
-          DataSet = FrameTableDevis.frxDBDatasetDevis
           DataSetName = 'frxDBDatasetDevis'
           DisplayFormat.FormatStr = '%2.0n'
           DisplayFormat.Kind = fkNumeric
@@ -1256,7 +1239,6 @@ object FrameTableAchat: TFrameTableAchat
           Height = 18.897650000000000000
           ContentScaleOptions.Constraints.MaxIterationValue = 0
           ContentScaleOptions.Constraints.MinIterationValue = 0
-          DataSet = FrameTableDevis.frxDBDatasetDevis
           DataSetName = 'frxDBDatasetDevis'
           DisplayFormat.FormatStr = '%2.2n'
           DisplayFormat.Kind = fkNumeric

@@ -11,7 +11,7 @@ uses
   FireDAC.Phys.MySQL, FireDAC.Phys.MySQLDef, FireDAC.VCLUI.Wait, Data.DB,
   FireDAC.Comp.Client, FireDAC.Stan.Param, FireDAC.DatS, FireDAC.DApt.Intf,
   FireDAC.DApt, Vcl.Grids, Vcl.DBGrids, FireDAC.Comp.DataSet, Vcl.ExtCtrls,
-  Vcl.Buttons, Vcl.ComCtrls, RzTabs, RLReport, JvExDBGrids, JvDBGrid,
+  Vcl.Buttons, Vcl.ComCtrls, RzTabs, JvExDBGrids, JvDBGrid,
   System.Actions, Vcl.ActnList, JvComponentBase, JvAppHotKey;
 
 type

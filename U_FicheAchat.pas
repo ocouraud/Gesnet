@@ -33,7 +33,6 @@ type
     Label10: TLabel;
     DBCODACH: TDBEdit;
     Label1: TLabel;
-    JvDBGridLignes: TJvDBGrid;
     Panel3: TPanel;
     Label14: TLabel;
     Label16: TLabel;
@@ -82,6 +81,12 @@ type
     JvDBLookupComboPoste: TJvDBLookupCombo;
     DSPoste: TDataSource;
     Label4: TLabel;
+    DBLookupComboBoxDepot: TDBLookupComboBox;
+    Panel2: TPanel;
+    BitBtn1: TBitBtn;
+    BitBtn2: TBitBtn;
+    JvDBGridLignes: TJvDBGrid;
+    DSDepot: TDataSource;
     procedure DBCODFOUExit(Sender: TObject);
     procedure BtnAideClick(Sender: TObject);
     procedure BtnValiderClick(Sender: TObject);
@@ -96,6 +101,7 @@ type
     procedure DBMT_TTCExit(Sender: TObject);
     procedure FDMemTableLigachjjCalcFields(DataSet: TDataSet);
     procedure JvDBLookupComboPosteChange(Sender: TObject);
+    procedure DBLookupComboBoxDepotClick(Sender: TObject);
   private
     { Déclarations privées }
     FIsLoading: Boolean;
@@ -207,6 +213,8 @@ begin
     FDQueryFournis.Open;
     DM_Olivier.FDQueryPoste.Close;
     DM_Olivier.FDQueryPoste.Open;
+    DM_Olivier.FDQueryDepot.Close;
+    DM_Olivier.FDQueryDepot.Open;
 
     FDMemTableAchat.Edit;
 
@@ -216,6 +224,7 @@ begin
       BtnAjouterLigne.Enabled:=False;
       BtnSupprimerLigne.Enabled:=False;
       BtnModifierLigne.Enabled:=False;
+      DBLookupComboBoxDepot.Enabled:=False;
     end
     else
     begin
@@ -234,6 +243,7 @@ begin
         BtnAjouterLigne.Enabled := False;
         BtnSupprimerLigne.Enabled := False;
         BtnModifierLigne.Enabled := False;
+        DBLookupComboBoxDepot.Enabled:=False;
       end
       else
       begin
@@ -247,6 +257,7 @@ begin
           BtnAjouterLigne.Enabled:=False;
           BtnSupprimerLigne.Enabled:=False;
           BtnModifierLigne.Enabled:=False;
+          DBLookupComboBoxDepot.Enabled:=False;
         end;
       end;
     end;
@@ -311,6 +322,11 @@ begin
   QryExec.Free;
 end;
 
+
+procedure TFormFicheAchat.DBLookupComboBoxDepotClick(Sender: TObject);
+begin
+  FDMemTableAchat.FieldByName('CODDEP').AsInteger := DBLookupComboBoxDepot.KeyValue;
+end;
 
 procedure TFormFicheAchat.DBMT_TTCExit(Sender: TObject);
 begin
@@ -403,6 +419,7 @@ begin
     BtnAjouterLigne.Enabled:=False;
     BtnSupprimerLigne.Enabled:=False;
     BtnModifierLigne.Enabled:=False;
+    DBLookupComboBoxDepot.Enabled:=False;
   end
   else
   begin
@@ -410,6 +427,7 @@ begin
     BtnAjouterLigne.Enabled:=True;
     BtnSupprimerLigne.Enabled:=True;
     BtnModifierLigne.Enabled:=True;
+    DBLookupComboBoxDepot.Enabled:=True;
   end;
   if FDMemTableAchat.FieldByName('LIBELLE').AsString='' then
     FDMemTableAchat.FieldByName('LIBELLE').AsString:=DM_Olivier.FDQueryPoste.FieldByName('LIBELLE').AsString;
@@ -649,9 +667,10 @@ begin
         QryExec.close;
         QryExec.SQL.Text := 'INSERT INTO `achat` ('+
         '`CODACH`, `REFER`, `CODFOU`, `DATE_`, `MT_HT`, `MT_TVA`, `MT_REM`, '+
-        '`MT_TTC`, `TOP_`, `LIBELLE`, POSTE) '+
+        '`MT_TTC`, `TOP_`, `LIBELLE`, POSTE, CODDEP) '+
         'VALUES '+
-        '(:CODACH, :REFER, :CODFOU, :DATE_, :MT_HT, :MT_TVA, :MT_REM, :MT_TTC, :TOP_, :LIBELLE, :POSTE)';
+        '(:CODACH, :REFER, :CODFOU, :DATE_, :MT_HT, :MT_TVA, :MT_REM, '+
+        ':MT_TTC, :TOP_, :LIBELLE, :POSTE, CODDEP)';
 
         // Assignation directe des valeurs depuis la table mémoire
         QryExec.ParamByName('LIBELLE').AsString  := FDMemTableAchat.FieldByName('LIBELLE').AsString;
@@ -665,6 +684,7 @@ begin
         QryExec.ParamByName('MT_TTC').AsInteger  := FDMemTableAchat.FieldByName('MT_TTC').AsInteger;
         QryExec.ParamByName('REFER').AsString    := FDMemTableAchat.FieldByName('REFER').AsString;
         QryExec.ParamByName('POSTE').AsString    := FDMemTableAchat.FieldByName('POSTE').AsString;
+        QryExec.ParamByName('CODDEP').AsInteger  := FDMemTableAchat.FieldByName('CODDEP').AsInteger;
         QryExec.ExecSQL;
 
       end
@@ -684,7 +704,8 @@ begin
         '`MT_REM` = :MT_REM ,'+
         '`TOP_` = :TOP_ ,'+
         '`LIBELLE` = :LIBELLE, '+
-        'POSTE = :POSTE '+
+        'POSTE = :POSTE, '+
+        '`CODDEP` = :CODDEP '+
         'WHERE `CODACH` = :CODACH';
 
         // Assignation directe des valeurs depuis la table mémoire
@@ -699,6 +720,7 @@ begin
         QryExec.ParamByName('MT_TTC').AsInteger  := FDMemTableAchat.FieldByName('MT_TTC').AsInteger;
         QryExec.ParamByName('REFER').AsString    := FDMemTableAchat.FieldByName('REFER').AsString;
         QryExec.ParamByName('POSTE').AsString    := FDMemTableAchat.FieldByName('POSTE').AsString;
+        QryExec.ParamByName('CODDEP').AsInteger  := FDMemTableAchat.FieldByName('CODDEP').AsInteger;
         QryExec.ExecSQL;
       end;
 

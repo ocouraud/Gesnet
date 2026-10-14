@@ -4,7 +4,8 @@ interface
 
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
-  System.IniFiles, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls,
+  System.IniFiles, Vcl.Graphics, Vcl.Controls,
+  Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls,
   Vcl.Buttons, Data.DB, FireDAC.Stan.Intf, FireDAC.Stan.Option, FireDAC.Stan.Param,
   FireDAC.Stan.Error, FireDAC.DatS, FireDAC.Phys.Intf, FireDAC.DApt.Intf,
   FireDAC.Stan.Async, FireDAC.DApt, FireDAC.Comp.DataSet, FireDAC.Comp.Client,
@@ -86,6 +87,7 @@ type
     procedure FacturesreccurentesClick(Sender: TObject);
     procedure ExportEcrituresClientClick(Sender: TObject);
     procedure AchatsLocauxClick(Sender: TObject);
+    procedure CommandesFournisseursClick(Sender: TObject);
   private
     function ChercherEtActiverOnglet(const ACaption: string): Boolean;
     function OuvrirOnglet<T: TControl>(const ACaption: string; const AImageName: string = ''; AOnCreate: TProc<T> = nil): T;
@@ -109,7 +111,7 @@ uses
   U_FicheCtrstock, U_FicheCaisse, U_FormGestionDroits, U_TableArticles, U_TableEntvtejj,
   U_TableEntvteaa, U_FormCentraVentes, U_TableDevis, U_FrameEcrituresClients,
   U_TableJournal, U_FrameFacturesReccurentes, U_FormExportEcrituresClient, U_TableEntcde_cli,
-  U_TableAchat;
+  U_TableAchat, U_TableEntcde;
 
 procedure TFormMenuPrincipal.FormCreate(Sender: TObject);
 begin
@@ -443,6 +445,16 @@ begin
   // Votre méthode qui crée ou ouvre l'onglet/frame
   MonFrame := OuvrirOnglet<TFrameTableAchat>('Achats locaux', 'shell32_29');
 end;
+
+procedure TFormMenuPrincipal.CommandesFournisseursClick(
+  Sender: TObject);
+var
+  MonFrame: TFrameTableEntcde;
+begin
+  // Votre méthode qui crée ou ouvre l'onglet/frame
+  MonFrame := OuvrirOnglet<TFrameTableEntcde>('Commandes fournisseurs', 'shell32_14');
+end;
+
 
 procedure TFormMenuPrincipal.Centralisationdesventes1Click(Sender: TObject);
 var

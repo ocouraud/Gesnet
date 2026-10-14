@@ -3,7 +3,7 @@ unit U_TableAchat;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, System.UITypes,
   RzTabs, RzPanel, RzRadGrp,
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, FireDAC.Stan.Intf,
   FireDAC.Stan.Option, FireDAC.Stan.Param, FireDAC.Stan.Error, FireDAC.DatS,
@@ -515,7 +515,7 @@ end;
 
 procedure TFrameTableAchat.BtnImprimerClick(Sender: TObject);
 var
-  NumDevisSelectionne: Integer;
+  NumAchatSelectionne: Integer;
 begin
 
   // 1. Lire vos paramètres globaux (via une requête ou un fichier de config)
@@ -551,7 +551,7 @@ begin
   frxReportFactureAchat.Variables.AddVariable('Globales','VarTotalAlpha',QuotedStr('Achat arrêté à la somme de : ' +
     DMGesCloud.MontantenLettres(FDQueryAchat.FieldByName('MT_TTC').AsInteger) + ' Francs CFP.'));
 
-  // 1. Activer la requête SQL contenant les données du devis
+  // 1. Activer la requête SQL contenant les données de l'achat
   //FDQueryDevis.ParamByName('CODDEV').AsInteger := FDQueryEnt_prof.FieldByName('CODDEV').AsInteger;
   FDQueryFactureAchat.Open;
 
@@ -577,7 +577,7 @@ begin
       // 1. On recharge les données de la table
       FDQueryAchat.Refresh;
 
-      // 2. On se repositionne proprement sur le devis modifié grâce à sa clé unique
+      // 2. On se repositionne proprement sur l'achat modifié grâce à sa clé unique
       if not FDQueryAchat.Locate('CODACH', CodAch, []) then
       begin
         // Optionnel : si la commande a changé de filtre ou n'est plus visible,

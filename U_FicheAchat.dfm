@@ -13,124 +13,6 @@ object FormFicheAchat: TFormFicheAchat
   Position = poMainFormCenter
   OnCloseQuery = FormCloseQuery
   TextHeight = 15
-  object JvDBGridLignes: TJvDBGrid
-    Left = 0
-    Top = 131
-    Width = 766
-    Height = 397
-    Align = alClient
-    DataSource = DSMemTableLigachjj
-    Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit, dgMultiSelect, dgTitleClick, dgTitleHotTrack]
-    TabOrder = 1
-    TitleFont.Charset = DEFAULT_CHARSET
-    TitleFont.Color = clWindowText
-    TitleFont.Height = -12
-    TitleFont.Name = 'Segoe UI'
-    TitleFont.Style = []
-    OnDblClick = BtnModifierLigneClick
-    OnKeyDown = JvDBGridLignesKeyDown
-    MultiSelect = True
-    TitleButtons = True
-    AlternateRowColor = clAzure
-    TitleArrow = True
-    SelectColumnsDialogStrings.Caption = 'Select columns'
-    SelectColumnsDialogStrings.OK = '&OK'
-    SelectColumnsDialogStrings.NoSelectionWarning = 'At least one column must be visible!'
-    EditControls = <>
-    RowsHeight = 19
-    TitleRowHeight = 19
-    Columns = <
-      item
-        Expanded = False
-        FieldName = 'CODACH'
-        Visible = False
-      end
-      item
-        Expanded = False
-        FieldName = 'CODFOU'
-        Visible = False
-      end
-      item
-        Expanded = False
-        FieldName = 'CODART'
-        Title.Caption = 'Code article'
-        Width = 78
-        Visible = True
-      end
-      item
-        Expanded = False
-        FieldName = 'DATE_'
-        Visible = False
-      end
-      item
-        Expanded = False
-        FieldName = 'lib_art'
-        Title.Caption = 'Libell'#233
-        Width = 208
-        Visible = True
-      end
-      item
-        Expanded = False
-        FieldName = 'QTE'
-        Title.Alignment = taCenter
-        Title.Caption = 'Quantit'#233
-        Width = 55
-        Visible = True
-      end
-      item
-        Expanded = False
-        FieldName = 'PRIXHT'
-        Title.Alignment = taCenter
-        Title.Caption = 'Prix HT.'
-        Visible = True
-      end
-      item
-        Expanded = False
-        FieldName = 'PRIXTTC'
-        Title.Alignment = taCenter
-        Title.Caption = 'Prix TTC'
-        Visible = True
-      end
-      item
-        Expanded = False
-        FieldName = 'TOTHT'
-        Title.Alignment = taCenter
-        Title.Caption = 'Total HT.'
-        Visible = True
-      end
-      item
-        Expanded = False
-        FieldName = 'TX_TVA'
-        Title.Alignment = taCenter
-        Visible = False
-      end
-      item
-        Expanded = False
-        FieldName = 'MT_TVA'
-        Title.Alignment = taCenter
-        Title.Caption = 'Mont. TVA'
-        Visible = True
-      end
-      item
-        Expanded = False
-        FieldName = 'DER_MODIF'
-        Visible = False
-      end
-      item
-        Expanded = False
-        FieldName = 'tot_ttc'
-        Title.Alignment = taCenter
-        Title.Caption = 'Total TTC'
-        Width = 81
-        Visible = True
-      end
-      item
-        Expanded = False
-        FieldName = 'NOENR'
-        Title.Caption = 'No ligne'
-        Visible = True
-      end>
-  end
   object Panel3: TPanel
     Left = 0
     Top = 528
@@ -138,7 +20,7 @@ object FormFicheAchat: TFormFicheAchat
     Height = 133
     Align = alBottom
     BevelOuter = bvNone
-    TabOrder = 2
+    TabOrder = 1
     DesignSize = (
       884
       133)
@@ -455,6 +337,21 @@ object FormFicheAchat: TFormFicheAchat
       TabOrder = 3
       OnChange = JvDBLookupComboPosteChange
     end
+    object DBLookupComboBoxDepot: TDBLookupComboBox
+      Left = 431
+      Top = 95
+      Width = 146
+      Height = 23
+      DataField = 'CODDEP'
+      DataSource = DSMemTableAchat
+      DropDownWidth = 250
+      KeyField = 'CODDEP'
+      ListField = 'CODDEP;NOM'
+      ListFieldIndex = 1
+      ListSource = DSDepot
+      TabOrder = 8
+      OnClick = DBLookupComboBoxDepotClick
+    end
   end
   object Panel5: TPanel
     Left = 766
@@ -463,7 +360,7 @@ object FormFicheAchat: TFormFicheAchat
     Height = 397
     Align = alRight
     BevelOuter = bvNone
-    TabOrder = 3
+    TabOrder = 2
     object BtnAjouterLigne: TButton
       Left = 0
       Top = 0
@@ -494,6 +391,154 @@ object FormFicheAchat: TFormFicheAchat
       TabOrder = 1
       OnClick = BtnModifierLigneClick
     end
+  end
+  object Panel2: TPanel
+    Left = 661
+    Top = 131
+    Width = 105
+    Height = 397
+    Align = alRight
+    BevelOuter = bvNone
+    TabOrder = 3
+    object BitBtn1: TBitBtn
+      Left = 0
+      Top = 0
+      Width = 105
+      Height = 28
+      Align = alTop
+      Caption = '&Valider '#10004
+      Default = True
+      TabOrder = 0
+      OnClick = BtnValiderClick
+    end
+    object BitBtn2: TBitBtn
+      Left = 0
+      Top = 31
+      Width = 105
+      Height = 32
+      Cancel = True
+      Caption = '&Annuler '#10060
+      ModalResult = 2
+      TabOrder = 1
+    end
+  end
+  object JvDBGridLignes: TJvDBGrid
+    Left = 0
+    Top = 131
+    Width = 661
+    Height = 397
+    Align = alClient
+    DataSource = DSMemTableLigachjj
+    Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit, dgMultiSelect, dgTitleClick, dgTitleHotTrack]
+    TabOrder = 4
+    TitleFont.Charset = DEFAULT_CHARSET
+    TitleFont.Color = clWindowText
+    TitleFont.Height = -12
+    TitleFont.Name = 'Segoe UI'
+    TitleFont.Style = []
+    OnDblClick = BtnModifierLigneClick
+    OnKeyDown = JvDBGridLignesKeyDown
+    MultiSelect = True
+    TitleButtons = True
+    AlternateRowColor = clAzure
+    TitleArrow = True
+    SelectColumnsDialogStrings.Caption = 'Select columns'
+    SelectColumnsDialogStrings.OK = '&OK'
+    SelectColumnsDialogStrings.NoSelectionWarning = 'At least one column must be visible!'
+    EditControls = <>
+    RowsHeight = 19
+    TitleRowHeight = 19
+    Columns = <
+      item
+        Expanded = False
+        FieldName = 'CODACH'
+        Visible = False
+      end
+      item
+        Expanded = False
+        FieldName = 'CODFOU'
+        Visible = False
+      end
+      item
+        Expanded = False
+        FieldName = 'CODART'
+        Title.Caption = 'Code article'
+        Width = 78
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'DATE_'
+        Visible = False
+      end
+      item
+        Expanded = False
+        FieldName = 'lib_art'
+        Title.Caption = 'Libell'#233
+        Width = 208
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'QTE'
+        Title.Alignment = taCenter
+        Title.Caption = 'Quantit'#233
+        Width = 55
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'PRIXHT'
+        Title.Alignment = taCenter
+        Title.Caption = 'Prix HT.'
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'PRIXTTC'
+        Title.Alignment = taCenter
+        Title.Caption = 'Prix TTC'
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'TOTHT'
+        Title.Alignment = taCenter
+        Title.Caption = 'Total HT.'
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'TX_TVA'
+        Title.Alignment = taCenter
+        Visible = False
+      end
+      item
+        Expanded = False
+        FieldName = 'MT_TVA'
+        Title.Alignment = taCenter
+        Title.Caption = 'Mont. TVA'
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'DER_MODIF'
+        Visible = False
+      end
+      item
+        Expanded = False
+        FieldName = 'tot_ttc'
+        Title.Alignment = taCenter
+        Title.Caption = 'Total TTC'
+        Width = 81
+        Visible = True
+      end
+      item
+        Expanded = False
+        FieldName = 'NOENR'
+        Title.Caption = 'No ligne'
+        Visible = True
+      end>
   end
   object FDQueryFournis: TFDQuery
     Connection = DMGesCloud.ConnexionGesCloud
@@ -720,5 +765,10 @@ object FormFicheAchat: TFormFicheAchat
     DataSet = DM_Olivier.FDQueryPoste
     Left = 352
     Top = 416
+  end
+  object DSDepot: TDataSource
+    DataSet = DM_Olivier.FDQueryDepot
+    Left = 224
+    Top = 312
   end
 end
