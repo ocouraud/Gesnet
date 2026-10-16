@@ -21,149 +21,12 @@ object FormFicheEntcde: TFormFicheEntcde
     Align = alBottom
     BevelOuter = bvNone
     TabOrder = 1
-    DesignSize = (
-      884
-      133)
-    object Label14: TLabel
-      Left = 565
-      Top = 9
-      Width = 57
-      Height = 15
-      Anchors = [akRight, akBottom]
-      Caption = 'TOTAL HT.'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -12
-      Font.Name = 'Segoe UI'
-      Font.Style = [fsBold]
-      ParentFont = False
-    end
-    object Label16: TLabel
-      Left = 565
-      Top = 67
-      Width = 84
-      Height = 15
-      Anchors = [akRight, akBottom]
-      Caption = 'MONTANT TVA'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -12
-      Font.Name = 'Segoe UI'
-      Font.Style = [fsBold]
-      ParentFont = False
-      ExplicitLeft = 697
-    end
-    object Label15: TLabel
-      Left = 565
-      Top = 96
-      Width = 77
-      Height = 21
-      Anchors = [akRight, akBottom]
-      Caption = 'TOTAL TTC'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -16
-      Font.Name = 'Segoe UI'
-      Font.Style = [fsBold]
-      ParentFont = False
-      ExplicitLeft = 697
-    end
-    object Label3: TLabel
-      Left = 565
-      Top = 38
-      Width = 42
-      Height = 15
-      Anchors = [akRight, akBottom]
-      Caption = 'REMISE'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -12
-      Font.Name = 'Segoe UI'
-      Font.Style = [fsBold]
-      ParentFont = False
-    end
-    object DBTot_devise: TDBEdit
-      Left = 655
-      Top = 6
-      Width = 86
-      Height = 23
-      Anchors = [akRight, akBottom]
-      BiDiMode = bdRightToLeft
-      DataField = 'TOT_DEVISE'
-      DataSource = DSMemTableEntcde
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -12
-      Font.Name = 'Segoe UI'
-      Font.Style = [fsBold]
-      ParentBiDiMode = False
-      ParentFont = False
-      TabOrder = 0
-      OnExit = DBTot_deviseExit
-    end
-    object DBTOT_TVA: TDBEdit
-      Left = 655
-      Top = 64
-      Width = 87
-      Height = 23
-      Anchors = [akRight, akBottom]
-      BiDiMode = bdRightToLeft
-      DataField = 'TOT_TVA'
-      DataSource = DSMemTableEntcde
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -12
-      Font.Name = 'Segoe UI'
-      Font.Style = [fsBold]
-      ParentBiDiMode = False
-      ParentFont = False
-      TabOrder = 2
-      OnExit = DBTOT_TVAExit
-    end
-    object DBTOT_FRET: TDBEdit
-      Left = 655
-      Top = 93
-      Width = 87
-      Height = 29
-      Anchors = [akRight, akBottom]
-      BiDiMode = bdRightToLeft
-      DataField = 'TOT_FRET'
-      DataSource = DSMemTableEntcde
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -16
-      Font.Name = 'Segoe UI'
-      Font.Style = [fsBold]
-      ParentBiDiMode = False
-      ParentFont = False
-      TabOrder = 3
-      OnExit = DBTOT_FRETExit
-    end
-    object DBTot_cfp: TDBEdit
-      Left = 656
-      Top = 35
-      Width = 86
-      Height = 23
-      Anchors = [akRight, akBottom]
-      BiDiMode = bdRightToLeft
-      DataField = 'TOT_CFP'
-      DataSource = DSMemTableEntcde
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
-      Font.Height = -12
-      Font.Name = 'Segoe UI'
-      Font.Style = [fsBold]
-      ParentBiDiMode = False
-      ParentFont = False
-      TabOrder = 1
-      OnExit = DBTot_deviseExit
-    end
   end
   object Panel1: TPanel
     Left = 0
     Top = 0
     Width = 884
-    Height = 131
+    Height = 257
     Align = alTop
     TabOrder = 0
     object Label21: TLabel
@@ -181,7 +44,7 @@ object FormFicheEntcde: TFormFicheEntcde
       Caption = 'No dossier'
     end
     object Label10: TLabel
-      Left = 281
+      Left = 363
       Top = 11
       Width = 24
       Height = 15
@@ -196,20 +59,55 @@ object FormFicheEntcde: TFormFicheEntcde
     end
     object Label2: TLabel
       Left = 8
-      Top = 98
+      Top = 185
       Width = 34
       Height = 15
       Caption = 'Libell'#233
     end
     object Label4: TLabel
-      Left = 281
-      Top = 40
+      Left = 528
+      Top = 67
       Width = 34
       Height = 15
       Caption = 'Devise'
     end
+    object Label5: TLabel
+      Left = 657
+      Top = 69
+      Width = 24
+      Height = 15
+      Caption = 'Taux'
+    end
+    object Label6: TLabel
+      Left = 528
+      Top = 98
+      Width = 32
+      Height = 15
+      Caption = 'D'#233'p'#244't'
+    end
+    object Label7: TLabel
+      Left = 8
+      Top = 96
+      Width = 46
+      Height = 15
+      Caption = 'Assureur'
+    end
+    object Label8: TLabel
+      Left = 8
+      Top = 127
+      Width = 66
+      Height = 15
+      Caption = 'Transporteur'
+    end
+    object Label9: TLabel
+      Left = 8
+      Top = 156
+      Width = 72
+      Height = 15
+      Caption = 'Com. douane'
+    end
     object JvDBDate_: TJvDBDateEdit
-      Left = 321
+      Left = 393
       Top = 8
       Width = 104
       Height = 23
@@ -247,7 +145,7 @@ object FormFicheEntcde: TFormFicheEntcde
     object DBLookupComboBoxFournis: TDBLookupComboBox
       Left = 154
       Top = 66
-      Width = 423
+      Width = 343
       Height = 23
       DataField = 'CODFOU'
       DataSource = DSMemTableEntcde
@@ -273,10 +171,10 @@ object FormFicheEntcde: TFormFicheEntcde
       Left = 766
       Top = 1
       Width = 117
-      Height = 129
+      Height = 255
       Align = alRight
       BevelOuter = bvNone
-      TabOrder = 7
+      TabOrder = 6
       object BtnValider: TBitBtn
         Left = 0
         Top = 0
@@ -311,21 +209,10 @@ object FormFicheEntcde: TFormFicheEntcde
         TabOrder = 1
       end
     end
-    object DBObserv: TDBLabeledEdit
-      Left = 95
-      Top = 95
-      Width = 330
-      Height = 23
-      DataField = 'OBSERV'
-      DataSource = DSMemTableEntcde
-      TabOrder = 6
-      EditLabel.Width = 3
-      EditLabel.Height = 15
-    end
-    object JvDBLookupComboPoste: TJvDBLookupCombo
-      Left = 321
-      Top = 37
-      Width = 104
+    object JvDBLookupComboDevise: TJvDBLookupCombo
+      Left = 568
+      Top = 66
+      Width = 81
       Height = 23
       DropDownWidth = 250
       DataField = 'DEVISE'
@@ -336,11 +223,12 @@ object FormFicheEntcde: TFormFicheEntcde
       ParentShowHint = False
       ShowHint = False
       TabOrder = 3
+      OnChange = JvDBLookupComboDeviseChange
     end
     object DBLookupComboBoxDepot: TDBLookupComboBox
-      Left = 431
+      Left = 568
       Top = 95
-      Width = 146
+      Width = 192
       Height = 23
       DataField = 'CODDEP'
       DataSource = DSMemTableEntcde
@@ -349,15 +237,98 @@ object FormFicheEntcde: TFormFicheEntcde
       ListField = 'CODDEP;NOM'
       ListFieldIndex = 1
       ListSource = DSDepot
-      TabOrder = 8
+      TabOrder = 7
       OnClick = DBLookupComboBoxDepotClick
+    end
+    object JvDBCalcEdit1: TJvDBCalcEdit
+      Left = 687
+      Top = 66
+      Width = 73
+      Height = 23
+      TabOrder = 8
+      DecimalPlacesAlwaysShown = False
+      DataField = 'TAUX'
+      DataSource = DSMemTableEntcde
+    end
+    object DBRadioGroup1: TDBRadioGroup
+      Left = 528
+      Top = 0
+      Width = 232
+      Height = 52
+      Caption = 'Mode d'#39'expedition'
+      Columns = 3
+      DataField = 'EXPED'
+      DataSource = DSMemTableEntcde
+      Items.Strings = (
+        'Avion'
+        'Bateau'
+        'Autre')
+      TabOrder = 9
+      Values.Strings = (
+        'A'
+        'B'
+        'X')
+    end
+    object DBLookupComboBoxASSUR: TDBLookupComboBox
+      Left = 95
+      Top = 95
+      Width = 330
+      Height = 23
+      DataField = 'ASSUR'
+      DataSource = DSMemTableEntcde
+      DropDownRows = 20
+      KeyField = 'CODFOU'
+      ListField = 'CODFOU;NOM'
+      ListFieldIndex = 1
+      ListSource = DSFournis
+      TabOrder = 10
+      OnExit = DBCODFOUExit
+    end
+    object DBLookupComboBoxTRANSP: TDBLookupComboBox
+      Left = 95
+      Top = 124
+      Width = 330
+      Height = 23
+      DataField = 'TRANSP'
+      DataSource = DSMemTableEntcde
+      DropDownRows = 20
+      KeyField = 'CODFOU'
+      ListField = 'CODFOU;NOM'
+      ListFieldIndex = 1
+      ListSource = DSFournis
+      TabOrder = 11
+      OnExit = DBCODFOUExit
+    end
+    object DBLookupComboBoxCOM_DOU: TDBLookupComboBox
+      Left = 95
+      Top = 153
+      Width = 330
+      Height = 23
+      DataField = 'COM_DOU'
+      DataSource = DSMemTableEntcde
+      DropDownRows = 20
+      KeyField = 'CODFOU'
+      ListField = 'CODFOU;NOM'
+      ListFieldIndex = 1
+      ListSource = DSFournis
+      TabOrder = 12
+      OnExit = DBCODFOUExit
+    end
+    object DBMemoObserv: TDBMemo
+      Left = 95
+      Top = 182
+      Width = 402
+      Height = 65
+      DataField = 'OBSERV'
+      DataSource = DSMemTableEntcde
+      TabOrder = 13
     end
   end
   object Panel5: TPanel
     Left = 766
-    Top = 131
+    Top = 257
     Width = 118
-    Height = 397
+    Height = 271
     Align = alRight
     BevelOuter = bvNone
     TabOrder = 2
@@ -392,45 +363,15 @@ object FormFicheEntcde: TFormFicheEntcde
       OnClick = BtnModifierLigneClick
     end
   end
-  object Panel2: TPanel
-    Left = 661
-    Top = 131
-    Width = 105
-    Height = 397
-    Align = alRight
-    BevelOuter = bvNone
-    TabOrder = 3
-    object BitBtn1: TBitBtn
-      Left = 0
-      Top = 0
-      Width = 105
-      Height = 28
-      Align = alTop
-      Caption = '&Valider '#10004
-      Default = True
-      TabOrder = 0
-      OnClick = BtnValiderClick
-    end
-    object BitBtn2: TBitBtn
-      Left = 0
-      Top = 31
-      Width = 105
-      Height = 32
-      Cancel = True
-      Caption = '&Annuler '#10060
-      ModalResult = 2
-      TabOrder = 1
-    end
-  end
   object JvDBGridLignes: TJvDBGrid
     Left = 0
-    Top = 131
-    Width = 661
-    Height = 397
+    Top = 257
+    Width = 766
+    Height = 271
     Align = alClient
     DataSource = DSMemTableLigcde
     Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit, dgMultiSelect, dgTitleClick, dgTitleHotTrack]
-    TabOrder = 4
+    TabOrder = 3
     TitleFont.Charset = DEFAULT_CHARSET
     TitleFont.Color = clWindowText
     TitleFont.Height = -12
@@ -440,7 +381,7 @@ object FormFicheEntcde: TFormFicheEntcde
     OnKeyDown = JvDBGridLignesKeyDown
     MultiSelect = True
     TitleButtons = True
-    AlternateRowColor = clAzure
+    AlternateRowColor = clInfoBk
     TitleArrow = True
     SelectColumnsDialogStrings.Caption = 'Select columns'
     SelectColumnsDialogStrings.OK = '&OK'
@@ -452,92 +393,105 @@ object FormFicheEntcde: TFormFicheEntcde
       item
         Expanded = False
         FieldName = 'NOCDE'
-        Visible = True
+        Visible = False
       end
       item
         Expanded = False
         FieldName = 'CODART'
+        Title.Caption = 'Code article'
+        Width = 87
         Visible = True
       end
       item
         Expanded = False
         FieldName = 'REF_FOU'
+        Title.Caption = 'Ref. fournisseur'
+        Width = 90
         Visible = True
       end
       item
         Expanded = False
         FieldName = 'CODFOU'
-        Visible = True
+        Visible = False
       end
       item
         Expanded = False
         FieldName = 'DATE_'
-        Visible = True
+        Visible = False
       end
       item
         Expanded = False
         FieldName = 'LIBELLE'
+        Title.Caption = 'D'#233'signation'
+        Width = 194
         Visible = True
       end
       item
         Expanded = False
         FieldName = 'UV'
-        Visible = True
-      end
-      item
-        Expanded = False
-        FieldName = 'QTE_UV'
-        Visible = True
-      end
-      item
-        Expanded = False
-        FieldName = 'PX_UC'
+        Title.Caption = 'Unit. vte'
         Visible = True
       end
       item
         Expanded = False
         FieldName = 'UC'
+        Title.Caption = 'Unit cde'
         Visible = True
       end
       item
         Expanded = False
         FieldName = 'QTE_UC'
+        Title.Caption = 'Quantit'#233' UC'
+        Width = 81
         Visible = True
       end
       item
         Expanded = False
-        FieldName = 'ETAT'
+        FieldName = 'QTE_UV'
+        Title.Caption = 'Quantit'#233' UV'
+        Width = 72
         Visible = True
       end
       item
         Expanded = False
-        FieldName = 'QTE_UV_RC'
-        Visible = True
-      end
-      item
-        Expanded = False
-        FieldName = 'QTE_UC_RC'
-        Visible = True
-      end
-      item
-        Expanded = False
-        FieldName = 'COEF_PR'
-        Visible = True
-      end
-      item
-        Expanded = False
-        FieldName = 'COEF_PV'
+        FieldName = 'PX_UC'
+        Title.Caption = 'Prix UC'
         Visible = True
       end
       item
         Expanded = False
         FieldName = 'PX_REV'
-        Visible = True
+        Visible = False
+      end
+      item
+        Expanded = False
+        FieldName = 'ETAT'
+        Visible = False
+      end
+      item
+        Expanded = False
+        FieldName = 'QTE_UV_RC'
+        Visible = False
+      end
+      item
+        Expanded = False
+        FieldName = 'QTE_UC_RC'
+        Visible = False
+      end
+      item
+        Expanded = False
+        FieldName = 'COEF_PR'
+        Visible = False
+      end
+      item
+        Expanded = False
+        FieldName = 'COEF_PV'
+        Visible = False
       end
       item
         Expanded = False
         FieldName = 'PX_VTE'
-        Visible = True
+        Visible = False
       end
       item
         Expanded = False
@@ -622,8 +576,8 @@ object FormFicheEntcde: TFormFicheEntcde
     Connection = DMGesCloud.ConnexionGesCloud
     SQL.Strings = (
       'select * from article where codart=:codart')
-    Left = 232
-    Top = 224
+    Left = 208
+    Top = 288
     ParamData = <
       item
         Name = 'CODART'

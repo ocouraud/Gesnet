@@ -11,7 +11,7 @@ uses
   Vcl.StdCtrls, Vcl.DBCtrls, Vcl.Mask, Vcl.ExtCtrls, Vcl.Grids, Vcl.DBGrids,
   JvExDBGrids, JvDBGrid, Vcl.Buttons, RzButton, RzRadChk, RzDBChk, RzPanel,
   RzRadGrp, RzDBRGrp, FireDAC.Stan.Async, FireDAC.DApt, Math, System.DateUtils,
-  JvExMask, JvToolEdit, JvDBControls, JvExControls, JvDBLookup;
+  JvExMask, JvToolEdit, JvDBControls, JvExControls, JvDBLookup, JvBaseEdits;
 
 type
   TModeSaisie = (msAjout, msModification);
@@ -34,12 +34,6 @@ type
     DBNOCDE: TDBEdit;
     Label1: TLabel;
     Panel3: TPanel;
-    Label14: TLabel;
-    Label16: TLabel;
-    Label15: TLabel;
-    DBTot_devise: TDBEdit;
-    DBTOT_TVA: TDBEdit;
-    DBTOT_FRET: TDBEdit;
     Panel5: TPanel;
     BtnAjouterLigne: TButton;
     BtnSupprimerLigne: TButton;
@@ -51,19 +45,24 @@ type
     BtnAnnuler: TBitBtn;
     Label2: TLabel;
     DSLigcde: TDataSource;
-    DBObserv: TDBLabeledEdit;
-    DBTot_cfp: TDBEdit;
-    Label3: TLabel;
     FDQueryArticle: TFDQuery;
-    JvDBLookupComboPoste: TJvDBLookupCombo;
+    JvDBLookupComboDevise: TJvDBLookupCombo;
     Label4: TLabel;
     DBLookupComboBoxDepot: TDBLookupComboBox;
-    Panel2: TPanel;
-    BitBtn1: TBitBtn;
-    BitBtn2: TBitBtn;
     JvDBGridLignes: TJvDBGrid;
     DSDepot: TDataSource;
     DSParameDevise: TDataSource;
+    JvDBCalcEdit1: TJvDBCalcEdit;
+    Label5: TLabel;
+    DBRadioGroup1: TDBRadioGroup;
+    DBLookupComboBoxASSUR: TDBLookupComboBox;
+    Label6: TLabel;
+    DBLookupComboBoxTRANSP: TDBLookupComboBox;
+    DBLookupComboBoxCOM_DOU: TDBLookupComboBox;
+    Label7: TLabel;
+    Label8: TLabel;
+    Label9: TLabel;
+    DBMemoObserv: TDBMemo;
     procedure DBCODFOUExit(Sender: TObject);
     procedure BtnAideClick(Sender: TObject);
     procedure BtnValiderClick(Sender: TObject);
@@ -78,6 +77,7 @@ type
     procedure DBTOT_FRETExit(Sender: TObject);
     procedure FDMemTableLigcdeCalcFields(DataSet: TDataSet);
     procedure DBLookupComboBoxDepotClick(Sender: TObject);
+    procedure JvDBLookupComboDeviseChange(Sender: TObject);
   private
     { Déclarations privées }
     FIsLoading: Boolean;
@@ -100,7 +100,7 @@ implementation
 
 {$R *.dfm}
 
-uses U_DM_Olivier, U_TableEntcde_cli, U_DataModule, U_FormAide, U_FicheLigachjj;
+uses U_DM_Olivier, U_TableEntcde, U_DataModule, U_FormAide, U_FicheLigcde;
 
 
 constructor TFormFicheEntcde.Create(AOwner: TComponent; AMode: TModeSaisie; ANumero: Integer);
@@ -249,6 +249,10 @@ begin
       DBLookupComboBoxFournis.SetFocus;     //Focus sur le champ sur lequel on est positionné
       Exit;
     end;
+
+    FDMemTableEntcde.FieldByName('DEVISE').AsString:= QryExec.FieldByName('DEVISE').AsString;
+    JvDBLookupComboDeviseChange(Sender);
+
 //    if ModeSaisie = msAjout then
 //      FDMemTableEntcde.FieldByName('LIBELLE').AsString := 'Achat ' + FDQueryFournis.FieldByName('nom').AsString;
 
@@ -346,6 +350,12 @@ begin
 end;
 
 
+procedure TFormFicheEntcde.JvDBLookupComboDeviseChange(Sender: TObject);
+begin
+FDMemTableEntcde.FieldByName('TAUX').AsFloat :=
+  JvDBLookupComboDevise.LookupSource.DataSet.FieldByName('TAUX').AsFloat;
+end;
+
 //CALCUL COMPLET DE LA PIECE
 procedure TFormFicheEntcde.BtnAideClick(Sender: TObject);
 begin
@@ -362,29 +372,29 @@ var
   Continuer: Boolean;
 begin
 
-  if FDMemTableEntcde.FieldByName('TOP_').AsString = 'C' then
+  if FDMemTableEntcde.FieldByName('ETAT').AsString = 'R' then
       Exit;
 
   repeat
     // Création et affichage de la fiche de saisie
-    FormLigachjj := TFormLigachjj.Create(Self);
+    FormLigcde := TFormLigcde.Create(Self);
     try
-      FormLigachjj.DSLigachjj.DataSet := FDMemTableLigcde;
+      FormLigcde.DSLigcde.DataSet := FDMemTableLigcde;
 
       // Configuration de la fiche
-      FormLigachjj.ModeSaisieLigne := U_FicheLigachjj.msAjout;
-      FormLigachjj.Caption := 'Nouvelle ligne d''achat';
+      FormLigcde.ModeSaisieLigne := U_FicheLigcde.msAjout;
+      FormLigcde.Caption := 'Nouvelle ligne';
 
       // Passage en mode insertion
       FDMemTableLigcde.Insert;
 
       // Pré-remplir les champs correctement
-      FDMemTableLigcde.FieldByName('CODACH').AsInteger := FDMemTableEntcde.FieldByName('CODACH').AsInteger;
-      FDMemTableLigcde.FieldByName('CODDEP').AsInteger := FDMemTableEntcde.FieldByName('CODDEP').AsInteger;
+      FDMemTableLigcde.FieldByName('NOCDE').AsInteger := FDMemTableEntcde.FieldByName('NOCDE').AsInteger;
+      FDMemTableLigcde.FieldByName('DATE_').AsDateTime := FDMemTableEntcde.FieldByName('DATE_').AsDateTime;
       FDMemTableLigcde.FieldByName('CODFOU').AsString := FDMemTableEntcde.FieldByName('CODFOU').AsString;
 
       // Si l'utilisateur clique sur Valider
-      Continuer := (FormLigachjj.ShowModal = mrOk);
+      Continuer := (FormLigcde.ShowModal = mrOk);
       if Continuer then
       begin
         // Le .Post a DEJA été fait à l'intérieur de la fiche
@@ -396,7 +406,7 @@ begin
         FDMemTableLigcde.Cancel;
       end;
     finally
-      FormLigachjj.Free;
+      FormLigcde.Free;
     end;
   until not Continuer; // La boucle tourne tant que l'utilisateur valide (mrOk)
   JvDBGridLignes.SetFocus;
@@ -409,16 +419,16 @@ begin
   if FDMemTableLigcde.IsEmpty then Exit;
 
     // Si le focus est sur la grille et qu'on appuie sur Entrée
-  if FDMemTableEntcde.FieldByName('TOP_').AsString = 'C' then
+  if FDMemTableEntcde.FieldByName('ETAT').AsString = 'C' then
       Exit;
 
-  FormLigachjj := TFormLigachjj.Create(Self);
+  FormLigcde := TFormLigcde.Create(Self);
   try
-    FormLigachjj.DSLigachjj.DataSet := FDMemTableLigcde;
-    FormLigachjj.ModeSaisieLigne := U_FicheLigachjj.msModification;
-    FormLigachjj.Caption := 'Modifier la ligne de la pièce';
+    FormLigcde.DSLigcde.DataSet := FDMemTableLigcde;
+    FormLigcde.ModeSaisieLigne := U_FicheLigcde.msModification;
+    FormLigcde.Caption := 'Modifier la ligne de la pièce';
 
-    if FormLigachjj.ShowModal = mrOk then
+    if FormLigcde.ShowModal = mrOk then
     begin
       // 1. On s'assure que le post est bien effectif et fermé
       if FDMemTableLigcde.State in [dsEdit, dsInsert] then
@@ -440,7 +450,7 @@ begin
       end;
     end;
   finally
-    FormLigachjj.Free;
+    FormLigcde.Free;
     JvDBGridLignes.SetFocus;
   end;
 
@@ -453,7 +463,7 @@ var
   NbLignesSupprimees: Integer;
 begin
   // Garde-fou existant
-  if FDMemTableEntcde.FieldByName('TOP_').AsString = 'C' then
+  if FDMemTableEntcde.FieldByName('ETAT').AsString = 'C' then
     Exit;
 
   // 1. Vérification si la table est vide
@@ -521,7 +531,7 @@ procedure TFormFicheEntcde.BtnValiderClick(Sender: TObject);
 var
   QryExec: TFDQuery;
   QryExec2: TFDQuery;
-  NumACH: Integer;
+  Numero: Integer;
   VNoCde: Integer;
   WAnnuleSaisie: Boolean;
   iNolig: Integer;
@@ -564,73 +574,154 @@ begin
       begin
         //Recuperation dernier num commande
         QryExec.close;
-        QryExec.SQL.Text := 'SELECT CODACH FROM `achat` ORDER BY CODACH DESC LIMIT 1';
+        QryExec.SQL.Text := 'SELECT NOCDE FROM `entcde` ORDER BY NOCDE DESC LIMIT 1';
         QryExec.Open;
         QryExec.first;
-        NumACH:=1;
+        Numero:=1;
         if QryExec.Eof=false then
-          NumACH := QryExec.FieldByName('CODACH').AsInteger + 1;
+          Numero := QryExec.FieldByName('NOCDE').AsInteger + 1;
 
-        FNumeroCree := NumACH;
+        FNumeroCree := Numero;
 
         // INSERT pour l'en-tête
         QryExec.close;
-        QryExec.SQL.Text := 'INSERT INTO `achat` ('+
-        '`CODACH`, `REFER`, `CODFOU`, `DATE_`, `MT_HT`, `MT_TVA`, `MT_REM`, '+
-        '`MT_TTC`, `TOP_`, `LIBELLE`, POSTE, CODDEP) '+
+        QryExec.SQL.Text := 'INSERT INTO entcde '+
+        '(`NOCDE`,'+
+        '`DOSSIER`,'+
+        '`CODFOU`,'+
+        '`DATE_`,'+
+        '`DEVISE`,'+
+        '`TAUX`,'+
+        '`ASSUR`,'+
+        '`TRANSP`,'+
+        '`COM_DOU`,'+
+        '`EXPED`,'+
+        '`ETAT`,'+
+        '`DATE_ARRIVEE`,'+
+        '`TOT_DEVISE`,'+
+        '`TOT_CFP`,'+
+        '`TOT_FRET`,'+
+        '`TOT_COMM_DOU`,'+
+        '`TOT_DROITS`,'+
+        '`TOT_ASSUR`,'+
+        '`TOT_TVA`,'+
+        '`COEF_PR`,'+
+        '`COEF_PV`,'+
+        '`CODDEP`,'+
+        '`OBSERV`,'+
+        '`PRC_MARG`) '+
         'VALUES '+
-        '(:CODACH, :REFER, :CODFOU, :DATE_, :MT_HT, :MT_TVA, :MT_REM, '+
-        ':MT_TTC, :TOP_, :LIBELLE, :POSTE, CODDEP)';
+        '(:NOCDE ,'+
+        ':DOSSIER ,'+
+        ':CODFOU ,'+
+        ':DATE_ ,'+
+        ':DEVISE ,'+
+        ':TAUX ,'+
+        ':ASSUR ,'+
+        ':TRANSP ,'+
+        ':COM_DOU ,'+
+        ':EXPED ,'+
+        ':ETAT ,'+
+        ':DATE_ARRIVEE ,'+
+        ':TOT_DEVISE ,'+
+        ':TOT_CFP ,'+
+        ':TOT_FRET ,'+
+        ':TOT_COMM_DOU ,'+
+        ':TOT_DROITS ,'+
+        ':TOT_ASSUR ,'+
+        ':TOT_TVA ,'+
+        ':COEF_PR ,'+
+        ':COEF_PV ,'+
+        ':CODDEP ,'+
+        ':OBSERV ,'+
+        ':PRC_MARG )';
+
 
         // Assignation directe des valeurs depuis la table mémoire
-        QryExec.ParamByName('LIBELLE').AsString  := FDMemTableEntcde.FieldByName('LIBELLE').AsString;
-        QryExec.ParamByName('CODACH').AsInteger  := NumACH;
+        QryExec.ParamByName('OBSERV').AsString  := FDMemTableEntcde.FieldByName('OBSERV').AsString;
+        QryExec.ParamByName('NOCDE').AsInteger  := Numero;
         QryExec.ParamByName('CODFOU').AsString   := FDMemTableEntcde.FieldByName('CODFOU').AsString;
-        QryExec.ParamByName('TOP_').AsString     := 'J';
+        QryExec.ParamByName('ETAT').AsString     := 'S';
         QryExec.ParamByName('DATE_').AsDateTime  := FDMemTableEntcde.FieldByName('DATE_').AsDateTime;
-        QryExec.ParamByName('MT_HT').AsFloat     := FDMemTableEntcde.FieldByName('MT_HT').AsFloat;
-        QryExec.ParamByName('MT_REM').AsFloat    := FDMemTableEntcde.FieldByName('MT_REM').AsFloat;
-        QryExec.ParamByName('MT_TVA').AsInteger  := FDMemTableEntcde.FieldByName('MT_TVA').AsInteger;
-        QryExec.ParamByName('MT_TTC').AsInteger  := FDMemTableEntcde.FieldByName('MT_TTC').AsInteger;
-        QryExec.ParamByName('REFER').AsString    := FDMemTableEntcde.FieldByName('REFER').AsString;
-        QryExec.ParamByName('POSTE').AsString    := FDMemTableEntcde.FieldByName('POSTE').AsString;
+        QryExec.ParamByName('DATE_ARRIVEE').AsDateTime  := FDMemTableEntcde.FieldByName('DATE_ARRIVEE').AsDateTime;
+        QryExec.ParamByName('TOT_DEVISE').AsFloat     := FDMemTableEntcde.FieldByName('TOT_DEVISE').AsFloat;
+        QryExec.ParamByName('TOT_CFP').AsInteger    := FDMemTableEntcde.FieldByName('TOT_CFP').AsInteger;
+        QryExec.ParamByName('TOT_FRET').AsInteger  := FDMemTableEntcde.FieldByName('TOT_FRET').AsInteger;
+        QryExec.ParamByName('TOT_COMM_DOU').AsInteger  := FDMemTableEntcde.FieldByName('TOT_COMM_DOU').AsInteger;
+        QryExec.ParamByName('TOT_DROITS').AsInteger  := FDMemTableEntcde.FieldByName('TOT_DROITS').AsInteger;
+        QryExec.ParamByName('TOT_ASSUR').AsInteger  := FDMemTableEntcde.FieldByName('TOT_ASSUR').AsInteger;
+        QryExec.ParamByName('TOT_TVA').AsInteger  := FDMemTableEntcde.FieldByName('TOT_TVA').AsInteger;
+        QryExec.ParamByName('DOSSIER').AsString    := FDMemTableEntcde.FieldByName('DOSSIER').AsString;
+        QryExec.ParamByName('DEVISE').AsString    := FDMemTableEntcde.FieldByName('DEVISE').AsString;
+        QryExec.ParamByName('TAUX').AsFloat     := FDMemTableEntcde.FieldByName('TAUX').AsFloat;
+        QryExec.ParamByName('COEF_PR').AsFloat     := FDMemTableEntcde.FieldByName('COEF_PR').AsFloat;
+        QryExec.ParamByName('COEF_PV').AsFloat     := FDMemTableEntcde.FieldByName('COEF_PV').AsFloat;
+        QryExec.ParamByName('PRC_MARG').AsFloat     := FDMemTableEntcde.FieldByName('PRC_MARG').AsFloat;
         QryExec.ParamByName('CODDEP').AsInteger  := FDMemTableEntcde.FieldByName('CODDEP').AsInteger;
+        QryExec.ParamByName('ASSUR').AsString   := FDMemTableEntcde.FieldByName('ASSUR').AsString;
+        QryExec.ParamByName('TRANSP').AsString   := FDMemTableEntcde.FieldByName('TRANSP').AsString;
+        QryExec.ParamByName('COM_DOU').AsString   := FDMemTableEntcde.FieldByName('COM_DOU').AsString;
+        QryExec.ParamByName('EXPED').AsString   := FDMemTableEntcde.FieldByName('EXPED').AsString;
         QryExec.ExecSQL;
 
       end
       else
       begin
         // UPDATE pour l'en-tête en modification
-        NumACH := FDMemTableEntcde.FieldByName('CODACH').AsInteger;
+        Numero := FDMemTableEntcde.FieldByName('NOCDE').AsInteger;
 
-        QryExec.SQL.Text := 'UPDATE `achat` SET '+
-        '`CODACH` = :CODACH ,'+
-        '`REFER` = :REFER ,'+
-        '`CODFOU` = :CODFOU ,'+
-        '`DATE_` = :DATE_ ,'+
-        '`MT_HT` = :MT_HT ,'+
-        '`MT_TVA` = :MT_TVA ,'+
-        '`MT_TTC` = :MT_TTC ,'+
-        '`MT_REM` = :MT_REM ,'+
-        '`TOP_` = :TOP_ ,'+
-        '`LIBELLE` = :LIBELLE, '+
-        'POSTE = :POSTE, '+
-        '`CODDEP` = :CODDEP '+
-        'WHERE `CODACH` = :CODACH';
+        QryExec.SQL.Text := 'UPDATE `entcde` SET '+
+            '`NOCDE` = :NOCDE, '+
+            '`DOSSIER` = :DOSSIER, '+
+            '`CODFOU` = :CODFOU, '+
+            '`DATE_` = :DATE_, '+
+            '`DEVISE` = :DEVISE, '+
+            '`TAUX` = :TAUX, '+
+            '`ASSUR` = :ASSUR, '+
+            '`TRANSP` = :TRANSP, '+
+            '`COM_DOU` = :COM_DOU, '+
+            '`EXPED` = :EXPED, '+
+            '`ETAT` = :ETAT, '+
+            '`DATE_ARRIVEE` = :DATE_ARRIVEE, '+
+            '`TOT_DEVISE` = :TOT_DEVISE, '+
+            '`TOT_CFP` = :TOT_CFP, '+
+            '`TOT_FRET` = :TOT_FRET, '+
+            '`TOT_COMM_DOU` = :TOT_COMM_DOU, '+
+            '`TOT_DROITS` = :TOT_DROITS, '+
+            '`TOT_ASSUR` = :TOT_ASSUR, '+
+            '`TOT_TVA` = :TOT_TVA, '+
+            '`COEF_PR` = :COEF_PR, '+
+            '`COEF_PV` = :COEF_PV, '+
+            '`CODDEP` = :CODDEP, '+
+            '`OBSERV` = :OBSERV, '+
+            '`PRC_MARG` = :PRC_MARG '+
+            'WHERE `NOCDE` = :NOCDE';
 
         // Assignation directe des valeurs depuis la table mémoire
-        QryExec.ParamByName('LIBELLE').AsString  := FDMemTableEntcde.FieldByName('LIBELLE').AsString;
-        QryExec.ParamByName('CODACH').AsInteger  := NumACH;
+        QryExec.ParamByName('OBSERV').AsString  := FDMemTableEntcde.FieldByName('OBSERV').AsString;
+        QryExec.ParamByName('NOCDE').AsInteger  := Numero;
         QryExec.ParamByName('CODFOU').AsString   := FDMemTableEntcde.FieldByName('CODFOU').AsString;
-        QryExec.ParamByName('TOP_').AsString     := 'J';
+        QryExec.ParamByName('ETAT').AsString     := 'S';
         QryExec.ParamByName('DATE_').AsDateTime  := FDMemTableEntcde.FieldByName('DATE_').AsDateTime;
-        QryExec.ParamByName('MT_HT').AsFloat     := FDMemTableEntcde.FieldByName('MT_HT').AsFloat;
-        QryExec.ParamByName('MT_REM').AsFloat    := FDMemTableEntcde.FieldByName('MT_REM').AsFloat;
-        QryExec.ParamByName('MT_TVA').AsInteger  := FDMemTableEntcde.FieldByName('MT_TVA').AsInteger;
-        QryExec.ParamByName('MT_TTC').AsInteger  := FDMemTableEntcde.FieldByName('MT_TTC').AsInteger;
-        QryExec.ParamByName('REFER').AsString    := FDMemTableEntcde.FieldByName('REFER').AsString;
-        QryExec.ParamByName('POSTE').AsString    := FDMemTableEntcde.FieldByName('POSTE').AsString;
+        QryExec.ParamByName('DATE_ARRIVEE').AsDateTime  := FDMemTableEntcde.FieldByName('DATE_ARRIVEE').AsDateTime;
+        QryExec.ParamByName('TOT_DEVISE').AsFloat     := FDMemTableEntcde.FieldByName('TOT_DEVISE').AsFloat;
+        QryExec.ParamByName('TOT_CFP').AsInteger    := FDMemTableEntcde.FieldByName('TOT_CFP').AsInteger;
+        QryExec.ParamByName('TOT_FRET').AsInteger  := FDMemTableEntcde.FieldByName('TOT_FRET').AsInteger;
+        QryExec.ParamByName('TOT_COMM_DOU').AsInteger  := FDMemTableEntcde.FieldByName('TOT_COMM_DOU').AsInteger;
+        QryExec.ParamByName('TOT_DROITS').AsInteger  := FDMemTableEntcde.FieldByName('TOT_DROITS').AsInteger;
+        QryExec.ParamByName('TOT_ASSUR').AsInteger  := FDMemTableEntcde.FieldByName('TOT_ASSUR').AsInteger;
+        QryExec.ParamByName('TOT_TVA').AsInteger  := FDMemTableEntcde.FieldByName('TOT_TVA').AsInteger;
+        QryExec.ParamByName('DOSSIER').AsString    := FDMemTableEntcde.FieldByName('DOSSIER').AsString;
+        QryExec.ParamByName('DEVISE').AsString    := FDMemTableEntcde.FieldByName('DEVISE').AsString;
+        QryExec.ParamByName('TAUX').AsFloat     := FDMemTableEntcde.FieldByName('TAUX').AsFloat;
+        QryExec.ParamByName('COEF_PR').AsFloat     := FDMemTableEntcde.FieldByName('COEF_PR').AsFloat;
+        QryExec.ParamByName('COEF_PV').AsFloat     := FDMemTableEntcde.FieldByName('COEF_PV').AsFloat;
+        QryExec.ParamByName('PRC_MARG').AsFloat     := FDMemTableEntcde.FieldByName('PRC_MARG').AsFloat;
         QryExec.ParamByName('CODDEP').AsInteger  := FDMemTableEntcde.FieldByName('CODDEP').AsInteger;
+        QryExec.ParamByName('ASSUR').AsString   := FDMemTableEntcde.FieldByName('ASSUR').AsString;
+        QryExec.ParamByName('TRANSP').AsString   := FDMemTableEntcde.FieldByName('TRANSP').AsString;
+        QryExec.ParamByName('COM_DOU').AsString   := FDMemTableEntcde.FieldByName('COM_DOU').AsString;
+        QryExec.ParamByName('EXPED').AsString   := FDMemTableEntcde.FieldByName('EXPED').AsString;
         QryExec.ExecSQL;
       end;
 
@@ -644,8 +735,8 @@ begin
       if ModeSaisie = msModification then
       begin
         QryExec.Close;
-        QryExec.SQL.Text := 'DELETE FROM ligachjj WHERE CODACH = :CODACH';
-        QryExec.ParamByName('CODACH').AsInteger := NumACH;
+        QryExec.SQL.Text := 'DELETE FROM ligcde WHERE  NOCDE = :NOCDE';
+        QryExec.ParamByName('NOCDE').AsInteger := Numero;
         QryExec.ExecSQL;
       end;
 
@@ -657,55 +748,64 @@ begin
         iNolig:= iNolig+1;
         //Insertion lig_prof
         QryExec.Close;
-        QryExec.SQL.Text := 'INSERT INTO `ligachjj` ('+
-        '`CODACH`,'+
-        '`CODFOU`,'+
-        '`CODDEP`,'+
-        '`CODFAM`,'+
-        '`CODSSF`,'+
+        QryExec.SQL.Text := 'INSERT INTO `ligcde` '+
+        '(`NOCDE`,'+
         '`CODART`,'+
-        '`REFER`,'+
+        '`REF_FOU`,'+
+        '`CODFOU`,'+
         '`DATE_`,'+
-        '`QTE`,'+
-        '`PRIXHT`,'+
-        '`PRIXTTC`,'+
-        '`TOTHT`,'+
-        '`NO_TVA`,'+
-        '`TX_TVA`,'+
-        '`MT_TVA`) '+
-        'VALUES ('+
-        ':CODACH,'+
-        ':CODFOU,'+
-        ':CODDEP,'+
-        ':CODFAM,'+
-        ':CODSSF,'+
+        '`LIBELLE`,'+
+        '`UV`,'+
+        '`QTE_UV`,'+
+        '`PX_UC`,'+
+        '`UC`,'+
+        '`QTE_UC`,'+
+        '`ETAT`,'+
+        '`QTE_UV_RC`,'+
+        '`QTE_UC_RC`,'+
+        '`COEF_PR`,'+
+        '`COEF_PV`,'+
+        '`PX_REV`,'+
+        '`PX_VTE`) '+
+        'VALUES '+
+        '(:NOCDE,'+
         ':CODART,'+
-        ':REFER,'+
+        ':REF_FOU,'+
+        ':CODFOU,'+
         ':DATE_,'+
-        ':QTE,'+
-        ':PRIXHT,'+
-        ':PRIXTTC,'+
-        ':TOTHT,'+
-        ':NO_TVA,'+
-        ':TX_TVA,'+
-        ':MT_TVA)';
+        ':LIBELLE,'+
+        ':UV,'+
+        ':QTE_UV,'+
+        ':PX_UC,'+
+        ':UC,'+
+        ':QTE_UC,'+
+        ':ETAT,'+
+        ':QTE_UV_RC,'+
+        ':QTE_UC_RC,'+
+        ':COEF_PR,'+
+        ':COEF_PV,'+
+        ':PX_REV,'+
+        ':PX_VTE)';
 
         // Assignation directe des valeurs depuis la table mémoire des lignes
-        QryExec.ParamByName('CODACH').AsInteger     := NumACH;
-        QryExec.ParamByName('REFER').AsString    := FDMemTableLigcde.FieldByName('REFER').AsString;
+        QryExec.ParamByName('NOCDE').AsInteger     := Numero;
+        QryExec.ParamByName('REF_FOU').AsString    := FDMemTableLigcde.FieldByName('REF_FOU').AsString;
+        QryExec.ParamByName('DATE_').AsDateTime  := FDMemTableEntcde.FieldByName('DATE_').AsDateTime;
         QryExec.ParamByName('CODFOU').AsString    := FDMemTableLigcde.FieldByName('CODFOU').AsString;
         QryExec.ParamByName('CODART').AsString     := FDMemTableLigcde.FieldByName('CODART').AsString;
-        QryExec.ParamByName('QTE').AsFloat         := FDMemTableLigcde.FieldByName('QTE').AsFloat;
-        QryExec.ParamByName('PRIXHT').AsFloat      := FDMemTableLigcde.FieldByName('PRIXHT').AsFloat;
-        QryExec.ParamByName('PRIXTTC').AsInteger   := FDMemTableLigcde.FieldByName('PRIXTTC').AsInteger;
-        QryExec.ParamByName('TOTHT').AsFloat       := FDMemTableLigcde.FieldByName('TOTHT').AsFloat;
-        QryExec.ParamByName('NO_TVA').AsInteger    := FDMemTableLigcde.FieldByName('NO_TVA').AsInteger;
-        QryExec.ParamByName('TX_TVA').AsFloat      := FDMemTableLigcde.FieldByName('TX_TVA').AsFloat;
-        QryExec.ParamByName('MT_TVA').AsFloat      := FDMemTableLigcde.FieldByName('MT_TVA').AsFloat;
-        QryExec.ParamByName('CODFAM').AsString     := FDMemTableLigcde.FieldByName('CODFAM').AsString;
-        QryExec.ParamByName('DATE_').AsDateTime    := FDMemTableLigcde.FieldByName('DATE_').AsDateTime;
-        QryExec.ParamByName('CODSSF').AsString     := FDMemTableLigcde.FieldByName('CODSSF').AsString;;
-        QryExec.ParamByName('CODDEP').AsInteger   := FDMemTableLigcde.FieldByName('CODDEP').AsInteger;
+        QryExec.ParamByName('LIBELLE').AsString     := FDMemTableLigcde.FieldByName('LIBELLE').AsString;
+        QryExec.ParamByName('UV').AsString     := FDMemTableLigcde.FieldByName('UV').AsString;
+        QryExec.ParamByName('UC').AsString     := FDMemTableLigcde.FieldByName('UC').AsString;
+        QryExec.ParamByName('QTE_UV').AsFloat         := FDMemTableLigcde.FieldByName('QTE_UV').AsFloat;
+        QryExec.ParamByName('QTE_UC').AsFloat         := FDMemTableLigcde.FieldByName('QTE_UC').AsFloat;
+        QryExec.ParamByName('ETAT').AsString     := FDMemTableLigcde.FieldByName('ETAT').AsString;
+        QryExec.ParamByName('QTE_UV_RC').AsFloat   := FDMemTableLigcde.FieldByName('QTE_UV_RC').AsFloat;
+        QryExec.ParamByName('QTE_UC_RC').AsFloat   := FDMemTableLigcde.FieldByName('QTE_UC_RC').AsFloat;
+        QryExec.ParamByName('COEF_PR').AsFloat      := FDMemTableLigcde.FieldByName('COEF_PR').AsFloat;
+        QryExec.ParamByName('COEF_PV').AsFloat   := FDMemTableLigcde.FieldByName('COEF_PV').AsFloat;
+        QryExec.ParamByName('PX_REV').AsFloat       := FDMemTableLigcde.FieldByName('PX_REV').AsFloat;
+        QryExec.ParamByName('PX_VTE').AsFloat       := FDMemTableLigcde.FieldByName('PX_VTE').AsFloat;
+        QryExec.ParamByName('PX_UC').AsFloat       := FDMemTableLigcde.FieldByName('PX_UC').AsFloat;
 
         QryExec.ExecSQL;
 
@@ -742,23 +842,7 @@ var
   QryArticle: TFDQuery;
   pTVA: String;
 
-  wHT0: Double;
-  wHT0r: Double;
-  wHT1: Double;
-  wHT1r: Double;
-  wHT2: Double;
-  wHT2r: Double;
-  wHT3: Double;
-  wHT3r: Double;
-  wHT4: Double;
-  wHT4r: Double;
-  wTVA1: Double;
-  wTVA2: Double;
-  wTVA3: Double;
-  wTVA4: Double;
-
   MONT: Double;
-  WTOT_REGLE: Double;
   wDate: TDateTime;
   AQte: Double;
 
@@ -788,87 +872,24 @@ begin
       if not FDMemTableLigcde.IsEmpty then
         SavedBookmark := FDMemTableLigcde.GetBookmark;
 
-      // Si exonéré de TVA
-      FDMemTableLigcde.First;
-      while not FDMemTableLigcde.Eof do
-      begin
-      FDMemTableLigcde.Edit;
-
-      // Lecture article
-      QryArticle.Close;
-      QryArticle.SQL.Text := 'SELECT * FROM article WHERE CODART=:CODART';
-      QryArticle.ParamByName('CODART').AsString := FDMemTableLigcde.FieldByName('CODART').AsString;
-      QryArticle.Open;
-      FDMemTableLigcde.FieldByName('NO_TVA').AsInteger := StrToIntDef(StringReplace(QryArticle.FieldByName('TVA').AsString, 'TVA', '', [rfReplaceAll, rfIgnoreCase]), 0);
-      pTVA := QryArticle.FieldByName('TVA').AsString;
-
-      FDMemTableLigcde.FieldByName('TX_TVA').AsFloat := DM_Olivier.fgTxTaxe(wDate,pTVA);
-
-      // Sécurité anti-division par zéro sur la quantité
-      AQte := FDMemTableLigcde.FieldByName('QTE').AsFloat;
-      if AQte = 0 then
-        AQte := 1;
-
-      // Calcul TVA sur PRIXHT ou PRIXTTC
-//      if RzDBCheckBoxFlag_Tax.Checked = False  then
-//      begin
-        // Sur TTC
-//        FDMemTableLigcde_cli.FieldByName('MT_TTC').AsInteger := Round(FDMemTableLigcde_cli.FieldByName('PRIXTTC').AsInteger
-//          * FDMemTableLigcde_cli.FieldByName('QTE').AsFloat);
-//        FDMemTableLigcde_cli.FieldByName('MT_TVA').AsFloat := (FDMemTableLigcde_cli.FieldByName('MT_TTC').AsInteger)
-//          * (FDMemTableLigcde_cli.FieldByName('TX_TVA').AsFloat
-//          / (100 + FDMemTableLigcde_cli.FieldByName('TX_TVA').AsFloat));
-//        FDMemTableLigcde_cli.FieldByName('TOTHT').AsFloat := FDMemTableLigcde_cli.FieldByName('MT_TTC').AsInteger
-//          - FDMemTableLigcde_cli.FieldByName('MT_TVA').AsFloat;
-//        if FDMemTableLigcde_cli.FieldByName('QTE').AsFloat<>0 then
-//          FDMemTableLigcde_cli.FieldByName('PRIXHT').AsFloat := RoundTo(FDMemTableLigcde_cli.FieldByName('TOTHT').AsFloat
-//          / AQte,-2);
-//      end
-//      else
-//      begin
-        // Sur HT
-        FDMemTableLigcde.FieldByName('PRIXTTC').AsInteger := Round(DM_Olivier.CalculerTTC(FDMemTableLigcde.FieldByName('PRIXHT').AsFloat, FDMemTableLigcde.FieldByName('TX_TVA').AsFloat));
-        FDMemTableLigcde.FieldByName('TOTHT').AsFloat := FDMemTableLigcde.FieldByName('PRIXHT').AsFloat * FDMemTableLigcde.FieldByName('QTE').AsFloat;
-        FDMemTableLigcde.FieldByName('MT_TVA').AsFloat := (FDMemTableLigcde.FieldByName('TOTHT').AsFloat / 100) * FDMemTableLigcde.FieldByName('TX_TVA').AsFloat;
-//      end;
-
-        // Arrondis
-        FDMemTableLigcde.FieldByName('PRIXHT').AsFloat := RoundTo(FDMemTableLigcde.FieldByName('PRIXHT').AsFloat, -2);
-        FDMemTableLigcde.FieldByName('TOTHT').AsFloat := RoundTo(FDMemTableLigcde.FieldByName('TOTHT').AsFloat, -2);
-        FDMemTableLigcde.FieldByName('MT_TVA').AsFloat := RoundTo(FDMemTableLigcde.FieldByName('MT_TVA').AsFloat, -2);
-        //FDMemTableLigcde.FieldByName('MT_TTC').AsFloat := Round(FDMemTableLigcde.FieldByName('TOTHT').AsFloat +
-        //+ FDMemTableLigcde.FieldByName('MT_TVA').AsFloat);
-
-        FDMemTableLigcde.Post;
-        FDMemTableLigcde.Next;
-      end;
-
-
-      // CAL_EVP - RAZ cumul si lignes pour recalcul
+      // RAZ cumul si lignes pour recalcul
       if FDMemTableLigcde.RecordCount>0 then
       begin
-        FDMemTableEntcde.FieldByName('MT_TTC').AsInteger := 0;
-        FDMemTableEntcde.FieldByName('MT_HT').AsFloat := 0;
-        FDMemTableEntcde.FieldByName('MT_TVA').AsInteger := 0;
-        //FDMemTableEntcde.FieldByName('MT_REM').AsFloat := 0;
+//        FDMemTableEntcde.FieldByName('MT_TTC').AsInteger := 0;
+//        FDMemTableEntcde.FieldByName('MT_HT').AsFloat := 0;
+//        FDMemTableEntcde.FieldByName('MT_TVA').AsInteger := 0;
+//        //FDMemTableEntcde.FieldByName('MT_REM').AsFloat := 0;
       end
       else
       begin
-        if FDMemTableEntcde.FieldByName('MT_TTC').AsInteger <> round(FDMemTableEntcde.FieldByName('MT_HT').AsFloat
-         + FDMemTableEntcde.FieldByName('MT_TVA').AsFloat
-         - FDMemTableEntcde.FieldByName('MT_REM').AsFloat) then
-        begin
-          ShowMessage('⚠ Incohérence dans les montants saisis');
-          Exit;
-        end;
+//        if FDMemTableEntcde.FieldByName('MT_TTC').AsInteger <> round(FDMemTableEntcde.FieldByName('MT_HT').AsFloat
+//         + FDMemTableEntcde.FieldByName('MT_TVA').AsFloat
+//         - FDMemTableEntcde.FieldByName('MT_REM').AsFloat) then
+//        begin
+//          ShowMessage('⚠ Incohérence dans les montants saisis');
+//          Exit;
+//        end;
       end;
-
-      wHT0 := 0; wHT0r := 0;
-      wHT1 := 0; wHT1r := 0;
-      wHT2 := 0; wHT2r := 0;
-      wHT3 := 0; wHT3r := 0;
-      wHT4 := 0; wHT4r := 0;
-      wTVA1 := 0; wTVA2 := 0; wTVA3 := 0; wTVA4 := 0;
 
       FDMemTableLigcde.First;
       while not FDMemTableLigcde.Eof do
@@ -880,31 +901,16 @@ begin
         QryArticle.ParamByName('CODART').AsString := FDMemTableLigcde.FieldByName('CODART').AsString;
         QryArticle.Open;
 
-//        DM_Olivier.FDQueryCtrstock.Open;
-//        if DM_Olivier.FDQueryCtrstock.FieldByName('NATURE').AsString = 'G' then
-//        begin
-//          QryExec.Close;
-//          QryExec.SQL.Text := 'SELECT * FROM prixgeo WHERE CODGEO=:CODGEO AND CODPRIX=:CODPRIX';
-//          QryExec.ParamByName('CODGEO').AsString := FDMemTableEntcde_cli.FieldByName('CODGEO').AsString;
-//          QryExec.ParamByName('CODPRIX').AsString := QryArticle.FieldByName('CODPRIX').AsString;
-//          QryExec.Open;
-//          if not QryExec.Eof then
-//          begin
-//            FDMemTableLigcde_cli.FieldByName('DET_PPT').AsFloat := QryArticle.FieldByName('DET_PPT').AsFloat;
-//            FDMemTableLigcde_cli.FieldByName('DET_ILE').AsFloat := QryArticle.FieldByName('DET_PPT').AsFloat * QryExec.FieldByName('COEF').AsFloat;
-//          end;
-//        end;
-
-        FDMemTableEntcde.FieldByName('MT_HT').AsFloat := FDMemTableEntcde.FieldByName('MT_HT').AsFloat + FDMemTableLigcde.FieldByName('TOTHT').AsFloat;
-        FDMemTableEntcde.FieldByName('MT_TVA').AsInteger := FDMemTableEntcde.FieldByName('MT_TVA').AsInteger + FDMemTableLigcde.FieldByName('MT_TVA').AsInteger;
-        FDMemTableEntcde.FieldByName('MT_TTC').AsInteger := FDMemTableEntcde.FieldByName('MT_HT').AsInteger + FDMemTableEntcde.FieldByName('MT_TVA').AsInteger;
+//        FDMemTableEntcde.FieldByName('MT_HT').AsFloat := FDMemTableEntcde.FieldByName('MT_HT').AsFloat + FDMemTableLigcde.FieldByName('TOTHT').AsFloat;
+//        FDMemTableEntcde.FieldByName('MT_TVA').AsInteger := FDMemTableEntcde.FieldByName('MT_TVA').AsInteger + FDMemTableLigcde.FieldByName('MT_TVA').AsInteger;
+//        FDMemTableEntcde.FieldByName('MT_TTC').AsInteger := FDMemTableEntcde.FieldByName('MT_HT').AsInteger + FDMemTableEntcde.FieldByName('MT_TVA').AsInteger;
 
         FDMemTableLigcde.Post;
         FDMemTableLigcde.Next;
       end;
 
       // Arrondis
-      FDMemTableEntcde.FieldByName('MT_HT').AsFloat := RoundTo(FDMemTableEntcde.FieldByName('MT_HT').AsFloat, -2);
+//      FDMemTableEntcde.FieldByName('MT_HT').AsFloat := RoundTo(FDMemTableEntcde.FieldByName('MT_HT').AsFloat, -2);
 
     finally
       try

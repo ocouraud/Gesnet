@@ -392,45 +392,15 @@ object FormFicheAchat: TFormFicheAchat
       OnClick = BtnModifierLigneClick
     end
   end
-  object Panel2: TPanel
-    Left = 661
-    Top = 131
-    Width = 105
-    Height = 397
-    Align = alRight
-    BevelOuter = bvNone
-    TabOrder = 3
-    object BitBtn1: TBitBtn
-      Left = 0
-      Top = 0
-      Width = 105
-      Height = 28
-      Align = alTop
-      Caption = '&Valider '#10004
-      Default = True
-      TabOrder = 0
-      OnClick = BtnValiderClick
-    end
-    object BitBtn2: TBitBtn
-      Left = 0
-      Top = 31
-      Width = 105
-      Height = 32
-      Cancel = True
-      Caption = '&Annuler '#10060
-      ModalResult = 2
-      TabOrder = 1
-    end
-  end
   object JvDBGridLignes: TJvDBGrid
     Left = 0
     Top = 131
-    Width = 661
+    Width = 766
     Height = 397
     Align = alClient
     DataSource = DSMemTableLigachjj
     Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit, dgMultiSelect, dgTitleClick, dgTitleHotTrack]
-    TabOrder = 4
+    TabOrder = 3
     TitleFont.Charset = DEFAULT_CHARSET
     TitleFont.Color = clWindowText
     TitleFont.Height = -12

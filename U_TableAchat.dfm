@@ -213,7 +213,7 @@ object FrameTableAchat: TFrameTableAchat
       OnChange = EditCherche_CODFOUChange
     end
     object RadioGroupEtat: TRadioGroup
-      Left = 16
+      Left = 15
       Top = 0
       Width = 441
       Height = 40

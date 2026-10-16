@@ -82,9 +82,6 @@ type
     DSPoste: TDataSource;
     Label4: TLabel;
     DBLookupComboBoxDepot: TDBLookupComboBox;
-    Panel2: TPanel;
-    BitBtn1: TBitBtn;
-    BitBtn2: TBitBtn;
     JvDBGridLignes: TJvDBGrid;
     DSDepot: TDataSource;
     procedure DBCODFOUExit(Sender: TObject);
@@ -124,7 +121,7 @@ implementation
 
 {$R *.dfm}
 
-uses U_DM_Olivier, U_TableEntcde_cli, U_DataModule, U_FormAide, U_FicheLigachjj;
+uses U_DM_Olivier, U_TableAchat, U_DataModule, U_FormAide, U_FicheLigachjj;
 
 
 constructor TFormFicheAchat.Create(AOwner: TComponent; AMode: TModeSaisie; ACodach: Integer);

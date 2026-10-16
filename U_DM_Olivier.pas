@@ -94,6 +94,7 @@ type
       ACoddev: Integer; ACodfac: Integer; ANolot: Integer);
     procedure ExecuterInsertionLigVteJJ(ASource: TDataSet; AQryExec: TFDQuery;
       ACoddev: Integer; ACodfac: Integer; ANoenr: Integer);
+    procedure GlobalExceptionHandler(Sender: TObject; E: Exception);
    end;
 
 var
@@ -117,6 +118,11 @@ begin
   ChargerParametresTVA;
   ChargerParametresCtrstock;
   ChargerNouveauxFichiers;
+end;
+
+procedure TDM_Olivier.GlobalExceptionHandler(Sender: TObject; E: Exception);
+begin
+  ShowMessage('Erreur globale interceptée : ' + E.Message);
 end;
 
 
