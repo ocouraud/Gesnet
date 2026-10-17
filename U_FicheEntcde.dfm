@@ -13,15 +13,6 @@ object FormFicheEntcde: TFormFicheEntcde
   Position = poMainFormCenter
   OnCloseQuery = FormCloseQuery
   TextHeight = 15
-  object Panel3: TPanel
-    Left = 0
-    Top = 528
-    Width = 884
-    Height = 133
-    Align = alBottom
-    BevelOuter = bvNone
-    TabOrder = 1
-  end
   object Panel1: TPanel
     Left = 0
     Top = 0
@@ -328,10 +319,11 @@ object FormFicheEntcde: TFormFicheEntcde
     Left = 766
     Top = 257
     Width = 118
-    Height = 271
+    Height = 404
     Align = alRight
     BevelOuter = bvNone
-    TabOrder = 2
+    TabOrder = 1
+    ExplicitHeight = 271
     object BtnAjouterLigne: TButton
       Left = 0
       Top = 0
@@ -367,11 +359,11 @@ object FormFicheEntcde: TFormFicheEntcde
     Left = 0
     Top = 257
     Width = 766
-    Height = 271
+    Height = 404
     Align = alClient
     DataSource = DSMemTableLigcde
     Options = [dgTitles, dgIndicator, dgColumnResize, dgColLines, dgRowLines, dgTabs, dgRowSelect, dgConfirmDelete, dgCancelOnExit, dgMultiSelect, dgTitleClick, dgTitleHotTrack]
-    TabOrder = 3
+    TabOrder = 2
     TitleFont.Charset = DEFAULT_CHARSET
     TitleFont.Color = clWindowText
     TitleFont.Height = -12

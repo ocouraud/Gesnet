@@ -33,7 +33,6 @@ type
     Label10: TLabel;
     DBNOCDE: TDBEdit;
     Label1: TLabel;
-    Panel3: TPanel;
     Panel5: TPanel;
     BtnAjouterLigne: TButton;
     BtnSupprimerLigne: TButton;
@@ -597,7 +596,7 @@ begin
         '`COM_DOU`,'+
         '`EXPED`,'+
         '`ETAT`,'+
-        '`DATE_ARRIVEE`,'+
+//        '`DATE_ARRIVEE`,'+
         '`TOT_DEVISE`,'+
         '`TOT_CFP`,'+
         '`TOT_FRET`,'+
@@ -622,7 +621,7 @@ begin
         ':COM_DOU ,'+
         ':EXPED ,'+
         ':ETAT ,'+
-        ':DATE_ARRIVEE ,'+
+//        ':DATE_ARRIVEE ,'+
         ':TOT_DEVISE ,'+
         ':TOT_CFP ,'+
         ':TOT_FRET ,'+
@@ -643,7 +642,7 @@ begin
         QryExec.ParamByName('CODFOU').AsString   := FDMemTableEntcde.FieldByName('CODFOU').AsString;
         QryExec.ParamByName('ETAT').AsString     := 'S';
         QryExec.ParamByName('DATE_').AsDateTime  := FDMemTableEntcde.FieldByName('DATE_').AsDateTime;
-        QryExec.ParamByName('DATE_ARRIVEE').AsDateTime  := FDMemTableEntcde.FieldByName('DATE_ARRIVEE').AsDateTime;
+        //QryExec.ParamByName('DATE_ARRIVEE').AsDateTime  := FDMemTableEntcde.FieldByName('DATE_ARRIVEE').AsDateTime;
         QryExec.ParamByName('TOT_DEVISE').AsFloat     := FDMemTableEntcde.FieldByName('TOT_DEVISE').AsFloat;
         QryExec.ParamByName('TOT_CFP').AsInteger    := FDMemTableEntcde.FieldByName('TOT_CFP').AsInteger;
         QryExec.ParamByName('TOT_FRET').AsInteger  := FDMemTableEntcde.FieldByName('TOT_FRET').AsInteger;
@@ -682,7 +681,7 @@ begin
             '`COM_DOU` = :COM_DOU, '+
             '`EXPED` = :EXPED, '+
             '`ETAT` = :ETAT, '+
-            '`DATE_ARRIVEE` = :DATE_ARRIVEE, '+
+//            '`DATE_ARRIVEE` = :DATE_ARRIVEE, '+
             '`TOT_DEVISE` = :TOT_DEVISE, '+
             '`TOT_CFP` = :TOT_CFP, '+
             '`TOT_FRET` = :TOT_FRET, '+
@@ -703,7 +702,7 @@ begin
         QryExec.ParamByName('CODFOU').AsString   := FDMemTableEntcde.FieldByName('CODFOU').AsString;
         QryExec.ParamByName('ETAT').AsString     := 'S';
         QryExec.ParamByName('DATE_').AsDateTime  := FDMemTableEntcde.FieldByName('DATE_').AsDateTime;
-        QryExec.ParamByName('DATE_ARRIVEE').AsDateTime  := FDMemTableEntcde.FieldByName('DATE_ARRIVEE').AsDateTime;
+//        QryExec.ParamByName('DATE_ARRIVEE').AsDateTime  := FDMemTableEntcde.FieldByName('DATE_ARRIVEE').AsDateTime;
         QryExec.ParamByName('TOT_DEVISE').AsFloat     := FDMemTableEntcde.FieldByName('TOT_DEVISE').AsFloat;
         QryExec.ParamByName('TOT_CFP').AsInteger    := FDMemTableEntcde.FieldByName('TOT_CFP').AsInteger;
         QryExec.ParamByName('TOT_FRET').AsInteger  := FDMemTableEntcde.FieldByName('TOT_FRET').AsInteger;
@@ -728,7 +727,7 @@ begin
       QryExec.Close;
 
       // ==========================================
-      // 4. ENREGISTREMENT DES LIGNES (ligvtejj)
+      // 4. ENREGISTREMENT DES LIGNES
       // ==========================================
       // Pour faire simple et propre lors d'une modification :
       // on supprime les anciennes lignes de cette facture et on réinsère l'état actuel de la table mémoire.
@@ -746,7 +745,7 @@ begin
       while not FDMemTableLigcde.Eof do
       begin
         iNolig:= iNolig+1;
-        //Insertion lig_prof
+        //Insertion
         QryExec.Close;
         QryExec.SQL.Text := 'INSERT INTO `ligcde` '+
         '(`NOCDE`,'+

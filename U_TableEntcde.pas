@@ -57,6 +57,8 @@ type
   private
     { Déclarations privées }
     procedure AppliquerFiltreMaitre;
+    procedure Validation;
+    procedure Centralisation;
   public
     { Déclarations publiques }
     constructor Create(AOwner: TComponent); override;
@@ -100,6 +102,94 @@ begin
 end;
 
 procedure TFrameTableEntcde.BtnCentraliserClick(Sender: TObject);
+begin
+
+  if FDQueryEntcde.IsEmpty then Exit;
+
+  case FDQueryEntcde.FieldByName('ETAT').AsString[1] of
+    //En saisie -> En attente
+    'S' :
+      begin
+        Validation;
+      end;
+
+    //En attente -> Recuperation (fin)
+    'C' :
+      begin
+        Centralisation;
+      end;
+
+  else
+    ShowMessage('Opération impossible, commande déjà validée.');
+    Exit;
+  end;
+end;
+
+
+procedure TFrameTableEntcde.Validation;
+var
+  QryExec: TFDQuery;
+  Qrylig: TFDQuery;
+  CodeCourant: Integer;
+
+begin
+
+  // Récupérer la clé unique de la piece
+  CodeCourant := FDQueryEntcde.FieldByName('NOCDE').AsInteger;
+
+  if MessageDlg('Validation de la commande ' + IntToStr(CodeCourant) + ' ?', mtConfirmation, [mbYes, mbNo], 0) = mrNo then
+    Exit;
+
+  // Création d'une requête temporaire dédiée aux exécutables SQL
+  QryExec := TFDQuery.Create(nil);
+  Qrylig := TFDQuery.Create(nil);
+
+  try
+    Screen.Cursor := crHourGlass; // Change le curseur en sablier
+
+    QryExec.Connection := DMGesCloud.ConnexionGesCloud;
+    Qrylig.Connection := DMGesCloud.ConnexionGesCloud;
+
+    // Démarrage de la TRANSACTION MySQL
+    DMGesCloud.ConnexionGesCloud.StartTransaction;
+    try
+      // Parcours de la table mémoire des lignes
+      Qrylig.SQL.Text := 'SELECT * FROM ligcde WHERE NOCDE=:NOCDE';
+      Qrylig.ParamByName('NOCDE').AsInteger := CodeCourant;
+      Qrylig.Open;
+      if Qrylig.RecordCount>0 then
+      begin
+        // Mise a jour ETAT
+        QryExec.SQL.Text := 'UPDATE entcde SET ETAT = ''C'' WHERE NOCDE = :NOCDE';
+        QryExec.ParamByName('NOCDE').AsInteger := CodeCourant;
+        QryExec.ExecSQL;
+      end
+      else
+        ShowMessage('Opération annulée, aucune ligne saisie.');
+
+      // TRANSACTION: Si tout s'est déroulé sans erreur, on valide définitivement dans MySQL
+      DMGesCloud.ConnexionGesCloud.Commit;
+
+    except
+      on E: Exception do
+      begin
+        // TRANSACTION: En cas d'erreur, on annule tout (ni l'en-tête ni les lignes ne sont modifiés)
+        DMGesCloud.ConnexionGesCloud.Rollback;
+        ShowMessage('Erreur lors de l''enregistrement : ' + E.Message);
+      end;
+    end;
+  finally
+    QryExec.Free;
+    Qrylig.Free;
+
+    FDQueryEntcde.Refresh;
+    AppliquerFiltreMaitre;
+
+    Screen.Cursor := crDefault; // Restaure le curseur normal
+  end;
+end;
+
+procedure TFrameTableEntcde.Centralisation;
 var
   QryExec: TFDQuery;
   QryExec2: TFDQuery;
@@ -118,16 +208,10 @@ begin
 
   if FDQueryEntcde.IsEmpty then Exit;
 
-  if FDQueryEntcde.FieldByName('TOP_').AsString = 'C' then
-  begin
-    ShowMessage('Opération impossible, achat déjà centralisé.');
-    Exit;
-  end;
-
   // Récupérer la clé unique de la piece
   CodeCourant := FDQueryEntcde.FieldByName('NOCDE').AsInteger;
 
-  if MessageDlg('Centraliser l''achat ' + IntToStr(CodeCourant) + ' ?', mtConfirmation, [mbYes, mbNo], 0) = mrNo then
+  if MessageDlg('Centraliser la commande ' + IntToStr(CodeCourant) + ' ?', mtConfirmation, [mbYes, mbNo], 0) = mrNo then
     Exit;
 
   // Conversion en nombre total de secondes depuis minuit
@@ -157,7 +241,7 @@ begin
     try
 
       // Parcours de la table mémoire des lignes
-      Qrylig.SQL.Text := 'SELECT * FROM ligachjj WHERE NOCDE=:NOCDE';
+      Qrylig.SQL.Text := 'SELECT * FROM ligcde WHERE NOCDE=:NOCDE AND QTE_UV_RC<>0';
       Qrylig.ParamByName('NOCDE').AsInteger := CodeCourant;
       Qrylig.Open;
       Qrylig.First;
@@ -172,11 +256,11 @@ begin
         Qryart.Open;
         if Qryart.FieldByName('G_STO').AsInteger=1 then
         begin
-           if Qrylig.FieldByName('CODDEP').AsInteger=0 then
+           if FDQueryEntcde.FieldByName('CODDEP').AsInteger=0 then
            begin
-             Qrylig.Edit;
-             Qrylig.FieldByName('CODDEP').AsInteger := DM_Olivier.gCoddep_defaut;
-             Qrylig.Post;
+             FDQueryEntcde.Edit;
+             FDQueryEntcde.FieldByName('CODDEP').AsInteger := DM_Olivier.gCoddep_defaut;
+             FDQueryEntcde.Post;
            end;
 
            //Creation par securite du stodep
@@ -184,7 +268,7 @@ begin
            QryExec2.SQL.Text := 'INSERT IGNORE INTO stodep (CODART, CODDEP, QTE, PMP, CODFOU) ' +
                             'VALUES (:CODART, :CODDEP, 0, :PMP, :CODFOU)';
            QryExec2.ParamByName('CODART').AsString := Qrylig.FieldByName('CODART').AsString;
-           QryExec2.ParamByName('CODDEP').AsInteger := Qrylig.FieldByName('CODDEP').AsInteger;
+           QryExec2.ParamByName('CODDEP').AsInteger := FDQueryEntcde.FieldByName('CODDEP').AsInteger;
            QryExec2.ParamByName('PMP').AsFloat := Qryart.FieldByName('PMP').AsFloat;
            QryExec2.ParamByName('CODFOU').AsString := Qryart.FieldByName('CODFOU').AsString;
            QryExec2.ExecSQL;
@@ -196,33 +280,22 @@ begin
                             'VALUES (:CODART, :DATE_, :ANNEE, :MOIS, :TYPE_, :QTE, :VALUNIT, :PRIXVTE, :CODDEP, :CENTRA, :LIBELLE, :CODFOU, :TIME, :CODFAC)';
            QryExec2.ParamByName('CODFAC').AsInteger := 0;
            QryExec2.ParamByName('CODART').AsString := Qrylig.FieldByName('CODART').AsString;
-           QryExec2.ParamByName('QTE').AsFloat := Qrylig.FieldByName('QTE').AsFloat;
+           QryExec2.ParamByName('QTE').AsFloat := Qrylig.FieldByName('QTE_UV_RC').AsFloat;
            QryExec2.ParamByName('PRIXVTE').AsFloat := 0;
-           QryExec2.ParamByName('VALUNIT').AsFloat := Qrylig.FieldByName('PRIXHT').AsFloat;
+           QryExec2.ParamByName('VALUNIT').AsFloat := Qrylig.FieldByName('PX_REV').AsFloat;
            QryExec2.ParamByName('CODFOU').AsString := Qryart.FieldByName('CODFOU').AsString;
            QryExec2.ParamByName('DATE_').AsDateTime := Now;
            QryExec2.ParamByName('ANNEE').AsInteger := CurrentYear;
            QryExec2.ParamByName('MOIS').AsInteger := Strtoint(FormatDateTime('mm', Now));
-           QryExec2.ParamByName('CODDEP').AsInteger := Qrylig.FieldByName('CODDEP').AsInteger;
+           QryExec2.ParamByName('CODDEP').AsInteger := FDQueryEntcde.FieldByName('CODDEP').AsInteger;
            QryExec2.ParamByName('CENTRA').AsString := 'C';
-           QryExec2.ParamByName('LIBELLE').AsString := 'Achat DELPHI fact n°' + IntToStr(CodeCourant);
+           QryExec2.ParamByName('LIBELLE').AsString := 'Commande DELPHI n°' + IntToStr(CodeCourant);
            QryExec2.ParamByName('TYPE_').AsString := 'E';
            QryExec2.ParamByName('TIME').AsInteger := ResultHeure;
            QryExec2.ExecSQL;
 
-           // 2. Récupération du NOENR tout juste généré par MySQL pour la table stock
-           QryExec2.Close;
-           QryExec2.SQL.Text := 'SELECT LAST_INSERT_ID()';
-           QryExec2.Open;
-           VNoEnrStock := QryExec2.Fields[0].AsInteger; // Pensez à déclarer VNoEnrStock en Integer dans vos variables
-
-           //Mise a jour NOENR_STO sur ligachjj
-           Qrylig.Edit;
-           Qrylig.FieldByName('NOENR_STO').AsInteger := VNoEnrStock;
-           Qrylig.Post;
-
            //On recalcul le stock du depot et de l'article
-           DM_Olivier.RecalculerStockStodep(Qrylig.FieldByName('CODART').AsString, Qrylig.FieldByName('CODDEP').AsInteger);
+           DM_Olivier.RecalculerStockStodep(Qrylig.FieldByName('CODART').AsString, FDQueryEntcde.FieldByName('CODDEP').AsInteger);
         end;
 
         QryExec2.Close;
@@ -232,7 +305,7 @@ begin
       end;
 
       // Mise a jour TYPE_ Facturé
-      QryExec.SQL.Text := 'UPDATE achat SET TOP_ = ''C'' WHERE NOCDE = :NOCDE';
+      QryExec.SQL.Text := 'UPDATE entcde SET ETAT = ''R'' WHERE NOCDE = :NOCDE';
       QryExec.ParamByName('NOCDE').AsInteger := CodeCourant;
       QryExec.ExecSQL;
 
@@ -261,6 +334,7 @@ begin
 end;
 
 
+
 procedure TFrameTableEntcde.BtnDupliquerClick(Sender: TObject);
 var
   QryExec: TFDQuery;
@@ -278,7 +352,13 @@ begin
     Exit;
   end;
 
-  if MessageDlg('Dupliquer la pièce ' +IntToStr(AncienNum)+' ?', mtConfirmation, [mbYes, mbNo], 0) = mrNo then
+  if FDQueryEntcde.FieldByName('ETAT').AsString <> 'R' then
+  begin
+    ShowMessage('Opération impossible, commande en cours.');
+    Exit;
+  end;
+
+  if MessageDlg('Dupliquer la commande ' +IntToStr(AncienNum)+' ?', mtConfirmation, [mbYes, mbNo], 0) = mrNo then
       Exit;
 
 
@@ -290,7 +370,7 @@ begin
 
     //Recuperation dernier num pièce
     QryExec.close;
-    QryExec.SQL.Text := 'SELECT NOCDE FROM `achat` ORDER BY NOCDE DESC LIMIT 1';
+    QryExec.SQL.Text := 'SELECT NOCDE FROM `entcde` ORDER BY NOCDE DESC LIMIT 1';
     QryExec.Open;
     QryExec.first;
     NouveauNum:=1;
@@ -299,43 +379,90 @@ begin
 
     // INSERT pour l'en-tête
     QryExec.close;
-    QryExec.SQL.Text := 'INSERT INTO `achat` ('+
-    '`NOCDE`, `REFER_`, `CODFOU`, `CODDEP`, `LIBELLE`, `DATE_`, `MT_HT`, `MT_TVA`, '+
-    '`MT_TTC`, `TOP_`, `OBSERV`, `MT_REM`, `DATE_ECH`, `CODPAI`, `LIBPAI`,'+
-    ' `JRSCRD`, `REGL`, `FINMOIS`, `IMPORT`) '+
+    QryExec.SQL.Text := 'INSERT INTO entcde '+
+    '(`NOCDE`,'+
+    '`DOSSIER`,'+
+    '`CODFOU`,'+
+    '`DATE_`,'+
+    '`DEVISE`,'+
+    '`TAUX`,'+
+    '`ASSUR`,'+
+    '`TRANSP`,'+
+    '`COM_DOU`,'+
+    '`EXPED`,'+
+    '`ETAT`,'+
+//        '`DATE_ARRIVEE`,'+
+    '`TOT_DEVISE`,'+
+    '`TOT_CFP`,'+
+    '`TOT_FRET`,'+
+    '`TOT_COMM_DOU`,'+
+    '`TOT_DROITS`,'+
+    '`TOT_ASSUR`,'+
+    '`TOT_TVA`,'+
+    '`COEF_PR`,'+
+    '`COEF_PV`,'+
+    '`CODDEP`,'+
+    '`OBSERV`,'+
+    '`PRC_MARG`) '+
     'VALUES '+
-    '(:NOCDE, :REFER, :CODFOU, :CODDEP, :LIBELLE, :DATE_, :MT_HT, :MT_TVA, :MT_TTC, '+
-    ':TOP, :OBSERV, :MT_REM, :DATE_ECH, :CODPAI, :LIBPAI,'+
-    ' :JRSCRD, :REGL, :FINMOIS, :IMPORT)';
+    '(:NOCDE ,'+
+    ':DOSSIER ,'+
+    ':CODFOU ,'+
+    ':DATE_ ,'+
+    ':DEVISE ,'+
+    ':TAUX ,'+
+    ':ASSUR ,'+
+    ':TRANSP ,'+
+    ':COM_DOU ,'+
+    ':EXPED ,'+
+    ':ETAT ,'+
+//        ':DATE_ARRIVEE ,'+
+    ':TOT_DEVISE ,'+
+    ':TOT_CFP ,'+
+    ':TOT_FRET ,'+
+    ':TOT_COMM_DOU ,'+
+    ':TOT_DROITS ,'+
+    ':TOT_ASSUR ,'+
+    ':TOT_TVA ,'+
+    ':COEF_PR ,'+
+    ':COEF_PV ,'+
+    ':CODDEP ,'+
+    ':OBSERV ,'+
+    ':PRC_MARG )';
+
 
     // Assignation directe des valeurs depuis la table mémoire
-    QryExec.ParamByName('OBSERV').AsString     := FDQueryEntcde.FieldByName('OBSERV').AsString;
-    QryExec.ParamByName('NOCDE').AsInteger    := NouveauNum;
-    QryExec.ParamByName('CODFOU').AsString     := FDQueryEntcde.FieldByName('CODFOU').AsString;
-    QryExec.ParamByName('CODDEP').AsInteger    := FDQueryEntcde.FieldByName('CODDEP').AsInteger;
-    QryExec.ParamByName('LIBELLE').AsString    := FDQueryEntcde.FieldByName('LIBELLE').AsString;
-    QryExec.ParamByName('DATE_').AsDateTime    := FDQueryEntcde.FieldByName('DATE_').AsDateTime;
-    QryExec.ParamByName('MT_HT').AsFloat       := FDQueryEntcde.FieldByName('TOTHT').AsFloat;
-    QryExec.ParamByName('MT_TTC').AsInteger    := FDQueryEntcde.FieldByName('MT_TTC').AsInteger;
-    QryExec.ParamByName('MT_TVA').AsFloat      := FDQueryEntcde.FieldByName('MT_TVA').AsFloat;
-    QryExec.ParamByName('REFER').AsString      := FDQueryEntcde.FieldByName('REFER').AsString;
-    QryExec.ParamByName('TOP_').AsString       := FDQueryEntcde.FieldByName('TOP_').AsString;
-    QryExec.ParamByName('DATE_ECH').AsDateTime    := FDQueryEntcde.FieldByName('DATE_ECH').AsDateTime;
-    QryExec.ParamByName('MT_REM').AsFloat      := FDQueryEntcde.FieldByName('MT_REM').AsFloat;
-    QryExec.ParamByName('CODPAI').AsString      := FDQueryEntcde.FieldByName('CODPAI').AsString;
-    QryExec.ParamByName('LIBPAI').AsString       := FDQueryEntcde.FieldByName('LIBPAI').AsString;
-    QryExec.ParamByName('JRSCRD').AsInteger    := FDQueryEntcde.FieldByName('JRSCRD').AsInteger;
-    QryExec.ParamByName('REGL').AsFloat      := FDQueryEntcde.FieldByName('REGL').AsFloat;
-    QryExec.ParamByName('FINMOIS').AsInteger    := FDQueryEntcde.FieldByName('FINMOIS').AsInteger;
-    QryExec.ParamByName('REGL').AsInteger      := FDQueryEntcde.FieldByName('REGL').AsInteger;
-
+    QryExec.ParamByName('OBSERV').AsString  := FDQueryEntcde.FieldByName('OBSERV').AsString;
+    QryExec.ParamByName('NOCDE').AsInteger  := NouveauNum;
+    QryExec.ParamByName('CODFOU').AsString   := FDQueryEntcde.FieldByName('CODFOU').AsString;
+    QryExec.ParamByName('ETAT').AsString     := 'S';
+    QryExec.ParamByName('DATE_').AsDateTime  := Now;
+    //QryExec.ParamByName('DATE_ARRIVEE').AsDateTime  := FDQueryEntcde.FieldByName('DATE_ARRIVEE').AsDateTime;
+    QryExec.ParamByName('TOT_DEVISE').AsFloat     := FDQueryEntcde.FieldByName('TOT_DEVISE').AsFloat;
+    QryExec.ParamByName('TOT_CFP').AsInteger    := FDQueryEntcde.FieldByName('TOT_CFP').AsInteger;
+    QryExec.ParamByName('TOT_FRET').AsInteger  := FDQueryEntcde.FieldByName('TOT_FRET').AsInteger;
+    QryExec.ParamByName('TOT_COMM_DOU').AsInteger  := FDQueryEntcde.FieldByName('TOT_COMM_DOU').AsInteger;
+    QryExec.ParamByName('TOT_DROITS').AsInteger  := FDQueryEntcde.FieldByName('TOT_DROITS').AsInteger;
+    QryExec.ParamByName('TOT_ASSUR').AsInteger  := FDQueryEntcde.FieldByName('TOT_ASSUR').AsInteger;
+    QryExec.ParamByName('TOT_TVA').AsInteger  := FDQueryEntcde.FieldByName('TOT_TVA').AsInteger;
+    QryExec.ParamByName('DOSSIER').AsString    := FDQueryEntcde.FieldByName('DOSSIER').AsString;
+    QryExec.ParamByName('DEVISE').AsString    := FDQueryEntcde.FieldByName('DEVISE').AsString;
+    QryExec.ParamByName('TAUX').AsFloat     := FDQueryEntcde.FieldByName('TAUX').AsFloat;
+    QryExec.ParamByName('COEF_PR').AsFloat     := FDQueryEntcde.FieldByName('COEF_PR').AsFloat;
+    QryExec.ParamByName('COEF_PV').AsFloat     := FDQueryEntcde.FieldByName('COEF_PV').AsFloat;
+    QryExec.ParamByName('PRC_MARG').AsFloat     := FDQueryEntcde.FieldByName('PRC_MARG').AsFloat;
+    QryExec.ParamByName('CODDEP').AsInteger  := FDQueryEntcde.FieldByName('CODDEP').AsInteger;
+    QryExec.ParamByName('ASSUR').AsString   := FDQueryEntcde.FieldByName('ASSUR').AsString;
+    QryExec.ParamByName('TRANSP').AsString   := FDQueryEntcde.FieldByName('TRANSP').AsString;
+    QryExec.ParamByName('COM_DOU').AsString   := FDQueryEntcde.FieldByName('COM_DOU').AsString;
+    QryExec.ParamByName('EXPED').AsString   := FDQueryEntcde.FieldByName('EXPED').AsString;
     QryExec.ExecSQL;
 
 
     // Dupliquer toutes les lignes associées
     // Parcours de la table mémoire des lignes
     iNolig := 0;
-    QryLig.SQL.Text := 'select * from ligachjj where NOCDE = :NOCDE';
+    QryLig.SQL.Text := 'select * from ligcde where NOCDE = :NOCDE';
     QryLig.ParamByName('NOCDE').AsInteger := AncienNum;
     QryLig.Open;
     QryLig.First;
@@ -344,57 +471,64 @@ begin
       iNolig:= iNolig+1;
       //Insertion LIGNES
       QryExec.Close;
-      QryExec.SQL.Text := 'INSERT INTO `ligachjj` '+
+      QryExec.SQL.Text := 'INSERT INTO `ligcde` '+
       '(`NOCDE`,'+
-      '`REFER`,'+
-      '`DATE_`,'+
-      '`CODFOU`,'+
-      '`CODSSF`,'+
-      '`CODFAM`,'+
       '`CODART`,'+
-      '`CODDEP`,'+
-      '`QTE`,'+
-      '`PRIXHT`,'+
-      '`PRIXTTC`,'+
-      '`TOTHT`,'+
-      '`TX_TVA`,'+
-      '`MT_TVA`,'+
-      '`NO_TVA`,'+
-      '`NOENR_STO`) '+
-      'VALUES  ('+
-      ':NOCDE, '+
-      ':REFER, '+
-      ':DATE_, '+
-      ':CODFOU, '+
-      ':CODSSF, '+
-      ':CODFAM, '+
-      ':CODART, '+
-      ':CODDEP, '+
-      ':QTE, '+
-      ':PRIXHT, '+
-      ':PRIXTTC, '+
-      ':TOTHT, '+
-      ':TX_TVA, '+
-      ':MT_TVA, '+
-      ':NO_TVA, '+
-      ':NOENR_STO)';
+      '`REF_FOU`,'+
+      '`CODFOU`,'+
+      '`DATE_`,'+
+      '`LIBELLE`,'+
+      '`UV`,'+
+      '`QTE_UV`,'+
+      '`PX_UC`,'+
+      '`UC`,'+
+      '`QTE_UC`,'+
+      '`ETAT`,'+
+      '`QTE_UV_RC`,'+
+      '`QTE_UC_RC`,'+
+      '`COEF_PR`,'+
+      '`COEF_PV`,'+
+      '`PX_REV`,'+
+      '`PX_VTE`) '+
+      'VALUES '+
+      '(:NOCDE,'+
+      ':CODART,'+
+      ':REF_FOU,'+
+      ':CODFOU,'+
+      ':DATE_,'+
+      ':LIBELLE,'+
+      ':UV,'+
+      ':QTE_UV,'+
+      ':PX_UC,'+
+      ':UC,'+
+      ':QTE_UC,'+
+      ':ETAT,'+
+      ':QTE_UV_RC,'+
+      ':QTE_UC_RC,'+
+      ':COEF_PR,'+
+      ':COEF_PV,'+
+      ':PX_REV,'+
+      ':PX_VTE)';
 
       // Assignation directe des valeurs depuis la table mémoire des lignes
-      QryExec.ParamByName('NOCDE').AsInteger     := NouveauNum;
-      QryExec.ParamByName('LIBELLE').AsString    := QryLig.FieldByName('LIBELLE').AsString;
-      QryExec.ParamByName('CODCLI').AsInteger    := QryLig.FieldByName('CODCLI').AsInteger;
-      QryExec.ParamByName('CODART').AsString     := QryLig.FieldByName('CODART').AsString;
-      QryExec.ParamByName('QTE').AsFloat         := QryLig.FieldByName('QTE').AsFloat;
-      QryExec.ParamByName('PRIXHT').AsFloat      := QryLig.FieldByName('PRIXHT').AsFloat;
-      QryExec.ParamByName('PRIXTTC').AsInteger   := QryLig.FieldByName('PRIXTTC').AsInteger;
-      QryExec.ParamByName('TOTHT').AsFloat       := QryLig.FieldByName('TOTHT').AsFloat;
-      QryExec.ParamByName('MT_TTC').AsInteger    := QryLig.FieldByName('MT_TTC').AsInteger;
-      QryExec.ParamByName('TX_TVA').AsFloat      := QryLig.FieldByName('TX_TVA').AsFloat;
-      QryExec.ParamByName('MT_TVA').AsFloat      := QryLig.FieldByName('MT_TVA').AsFloat;
-      QryExec.ParamByName('TVA').AsString        := QryLig.FieldByName('TVA').AsString;
-      QryExec.ParamByName('OBSERV').AsString     := QryLig.FieldByName('OBSERV').AsString;
-      QryExec.ParamByName('DATE_').AsDateTime    := QryLig.FieldByName('DATE_').AsDateTime;
-      QryExec.ParamByName('NOLIG').AsInteger     := iNolig;
+      QryExec.ParamByName('NOCDE').AsInteger   := NouveauNum;
+      QryExec.ParamByName('REF_FOU').AsString  := QryLig.FieldByName('REF_FOU').AsString;
+      QryExec.ParamByName('DATE_').AsDateTime  := Now;
+      QryExec.ParamByName('CODFOU').AsString   := QryLig.FieldByName('CODFOU').AsString;
+      QryExec.ParamByName('CODART').AsString   := QryLig.FieldByName('CODART').AsString;
+      QryExec.ParamByName('LIBELLE').AsString  := QryLig.FieldByName('LIBELLE').AsString;
+      QryExec.ParamByName('UV').AsString       := QryLig.FieldByName('UV').AsString;
+      QryExec.ParamByName('UC').AsString       := QryLig.FieldByName('UC').AsString;
+      QryExec.ParamByName('QTE_UV').AsFloat    := QryLig.FieldByName('QTE_UV').AsFloat;
+      QryExec.ParamByName('QTE_UC').AsFloat    := QryLig.FieldByName('QTE_UC').AsFloat;
+      QryExec.ParamByName('ETAT').AsString     := QryLig.FieldByName('ETAT').AsString;
+      QryExec.ParamByName('QTE_UV_RC').AsFloat := QryLig.FieldByName('QTE_UV_RC').AsFloat;
+      QryExec.ParamByName('QTE_UC_RC').AsFloat := QryLig.FieldByName('QTE_UC_RC').AsFloat;
+      QryExec.ParamByName('COEF_PR').AsFloat   := QryLig.FieldByName('COEF_PR').AsFloat;
+      QryExec.ParamByName('COEF_PV').AsFloat   := QryLig.FieldByName('COEF_PV').AsFloat;
+      QryExec.ParamByName('PX_REV').AsFloat    := QryLig.FieldByName('PX_REV').AsFloat;
+      QryExec.ParamByName('PX_VTE').AsFloat    := QryLig.FieldByName('PX_VTE').AsFloat;
+      QryExec.ParamByName('PX_UC').AsFloat     := QryLig.FieldByName('PX_UC').AsFloat;
 
       QryExec.ExecSQL;
       //Lecture ligne suivante
@@ -408,7 +542,7 @@ begin
     if not FDQueryEntcde.IsEmpty then
       FDQueryEntcde.Locate('NOCDE', NouveauNum, []);
 
-    ShowMessage('Achat dupliqué avec succès sous le numéro : ' + IntToStr(NouveauNum));
+    ShowMessage('Commande dupliquée avec succès sous le numéro : ' + IntToStr(NouveauNum));
   finally
     QryExec.Free;
     QryLig.Free;
@@ -630,26 +764,34 @@ begin
   FDQueryEntcde.Refresh;
 
   // 1. Définition du filtre selon l'option sélectionnée dans le TRadioGroup
-  // ItemIndex 0 = J (Non centralisés), 1 = C (Centralisés)
+  // ItemIndex 0 = S (Non validées), 1 = C (Centralisés/Validees), 2 = R (Receptionnees)
   case RadioGroupEtat.ItemIndex of
     0:
     begin
       FiltreNature := '(etat = ''S'')';
       BtnSupprimer.Enabled:=True;
+      BtnCentraliser.Enabled:=True;
+      BtnCentraliser.Caption:='Valider';
     end;
     1:
     begin
       FiltreNature := '(etat = ''C'')';
       BtnSupprimer.Enabled:=True;
+      BtnCentraliser.Enabled:=True;
+      BtnCentraliser.Caption:='Centraliser';
     end;
     2:
     begin
       FiltreNature := '(etat = ''R'')';
       BtnSupprimer.Enabled:=False;
+      BtnCentraliser.Enabled:=False;
+      BtnCentraliser.Caption:='...';
     end;
   else
     FiltreNature := '(1=1)'; // Par sécurité si rien n'est sélectionné
     BtnSupprimer.Enabled:=False;
+    BtnCentraliser.Enabled:=False;
+    BtnCentraliser.Caption:='...';
   end;
 
   // 3. On combine l'ensemble avec "and" (en minuscules) et des parenthèses

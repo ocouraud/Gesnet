@@ -105,7 +105,6 @@ object FrameTableEntcde: TFrameTableEntcde
       item
         Expanded = False
         FieldName = 'ETAT'
-        Width = -1
         Visible = False
       end
       item
@@ -347,7 +346,7 @@ object FrameTableEntcde: TFrameTableEntcde
       Height = 29
       Margins.Left = 6
       Margins.Right = 6
-      Caption = '&Centraliser '#9654#65039
+      Caption = '&Valider '#9654#65039
       TabOrder = 7
       StyleElements = [seClient, seBorder]
       OnClick = BtnCentraliserClick
